@@ -1,0 +1,206 @@
+#!/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+set -e
+umask 022
+CWD=$(pwd)
+
+NAMESRC=${NAMESRC:-docbook-xml}
+VERSION=${VERSION:-4.5}
+EXT=${EXT:-zip}
+NAMETGZ=${NAMETGZ:-docbook-xml}
+BUILD=${BUILD:-1}
+
+
+TMP=${TMP:-/tmp}
+OUT=${OUT:-/usr/local/paquets}
+ARCH=${ARCH:-x86_64}
+TARGET32=${TARGET32:-i686-0-linux-gnu}
+TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
+BUILD32=${BUILD32:--m32}
+BUILD64=${BUILD64:--m64}
+PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
+PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
+
+WGET=${WGET:-http://www.docbook.org/xml/$VERSION/$NAMESRC-$VERSION.$EXT}
+DOC="README"
+########## |-----handy-ruler------------------------------------------------------|
+SLACKDESC="Documents XML pour validation docbook"
+########################################
+
+SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then # -1 pour l'UTF-8
+	echo "La description du slack-desc est trop longue (80 caractères max.) !"
+	exit 1
+fi
+
+# On télécharge les sources :
+if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
+	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
+	mv ${NAMESRC}-${VERSION}.$EXT.part ${NAMESRC}-${VERSION}.$EXT
+fi
+
+# On crée le répertoire d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}/usr/share/xml/docbook/xml-dtd-4.5
+mkdir -p ${PKG}/etc/xml
+
+# On déballe et on se place dans les sources :
+cd $TMP
+rm -rf ${NAMESRC}-${VERSION}
+mkdir ${NAMESRC}-${VERSION}
+cd ${NAMESRC}-${VERSION}
+echo "Extraction en cours..."
+unzip $CWD/${NAMESRC}-${VERSION}.$EXT
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On copie les fichiers. Le reste se passe en post-installation :
+cp -a docbook.cat *.dtd ent/ *.mod ${PKG}/usr/share/xml/docbook/xml-dtd-4.5
+
+# On compresse les manuels :
+if [ -d ${PKG}/usr/man ]; then
+	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+	for manpage in $(find ${PKG}/usr/man -type l) ; do
+		ln -s $(readlink $manpage).gz ${manpage}.gz
+		rm -f ${manpage}
+	done
+fi
+
+# On compresse les pages info :
+if [ -d ${PKG}/usr/info ]; then
+	rm -f ${PKG}/usr/info/dir
+	gzip -9 ${PKG}/usr/info/*.info*
+fi
+# Installation de la documentation :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+# On installe le slack-desc :
+mkdir -p ${PKG}/install
+echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+# On installe le doinst.sh :
+cat > ${PKG}/install/doinst.sh << "EOF"
+#!/bin/env bash
+if [ -x sbin/ldconfig ]; then
+	sbin/ldconfig -r .
+fi
+
+config() {
+	NEW="$1"
+	OLD="`dirname $NEW`/`basename $NEW .new`"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "`cat $OLD | md5sum`" = "`cat $NEW | md5sum`" ]; then
+		rm $NEW
+	fi
+}
+
+# On installe les catalogues :
+if [ ! -e /etc/xml/docbook ]; then
+	xmlcatalog --noout --create /etc/xml/docbook
+fi
+
+xmlcatalog --noout --add "public" "-//OASIS//DTD DocBook XML V4.5//EN" \
+	"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "public" "-//OASIS//DTD DocBook XML CALS Table Model V4.5//EN" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5/calstblx.dtd" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "public" "-//OASIS//DTD XML Exchange Table Model 19990315//EN" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5/soextblx.dtd" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "public" "-//OASIS//ELEMENTS DocBook XML Information Pool V4.5//EN" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5/dbpoolx.mod" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "public" "-//OASIS//ELEMENTS DocBook XML Document Hierarchy V4.5//EN" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5/dbhierx.mod" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "public" "-//OASIS//ELEMENTS DocBook XML HTML Tables V4.5//EN" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5/htmltblx.mod" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "public" "-//OASIS//ENTITIES DocBook XML Notations V4.5//EN" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5/dbnotnx.mod" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "public" "-//OASIS//ENTITIES DocBook XML Character Entities V4.5//EN" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5/dbcentx.mod" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "public" "-//OASIS//ENTITIES DocBook XML Additional General Entities V4.5//EN" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5/dbgenent.mod" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "rewriteSystem" "http://www.oasis-open.org/docbook/xml/4.5" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5" \
+	/etc/xml/docbook
+xmlcatalog --noout --add "rewriteURI" "http://www.oasis-open.org/docbook/xml/4.5" \
+	"file:///usr/share/xml/docbook/xml-dtd-4.5" \
+	/etc/xml/docbook
+
+if [ ! -e /etc/xml/catalog ]; then
+	xmlcatalog --noout --create /etc/xml/catalog
+fi
+
+xmlcatalog --noout --add "delegatePublic" "-//OASIS//ENTITIES DocBook XML" \
+	"file:///etc/xml/docbook" /etc/xml/catalog
+xmlcatalog --noout --add "delegatePublic" "-//OASIS//DTD DocBook XML" \
+	"file:///etc/xml/docbook" /etc/xml/catalog
+xmlcatalog --noout --add "delegateSystem" "http://www.oasis-open.org/docbook/" \
+	"file:///etc/xml/docbook" /etc/xml/catalog
+xmlcatalog --noout --add "delegateURI" "http://www.oasis-open.org/docbook/" \
+	"file:///etc/xml/docbook" /etc/xml/catalog
+
+for DTDVERSION in 4.1.2 4.2 4.3 4.4; do
+	xmlcatalog --noout --add "public" \
+		"-//OASIS//DTD DocBook XML V$DTDVERSION//EN" \
+		"http://www.oasis-open.org/docbook/xml/$DTDVERSION/docbookx.dtd" \
+		/etc/xml/docbook
+	xmlcatalog --noout --add "rewriteSystem" \
+		"http://www.oasis-open.org/docbook/xml/$DTDVERSION" \
+		"file:///usr/share/xml/docbook/xml-dtd-4.5" \
+		/etc/xml/docbook
+	xmlcatalog --noout --add "rewriteURI" \
+		"http://www.oasis-open.org/docbook/xml/$DTDVERSION" \
+		"file:///usr/share/xml/docbook/xml-dtd-4.5" \
+		/etc/xml/docbook
+	xmlcatalog --noout --add "delegateSystem" \
+		"http://www.oasis-open.org/docbook/xml/$DTDVERSION/" \
+		"file:///etc/xml/docbook" \
+		/etc/xml/catalog
+	xmlcatalog --noout --add "delegateURI" \
+		"http://www.oasis-open.org/docbook/xml/$DTDVERSION/" \
+		"file:///etc/xml/docbook" \
+		/etc/xml/catalog
+done
+
+EOF
+
+# On "strippe" tout ce qu'on trouve :
+find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
+# On vérifie enfin les droits de la doc, souvent problématiques :
+find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# Empaquetage !
+cd ${PKG}
+mkdir -p $OUT
+PACKAGING="
+	chown root:root . -R
+	
+	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	rm -rf ${PKG}
+	rm -rf $TMP/${NAMESRC}-${VERSION}"
+
+if [ "$(which fakeroot 2> /dev/null)" ]; then
+	echo "${PACKAGING}" | fakeroot
+else
+	su -c "${PACKAGING}"
+fi
+
+exit 0

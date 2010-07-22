@@ -1,0 +1,34 @@
+recordmydesktop
+firefox-fr
+thunderbird-fr
+man-pages-fr
+man-pages-extras-fr
+man-fr-traducman
+boost
+wine
+numlockx
+libdvdnav
+libdvdcss
+geany
+pysqlite gajim
+recode
+transmission
+deluge
+unrar
+vlc
+vlc-mozplugins
+gnome-minimal/
+gst-plugins-*
+fakeroot
+glibmm gtkmm cairomm libsigc++
+bogofilter sylpheed claws-mail
+faad2 mpd
+xfce *FULL* (libburn libisofs xfburn xarchiver thunar-archive-plugin xfce-screenshooter)
+flash-player
+win32codecs
+epdfview
+webcore-fonts
+
+
+
+

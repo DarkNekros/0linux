@@ -1,0 +1,43 @@
+#!/bin/sh
+# Fichier profil pour le système autonome, différent de celui sur le système installé.
+
+# On définit un PATH large :
+PATH="$PATH:/bin:/sbin:/usr/bin:/usr/lib/installateur"
+PATH="$PATH:/mnt/usr/local/bin:/mnt/usr/bin:/mnt/bin"
+PATH="$PATH:/mnt/usr/local/sbin:/mnt/usr/sbin:/mnt/sbin"
+PATH="$PATH:/mnt/linux/usr/local/bin:/mnt/linux/usr/bin:/mnt/linux/bin"
+PATH="$PATH:/mnt/linux/usr/local/sbin:/mnt/linux/usr/sbin:/mnt/linux/sbin"
+
+TERM=linux
+HOME=/root
+LESS=-MM
+
+# On définit l'invite de commande :
+PS1='\u@\h:\w# '
+PS2='> '
+
+# On reste franco-français en définissant la locale française par défaut :
+LANG="fr_FR.UTF-8"
+LC_ALL="fr_FR.UTF-8"
+
+# On dit au shell qu'il doit recevoir 20 EOF avant de quitter :
+IGNOREEOF=20
+
+# Le masque de création par défaut (fichiers en 644, répertoires en 755) :
+umask 022
+
+# On exporte le tout :
+export HOME PATH DISPLAY LESS TERM PS1 PS2 LANG LC_ALL IGNOREEOF
+
+# On règle la date à avant-hier pour éviter tout problème de fichiers apparaissant 
+# comme créés dans le futur et pour nous épargner une vérification automatique 
+# du système de fichiers :
+date --date='2 days ago'
+
+# L'UTF-8 est censé fonctionner mais ça ne coûte rien :
+unicode_start 1> /dev/null 2> /dev/null
+
+# On charge d'office une police compatible avec le français et l'UTF-8 :
+setfont /lib/kbd/consolefonts/lat9w-12.psfu.gz
+
+# C'est fini !

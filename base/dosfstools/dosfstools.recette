@@ -1,0 +1,140 @@
+#!/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+set -e
+umask 022
+CWD=$(pwd)
+
+NAMESRC=${NAMESRC:-dosfstools}
+VERSION=${VERSION:-3.0.9}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-dosfstools}
+BUILD=${BUILD:-1}
+
+
+TMP=${TMP:-/tmp}
+OUT=${OUT:-/usr/local/paquets}
+ARCH=${ARCH:-x86_64}
+TARGET32=${TARGET32:-i686-0-linux-gnu}
+TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
+BUILD32=${BUILD32:--m32}
+BUILD64=${BUILD64:--m64}
+
+WGET=${WGET:-http://www.daniel-baumann.ch/software/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DOC="ChangeLog COPYING doc/"
+########## |-----handy-ruler------------------------------------------------------|
+SLACKDESC="Outils pour les systèmes de fichiers FAT"
+########################################
+
+SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then # -1 pour l'UTF-8
+	echo "La description du slack-desc est trop longue (80 caractères max.) !"
+	exit 1
+fi
+
+# On télécharge les sources :
+if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
+	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
+	mv ${NAMESRC}-${VERSION}.$EXT.part ${NAMESRC}-${VERSION}.$EXT
+fi
+
+# On les vérifie :
+tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
+
+# On crée le répertoire d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}
+
+# On déballe et on se place dans les sources :
+NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# Compilation pour 64 bits :
+SLKCFLAGS="-O2 -fPIC -pipe"
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+make
+
+# On crée de quoi accueillir le tout :
+mkdir -p ${PKG}/sbin
+mkdir -p ${PKG}/usr/man/man8
+
+# On place les binaires :
+cp -a dosfslabel dosfsck mkdosfs ${PKG}/sbin
+chmod 755 ${PKG}/sbin/*
+cp -a man/*.8 ${PKG}/usr/man/man8
+
+# On crée des liens cohérents pour les binaires :
+ln -sf mkdosfs ${PKG}/sbin/mkfs.msdos
+ln -sf mkdosfs ${PKG}/sbin/mkfs.vfat
+ln -sf dosfsck ${PKG}/sbin/fsck.msdos
+ln -sf dosfsck ${PKG}/sbin/fsck.vfat
+
+# ... Et les manuels :
+ln -sf mkdosfs.8 ${PKG}/usr/man/man8/mkfs.msdos.8
+ln -sf mkdosfs.8 ${PKG}/usr/man/man8/mkfs.vfat.8
+ln -sf dosfsck.8 ${PKG}/usr/man/man8/fsck.msdos.8
+ln -sf dosfsck.8 ${PKG}/usr/man/man8/fsck.vfat.8
+
+# On compresse les manuels :
+if [ -d ${PKG}/usr/man ]; then
+	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+	for manpage in $(find ${PKG}/usr/man -type l) ; do
+		ln -s $(readlink $manpage).gz ${manpage}.gz
+		rm -f ${manpage}
+	done
+fi
+
+# On compresse les pages info :
+if [ -d ${PKG}/usr/info ]; then
+	rm -f ${PKG}/usr/info/dir
+	gzip -9 ${PKG}/usr/info/*.info*
+fi
+
+# Installation de la documentation :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+# On installe le slack-desc :
+mkdir -p ${PKG}/install
+echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+# On "strippe" tout ce qu'on trouve :
+find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
+# On vérifie enfin les droits de la doc, souvent problématiques :
+find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# Empaquetage !
+cd ${PKG}
+mkdir -p $OUT
+PACKAGING="
+	chown root:root . -R
+	
+	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	rm -rf ${PKG}
+	if [ ! \"X${NAME}\" = \"X\" ]; then
+		if [ -d $TMP/${NAME} ]; then
+			rm -rf $TMP/${NAME}
+		fi
+	fi"
+
+if [ "$(which fakeroot 2> /dev/null)" ]; then
+	echo "${PACKAGING}" | fakeroot
+else
+	su -c "${PACKAGING}"
+fi
+
+exit 0

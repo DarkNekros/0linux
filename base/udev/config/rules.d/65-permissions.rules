@@ -1,0 +1,45 @@
+# Règles de permissions de Slackware.
+#
+# Ce fichier sera écrasé lors des misses à niveau d'udev.
+# Placez donc plutôt vos propres règles  dans 90-local.rules
+#
+# Les disques apartiendront au groupe 'disk'
+KERNEL!="fd*", SUBSYSTEM=="block",             GROUP="disk"
+
+# Permissions pour les lecteurs de disquettes IDE
+KERNEL=="hd*[!0-9]", SUBSYSTEMS=="ide", ATTRS{media}=="floppy", \
+			SYMLINK+="floppy floppy-%k", OPTIONS+="ignore_remove"
+KERNEL=="hd*[0-9]", ATTRS{media}=="floppy", ATTRS{removable}=="1", \
+			SYMLINK+="floppy-%k", OPTIONS+="ignore_remove"
+
+# Tous les périphériques amovibles vont dans le groupe 'plugdev'
+KERNEL=="hd*[!0-9]", ATTR{removable}=="1", GROUP="plugdev"
+KERNEL=="hd*[0-9]", ATTRS{removable}=="1", GROUP="plugdev"
+KERNEL=="sd*[!0-9]", ATTR{removable}=="1", GROUP="plugdev"
+KERNEL=="sd*[0-9]", ATTRS{removable}=="1", GROUP="plugdev"
+
+# ... tout comme les périphériques branchables à chaud (ZIP, Jazz, LS-120, etc.)
+KERNEL=="diskonkey*",	GROUP="plugdev"
+KERNEL=="jaz*",		GROUP="plugdev"
+KERNEL=="pocketzip*",	GROUP="plugdev"
+KERNEL=="zip*",		GROUP="plugdev"
+KERNEL=="ls120",	GROUP="plugdev"
+KERNEL=="microdrive*",	GROUP="plugdev"
+
+# CD
+ENV{ID_CDROM}=="?*", 		GROUP="cdrom", MODE="0660"
+KERNEL=="pktcdvd",		GROUP="cdrom", MODE="0660"
+KERNEL=="pktcdvd[0-9]*",	GROUP="cdrom", MODE="0660"
+# permissions for SCSI sg devices
+SUBSYSTEMS=="scsi", KERNEL=="s[gt][0-9]*", ATTRS{type}=="5", \
+				GROUP="cdrom", MODE="0660"
+
+# Le mode DRI sera accessible au groupe 'video'
+KERNEL=="card[0-9]*",GROUP:="video"
+
+# ALSA
+SUBSYSTEM=="sound", GROUP="audio"
+
+# Permissions pour l'horloge temps réel
+KERNEL=="rtc|rtc0",             MODE="0644"
+

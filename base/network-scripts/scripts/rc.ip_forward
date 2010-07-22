@@ -1,0 +1,49 @@
+#!/bin/sh
+ip_forward_start() {
+	if [ -f /proc/sys/net/ipv4/ip_forward ]; then
+		echo "Activation de la redirection de paquets pour IPv4."
+		echo 1 > /proc/sys/net/ipv4/ip_forward
+		
+		if [ -r /etc/sysctl.conf ]; then
+			/bin/grep ipv4 /etc/sysctl.conf | sysctl -p - 1> /dev/null 2> /dev/null
+		fi
+	fi
+	
+	# Décommentez la partie ci-dessous si vous avez une configuration asymétrique
+	# (chemin des paquets entrants différent du chemin des paquets sortants par exemple) :
+	#if [ -r /proc/sys/net/ipv4/conf/all/rp_filter ]; then
+	#	echo "Disabling rp_filter."
+	#	echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter
+	#fi
+}
+
+ip_forward_stop() {
+	if [ -f /proc/sys/net/ipv4/ip_forward ]; then
+		echo "Désactivation de la redirection de paquets pour IPv4."
+		echo 0 > /proc/sys/net/ipv4/ip_forward
+		
+		if [ -r /etc/sysctl.conf ]; then
+			/bin/grep ipv4 /etc/sysctl.conf | sysctl -p - 1> /dev/null 2> /dev/null
+		fi
+	fi
+}
+
+ip_forward_restart() {
+	ip_forward_stop
+	sleep 1
+	ip_forward_start
+}
+
+case "$1" in
+	'start')
+		ip_forward_start
+	;;
+	'stop')
+		ip_forward_stop
+	;;
+	'restart')
+		ip_forward_restart
+	;;
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+esac

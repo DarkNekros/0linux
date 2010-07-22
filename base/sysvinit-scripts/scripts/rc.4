@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# /etc/rc.d/rc.4 : ce fichier est exécuté lors du passage en mode multi-
+# utilisateur avec X par init(8) (donc dans le niveau d'exécution 4).
+# Très lourdement inspiré de Slackware.
+
+echo "Démarrage du gestionnaire de connexion graphique..."
+
+# D'abord GDM - s'il est présent, c'est qu'on veut l'utiliser par défaut :
+if [ -x /usr/bin/gdm ]; then
+	exec /usr/bin/gdm -nodaemon
+fi
+if [ -x /usr/sbin/gdm ]; then
+  exec /usr/sbin/gdm -nodaemon
+fi
+
+# Sinon, KDM. S'il y est, on veut sûrement l'utiliser par défaut :
+if [ -x /opt/kde/bin/kdm ]; then
+	exec /opt/kde/bin/kdm -nodaemon
+elif [ -x /usr/bin/kdm ]; then
+	exec /usr/bin/kdm -nodaemon
+fi
+
+# Sinon, SliM :
+if [ -x /usr/bin/slim ]; then
+	exec /usr/bin/slim
+fi
+elif [ -x /usr/sbin/slim ]; then
+	exec /usr/sbin/slim
+fi
+
+# Sinon, XDM :
+if [ -x /usr/bin/xdm ]; then
+	exec /usr/bin/xdm -nodaemon
+elif [ -x /usr/X11R6/bin/xdm ]; then
+	exec /usr/X11R6/bin/xdm -nodaemon
+fi
+
+# Aucun ?
+echo "Oups ! Ni GDM, ni KDM, ni SLiM, ni XDM ne sont installés ! Le niveau"
+echo "d'exécution 4 nécessite au moins un gestionnaire de connexion. "
+sleep 10
+
+# C'est fini !

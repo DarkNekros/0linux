@@ -1,0 +1,8 @@
+#!/bin/sh
+# rc.modules : ce fichier sert à charger des modules au démarrage du système.
+# 
+
+# On met à jour les dépendances des modules avant toute chose :
+depmod -a
+
+# C'est fini !

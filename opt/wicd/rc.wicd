@@ -1,0 +1,46 @@
+#!/bin/sh
+# /etc/rc.d/rc.wicd : fichier service pour 'wicd'
+
+PIDFILE="/var/run/wicd/wicd.pid"
+
+wicd_start() {
+	if [ -e $PIDFILE ]; then
+		echo "'wicd' semble déjà exécuté."
+		echo "Si ça n'est pas le cas, supprimez "
+		echo "$PIDFILE puis réessayez."
+		exit 1
+	else
+		echo "Démarrage de wicd..."
+		wicd 2>/dev/null 1>&2 &
+	fi
+}
+
+wicd_stop() {
+	echo "Arrêt de wicd..."
+	
+	if [ -e $PIDFILE ]; then
+		kill $(cat $PIDFILE) 2>/dev/null
+		rm -f $PIDFILE 2>/dev/null
+	else
+		pkill -f python.*wicd-daemon.py 2>/dev/null
+	fi
+}
+
+case $1 in
+	start)
+		wicd_start
+	;;
+	stop)
+		wicd_stop
+	;;
+	restart)
+		wicd_stop
+		wicd_start
+	;;
+	*)
+		echo "Utilisation :$0 {start|stop|restart}"
+		exit 1
+	;;
+esac
+
+# C'est fini !

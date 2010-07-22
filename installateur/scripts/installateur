@@ -1,0 +1,170 @@
+#!/bin/sh
+# On inclut nos fonctions :
+. /usr/lib/installateur/fonctions.sh
+
+# On vide $TMP au cas où :
+rm -f $TMP/*
+
+# On détecte les partitions Linux, si aucune on prévient l'utilisateur :
+if listelinux 1> /dev/null 2> /dev/null; then
+	listelinux 1> $TMP/liste_partitions 2> /dev/null
+else
+	nolinuxpart
+fi
+
+# La racine de destination du système à installer:
+export SETUPROOT=${SETUPROOT:-/mnt}
+
+# On détecte la partition racine :
+ROOT_DEVICE="`mount | grep "on / " | cut -f 1 -d ' '`"
+echo "$ROOT_DEVICE" > $TMP/partition_racine
+
+# On nettoie tous les points de montage :
+if mount | grep /var/log/mount 1> /dev/null 2> /dev/null ; then
+	umount /var/log/mount
+fi
+
+# S'il reste encore un volume monté, alors quelque chose ne va pas :
+if mount | grep /var/log/mount 1> /dev/null 2> /dev/null ; then
+	cannotunmountvarlogmount
+	exit 1
+fi
+
+# On détecte si la table de montage est corrompue :
+if [ -d /var/log/mount/lost+found -o -d /var/log/mount/recycled -o -r /var/log/mount/io.sys ]; then
+	mounttablecorrupted
+	exit 1
+fi
+
+# Boucle pour l'affichage du menu :
+while [ 0 ]; do
+	
+	mainmenu 2> $TMP/choix_menu_principal
+		
+	# En cas de problème, on nettoie le répertoire temporaire :
+	if [ ! $? = 0 ]; then
+		rm -f $TMP/*
+		exit
+	fi
+	
+	CHOIXMENUPRINCIPAL="`cat $TMP/choix_menu_principal`"
+	
+	# On ne stocke plus le choix de l'utilisateur pour son prochain retour au menu principal :
+	rm -f $TMP/choix_menu_principal
+	
+	# On analyse le choix de l'utilisateur et on exécute le script ad-hoc en conséquence.
+	# On enchaîne sur la suite pour certaines rubriques si une configuration existe déjà :
+	case "$CHOIXMENUPRINCIPAL" in
+		# a choisi d'afficher l'aide :
+		"${HELPMENU_LABEL}")
+			helpmenu
+		;;
+		# a choisi la rubrique "clavier" :
+		"${KEYBOARDMENU_LABEL}")
+			. clavier.sh
+			if [ -r $TMP/choix_clavier ]; then
+				CHOIXMENUPRINCIPAL = "${SWAPMENU_LABEL}"
+			fi
+		;;
+		# a choisi la rubrique "swap" :
+		"${SWAPMENU_LABEL}")
+			. swap.sh
+			if [ -r $TMP/choix_swap ]; then
+				CHOIXMENUPRINCIPAL = "${TARGETMENU_LABEL}"
+			# a choisi d'ignorer la création d'une partition swap :
+			elif [ -r $TMP/ignorer_swap ]; then
+				CHOIXMENUPRINCIPAL = "${TARGETMENU_LABEL}"
+			fi
+		;;
+		# a choisi la rubrique "partitions" :
+		"${TARGETMENU_LABEL}")
+			. partitions.sh
+			. partitions_fat.sh
+			if [ -r $TMP/choix_partitions ]; then
+				CHOIXMENUPRINCIPAL = "${SOURCEMENU_LABEL}"
+			fi
+		;;
+		# a choisi la rubrique de choix du "média" d'installation :
+		"${SOURCEMENU_LABEL}")
+			. media.sh
+			 if [ -r $TMP/choix_media ]; then
+				CHOIXMENUPRINCIPAL = "${INSTALLMENU_LABEL}"
+			fi
+		;;
+		# a choisi la rubrique "Installation" des paquets :
+		"${INSTALLMENU_LABEL}")
+			if [ ! -r $TMP/choix_media -o ! -r $TMP/choix_partitions ]; then
+				systemnotready
+			else
+				. installer.sh
+				CHOIXMENUPRINCIPAL = "${CONFIGMENU_LABEL}"
+			fi
+		;;
+		# a choisi la rubrique "configuration" :
+		"${CONFIGMENU_LABEL}")
+			. configurer.sh
+		;;
+		# a choisi de "quitter" :
+		"${QUITMENU_LABEL}")
+			break
+	esac
+	
+# Fin de la boucle d'affichage du menu :
+done
+
+# On est ici censé avoir toutes nos infos pour le 'fstab'.
+# On écrit le fichier '/etc/fstab'. D'abord la partition swap :
+if [ -r $TMP/choix_swap ]; then
+	cat $TMP/choix_swap > ${SETUPROOT}/etc/fstab
+fi
+
+# Puis les partitions Linux :
+cat $TMP/choix_partitions >> ${SETUPROOT}/etc/fstab
+
+# Puis les partitions FAT si elles ont été configurées :
+if [ -r $TMP/choix_partitions_fat ]; then
+	cat $TMP/choix_partitions_fat >> ${SETUPROOT}/etc/fstab
+fi
+
+# Et enfin on ajoute les systèmes de fichiers spéciaux vitaux :
+echo -n "devpts     /dev/pts     devpts     gid=5,mode=620     0     0" >> ${SETUPROOT}/etc/fstab
+echo -n "proc       /proc        proc       defaults           0     0" >> ${SETUPROOT}/etc/fstab
+echo -n "tmpfs      /dev/shm     tmpfs      defaults           0     0" >> ${SETUPROOT}/etc/fstab
+
+# L'installation est terminée !
+finishedinstall
+
+# On synchronise les systèmes de fichiers :
+sync
+
+# On s'assure de quelques permissions :
+chmod 0755 ${SETUPROOT}
+chmod 1777 ${SETUPROOT}/tmp
+
+# On démonte tout :
+umount -f /var/log/mount 2> /dev/null
+
+# Une dernière vérification avant les prochains montages :
+if [ -f ${SETUPROOT}/etc/fstab ]; then
+	installsuccessful
+	
+	# On démonte le disque s'il y en a un :
+	if [ -r $TMP/media_dvd ]; then
+		
+		if mount | grep iso9660 > /dev/null 2> /dev/null ; then
+			umount `mount | grep iso9660 | cut -f 1 -d ' '`
+		fi
+		
+		# On éjecte le disque
+		eject `cat $TMP/media_dvd` 2> /dev/null
+		removemediaandrebootnow
+	else
+		rebootnow
+	fi
+
+fi
+
+# On nettoie tout :
+rm -rf $TMP/*
+
+# C'est fini !

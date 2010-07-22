@@ -1,0 +1,158 @@
+#!/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+# *** À EXÉCUTER EN ROOT ! ***
+
+set -e
+umask 022
+CWD=$(pwd)
+NAMESRC=${NAMESRC:-makedev}
+VERSION=${VERSION:-2.3.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-devs}
+BUILD=${BUILD:-1}
+
+
+TMP=${TMP:-/tmp}
+OUT=${OUT:-/usr/local/paquets}
+ARCH=${ARCH:-noarch}
+
+WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/m/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT}
+########## |-----handy-ruler------------------------------------------------------|
+SLACKDESC="Fichiers pour les noeuds des périphériques système"
+########################################
+
+# On télécharge les sources :
+if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
+	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
+	mv ${NAMESRC}-${VERSION}.$EXT.part ${NAMESRC}-${VERSION}.$EXT
+fi
+
+# On les vérifie :
+tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
+
+SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
+	echo "La description est trop longue (80 caractères max.) !"
+	exit 1
+fi
+
+# On crée le répertoire d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}
+
+# On va simplement mimer Slackware :
+mkdir -p ${PKG}
+cd ${PKG}
+echo "Extraction en cours..."
+tar xpf $CWD/_devs.tar.gz
+
+cd $TMP
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd MAKEDEV-${VERSION}
+
+cat $CWD/makedev_2.3.1-46.2.diff | patch -p1 -E
+cat $CWD/makedev_2.3.1.hd.diff | patch -p1 -E
+cat $CWD/makedev.hd.diff | patch -p1 -E
+
+# On copie le script :
+cat MAKEDEV > ${PKG}/dev/MAKEDEV
+
+# La doc :
+cat README > ${PKG}/dev/README.MAKEDEV
+
+# ...et le manuel :
+cat MAKEDEV.man > ${PKG}/usr/man/man8/MAKEDEV.8
+
+# On crée les nombreux liens à la Slackware :
+ln -sf ../proc/core ${PKG}/dev/core
+ln -sf rft0 ${PKG}/dev/ftape
+ln -sf nrft0 ${PKG}/dev/nftape
+ln -sf null ${PKG}/dev/X0R
+ln -sf st0 ${PKG}/dev/rmt0
+ln -sf st1 ${PKG}/dev/rmt1
+ln -sf nst0 ${PKG}/dev/nrmt0
+ln -sf nst1 ${PKG}/dev/nrmt1
+ln -sf socksys ${PKG}/dev/nfsd
+ln -sf systty ${PKG}/dev/console
+ln -sf ../proc/self/fd ${PKG}/dev/fd
+ln -sf fd/0 ${PKG}/dev/stdin
+ln -sf fd/1 ${PKG}/dev/stdout
+ln -sf fd/2 ${PKG}/dev/stderr
+ln -sf input/js{0,1,2,3} ${PKG}/dev/
+ln -sf video0 ${PKG}/dev/video
+ln -sf radio0 ${PKG}/dev/radio
+ln -sf vbi0 ${PKG}/dev/vbi
+ln -sf dsp0 ${PKG}/dev/dsp
+ln -sf adsp0 ${PKG}/dev/adsp
+ln -sf midi00 ${PKG}/dev/midi
+ln -sf amidi0 ${PKG}/dev/amidi
+ln -sf audio0 ${PKG}/dev/audio
+ln -sf mixer0 ${PKG}/dev/mixer
+ln -sf music ${PKG}/dev/sequencer2
+
+# On compresse les manuels :
+if [ -d ${PKG}/usr/man ]; then
+	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+	for manpage in $(find ${PKG}/usr/man -type l) ; do
+		ln -s $(readlink $manpage).gz ${manpage}.gz
+		rm -f ${manpage}
+	done
+fi
+
+# On compresse les pages info :
+if [ -d ${PKG}/usr/info ]; then
+	rm -f ${PKG}/usr/info/dir
+	gzip -9 ${PKG}/usr/info/*.info*
+fi
+
+# On installe le slack-desc :
+mkdir -p ${PKG}/install
+echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+# On installe le doinst.sh :
+cat > ${PKG}/install/doinst.sh << "EOF"
+#!/bin/env bash
+if [ ! -L dev/cdrom ]; then
+	ln -sf scd0 dev/cdrom
+fi
+if [ ! -L dev/modem ]; then
+	ln -sf ttyS1 dev/modem
+fi
+if [ ! -L dev/mouse ]; then
+	ln -sf psaux dev/mouse
+	ln -sf mouse dev/souris
+fi
+chmod 666 dev/ptmx
+
+EOF
+
+# On "strippe" tout ce qu'on trouve :
+find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
+# On vérifie enfin les droits de la doc, souvent problématiques :
+find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# Empaquetage !
+cd ${PKG}
+mkdir -p $OUT
+PACKAGING="
+	
+	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	rm -rf ${PKG}
+	if [ ! \"X${NAME}\" = \"X\" ]; then
+		if [ -d $TMP/${NAME} ]; then
+			rm -rf $TMP/${NAME}
+		fi
+	fi
+	rm -rf $TMP/MAKEDEV-${VERSION}"
+
+if [ "$(which fakeroot 2> /dev/null)" ]; then
+	echo "${PACKAGING}" | fakeroot
+else
+	su -c "${PACKAGING}"
+fi
+
+exit 0

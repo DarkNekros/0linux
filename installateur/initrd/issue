@@ -1,0 +1,15 @@
+Système autonome 0 Linux - Bienvenue !
+--------------------------------------
+
+Vous devez avoir préparé une ou plusieurs partitions de type 'Linux' avant
+d'installer le système 0. Il est également recommandé de créer une partition
+d'échange (type 'swap'). Utilisez pour cela 'cfdik' ou 'fdisk' ou bien voyez
+l'aide dans l'installateur ci-après.
+
+Vous pouvez maintenant vous connecter en « root » ; mot de passe : « route ».
+
+N'oubliez pas que vous pouvez modifier sans restriction le contenu du système.
+Faites attention ! ;)
+
+
+                                           Le service d'étage

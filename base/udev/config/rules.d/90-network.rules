@@ -1,0 +1,5 @@
+# Ce fichier sera écrasé lors des mises à niveau d'udev. Placez plutôt vos
+# propres règles dans 90-local.rules
+
+SUBSYSTEM=="net", NAME=="?*", ACTION=="add", RUN+="nethelper.sh $env{INTERFACE} start"
+SUBSYSTEM=="net", NAME=="?*", ACTION=="remove", RUN+="nethelper.sh $env{INTERFACE} stop"

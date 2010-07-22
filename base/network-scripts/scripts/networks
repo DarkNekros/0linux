@@ -1,0 +1,7 @@
+#
+# /etc/networks : ce fichier décrit les correspondances entre noms de réseau
+# et format d'adresses pour le système TCP/IP. 
+#
+
+loopback	127.0.0.0
+localnet	127.0.0.0

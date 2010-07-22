@@ -1,0 +1,13 @@
+#
+# /etc/hosts : ce fichier décrit les correspondances entre noms de machines
+# (ou noms d'hôtes) et adresses IP. Ajoutez ici toutes les correspondances
+# souhaitées.
+#
+# Exemples idiots :
+#
+# 192.168.0.12		machine.mon-reseau.lan machine
+# 192.168.0.13		truc.bidule.machin truc
+
+# Pour l'interface de loopback :
+127.0.0.1		localhost
+127.0.0.1		pingouin.exemple.fr pingouin

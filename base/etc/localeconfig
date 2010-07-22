@@ -1,0 +1,38 @@
+#!/bin/sh
+set -e
+# Configuration des variables de localisation
+TMP=/var/log/setup/tmp
+
+if [ ! -d $TMP ]; then
+	mkdir -p $TMP
+fi
+
+dialog --title "LOCALISATION DU SYSTÈME" --menu "Veuillez choisir la localisation francophone \
+dans laquelle vous désirez configurer votre système parmi celles listées ci-dessous :" 25 75 6 \
+"fr_FR.UTF-8" "Système en français de France" \
+"fr_CA.UTF-8" "Système en français du Canada" \
+"fr_BE.UTF-8" "Système en français de Belgique" \
+"fr_CH.UTF-8" "Système en français de Suisse" \
+"fr_LU.UTF-8" "Système en français du Luxembourg" \
+"en_US.UTF-8" "Ignorer la localisation francophone" \
+2> $TMP/localetmp
+
+REPLY="`cat $TMP/localetmp`"
+
+if [ $? != 0 ]; then 
+	echo "export LC_ALL=C
+export LANG=en_US.UTF-8" >> /etc/profile.d/lang.sh
+	echo "setenv en_US.UTF-8" >> /etc/profile.d/lang.csh
+	exit # On quitte et on laisse les valeurs US par défaut
+
+else
+	echo "export LC_ALL=$REPLY
+export LANG=$REPLY" >> /etc/profile.d/lang.sh
+
+echo "setenv $REPLY" >> /etc/profile.d/lang.csh
+
+fi
+
+dialog --title "SYSTÈME LOCALISE" --msgbox "Le système sera localisé avec $REPLY." 5 60
+
+exit 0

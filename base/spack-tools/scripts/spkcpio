@@ -1,0 +1,300 @@
+#!/bin/sh
+#
+# SPKCPIO - produce a CPIO based Slackware(R) compatible package.
+#
+
+# Copyright (c) 2010 Sébastien Boillod <sbb at tuxfamily dot org>.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+# === Library ==================================================================
+deadwarn () {
+    # Warn about broken symlinks
+    # $f CURRENT WORKING DIRECTORY
+    echo "Checking the package for dead symbolic links..."
+    find * -type l -exec stat -c "%N" {} + | symresolv "$1"| while read ln; do
+        target="$(echo "$ln" | cut -f 2)"
+        [ -e "$target"  ] && continue
+        growl 0 "The \"$(echo "$ln" | cut -f 1)\" symbolic link is broken."
+    done
+}
+
+emptywarn () {
+    # Warn about empty files
+    # $f
+    local type="-type f -size"
+    echo "Checking the package for empty files..."
+    # True empty files...
+    find * $type 0c | awk '{print "(W) The \""$0"\" regular file is empty."}' >&2
+    # Compressed empty files (check integrity first)...
+    find * $type +0c -name '*.gz' -exec gzip -t  {} + 2>&1 \
+           | awk -F: '/./{gsub(/^ |$/,"\"",$2); print "(W) The "$2" gzipped file is corrupted."}' >&2
+    find * $type +0c -name '*.gz' -exec gzip -l -q {} + 2>/dev/null \
+           | awk '($2 == 0){print "(W) The \""$4".gz\" gzipped file is empty."}' >&2
+}
+
+getfiles () {
+    # Print the list of packaged files
+    # $f
+    local type='! -type d ! -type l' # cpio can store block/character devices &co.
+    find * $type 2>/dev/null | sed '/^\(about.txt\|post-install.sh\)$/d' 
+    # NOTE: pre-install.sh is generated directly in the tmpdir.
+
+    # DEPRECATED
+    #all true files in sub-directories
+    # Only files that are not install stuff at root.
+    #find * -maxdepth 1 -type f \! -name about.txt \! -name post-install.sh \
+    #                                             \! -name pre-install.sh
+}
+
+growl () {
+    # Print error message on stderr an exits with the given non-null code.
+    # $f CODE, MESSAGE
+    local err=$1 pr='(E)'; shift 1
+    if [ "$1" ]; then
+        # If there is a second argument, we print arguments with 'echo'.
+        [ $err = 0 ] && pr='(W)'
+        echo "$pr $*" 1>&2
+    else
+        # Otherwise we use 'cat' and print stdin.
+        cat <&0 >&2
+    fi
+    [ $err -eq 0 ] || exit $err
+}
+
+installcheck () {
+    # Manage the installation-related files.
+    # $f SANCTUARY
+    local tmp="$1"
+    echo "Looking for installation files..."
+    if [ -s ./about.txt ]; then
+        echo '    found "about.txt".' # native fashion
+    elif [ -s ./install/slack-desc ]; then
+        echo '    found "install/slack-desc", move it as "about.txt".' # Slackware compatibility.
+        mv ./install/slack-desc ./about.txt
+    else
+        growl 0 "No description for this package."
+        touch ./about.txt # create it to avoid errors in makefiles()
+    fi
+    if [ -s ./post-install.sh ]; then
+        echo '    found "post-install.sh".' # native fashion
+    elif [ -s ./install/doinst.sh ]; then
+        echo '    found "install/doinst.sh", move it as "post-install.sh".' # Slackware compatibility.
+        mv ./install/doinst.sh ./post-install.sh
+    fi
+    rm -rf ./install/ # from now on useless.
+}
+
+makefiles () {
+    # Make the final archive.
+    # $f FORMAT, TARGET, SANCTUARY
+    local compress="$1" target="$2" tmp="$3" ext=""
+    compress="$(whichzip "$compress")" || exit 1
+    # Arborescence will be re-created by a dedicated script (will respect local set symlinks)
+    find * -type d -exec stat --printf="%n\t%U\t%G\t%a\n" {} + | makeseed > "$tmp/pre-install.sh"
+    # We archive and compress the files
+    ext=$(basename "$compress" | cut -c -2)
+    echo "================================================================================"
+    echo "Making the \"files.$ext\" sub-archive..."
+    echo "================================================================================"
+    getfiles | cpio --quiet -o -v -H crc 2>&3 | $compress > "$tmp/files.$ext"
+    install -m 0644 ./about.txt "$tmp"
+    # We create the final package...
+    echo "================================================================================"
+    echo "Making the \"$target\" final archive..." 
+    echo "================================================================================"
+    ( cd $tmp &&  ls -1 | cpio --quiet -o -v -H newc 2>&3 >"$target" ) || exit 1 # CRC useless here...
+    echo ""
+    echo "Removing the temporary stuff..."
+    rm -rf "$tmp"
+}
+
+makeseed () {
+    # Write the script which will initialize the package tree.
+    # $f 
+    awk -F"\t" 'BEGIN{ printf("%s", "#!/bin/sh\numask 022\nmkdir -p .") }
+        {gsub(/[`"\\$]/,"\\\\&",$1); sub(/\/?$/, "/", $1);printf(" \"%s\"", $1)}   
+        {CHMOD[$4] = CHMOD[$4] " \""$1"\""}   
+        ($2 != "root") { FIXOWN++; CHOWN[$2] = CHOWN[$2] " \""$1"\""}
+        ($3 != "root") { FIXOWN++; CHOWN[":"$3] = CHOWN[":"$3] " \""$1"\""}
+        END{    print ""
+                for(i in CHMOD) {
+                    print "chmod " i " " CHMOD[i]
+                }
+                if (! FIXOWN) exit;
+                print "if [ $(id -u) -eq 0 ]; then"
+                for(i in CHOWN) {
+                    print "  chown " i " " CHOWN[i]
+                }
+                print "fi"
+        }'
+        # NOTE1: we create "." to avoid error if there is no directory in the package ;
+        # NOTE2: to not mess output in debugs & tests we won't attempt to chown if the
+        #        user is not root.
+}
+
+symresolv () {
+    # Resolv the symlinks in order to test them.
+    # $f ROOT
+    local root="$(echo "$1" | sed 's%/%\\/%g')"
+    sed "s/^[\`']\|'$//g;s/' *-> *[\`']/\t/;/\t\//b abs;
+         s/^\([^\t]*\)\?\(\/[^\/]*\)\t\([^\/]\)/\1\2\t$root\/\1\/\3/;
+        :crunch s%[^/]*//*\.\./%/%;/\.\.\//b crunch;
+        /\t$root/b print;s/\t.*$/\t/; b print                  
+        :abs s/\t/\t$root/; :print p" -n
+}
+
+symrecord () {
+    # Remove the symlinks to restitue them during the post-installation.
+    # $f PREPEND/APPEND MODE, SANCTUARY
+    local mode="$1" tmp="$2" target="post-install.sh" add="Appending"
+    exec 4>"$tmp/$target"
+    if [ "$mode" -ne 0 ]; then 
+        add="Prepending"
+    elif [ -f "./$target" ]; then
+        cat "./$target" >&4
+    fi
+    echo "$add the symbolic links in the post-installation script..."
+    find * -type l | while read from; do
+        echo "    store $from" 
+        dir=$(dirname "$from"); to=$(readlink "$from"); from=$(basename "$from")
+        echo "( cd "$dir" ; rm -rf "$from" )" >&4
+        echo "( cd "$dir" ; ln -sf "$to" "$from" )" >&4
+    done
+    [ $mode -ne 0 -a -f "./$target" ] && cat "./$target" >&4
+    exec 4>&-
+    [ -s "$tmp/$target" ] || rm -f "$tmp/$target"
+    # NOTE: no need to actually remove symlinks, they will be ignored.
+}
+
+usage () {
+    # Print the help digest, then exit
+    # $f CODE
+    local out=1 code="$1"
+    [ $code -eq 0 ] || out=2
+    cat >&$out << HELP
+spkcpio - make a Slackware(R) compatible CPIO-based package.
+
+    Spkcpio makes packages in the Slackware(R) fashion but use CPIO instead of
+    the antediluvian TAR-1.13 to do it.
+
+    Usage: spkcpio <directory> [output] [options]
+
+    Options:
+
+        -c, --clean-up          ---     remove the directory once it's packaged.
+        -h, --help              ---     print this help on stdout then exit.
+        -p, --prepend-symlinks  ---     prepend symlinks restitution code part
+                                        to the "post-install.sh" script instead
+                                        of append it.
+        -q, --quiet             ---     mute the messages sent to stdout.
+        -r, --reset-permissions ---     set the directories to mode to "0755"
+                                        and attribute the tree to the superuser
+                                        before packaging.
+        -z, --gzip              ---     use "gzip" to compress the files instead
+                                        of "xz". This is the default when "xz"
+                                        is not found on the system.
+
+    Environment:
+
+        TMPDIR                  ---     define another directory instead of
+                                        "/tmp", where intermediate steps of the
+                                        packaging process will be performed.
+
+
+    Bug reports, suggestions, feedbacks, questions, and so on, should be sent to
+    Seb (author/maintainer, the license -- MIT/X11 -- is at the head of the
+    script) here: <sbb at tuxfamily dot org>.
+
+HELP
+    exit $code
+}
+
+whichzip () {
+    # Return the command to use to compress the package.
+    # $f [COMMAND]
+    local cmd="${1:-"xz"}"
+    cmd=$(which "$cmd" 2>/dev/null) || cmd="$(which "gzip" 2>/dev/null | sed 's/zip$/zip -9/')"
+    #        "-9" has no effect on xz and seems to (slightly) slow things ^^^^^^^^^^
+    [ "$cmd" ] || growl 1 "Can't find gzip in your PATH."
+    echo "$cmd -c"
+}
+
+# === Main =====================================================================
+
+umask 022
+export LC_ALL="C" # ensure the command outputs won't be changed by the locale.
+unset arg target source zip
+exec 3>&1
+tmpdir="${TMPDIR:-"/tmp"}"  # maybe "/tmp" will be too small in some cases...
+reset=0                     # 0=no,1=yes
+prepend=0                   # 0=no,1=yes
+clean=0                     # 0=no,1=yes
+
+for arg in "$@"; do
+    case "$arg" in
+        -c|--clean-up) clean=1;;
+        -h|--help) usage 0;;
+        -p|--prepend-symlinks) prepend=1 ;;
+        -q|--quiet) exec 3>"/dev/null" ;;
+        -r|--reset-permissions) reset=1 ;;
+        -z|--gzip) zip="gzip" ;;
+        -*) growl 1 "\"$arg\": illegal option.";;
+        *)  if [ ! "$source" ]; then
+                [ -d "$arg" ] || growl 1 "\"$arg\" is not a directory."
+                source="$(cd "$arg" && pwd -P)" || growl 1 "Can't enter the \"$arg\" directory."
+            else
+                [ ! "$target" ] || growl 1 "Too many arguments."
+                target="$arg"
+                arg="$(cd $(dirname "$arg") && pwd -P)" || growl 1 "No path to \"$target\"."
+                if awk 'BEGIN{exit (index("'"$arg"'/","'"$source"'/") == 1) ? 0 : 1}'; then
+                    growl 1 "Can't generate the target in the source directory."
+                fi
+                target="$arg/$(basename "$target" .cpio).cpio"
+            fi
+    esac
+done
+[ "$source" ] || usage 1
+[ "$target" ] || target="$source.cpio"
+echo "Generating the \"$target\" package..." >&3
+rm -fr "$target" || growl 1 "\"$target\" already exists and can't be removed."
+tmpdir=$(mktemp -d "$tmpdir/pkg-$$-XXXXXX" 2>/dev/null) || growl 1 "Can't create a secure temporary directory."
+cd "$source" || exit 1
+if [ $reset -ne 0 ]; then
+    echo "Forcing general root ownership..." >&3
+    chown 0:0 -R .
+    echo "Forcing directory mode to 755 (rwx-r-x-r-x)..." >&3
+    # NOTE: POSIX minima allows 4096 arguments, but Linux generally goes over 100000.
+    # Both cases seems to be enough to make some optimizations with "find".
+    find . -type d -exec chmod 0755 {} +
+fi
+deadwarn "$source" >&3
+emptywarn >&3
+installcheck "$tmpdir" >&3
+symrecord "$prepend" "$tmpdir"  >&3
+makefiles "$zip" "$target" "$tmpdir" >&3
+if [ $clean -ne 0 ]; then
+    echo "Removing the \"$source\" source directory..." >&3
+    rm -rf "$source"
+fi
+
+exec 3>&-
+exit 0
+
+# EoF

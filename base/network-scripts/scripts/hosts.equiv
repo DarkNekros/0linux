@@ -1,0 +1,6 @@
+#
+# hosts.equiv : ce fichier décrit les noms d'hôte à considérer comme
+# « équivalents », comme par exemple ceux étant autorisés à utiliser rsh.
+#
+
+localhost

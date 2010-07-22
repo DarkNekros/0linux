@@ -1,0 +1,46 @@
+#!/bin/sh
+# rc.rpc :  fichier service pour RPC ('portmap') et NFS
+
+rpc_start() {
+	if [ -x /sbin/rpc.portmap -a -x /sbin/rpc.statd ]; then
+		
+		if ! ps axc | grep -q rpc.portmap ; then
+			echo "Démarrage de RPC..."
+			rpc.portmap
+		fi
+		
+		if ! ps axc | grep -q rpc.statd ; then
+			rpc.statd
+		fi
+	
+	else
+		echo "Attention ! Impossible de démarrer les démons RPC nécessaires à NFS."
+		echo "Vérifiez la disponibilité des binaires 'rpc.portmap' et 'rpc.statd'"
+	fi
+}
+
+rpc_stop() {
+	killall rpc.statd rpc.portmap 2> /dev/null
+	sleep 1
+	killall -9 rpc.statd rpc.portmap 2> /dev/null
+  sleep 1
+}
+
+rpc_restart() {
+	rpc_stop
+	rpc_start
+}
+
+case "$1" in
+	'start')
+		rpc_start
+	;;
+	'stop')
+		rpc_stop
+	;;
+	'restart')
+		rpc_restart
+	;;
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+esac

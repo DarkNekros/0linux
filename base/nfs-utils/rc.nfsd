@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# rc.nfsd : Fichier de service pour NFS
+#
+
+nfsd_start() {
+	if [ ! -r /etc/exports ]; then # no config file, exit:
+		exit
+	fi
+	
+	# On démarre les services RPC s'ils ne le sont pas :
+	if ! ps axc | grep -q rpc.statd; then
+		if [ -r /etc/rc.d/rc.rpc ]; then
+			. /etc/rc.d/rc.rpc start
+		else
+			echo "Erreur : 'portmap' ne semble pas installé, 'rpc.statd' est indisponible."
+			sleep 1
+			exit 1
+		fi
+	fi
+	
+	echo "Démarrage des démons NFS..."
+	
+	if [ -x /usr/sbin/exportfs ]; then
+		/usr/sbin/exportfs -r
+	fi
+	
+	if [ -x /usr/sbin/rpc.rquotad ]; then
+		/usr/sbin/rpc.rquotad
+	fi
+	
+	if [ -x /usr/sbin/rpc.nfsd ]; then
+		/usr/sbin/rpc.nfsd 8
+	fi
+	
+	if [ -x /usr/sbin/rpc.mountd ]; then
+		/usr/sbin/rpc.mountd
+	fi
+}
+
+nfsd_stop() {
+	killall rpc.mountd nfsd 2> /dev/null
+	sleep 1
+	killall -9 nfsd rpc.rquotad 2> /dev/null
+	/usr/sbin/exportfs -au 2> /dev/null
+}
+
+nfsd_restart() {
+	nfsd_stop
+	sleep 1
+	nfsd_start
+}
+
+case "$1" in
+	'start')
+		nfsd_start
+	;;
+	'stop')
+		nfsd_stop
+	;;
+	'restart')
+		nfsd_restart
+	;;
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+esac

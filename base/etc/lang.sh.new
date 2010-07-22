@@ -1,0 +1,5 @@
+#!/bin/sh
+# Localisation et langue du système. Ce fichier est renseigné d'ordinaire via
+# le programme /sbin/localeconfig.
+# La liste des « locales » supportées sur ce système sont disponibles via la commande :
+# 	locale -a

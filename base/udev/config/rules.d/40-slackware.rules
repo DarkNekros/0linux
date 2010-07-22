@@ -1,0 +1,10 @@
+# /lib/udev/rules.d/40-slackware.rules
+#
+# Règles de Slackware pour udev.
+# Voyez également les fichiers 65-permissions.rules et 90-network.rules
+#
+# Ce fichie sera écrasé à chaque mise à niveau d'udev, utilisez donc par
+# exemple le fichier 90-local.rules pour y placer vos propres règles.
+#
+# input devices
+KERNEL=="mice",		SYMLINK+="mouse"

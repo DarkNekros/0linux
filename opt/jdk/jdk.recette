@@ -1,0 +1,188 @@
+#!/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+# Ce paquet est particulier, dans la mesure où la machine virtuelle Java 32 bits
+# n'est référencée dans aucune variable PATH. On l'installe néanmoins pour
+# respecter notre orientation multilib. Les 2 environnements Java sont donc 
+# séparés et isolés :
+# Java 32 bits : /usr/lib/jdk - à référencer via JAVA_HOME=${JAVA_HOME32} en cas de besoin.
+# Java 64 bits : /usr/lib64/jdk - déjà référencée dans le PATH via un fichier profil ;
+# également référençable via JAVA_HOME=${JAVA_HOME64}.
+
+set -e
+umask 022
+CWD=$(pwd)
+
+NAMESRC=${NAMESRC:-jdk}
+VERSION=${VERSION:-6u20}
+EXT=${EXT:-bin}
+NAMETGZ=${NAMETGZ:-jdk}
+BUILD=${BUILD:-1}
+
+
+TMP=${TMP:-/tmp}
+OUT=${OUT:-/usr/local/paquets}
+ARCH=${ARCH:-x86_64}
+TARGET32=${TARGET32:-i686-0-linux-gnu}
+TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
+BUILD32=${BUILD32:--m32}
+BUILD64=${BUILD64:--m64}
+PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
+PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
+
+WGET32=${WGET32:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u20-linux-i586.bin?BundledLineItemUUID=iZ2J_hCw3C4AAAEo9XkBq8Xp&OrderID=QJ2J_hCwj.cAAAEo6HkBq8Xp&ProductID=guBIBe.oc_wAAAEnaDJHqPYe&FileName=/$NAMESRC-$VERSION-linux-i586.$EXT}
+WGET=${WGET:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u20-linux-x64.bin?BundledLineItemUUID=vgmJ_hCwDNkAAAEoSbIBq8Xo&OrderID=.0KJ_hCwRFsAAAEoPbIBq8Xo&ProductID=d8tIBe.o6WMAAAEnYDJHqPYe&FileName=/$NAMESRC-$VERSION-linux-x64.$EXT}
+########## |-----handy-ruler------------------------------------------------------|
+SLACKDESC="Environnements de développement et machines virtuelles pour Java"
+########################################
+
+SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
+	echo "La description est trop longue (80 caractères max.) !"
+	exit 1
+fi
+
+# On télécharge les sources 32 bits :
+if [ ! -r ${NAMESRC}-${VERSION}-linux-i586.$EXT ]; then
+	wget -vc $WGET32 -O ${NAMESRC}-${VERSION}-linux-i586.$EXT.part
+	mv ${NAMESRC}-${VERSION}-linux-i586.$EXT.part ${NAMESRC}-${VERSION}-linux-i586.$EXT
+fi
+
+# On télécharge les sources 64 bits :
+if [ ! -r ${NAMESRC}-${VERSION}-linux-x64.$EXT ]; then
+	wget -vc $WGET -O ${NAMESRC}-${VERSION}-linux-x64.$EXT.part
+	mv ${NAMESRC}-${VERSION}-linux-x64.$EXT.part ${NAMESRC}-${VERSION}-linux-x64.$EXT
+fi
+
+# On crée le répertoire d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}/usr/lib{,64}/mozilla/plugins
+
+# On déballe l'archive 32 bits en se plaçant dans le répertoire d'accueil :
+LIBDIRSUFFIX=""
+LIB_ARCH=i386
+cd ${PKG}/usr/lib${LIBDIRSUFFIX}
+chmod +x $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT
+rm -rf jdk1*
+echo "Extraction en cours..."
+yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT
+mv jdk1.6.0_20 jdk
+
+# On vérifie les permissions des sources :
+find jdk \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On crée un lien dans les plugins Mozilla pour le plugin Java :
+ln -sf ../../../../usr/lib${LIBDIRSUFFIX}/jdk/jre/lib/${LIB_ARCH}/libnpjp2.so \
+	${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins/libnpjp2.so
+
+# On crée un lien pour la machine virtuelle dans le répertoire standard des bibliothèques :
+ln -sf ./jdk/jre/lib/${LIB_ARCH}/server/libjvm.so $PKG/usr/lib${LIBDIRSUFFIX}/libjvm.so
+
+# On déballe l'archive 64 bits en se plaçant dans le répertoire d'accueil :
+LIBDIRSUFFIX="64"
+LIB_ARCH=amd64
+cd ${PKG}/usr/lib${LIBDIRSUFFIX}
+chmod +x $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT
+rm -rf jdk1*
+echo "Extraction en cours..."
+yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT
+mv jdk1.6.0_20 jdk
+
+# On vérifie les permissions des sources :
+find jdk \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On crée un lien dans les plugins Mozilla pour le plugin Java :
+ln -sf ../../../../usr/lib${LIBDIRSUFFIX}/jdk/jre/lib/${LIB_ARCH}/libnpjp2.so \
+	${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins/libnpjp2.so
+
+# On crée un lien pour la machine virtuelle dans le répertoire standard des bibliothèques :
+ln -sf ./jdk/jre/lib/${LIB_ARCH}/server/libjvm.so $PKG/usr/lib${LIBDIRSUFFIX}/libjvm.so
+
+# On installe le fichier profil pour 'jdk' :
+mkdir -p ${PKG}/etc/profile.d
+
+cat > ${PKG}/etc/profile.d/jdk.sh << "EOF"
+#!/bin/env bash
+
+JAVA_HOME32=/usr/lib/jdk
+JAVA_HOME64=/usr/lib64/jdk
+
+export JAVA_HOME32
+export JAVA_HOME64
+export JAVA_HOME=${JAVA_HOME64}
+
+export MANPATH="${MANPATH}:${JAVA_HOME}/man"
+export PATH="${PATH}:${JAVA_HOME}/bin"
+
+EOF
+
+chmod 755 ${PKG}/etc/profile.d/jdk.sh
+
+# On installe les fichiers de types MIME et les icônes :
+mkdir -p ${PKG}/usr/share/{applications,icons,mime}
+cp -a $PKG/usr/lib${LIBDIRSUFFIX}/jdk/jre/lib/desktop/applications/* ${PKG}/usr/share/applications/
+cp -a $PKG/usr/lib${LIBDIRSUFFIX}/jdk/jre/lib/desktop/icons/hicolor ${PKG}/usr/share/icons/
+cp -a $PKG/usr/lib${LIBDIRSUFFIX}/jdk/jre/lib/desktop/mime/packages ${PKG}/usr/share/mime/
+
+# On compresse les manuels :
+if [ -d ${PKG}/usr/man ]; then
+	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+	for manpage in $(find ${PKG}/usr/man -type l) ; do
+		ln -s $(readlink $manpage).gz ${manpage}.gz
+		rm -f ${manpage}
+	done
+fi
+
+# On compresse les pages info :
+if [ -d ${PKG}/usr/info ]; then
+	rm -f ${PKG}/usr/info/dir
+	gzip -9 ${PKG}/usr/info/*.info*
+fi
+
+# On installe le slack-desc :
+mkdir -p ${PKG}/install
+echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+# On installe le doinst.sh :
+cat > ${PKG}/install/doinst.sh << "EOF"
+#!/bin/env bash
+if [ -x sbin/ldconfig ]; then
+	sbin/ldconfig -r .
+fi
+
+EOF
+
+# On "strippe" tout ce qu'on trouve :
+find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
+# On vérifie enfin les droits de la doc, souvent problématiques :
+find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# Empaquetage !
+cd ${PKG}
+mkdir -p $OUT
+PACKAGING="
+	chown root:root . -R
+	
+	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	rm -rf ${PKG}
+	if [ ! \"X${NAME}\" = \"X\" ]; then
+		if [ -d $TMP/${NAME} ]; then
+			rm -rf $TMP/${NAME}
+		fi
+	fi"
+
+if [ "$(which fakeroot 2> /dev/null)" ]; then
+	echo "${PACKAGING}" | fakeroot
+else
+	su -c "${PACKAGING}"
+fi
+
+exit 0

@@ -1,0 +1,350 @@
+From root  Tue Dec  2 19:06:39 2008
+Return-Path: root
+Received: (from root@localhost)
+	by pingouin.banquise.lan (8.13.8/8.13.8/Submit) id k7GKhCFQ011879
+	for root; Sat, 31 Oct 2009 23:49::39 -0200
+From: "appzer0" <appzer0@free.fr>
+Message-Id: <200910311906.k7GKhCck011881@pingouin.banquise.lan>
+Date: Sat, 31 Oct 2009 23:49::39 -0200
+To: root
+Subject: Bienvenue !
+User-Agent: Geany 0.18
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Bienvenue ! Ravi de vous voir parvenu jusqu'ici !
+
+Voici quelques astuces pour vous aider à vous orienter dans votre nouveau
+système Linux.
+
+Ce système étant basée sur de nombreux outils de Slackware, voici 
+quelques outils pour vous aider à configurer votre système :
+
+  pkgtool:   Vous vous souvenez de tous ces écrans bleus à chaque 
+installation de paquet ? Vous pouvez repasser en revue ces informations
+(et bien plus encore). Le plus simple est d'utiliser 'pkgtool' pour
+consulter le contenu d 'un paquet. Vous pouvez aussi utiliser 'less' ou
+bien un éditeur de texte pour lire le contenu des fichiers présents dans
+/var/log/packages et /var/log/scripts (c'est la méthode que j'utilise).
+Le script pkgtool sert de façade aux outils en ligne de commande. C'est
+un programme pourvu de menus vous permettant de désinstaller, installer
+ou consulter les paquets logiciels actuellement installés sur le système.
+pkgtool vous permet aussi d'exécuter à nouveau les scripts d'administration
+exécutés pendant la procédure d'installation.
+
+   Les outils de gestion de paquets en ligne de commande : j'utilise ces
+programmes la plupart du temps lorsque je dois installer, désinstaller
+ou mettre à jour des paquets. Les voici :
+
+        installpkg  --  Installe des paquets
+        removepkg   --  Désinstalle des paquetsinstallés
+        upgradepkg  --  Met à jour des paquets installés
+        makepkg     --  Sert à créer vos propres paquets Slackware
+        explodepkg  --  Extrait les fichiers d'un paquet mais n'exécute
+                        aucun script inclus dans le paquet
+
+   slackpkg:  pour ceux et celles qui sont habitués à la gestion automatisée
+des paquets, vous pouvez essayer slackpkg (mon préféré car simple et va
+droit au but : maintenir un système à jour). Slackpkg est disponible dans
+le répertoire slackware/ap. Sachez qu'une recherche sur le Web retournera de
+résultats car beaucoup d'outils de ce genre existent. Gardez à l'esprit que
+ces outils peuvent se révéler dangereux, Slackware étant construite autour
+de l'idée que le système doit provenir d'une installation complète, agrémentée
+des patches officiels afin d'être à jour et la plus stable possible.
+Cela évite le cauchemar des dépendances auquel font face d'autre distributions 
+de Linux.  Beaucoup de ces programmes (voire la plupart) ne sauront pas gérer
+correctement les fichiers de configuration '.new' ni ne sauront comment mettre
+à jour un paquet qui aura changé de nom entretemps. 
+Beaucoup pensent qu'un paquet avec une version supérieure est "meilleur". Mais
+un jour on se rend compte que cette version de marche pas correctement et l'on
+doit revenir à une version plus ancienne : l'outil de gestion automatisée
+saura-t-il prendre en charge ce cas ? 'upgradepkg' le fera avec plaisir, 
+puisqu'il ne tient pas compte uniquement du numéro de version du paquet. 
+Toujours à propos des mises à jour automatiques de paquets, des cas ont été 
+rapportés que des mises à jour de bibliothèques avaient des effets de bord
+imprévus avec les programmes liés à ces bibliothèques. En théorie, la plupart
+des bibliothèques tentent de garder une rétro-compatibilité. Cela n'est pas
+toujours vrai dans la pratique. Rappelez-vous de l'adage "ne réparez pas si 
+ça n'est pas cassé" quand vous pensez à appliquer des mises à jour ou des 
+paquets additionnels, surtout s'ils ne proviennet pas des ressources officielles.
+Il y a d'excellent logiciels pour ce genre de tâches, mais il y en a d'autres
+peut-être moins bons.
+Il est toujours de bon aloi de jeter un œil au contenu des paquets avant de les
+installer. En utilisant simplement 'less' afin de vérifier si rien ne sera écrasé
+dans le système ou bien en utilisant 'tar' ou 'explodepkg' pour extraire l'archive
+dans un répertoire temporaire et naviguer dans la paquet.
+
+   netconfig :  netconfig est un programme semi-graphique qui vous aidera 
+à configurer votre réseau. Des questions vous seront posées puis vous aurez
+la possibilité de passer en revue vos paramètres avant de les appliquer.  
+
+   pppsetup :  pppsetup est un programme semi-graphique qui vous aidera 
+à vous connecter à votre FAI via une connexion PPP. Tout comme avec
+netconfig, des questions vous seront posées et vous pourrez passer en revue
+vos paramètres avant de les appliquer. 
+KDE possède aussi un utilitaire pour configurer les connexions PPP.  
+Vous le trouverez dans le menu "Internet" de KDE (kppp).
+
+   xwmconfig :  Si vous avez installé le système de fenêtrage X, vous pouvez
+choisir quel gestionnaire de fenêtres démarrer par défaut quand X se lance.
+Exécuter ce programme en tant que root définira le gestionnaire de fenêtres
+par défaut du système. L'exécuter en tant que simple utilisateur définira le
+gestionnaire de fenêtres par défaut uniquement pour cet urtilisateur.
+
+   liloconfig :  Si vous utilisez le chargeur d'amorçage LILO pour amorcer
+votre système, vous pouvez utiliser liloconfig pour paramétrer et istaller
+sur le lecteur amorçable. Une rubrique simple tentera d'installer lilo
+automatiquement  pour amorcer Linux (et les partition Widows si elles existent).
+Les utilisateur plus avertis utiliseront le mode "Expert". 
+Si vous posséder beaucoup de partitions, le menu du mode "Expert" risque de
+dépasser de l'écran/du tampon vidéo. Il vous faudra alors vous rendre dans une
+autre console et trouver la bonne partition à paramétrer avec la commande
+'fdisk -l | less', puis revenir au programme liloconfig pour entrer la partition
+désirée (prouvant par là que vous êtes vraiment un expert !).
+
+   Vous pouvez avoir besoin de modifier le script /etc/rc.d/rc.serial si vous
+utilisez des ports série autres que /dev/ttyS0 ou /dev/ttyS1 (com1: 
+et com2: sous DOS), ou bie si ce sports utilisent des IRQ non-standards.
+
+Je suggère d eomdifier cette section se trouvant à peu près à la moitié du
+fichier pour spécifier vos ports série manuellement. Voici mes réglages en 
+exemple ci-dessous pour /dev/ttyS0 et /dev/ttyS2 :
+
+# These are the standard COM1 through COM4 devices
+#
+${SETSERIAL} /dev/ttyS0 uart 16450 port 0x3F8 irq 4
+# ${SETSERIAL} /dev/ttyS1 uart 16450 port 0x2F8 irq 3
+${SETSERIAL} /dev/ttyS2 uart 16450 port 0x3E8 irq 5
+# ${SETSERIAL} /dev/ttyS3 uart 16450 port 0x2E8 irq 3
+
+Vous devrez aussi rendre exécutable le script rc.serial (chmod 755 rc.serial) 
+avant que rc.S ne l'exécute.
+
+
+Autres fichiers de configuration :
+
+   La majorité des fichiers de configuration du système se toruvent dans 
+le répertoire /etc. Le plus gros de la configuration se fait en éditant
+les fichies s'y trouvant avec un éditeur de texte tel que 'vi', "nano" ou
+'joe'. Si vous n'êtes pas sûr de savoir quels fichiers éditer, utilisez
+'less' ou 'pkgtool' pour voir quels fichiers sont installés par les paquets
+en gardant un œil attentif sur les fichiers s'installant dans /etc ou bien
+se te rminant avec le suffixe ".new" (ces fichiers sont mis en place
+directement (sans le ".new") s'il n'y a pas déjà un fichier de configuratrion
+portant le même nom). Après la mise à jour d'un paquet, si un fichier .new
+est installés, vous devrez décider si vous effacez ce .new, le renommer en
+écrasant l'ancien fichier (et effaçant de fait l'ancienne configuration), ou
+bien faire une copie de sauvegarde de l'ancien fichier, mettre en place 
+le .new et l'éditer pour y spécifier votre configuration avec un éditeur de
+texte.
+
+
+Matériel, réseau et noyau : les problèmes :
+
+   Si vous possédez une lecteur de CD-ROM ou une carte Ethernet ne semblant
+pas fonctionner sous Linux, il ets possible que le noyau Linux ne le prenne
+pas en charge. Dans ce cas, vous pouvez faire deux choses :
+
+  1.  Charger le module supportant votre matériel. Ce qui est probablement
+      la solution la plus facile. Éditez simplement /etc/rc.d/rc.modules pour
+      y spécifier les modules à charger.
+  2.  Recompilez votre noyau en y incluant les pilotes requis.
+
+  Schez cependant que recompiler son noyau est une solution extrême, pouvant
+s'avérer difficile ET dangereuse pour la stabilité de votre système.
+Si vous décidez tout de même de evous atteler à cette tâche, assurez-vous
+de connaître les pièges potentiels et cherchez de l'aide auprès de quelqu'un
+connaissant la configuration du noyau, sa compilation et son installation.
+
+  Notez bien également que la majorité des modules peuvent se charger eux-mêmes
+avec udev si le matériel est connecté, à moins que les modules ne soient
+pas encore compatibles avec udev ou bien qu'ils soient bannis dans
+/etc/modprobe.d/blacklist. Si le module ou le pilote dont vous avez besoin
+est banni, essayez de décommenter la ligne correspondante dans un des fichiers
+sous /etc/modprobe.d/. Si le problème ne se résoud pas, vérifiez avec 'lsmod' si
+le module est bien chargé. S'il ne l'est pas, essayez de le charger dans le
+fichier rc.modules.  
+
+  Si vous êtes dans un réqseau isolé dépourvu de serveur de noms, assurez-vous
+de ne pas avoir un serveur de noms spécifié dans /etc/resolv.conf (à la
+ligne "nameserver") car vous pouvez subir des temps de latence pour les
+commandes en rapport avec le réseau puisqu'elles interrogent le serveur
+de noms. De nos jours, la plupart des utilisateurs possèdent un serveur de noms
+ou bien y accèdent via une passerelle ou un routeur. La plupart des serveurs
+DHCP savent informer dhcpcd des informations à utiliser dans /etc/resolv.conf 
+de manière automatique.
+
+   Vous utilisez NFS ? Vous devrez alors installer les paquets portmap et
+nfs-utils. Ensuite, éditez /etc/exports pour permettre un accès NFS (cf. la
+commande 'man exports' pour visualiser des exemples). Une fois le fichier
+/etc/exports renseigné, les démons NFS devraient se lancer automatiquement
+au démarrage the NFS.
+
+   Le noyau est maitenant paramétré avec l'option CONFIG_SCSI_MULTI_LUNS afin
+de détecter automatiquement les nouveaux périphériques "SCSI". Si d'aventure
+cele ne fonctionnait pas lors de l'insertion d'une carte digital ou lord de
+la connexion d'un périphérique USB ou IEEE1394 (Firewire), vous devrez lancer
+la commande suivante auparavant :
+
+  rescan-scsi-bus -l
+
+  Cette commande scanne les LUN (ou "Logical Unit Numbers") de tous les
+périphériques SCSI connectées au système, USB inclus ainsi que tout autre que
+le noyau voit comme un périphérique SCSI.
+
+  Si vous utilisez HAL, D-Bus et une environement de bureau graphique comme
+KDE ou Xfce, les périphériques connectées doivent être automatiquement
+accessibles aux utilisateurs membres des groupes adéquats (cdrom, plugdev,
+et ainsi de suite) dans le fichier /etc/group.
+
+
+Imprimer sous Slackware :
+
+  Le choi se fait entre CUPS et LPRng. CUPS est installé par défauit et est
+selon le système à utilisero. Ils sont tous deux aussi fiables, bien que CUPS
+soit développé de manière plus active  et possède lpus de fonctionnalités.
+
+CUPS (hautement recommandé)
+
+  Slackware utilise gs (ghostscript) et CUPS (le "Common UNIX
+Printing System"). Pour paramétrer CUPS, assurez-vous que  /etc/rc.d/rc.cups
+soit exécutable afin que CUPS soit lancé au dmarrage. Puis rendez-vous à
+cette URL à l'aide d'un navigateur Web :
+
+  http://localhost:631/admin
+
+  Référez-vous à l'importante documentation dans /usr/doc/cups pour en
+savoir plus. Il est également possible de configurer CUPS via KDE. 
+Si vous utilisez une imprimante de marque HP, vous pouvez dès lors
+désinstaller le paquet hpijs pour le remplacer par le paquet hplip 
+dsponible dans le répertoire /testing. Si votre périphérique est équipé
+d'un scanneur ou d'un fax, ces fonctionnalités seron t alors disponibles
+pour la plupart des modèles. SI vous ne trouvez pas votre modèle exact,
+un modèle de la même gamme de produit devrait faire l'affaire. Dans KDE,
+l'outil de configuration HP se trouve dans le menu "Utilitaires" ou 
+"Outils" (si HPLIP est installé).  
+
+Les utilisateurs prévoyant d'imprimer (ou de scanner) avec Slackware en
+utilisant hplip doivent être membre du groupe "lp" ipérativement.
+
+LPRng
+
+Il est toujours possible d'utiliser LPRng, lequel est basé sur le système
+vivillissant de file d'attente venant de BSD.
+Bien que la plupart des systèmes utilisent maintenant CUPS, vous pouvez
+avoir vos raisons pour utiliser l'ancienne méthode (ou simplement la
+préférer). Je préfère personnellement CUPS. Si vous souhaitez réellement
+utiliser LPRng, voici la marche à suivre :
+
+1.  Si vous avez une imprimante sur port parallèle, assurez-vous d'avoir
+    chargé le bon pilote pour le port parallèle dans /etc/rc.d/rc.modules.
+    Vous devrez décommentrer deux parties du script pour charger le pilote
+    du port parallèle et le support de l'impression.
+2.  Installez le logiciel d'impression LPD. Il est dans le paquet "lprng"
+    se trouvant dans /pasture (là où les vieux paquets reposent  ;-)
+3.  Vous voudrez probablement installer le sous-système TCP/IP (au moins
+    pour le loopback). Le paquet "tcpip" se trouve dans la catégorie N et
+    l'outil 'netconfig' vous permettra de configurer basiquement TCP/IP.
+4.  Apsfilter utilise des filtres divers et variés. Vous devrez installer
+    les paquets "ghostscript" et "ghostscript-fonts-std" dans la catégorie
+    AP pour prendre en charge le Ghostscript. Si vous voulez imprimer des
+    fichiers DVI, installez au moins les paquets teTeX par défaut de la
+    catégorie T.
+5.  Installez le paquet "apsfilter". Il se trouve dans /pasture aux côtés
+    de lprng :
+    
+      installpkg apsfilter-*.tgz
+
+6.  Rendez-vous dans /usr/share/apsfilter/ et lancez le programme
+    d'installation SETUP :
+    program:
+
+      ./SETUP
+
+    Celui-ci va écrire votre fichier /etc/printcap et vous serz alors en
+    mesure d'iprimer. Une fois que tout fonctionne correctement, vous pouvez
+    aussi utiliser netatalk et Samba pour fournier des services d'impression
+    à des machines Mac ou Windows sur le réseau local depuis votre machine
+    Linux.
+
+
+Support de la souris :
+
+   Seules les très anciennes souris nécessiteront une procédure
+d'installation spéciale tout en pouvant profiter de GPM pour copier et
+colleren mode console. La plupart fonctionneront avec les protocoles "ps2"
+ou "imps2". Si vous utilisez une souris qui n'est ni sur port série, ni
+sur PS/2, ni USB, vous aurez alors à charger les modules nécessaires pour
+la faire fonctionner. Il est rare de nos jour de posséder un bus pour
+souris. La plupart sont sur PS/2 (fiche ronde à 6 broches), sur USB voire
+sur port série (fiche en trapèze à 9 broches). Ces souris ne requièrent
+pas de configuration particulière. Si la vôtre ne fonctionne pas, lisez
+les commentaires présents dans /etc/rc.d/rc.modules to see pour repérer le
+pilote requis et décommenter les lignes correspondantes afin de charger les
+pilotes automatiquement au démarrage du système. Il est également possible
+que le lien symbolique présent dans /dev/mouse ait besoin d'être modifié
+pour pointer vers le bon périphérique. Vous pouvez aussi compiler votre
+noyau pour y inclure en dur le support pour votre souris.
+
+
+Support du réseau :
+
+  Bien évidemment, vous voudrez connecter votre machine au réseau. Si vous
+avez un routeur supportant DHCP, vous êtes robablement déjà connecté.
+Si ce n'est pas le cas, exécutez 'netconfig' pour configurer simplement
+votre réseau. Pour vous connecter via un modem et PPP, il vous faudra
+installerles paquets "tcpip" et "ppp". Votre machine doit avoir au moins
+une interface réseau (l'interface de loopback) grâce à l'outil 'netconfig'.
+Assurez-vous aussi que le port série de votre modem est bien configuré le
+cas échéant. Dans le doute, jetez un œil à /etc/rc.d/rc.serial. Puis
+lancez 'pppsetup' pour configurer votre connexion. La documentation de 
+pppsetup est disponible dans /usr/doc/pppsetup-*/. Les utilisateurs du
+câble ou de l'ADSL utiliseront plutôt PPPoE ("PPP over Ethernet") et se
+documenteront dans /usr/doc/rp-pppoe-3.8/.
+
+Si vous devez paramétrer votre machine Linux en tant que routeur pour
+d'autres machines, vous devrez paramétrer les interfaces réseau dans
+/etc/rc.d/rc.inet1.conf, et stocker votre stratégie réseau et vos règles
+NAT dans un script appelé par exemple /etc/rc.d/rc.firewall, que vous aurez
+pris le soin de rendre exécutable.
+
+# Delete and flush.  Default table is "filter".
+# Others like "nat" must be explicitly stated.
+iptables --flush
+# Flush all the rules in filter and nat tables
+iptables --table nat --flush
+# Delete all chains that are not in default filter and nat table
+iptables --delete-chain
+iptables --table nat --delete-chain
+# Set up IP FORWARDing and Masquerading
+iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE
+iptables --append FORWARD --in-interface eth1 -j ACCEPT
+echo "Activation de ip_forward..."
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+Il est possible d'étendre (ou de réduire ;-) ce script selon vos besoins.
+Référez-vous à 'man iptables' pour en savoir plus.
+
+
+F: FAQ et HOWTO* :
+
+   Dans la catégorie F se trouve une documentation détaillée sur de 
+nombreuses tâches courantes sous Linux dans /usr/doc/Linux-HOWTOs. Elle 
+couvre bien plus de sujets et de tâches que ce petit courriel.
+
+Des FAQ en rpport avec Linux sont également disponibles dans le
+répertoire /usr/doc/Linux-FAQs.
+
+Voyez aussi le fichier CHANGES_AND_HINTS, RELEASE_NOTES ainsi que les autres
+inclus dans cette distribution pour les changements de dernière minute ou les
+remarques importantes.
+
+Have fun!
+
+---
+Patrick Volkerding
+volkerdi@slackware.com
+
+*NdT: la plupart sont en anglais.
+

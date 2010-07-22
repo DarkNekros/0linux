@@ -1,0 +1,44 @@
+#!/bin/sh
+syslogd_start() {
+	if [ -x /usr/sbin/syslogd -a -x /usr/sbin/klogd ]; then
+		echo -n "Démarrage des démons sysklogd :  "
+		echo -n "/usr/sbin/syslogd "
+		/usr/sbin/syslogd
+		
+		if ps acx | grep -q udevd ; then
+			while [ ! -e /dev/log ] ; do
+				sleep 0
+			done
+		else
+			sleep 1
+		fi
+		
+		echo "/usr/sbin/klogd -c 3 -x"
+		/usr/sbin/klogd -c 3 -x
+	fi
+}
+
+syslogd_stop() {
+	killall syslogd 2> /dev/null
+	killall klogd 2> /dev/null
+}
+
+syslogd_restart() {
+	syslogd_stop
+	sleep 1
+	syslogd_start
+}
+
+case "$1" in
+	'start')
+		syslogd_start
+		;;
+	'stop')
+		syslogd_stop
+		;;
+	'restart')
+		syslogd_restart
+		;;
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+esac
