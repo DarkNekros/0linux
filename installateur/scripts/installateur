@@ -9,7 +9,14 @@ rm -f $TMP/*
 if listelinux 1> /dev/null 2> /dev/null; then
 	listelinux 1> $TMP/liste_partitions 2> /dev/null
 else
-	nolinuxpart
+	clear
+	echo -e "\033[1;32mAucune partition Linux n'a été détectée.\033[0;0m"
+	echo "Il ne semble pas y avoir de partition de type Linux sur cette"
+	echo "machine. Il vous faut au moins une partition de ce type pour installer"
+	echo "Linux. Pour ce faire, vous devez créer ces partitions en utilisant "
+	echo "'cfdisk', 'fdisk' ou 'parted'. Pour en savoir plus, lisez"
+	echo "l'aide de l'installateur. L'installateur va maintenent s'arrêter."
+	exit 1
 fi
 
 # La racine de destination du système à installer:
@@ -32,84 +39,79 @@ fi
 
 # On détecte si la table de montage est corrompue :
 if [ -d /var/log/mount/lost+found -o -d /var/log/mount/recycled -o -r /var/log/mount/io.sys ]; then
-	mounttablecorrupted
+	echo "Table de montage corrompue. Redémarrez la machine puis relancez l'installateur."
 	exit 1
 fi
 
 # Boucle pour l'affichage du menu :
+unset CHOIXMENUNPRINCIPAL
+
 while [ 0 ]; do
-	
-	mainmenu 2> $TMP/choix_menu_principal
-		
-	# En cas de problème, on nettoie le répertoire temporaire :
-	if [ ! $? = 0 ]; then
-		rm -f $TMP/*
-		exit
+	clear
+	echo -e "\033[1;32mInstallation de votre système Linux.\033[0;0m"
+	echo ""
+	echo "Bienvenue dans l'installateur."
+	echo "Entrez ci-après la rubrique souhaitée et appuyez sur ENTRÉE."
+	echo "aide : lire l'aide de l'installateur"
+	echo "clavier : redéfinir la disposition des touches du clavier"
+	echo "swap : définir votre partition d'échange « swap »"
+	echo "partitions : définir les partition sur lesquelles installer 0"
+	echo "média : spécifier le média d'installation"
+	echo "installer : lancer l'installation des paquets logiciels"
+	echo "configurer : configurer votre nouveau système Linux"
+	echo "quitter [ou appui sur ENTRÉE] : quitter l'installateur"
+	echo -n "Votre choix : "
+	read CHOIXMENUPRINCIPAL;
+	if [ "$CHOIXMENUPRINCIPAL"  = "" ]; then
+		exit 0
 	fi
-	
-	CHOIXMENUPRINCIPAL="`cat $TMP/choix_menu_principal`"
-	
-	# On ne stocke plus le choix de l'utilisateur pour son prochain retour au menu principal :
-	rm -f $TMP/choix_menu_principal
-	
-	# On analyse le choix de l'utilisateur et on exécute le script ad-hoc en conséquence.
-	# On enchaîne sur la suite pour certaines rubriques si une configuration existe déjà :
 	case "$CHOIXMENUPRINCIPAL" in
-		# a choisi d'afficher l'aide :
-		"${HELPMENU_LABEL}")
-			helpmenu
-		;;
-		# a choisi la rubrique "clavier" :
-		"${KEYBOARDMENU_LABEL}")
-			. clavier.sh
-			if [ -r $TMP/choix_clavier ]; then
-				CHOIXMENUPRINCIPAL = "${SWAPMENU_LABEL}"
-			fi
-		;;
-		# a choisi la rubrique "swap" :
-		"${SWAPMENU_LABEL}")
-			. swap.sh
-			if [ -r $TMP/choix_swap ]; then
-				CHOIXMENUPRINCIPAL = "${TARGETMENU_LABEL}"
-			# a choisi d'ignorer la création d'une partition swap :
-			elif [ -r $TMP/ignorer_swap ]; then
-				CHOIXMENUPRINCIPAL = "${TARGETMENU_LABEL}"
-			fi
-		;;
-		# a choisi la rubrique "partitions" :
-		"${TARGETMENU_LABEL}")
-			. partitions.sh
-			. partitions_fat.sh
-			if [ -r $TMP/choix_partitions ]; then
-				CHOIXMENUPRINCIPAL = "${SOURCEMENU_LABEL}"
-			fi
-		;;
-		# a choisi la rubrique de choix du "média" d'installation :
-		"${SOURCEMENU_LABEL}")
-			. media.sh
-			 if [ -r $TMP/choix_media ]; then
-				CHOIXMENUPRINCIPAL = "${INSTALLMENU_LABEL}"
-			fi
-		;;
-		# a choisi la rubrique "Installation" des paquets :
-		"${INSTALLMENU_LABEL}")
-			if [ ! -r $TMP/choix_media -o ! -r $TMP/choix_partitions ]; then
-				systemnotready
-			else
-				. installer.sh
-				CHOIXMENUPRINCIPAL = "${CONFIGMENU_LABEL}"
-			fi
-		;;
-		# a choisi la rubrique "configuration" :
-		"${CONFIGMENU_LABEL}")
-			. configurer.sh
-		;;
-		# a choisi de "quitter" :
-		"${QUITMENU_LABEL}")
-			break
+	"aide")
+		less ./aide.txt
+		unset CHOIXMENUPRINCIPAL
+	;;
+	"clavier")
+		. clavier.sh
+		unset CHOIXMENUPRINCIPAL
+	;;
+	"swap")
+		. swap.sh
+		unset CHOIXMENUPRINCIPAL
+	;;
+	"partitions")
+		. partitions.sh
+		. partitions_fat.sh
+		unset CHOIXMENUPRINCIPAL
+	;;
+	"média")
+		. media.sh
+		unset CHOIXMENUPRINCIPAL
+	;;
+	"installer")
+		if [ ! -r $TMP/choix_media -o ! -r $TMP/choix_partitions ]; then
+			clear
+			echo -e "\033[1;32mLe système n'est pas préparé.\033[0;0m"
+			echo ""
+			echo "Avant de procéder à l'installation des paquets logiciels,"
+			echo "vous devez au préalable terminer certaines étapes, au minimum :"
+			echo ""
+			echo "- avoir choisi la partition sur laquelle installer votre système,"
+			echo "- avoir spécifié le média source où se trouvent les paquets."
+			echo ""
+			echo "Appuyez sur ENTRÉE pour retourner au menu principal."
+			echo ""
+		else
+			. installer.sh
+		fi
+		unset CHOIXMENUPRINCIPAL
+	;;
+	"configurer")
+		. configurer.sh
+		unset CHOIXMENUPRINCIPAL
+	;;
+	"quitter")
+		exit 0
 	esac
-	
-# Fin de la boucle d'affichage du menu :
 done
 
 # On est ici censé avoir toutes nos infos pour le 'fstab'.
