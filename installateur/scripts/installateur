@@ -1,6 +1,17 @@
-#!/bin/sh
-# On inclut nos fonctions :
-. /usr/lib/installateur/fonctions.sh
+#!/bin/env bash
+
+# Cette fonction supprime les espaces superflus via 'echo' :
+crunch() {
+	read STRING;
+	echo ${STRING};
+}
+
+# On tente de détecter une ou plusieurs partitions Linux, swap exceptée.
+# On retire l'astérisque "*" des partitions amorçables pour avoir 6 champs partout :
+listelinux() {
+	LISTELINUX=$(fdisk -l 2> /dev/null | grep Linux 2> /dev/null | grep -v swap 2> /dev/null | tr -d "*" 2> /dev/null)
+	echo "${LISTELINUX}"
+}
 
 # On vide $TMP au cas où :
 rm -f $TMP/*
@@ -33,7 +44,7 @@ fi
 
 # S'il reste encore un volume monté, alors quelque chose ne va pas :
 if mount | grep /var/log/mount 1> /dev/null 2> /dev/null ; then
-	cannotunmountvarlogmount
+	echo "Impossible de démonter /var/log/mount. Redémarrez et relancez l'installateur."
 	exit 1
 fi
 
@@ -100,6 +111,7 @@ while [ 0 ]; do
 			echo ""
 			echo "Appuyez sur ENTRÉE pour retourner au menu principal."
 			echo ""
+			read BLAH;
 		else
 			. installer.sh
 		fi
@@ -115,6 +127,8 @@ while [ 0 ]; do
 done
 
 # On est ici censé avoir toutes nos infos pour le 'fstab'.
+touch ${SETUPROOT}/etc/fstab
+
 # On écrit le fichier '/etc/fstab'. D'abord la partition swap :
 if [ -r $TMP/choix_swap ]; then
 	cat $TMP/choix_swap > ${SETUPROOT}/etc/fstab
@@ -132,14 +146,20 @@ fi
 echo -n "devpts     /dev/pts     devpts     gid=5,mode=620     0     0" >> ${SETUPROOT}/etc/fstab
 echo -n "proc       /proc        proc       defaults           0     0" >> ${SETUPROOT}/etc/fstab
 echo -n "tmpfs      /dev/shm     tmpfs      defaults           0     0" >> ${SETUPROOT}/etc/fstab
+echo "" >> ${SETUPROOT}/etc/fstab
 
 # L'installation est terminée !
-finishedinstall
+clear
+echo -e "\033[1;32mInstallation du système terminée\033[0;0m"
+echo ""
+echo "L'installation et la configuration du système sont terminées. Vous pouvez"
+echo "à présent quitter l'installateur afin de redémarrer votre machine."
+echo ""
 
 # On synchronise les systèmes de fichiers :
 sync
 
-# On s'assure de quelques permissions :
+# On s'assure de quelques permissions vitales, sait-on jamais :
 chmod 0755 ${SETUPROOT}
 chmod 1777 ${SETUPROOT}/tmp
 
@@ -148,23 +168,26 @@ umount -f /var/log/mount 2> /dev/null
 
 # Une dernière vérification avant les prochains montages :
 if [ -f ${SETUPROOT}/etc/fstab ]; then
-	installsuccessful
-	
 	# On démonte le disque s'il y en a un :
-	if [ -r $TMP/media_dvd ]; then
-		
+	if [ -r $TMP/choix_media ]; then
 		if mount | grep iso9660 > /dev/null 2> /dev/null ; then
-			umount `mount | grep iso9660 | cut -f 1 -d ' '`
+			umount $(mount | grep iso9660 | cut -f 1 -d ' ')
+			# On éjecte le disque
+			eject $(cat $TMP/choix_media) 1> /dev/null 2> /dev/null
 		fi
-		
-		# On éjecte le disque
-		eject `cat $TMP/media_dvd` 2> /dev/null
-		removemediaandrebootnow
-	else
-		rebootnow
 	fi
-
 fi
+
+# Il est temps de redémarrer :
+clear
+echo -e "\033[1;32mL'installation de votre système Linux est terminée.\033[0;0m"
+echo ""
+echo "Vous pouvez maintenant appuyer sur 'CTRL+ALT+SUPPR' ou bien taper"
+echo "'shutdown -r now' pour redémarrer la machine."
+echo "Si un média d'installation est encore présent, retirez-le."
+echo "À bientôt !"
+echo ""
+
 
 # On nettoie tout :
 rm -rf $TMP/*

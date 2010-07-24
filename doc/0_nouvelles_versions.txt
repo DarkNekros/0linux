@@ -16,7 +16,7 @@ freetype 2.4.0
 dhcp 4.2.0
 jdk 6u21 
 gstreamer 0.10.30
-firefox 3.6.7
+firefox 3.6.8
 thunderbird 3.1.1
 sqlite 3.7.0
 git 1.7.2 

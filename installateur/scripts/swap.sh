@@ -1,48 +1,72 @@
 #!/bin/env bash
+
 # On nettoie avant toute chose :
 rm -f $TMP/choix_swap $TMP/ignorer_swap
+unset NOSWAP
+
+# On tente de détecter une ou plusieurs partitions swap existantes :
+listeswap() {
+	LISTESWAP=$(fdisk -l 2> /dev/null | grep swap 2> /dev/null)
+	echo "${LISTESWAP}"
+}
+
+# Cette fonction supprime les espaces superflus via 'echo' :
+crunch() {
+	read STRING;
+	echo $STRING;
+}
+
+# taille_partition(périphérique) :
+taille_partition() {
+	Taille=$(fdisk -l | grep $1 | crunch | tr -d "*" | tr -d "+" | cut -f4 -d' ')
+	echo "$Taille blocs"
+}
 
 # Si aucune swap n'est détectée :
-if [ listeswap = "" ]; then
-	noswapfound
-	
+while [ listeswap = "" ]; do
+	clear
+	echo -e "\033[1;32mAucune partition d'échange « swap » n'a été trouvée.\033[0;0m"
+	echo ""
+	echo "Aucune partition d'échange « swap » n'a été trouvée sur cette machine."
+	echo "Voulez-vous continuer l'installation sans partition d'échange ?"
+	echo -n "Votre choix (oui/non) : "
+	read NOSWAP;
 	# Si l'utilisateur ne veut pas continuer :
-	if [ "$?" = "1" ]; then
-		abortswap
+	if [ "$NOSWAP" = "non" ]; then
+		echo "Abandon. Créez une partition d'échange « swap » avec 'cfdisk',"
+		echo "'fdisk' ou 'parted' puis relancez l'installateur."
+		exit 1
 	# Si l'utilisateur ne veut pas de swap :
-	else
+	elif [ "$NOSWAP" = "oui" ]; then
 		touch $TMP/ignorer_swap
+		exit 0
+	else
+		echo "Veuillez répondre par « oui » ou par « non » uniquement."
+		sleep 2
+		continue;
 	fi
-	
-	exit
+done
 
 # Si l'on trouve une ou plusieurs swaps :
-else
-	# On détecte les tailles des swaps et on en retire une liste à afficher :
-	for partitionswap in $LISTESWAP ; do
-		TAILLEPART=$(taille_partition $partitionswap)
-		tempswap >> $TMP/temp_swap
-	done
+# On détecte les tailles des swaps et on en retire une liste à afficher :
+for partitionswap in "${LISTESWAP}" ; do
+	TAILLEPART=$(taille_partition $partitionswap)
+done
+
+swapselect 2> $TMP/selection_swap
+
+
+if [ -r $TMP/selection_swap ]; then
+	# On supprime les éventuels guillemets :
+	cat $TMP/selection_swap | tr -d \" > $TMP/selection_swap
 	
-	swapselect 2> $TMP/selection_swap
-	
-	# En cas de problème, on quitte et on ignore la config' de la swap :
-	if [ ! $? = 0 ]; then
+	# Si aucune swap n'a été spécifiée, on ignore l'étape :
+	if [ "$(cat $TMP/selection_swap)" = "" -a ! -r $TMP/ignorer_swap ]; then
 		rm -f $TMP/temp_swap $TMP/choix_swap $TMP/selection_swap
 		touch $TMP/ignorer_swap
 	fi
-	
-	if [ -r $TMP/selection_swap ]; then
-		# On supprime les éventuels guillemets :
-		cat $TMP/selection_swap | tr -d \" > $TMP/selection_swap
-		
-		# Si aucune swap n'a été spécifiée, on ignore l'étape :
-		if [ "$(cat $TMP/selection_swap)" = "" -a ! -r $TMP/ignorer_swap ]; then
-			rm -f $TMP/temp_swap $TMP/choix_swap $TMP/selection_swap
-			touch $TMP/ignorer_swap
-		fi
-	fi
-	
+fi
+
 	# On crée et on active la ou les swaps avec 'mkswap' et 'swapon' :
 	for partitionswap in $(cat $TMP/selection_swap) ; do
 		mkswap -v1 $partitionswap 1> $REDIR 2> $REDIR

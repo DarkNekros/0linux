@@ -1,51 +1,65 @@
 #!/bin/env bash
-# On inclut nos fonctions ('clavier.sh' peut être appelé seul au démarrage) :
-. /usr/lib/installateur/fonctions.sh
 
-## Début de la boucle pour l'affichage du menu :
+unset CHOIXCLAVIER TESTCLAVIER
+rm -f $TMP/choix_clavier
+
+# Boucle pour l'affichage du menu :
 while [ 0 ]; do
-	keymapmenu 2> $TMP/choix_clavier
-		
-	# En cas de problème, on nettoie :
-	if [ ! $? = 0 ]; then
-		rm -f $TMP/choix_clavier
-		exit
+	clear
+	echo -e "\033[1;32mChoix de la disposition du clavier.\033[0;0m"
+	echo ""
+	echo "Tapez le code de clavier souhaité parmi la liste ci-dessous. "
+	echo "Si vous avez un doute, sachez que les dispositions francophones les"
+	echo "plus répandues pour chaque pays figurent en premier."
+	echo "Pour conserver la disposition QWERTY des États-Unis, appuyez"
+	echo "simplement sur ENTRÉE. Les autre codes dispositions disponibles"
+	echo "se trouvent dans '/lib/kbd/keymaps/i386'."
+	echo ""
+	echo "cf                  : QWERTY canadien-français"
+	echo "fr_CH-latin1        : QWERTZ suisse francophone latin-1"
+	echo "fr_CH               : QWERTZ suisse francophone"
+	echo "be-latin1           : AZERTY belge"
+	echo "fr-latin9           : AZERTY français étendu latin-9"
+	echo "fr-latin1           : AZERTY français latin-1"
+	echo "fr-pc               : AZERTY français"
+	echo "fr                  : AZERTY français"
+	echo "azerty              : AZERTY standard"
+	echo "fr-dvorak-bepo-utf8 : BÉPO + UTF-8"
+	echo "fr-dvorak-bepo      : BÉPO"
+	echo "dvorak-fr           : Dvorak français"
+	echo "us                  : QWERTY des États-Unis"
+	echo -n "Votre choix : "
+	read CHOIXCLAVIER;
+	if [ "$CHOIXCLAVIER" = "" ]; then
+		CHOIXCLAVIER="us"
 	fi
 	
-	# On charge le clavier choisi :
-	CLAVIER="`cat $TMP/choix_clavier`"
-	loadkeys /lib/kbd/keymaps/i386/${CLAVIER}.map.gz 1>/dev/null 2>/dev/null
+	# On charge le clavier :
+	loadkeys ${CHOIXCLAVIER} 1> /dev/null 2> /dev/null
 	
-	# Boucle pour l'affichage de la page de test du clavier :
+	# Test du clavier :
 	while [ 0 ]; do
-		keyboardtestmenu 2> $TMP/test_clavier
-		
-		# On sort de la boucle en cas de problème :
-		if [ $? = 1 ]; then
+		echo -e "\033[1;32mTest de la disposition di clavier.\033[0;0m"
+		echo ""
+		echo "La nouvelle disposition est maintenant activée. Tapez tout ce que vous"
+		echo "voulez pour la tester. Pour quitter le test du clavier, entrez simplement"
+		echo "le chiffre « 1 » et appuyez sur ENTRÉE pour valider votre choix ou bien"
+		echo "entrez « 2 » pour refuser la disposition et en choisir une autre."
+		echo -n "Test : "
+		read TESTCLAVIER;
+		# Si le choix est validé, on sort du script :
+		if [ "$TESTCLAVIER" = "1" ]; then
+			touch $TMP/choix_clavier
+			echo "${CHOIXCLAVIER}" > $TMP/choix_clavier
+			exit 0
+		# Sinon, on retourne au choix du clavier :
+		elif  [ "$TESTCLAVIER" = "2" ]; then
+			# On recharge le clavier US par défaut et on sort de la boucle :
+			loadkeys us 1> /dev/null 2> /dev/null
+			unset CHOIXCLAVIER TESTCLAVIER
 			break;
 		fi
-		
-		# Un "1" valide le clavier, un "2" le refuse
-		REPONSE="`cat $TMP/test_clavier`"
-		rm -f $TMP/test_clavier
-		
-		if [ "$REPONSE" = "1" -o "$REPONSE" = "2" ]; then
-			break;
-		fi
-		
 	done
-	
-	# Si le choix est validé, on sort de la boucle (et du script) :
-	if [ "$REPONSE" = "1" ]; then
-		break;
-	# Sinon, on retourne au choix du clavier :
-	else
-		rm -f $TMP/choix_clavier
-		# On recharge le clavier US par défaut :
-		loadkmap `zcat /lib/kbd/keymaps/i386/qwerty/us.map.gz`
-		continue;
-	fi
-	
 done
 
 # C'est fini !

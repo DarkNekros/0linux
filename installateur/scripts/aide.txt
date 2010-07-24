@@ -3,23 +3,10 @@ ______________________________________________________
 Aide rapide concernant l'installation de votre système
 ______________________________________________________
 
-Tout d'abord, un peu d'aide concernant l'aide elle-même. Lorsque vous 
-rencontrez une visionneuse de texte telle que celle que vous êtes en train 
-de lire pendant l'installation, sachez que vous pouvez vous déplacer dans 
-le document comme suit :
-
-PG.SUIV. ou ESPACE  - Descendre d'une page
-PG.PRÉC. OU B       - Remonter d'une page
-ENTRÉE ou BAS ou J  - Descendre d'une ligne
-HAUT ou K           - Remonter d'une ligne
-GAUCHE ou H         - Se déplacer vers la gauche
-DROITE ou L         - Se déplacer vers la droite
-0                   - Aller en début de ligne
-DÉBUT/HOME          - Aller au début du fichier
-FIN/END             - Aller à la fin du fichier
-/                   - Rechercher vers le bas
-?                   - Rechercher vers le haut
-N                   - Répéter la dernière recherche (vers le bas)
+Tout d'abord, un peu d'aide concernant l'aide elle-même. Sachez que vous 
+pouvez vous déplacer dans ce document avec les flèches de navigation et 
+les touches PG.PRÉC. et PG.SUIV. et quitter avec la touche Q. Consultez 
+'man less' pour en savoir plus sur l'utilisation de 'less'.
 
 Les consoles virtuelles
 -----------------------
