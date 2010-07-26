@@ -62,6 +62,30 @@ formater() {
 
 }
 
+# Afficher si les partitions Linux sont configurées ou pas :
+afficherlinux() {
+	listelinux | while [ 0 ]; do
+		read PARTITION;
+		# Pas de partitions Linux ? On quitte :
+		if [ "$PARTITION" = "" ]; then
+			break;
+		fi
+		NOMPARTITION=$(echo $PARTITION | crunch | cut -d' ' -f1)
+		DESCMONTAGE=""
+		# On scanne le fichier temporaire pour savoir si la partition est déjà utilisée :
+		if grep "${NOMPARTITION} " $TMP/choix_partitions 1> /dev/null; then
+			# On extrait le point de montage choisi :
+			POINTMONTAGE=$(grep "$NOMPARTITION " $TMP/choix_partitions | crunch | cut -d' ' -f2)
+		fi
+		if [ "${POINTMONTAGE}" = "" ]; then
+			echo "${NOMPARTITION}, partition Linux de $(taille_partition ${NOMPARTITION})"
+		else
+			echo "${NOMPARTITION}, déjà montée sur ${POINTMONTAGE} ($(taille_partition ${NOMPARTITION}))"
+		fi
+	done
+}
+
+
 # Boucle d'affichage du menu du choix de racine :
 while [ 0 ]; do
 	clear
@@ -166,7 +190,7 @@ done
 # On synchronise avant toute chose :
 sync
 
-# On va faire confiance à 'blkid' pour s'assurer du système de fichiers créé et non à nos variables ;) :
+# On va faire confiance à 'blkid' pour s'assurer du système de fichiers créé :
 FSRACINE=$(blkid -s TYPE ${ROOTSELECT} | cut -d'=' -f2 | tr -d \")
 
 # On monte enfin le système de fichiers racine dans $SETUPROOT :
@@ -184,146 +208,160 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 		echo -e "\033[1;32mPartitions Linux détectées.\033[0;0m"
 		echo ""
 		echo "D'autres partitions Linux sont présentes sur cette machine."
-		echo "Voulez-vous configurer ces partitions pour pouvoir les monter"
-		echo "automatiquementau démarrage ?"
+		echo "Vous pouvez utiliser ces partitions pour distribuer votre système"
+		echo "Linux sur plusieurs partitions. Actuellement, votre racine (« / »)"
+		echo "pour Linux est montée. Vous pouvez également monter des répertoires"
+		echo "tels que '/home', '/usr/local' ou '/sauvagarde' sur des partitions séparées."
+		echo "Voulez-vous configurer ces partitions pour les monter automatiquement"
+		echo "à chaque démarrage ?"
 		echo -n "Votre choix (oui/non): "
 		read AJOUTLINUX;
 		if [ "$AJOUTLINUX" = "non" ]; then
 			break
 		elif [ "$AJOUTLINUX" = "oui" ]; then
-			
-		else
-			echo "Veuillez répondre par « oui » ou par « non » uniquement."
-			sleep 2
-			continue;
+			# Boucle d'affichage du menu du choix de la partition à ajouter :
+			while [ 0 ]; do
+				clear
+				echo -e "\033[1;32mAjouter une partition Linux à monter.\033[0;0m"
+				echo ""
+				echo "Entrez la partition Linux supplémentaire que vous souhaitez"
+				echo "monter dans votre système parmi la liste ci-dessous et/ou entrez"
+				echo "« stop » pour terminer cette étape."
+				echo ""
+				# On liste les partitions Linux utilisées ou pas :
+				afficherlinux
+				echo "stop : terminer l'ajout de partitions Linux"
+				echo -n "Votre choix : "
+				read LINUXADD;
+				if [ "$LINUXADD" = "stop" ]; then
+					break
+				elif [ "$LINUXADD" = "" ]; then
+					echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
+					sleep 2
+					continue;
+				else
+					# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
+					if ! grep "/dev/" ${LINUXADD}; then
+						echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
+						sleep 2
+						continue;
+					else
+						# Boucle d'affichage du menu du choix du point de montage :
+						while [ 0 ]; do
+							clear
+							echo -e "\033[1;32mChoix du point de montage pour ${LINUXADD}.\033[0;0m"
+							echo ""
+							echo "Bien, il vous faut maintenant indiquer l'emplacement"
+							echo "de votre choix pour monter et accéder à cette partition. Par exemple,"
+							echo "pour la monter dans le répertoire '/usr/local', répondez : /usr/local."
+							echo "Dans quel répertoire désirez-vous monter ${LINUXADD} ?"
+							echo -n "Votre choix : "
+							read MOUNTPOINT;
+							# Si le point de montage est incorrect :
+							if [ "${MOUNTPOINT}" = "" -o "$(echo ${MOUNTPOINT} | cut -b1)" = " " -o ! "$(echo ${MOUNTPOINT} | cut -b1)" = "/"]; then
+								echo "Veuillez entrer un système de fichiers valide."
+								sleep 2
+								break
+							fi
+							# Boucle d'affichage du formatage :
+							while [ 0 ]; do
+								clear
+								echo -e "\033[1;32mFormatage de la partition ${LINUXADD}.\033[0;0m"
+								echo ""
+								echo "Voulez-vous formater cette partition ?"
+								echo "N.B.: Ceci effacera toutes les données s'y trouvant !"
+								echo "Entrez la méthode de formatage souhaitée parmi la liste suivante :"
+								echo ""
+								echo "formater : formater sans vérification des secteurs défectueux"
+								echo "vérifier : formater avec vérification des secteurs défectueux"
+								echo "non      : ne rien faire, la partition est déjà formatée"
+								echo -n "Votre choix : "
+								read DOFORMAT;
+								if [ "$DOFORMAT" = "" ]; then
+									echo "Veuillez entrer une méthode de formatage valide."
+									sleep 2
+									continue;
+								else
+									if [ "$DOFORMAT" = "non" ]; then
+										break
+									elif [ "$DOFORMAT" = "vérifier" ]; then
+										VERIF="oui"
+									elif [ "$DOFORMAT" = "formater" ]; then
+										VERIF="non"
+									else
+										echo "Veuillez entrer une méthode de formatage valide."
+										sleep 2
+										continue;
+									fi
+								# Boucle d'affichage du choix du système de fichiers :
+									while [ 0 ]; do
+										clear
+										echo -e "\033[1;32mChoix du système de fichiers pour ${LINUXADD}.\033[0;0m"
+										echo ""
+										echo "La partition ${LINUXADD} va être formatée."
+										echo "Entrez le système de fichiers souhaité parmi la liste ci-dessous."
+										echo ""
+										echo "ext2     : système de fichiers traditionnel sous Linux"
+										echo "ext3     : version journalisée et plus récente de Ext2"
+										echo "ext4     : le récent successeur de Ext3"
+										echo "jfs      : système de fichiers journalisé d'IBM"
+										echo "reiserfs : système journalisé performant"
+										echo "xfs      : système de SGI performant sur les gros fichiers"
+										echo -n "Votre choix : "
+										read FSFORMAT;
+										if [ "$FSFORMAT" = "" ]; then
+											echo "Veuillez entrer un système de fichiers valide."
+											sleep 2
+											continue;
+										else
+											# Si l'utilisateur écrit n'importe quoi :
+											if [ ! grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs' ${FSFORMAT} ]; then
+												echo "Veuillez entrer un système de fichiers valide."
+												sleep 2
+												continue;
+											# Sinon, on formate :
+											else
+												echo "Formatage en cours de ${LINUXADD} en ${FSFORMAT}..."
+												formater ${FSFORMAT} ${ROOTSELECT} ${VERIF}
+												break
+											fi
+										fi
+									done
+								fi
+							done
+						done
+						# On synchronise avant toute chose :
+						sync
+						
+						# On va faire confiance à 'blkid' pour s'assurer du système de fichiers créé :
+						FSLINUXADD=$(blkid -s TYPE ${LINUXADD} | cut -d'=' -f2 | tr -d \")
+						
+						# On crée le point de montage :
+						mkdir -p ${SETUPROOT}/${MOUNTPOINT}
+						
+						# On monte enfin le système de fichiers :
+						mount ${LINUXADD} ${SETUPROOT}/${MOUNTPOINT} -t ${FSLINUXADD} 1> /dev/null 2> /dev/null
+						
+						# On ajoute le choix de la partition à ajouter à '/etc/fstab' :
+						echo "${LINUXADD}     ${MOUNTPOINT}     ${FSLINUXADD}     defaults     1     2" >> $TMP/choix_partitions
+					fi
+				fi
+			done
 		fi
 	done
-		
-		
-		
-		
-		
-
-	listelinux | while [ 0 ]; do
-		read PARTITION;
-		
-		if [ "$PARTITION" = "" ]; then
-			break;
-		fi
-		
-		NOMPARTITION=$(echo $PARTITION | crunch | cut -d' ' -f1)
-		TAILLEPARTITION=$(taille_partition $NOMPARTITION)
-		DESCMONTAGE=""
-		
-		# On scanne le fichier temporaire pour savoir si la partition est déjà utilisée :
-		if grep "${NOMPARTITION} " $TMP/choix_partitions 1> /dev/null; then
-			# On extrait le point de montage choisi :
-			POINTMONTAGE=`grep "$NOMPARTITION " $TMP/choix_partitions | crunch | cut -d' ' -f2`
-			DESCMONTAGE="${NOMPARTITION} ${MOUNTEDON_MSG} ${POINTMONTAGE}, Linux, ${TAILLEPARTITION}"
-		fi
-		
-		if [ "${POINTMONTAGE}" = "" ]; then
-			echo "\"${NOMPARTITION}\" \"Linux, ${TAILLEPARTITION}\" \\"
-		else
-			echo "\"${CONFIGURED_MSG}\" \"${DESCMONTAGE}\" \\"
-		fi
-	done
-	
-	
-	# Boucle d'affichage du menu d'ajout des partitions Linux :
-	while [ 0 ]; do
-		
-		addanotherlinux
-		
-		# En cas de problème, on quitte :
-		if [ ! $? = 0 ]; then
-			rm -f $TMP/reponse
-			break;
-		fi
-		
-		PARTITION_SUIVANTE="`cat $TMP/reponse`"
-		rm -f $TMP/reponse
-		
-		# Si l'on choisit une rubrique vide, on quitte :
-		if [ "$NEXT_PARTITION" = "---" ]; then
-			break;
-		# Si l'on choisit une rubrique déjà configurée, on continue la boucle :
-		elif [ "$NEXT_PARTITION" = "(${CONFIGURED_MSG})" ]; then
-			continue;
-		fi
-		
-		# On demande si l'on doit formater :
-		formateroupas ${PARTITION_SUIVANTE}
-		
-		DO_FORMAT="`cat $TMP/reponse`"
-		rm -f $TMP/reponse
-		
-		# Si l'utilisateur veut formater :
-		if [ ! "${DO_FORMAT}" = "${LINUXDONTFORMAT_LABEL}" ]; then
-			
-			# On demande en quoi formater :
-			quel_format ${PARTITION_SUIVANTE}
-			
-			FS_SUIVANT="`cat $TMP/reponse`"
-			rm -f $TMP/reponse
-			
-			# Formatage avec ou sans vérification des secteurs :
-			if [ "${DO_FORMAT}" = "${LINUXCHECKFORMAT_LABEL}" ]; then
-				formater ${PARTITION_SUIVANTE} ${FS_SUIVANT} "oui"
-			else
-				formater ${PARTITION_SUIVANTE} ${FS_SUIVANT} "non"
-			fi
-		
-		fi
-		
-		# On demande à l'utilisateur l'emplacement du point de montage :
-		selectmountpoint 2> $TMP/reponse
-		
-		# En cas de problème, on continue la boucle :
-		if [ ! $? = 0 ]; then
-			continue;
-		fi
-		
-		POINTMONTAGE="`cat $TMP/reponse`"
-		rm -f $TMP/reponse
-		
-		# Si le point de montage est vide, on quitte :
-		if [ "${POINTMONTAGE}" = "" ]; then
-			continue;
-		fi
-		
-		# Si le point de montage commence par un espace, on quitte :
-		if [ "`echo ${POINTMONTAGE} | cut -b1`" = " " ]; then
-			continue;
-		fi
-		
-		# Si le point de montage ne commence pas par un slash, on est gentil et on corrige :
-		if [ ! "`echo ${POINTMONTAGE} | cut -b1`" = "/" ]; then
-			POINTMONTAGE="/${POINTMONTAGE}"
-		fi
-		
-		# On synchronise avant toute chose :
-		sync
-		
-		# On va faire confiance à 'blkid' pour s'assurer du système de fichiers créé et non à nos variables ;) :
-		FSSUIVANT=$(blkid -s TYPE ${PARTITION_SUIVANTE} | cut -d'=' -f2 | tr -d \")
-		
-		# On crée le point de montage :
-		mkdir -p ${SETUPROOT}/${POINTMONTAGE}
-		 
-		# On monte enfin le système de fichiers :
-		mount ${PARTITION_SUIVANTE} ${SETUPROOT}/${POINTMONTAGE} -t ${FSSUIVANT} 1> /dev/null 2> /dev/null
-		
-		# On ajoute le choix de la partition à ajouter à '/etc/fstab' :
-		echo "${PARTITION_SUIVANTE}     ${POINTMONTAGE}     ${FSSUIVANT}     defaults     1     2" >> $TMP/choix_partitions
-		
-	# Fin de la boucle :
-	done
-
-# Fin de l'ajout des partitions Linux supplémentaires :
 fi
 
 # Message de fin avec récapitulatif :
-partitionscreated
+while [ 0 ]; do
+	clear
+	echo -e "\033[1;32mPartitions Linux configurées.\033[0;0m"
+	echo ""
+	echo "Les informations suivantes seront ajoutées à votre"
+	echo " fichier '/etc/fstab'" :
+	echo ""
+	cat $TMP/choix_partitions
+	echo -n "Appuyez sur ENTRÉE pour continuer."
+	read BLAH;
+	exit 0
 
 # C'est fini !
