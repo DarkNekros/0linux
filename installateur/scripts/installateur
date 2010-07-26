@@ -1,5 +1,15 @@
 #!/bin/env bash
 
+# On crée le répertoire temporaire s'il n'existe pas :
+TMP=${TMP:-/var/log/setup/tmp}
+
+if [ ! -d ${TMP} ]; then
+	mkdir -p ${TMP}
+fi
+
+# La racine de destination du système à installer:
+export SETUPROOT=${SETUPROOT:-/mnt}
+
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
 	read STRING;
@@ -29,9 +39,6 @@ else
 	echo "l'aide de l'installateur. L'installateur va maintenent s'arrêter."
 	exit 1
 fi
-
-# La racine de destination du système à installer:
-export SETUPROOT=${SETUPROOT:-/mnt}
 
 # On détecte la partition racine :
 ROOT_DEVICE="`mount | grep "on / " | cut -f 1 -d ' '`"
