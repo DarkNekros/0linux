@@ -2,7 +2,7 @@
 
 # On nettoie avant toute chose :
 rm -f $TMP/choix_swap $TMP/ignorer_swap
-unset NOSWAP
+unset NOSWAP SWAPSELECT ABANDONSWAP BLAH
 
 # On tente de détecter une ou plusieurs partitions swap existantes :
 listeswap() {
@@ -48,42 +48,62 @@ while [ listeswap = "" ]; do
 done
 
 # Si l'on trouve une ou plusieurs swaps :
-# On détecte les tailles des swaps et on en retire une liste à afficher :
-for partitionswap in "${LISTESWAP}" ; do
-	TAILLEPART=$(taille_partition $partitionswap)
-done
-
-swapselect 2> $TMP/selection_swap
-
-
-if [ -r $TMP/selection_swap ]; then
-	# On supprime les éventuels guillemets :
-	cat $TMP/selection_swap | tr -d \" > $TMP/selection_swap
-	
-	# Si aucune swap n'a été spécifiée, on ignore l'étape :
-	if [ "$(cat $TMP/selection_swap)" = "" -a ! -r $TMP/ignorer_swap ]; then
-		rm -f $TMP/temp_swap $TMP/choix_swap $TMP/selection_swap
-		touch $TMP/ignorer_swap
+while [ 0 ]; do
+	clear
+	echo -e "\033[1;32mUne ou plusieurs partitions d'échange ont été détectées.\033[0;0m"
+	echo ""
+	echo "Le programme a détecté une ou plusieurs partitions d'échange"
+	echo "(de type « swap ») sur votre système. Veuillez entrer la partition"
+	echo "d'échange que vous souhaitez activer parmi la liste suivante :"
+	echo ""
+	# On liste les swaps et leur taille :
+	for partitionswap in listeswap ; do
+		TAILLE=taille_partition ${partitionswap}
+		echo "${partitionswap} : swap de ${TAILLE}"
+	done
+	echo -n "Votre choix : "
+	read SWAPSELECT;
+	# Si l'utilisateur n'entre aucune partition :
+	if [ "$SWAPSELECT" = "" ]; then
+		echo "Aucune partition n'a été entrée. Voulez-vous ignorer la création"
+		echo "d'une partition d'échange ?"
+		echo -n "Votre choix (oui/non) : "
+		read ABANDONSWAP;
+		# Si l'utilisateur ne veut pas continuer :
+		if [ "$ABANDONSWAP" = "oui" ]; then
+			echo "La création de partition d'échange sera ignorée."
+			touch $TMP/ignorer_swap
+			exit 0
+		elif [ "$ABANDONSWAP" = "non" ]; then
+			continue;
+		else
+			echo "Veuillez répondre par « oui » ou par « non » uniquement."
+			sleep 2
+			continue;
+		fi
+	else
+		# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
+		if ! grep "/dev/" ${SWAPSELECT}; then
+			echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
+			sleep 2
+			continue;
+		# Si tout semble OK, on active la swap et on l'ajoute au fichier 'choix_swap' :
+		else
+			mkswap -v1 ${SWAPSELECT}
+			swapon ${SWAPSELECT}
+			touch $TMP/choix_swap
+			echo "${SWAPSELECT}     swap         swap       defaults           0     0" >> $TMP/choix_swap
+			clear
+			echo -e "\033[1;32mPartition d'échange configurée.\033[0;0m"
+			echo ""
+			echo "La partition d'échange ${SWAPSELECT} sera ajoutée à votre"
+			echo "fichier '/etc/fstab' de la façon suivante :"
+			cat $TMP/choix_swap
+			echo -n "Appuyez sur ENTRÉE  pour continuer."
+			read BLAH;
+			exit 0
+		fi
 	fi
-fi
-
-	# On crée et on active la ou les swaps avec 'mkswap' et 'swapon' :
-	for partitionswap in $(cat $TMP/selection_swap) ; do
-		mkswap -v1 $partitionswap 1> $REDIR 2> $REDIR
-		swapon $partitionswap 1> $REDIR 2> $REDIR
-	done
-	
-	# Ce qui suit permet d'éviter à l'écran de clignoter :
-	sleep 2
-	
-	# On ajoute maintenant les infos qui iront dans '/etc/fstab' :
-	for pswap in $(cat $TMP/selection_swap) ; do
-		echo "$pswap     swap         swap       defaults           0     0" >> $TMP/choix_swap
-	done
-	
-	# On affiche les infos qui iront dans '/etc/fstab' à l'utilisateur :
-	swapconfigured
-	
-fi
+done
 
 # C'est fini !

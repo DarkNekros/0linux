@@ -1,4 +1,4 @@
-GnuTLS 2.10.0
+GnuTLS 2.10.1 
 xorg-server 1.8.2 
 rpm 5.3.2 
 util-linux 2.18 
