@@ -352,16 +352,15 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 fi
 
 # Message de fin avec récapitulatif :
-while [ 0 ]; do
-	clear
-	echo -e "\033[1;32mPartitions Linux configurées.\033[0;0m"
-	echo ""
-	echo "Les informations suivantes seront ajoutées à votre"
-	echo " fichier '/etc/fstab'" :
-	echo ""
-	cat $TMP/choix_partitions
-	echo -n "Appuyez sur ENTRÉE pour continuer."
-	read BLAH;
-	exit 0
+clear
+echo -e "\033[1;32mPartitions Linux configurées.\033[0;0m"
+echo ""
+echo "Les informations suivantes seront ajoutées à votre"
+echo " fichier '/etc/fstab'" :
+echo ""
+cat $TMP/choix_partitions
+echo -n "Appuyez sur ENTRÉE pour continuer."
+read BLAH;
+exit 0
 
 # C'est fini !
