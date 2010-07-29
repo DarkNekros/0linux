@@ -1,110 +1,183 @@
 #!/bin/env bash
+
 # On tente de détecter une ou plusieurs partitions FAT/DOS/Windows, partition étendue exceptée.
 # On retire l'astérisque "*" des partitions amorçables pour avoir 6 champs partout :
-LISTEFAT=`fdisk -l 2> /dev/null | grep "Win9" "NTFS" "W95 F" "FAT" 2> /dev/null | grep -v tendue 2> /dev/null | tr -d "*" 2> /dev/null`
+listefat() {
+	LISTEFAT=$(fdisk -l 2> /dev/null | grep "Win9" "NTFS" "W95 F" "FAT" 2> /dev/null | grep -v tendue 2> /dev/null | tr -d "*" 2> /dev/null)
+	echo "${LISTEFAT}"
+}
 
-# Si aucune partition DOS n'est trouvée, on peut quitter :
-if [ "$LISTEFAT" = "" ]; then
-	exit
-fi
+# Cette fonction supprime les espaces superflus via 'echo' :
+crunch() {
+	read STRING;
+	echo $STRING;
+}
 
-# On demande si l'on va ajouter des partitions FAT/NTFS :
-addfat
+# taille_partition(périphérique) :
+taille_partition() {
+	Taille=$(fdisk -l | grep $1 | crunch | tr -d "*" | tr -d "+" | cut -f4 -d' ')
+	echo "$Taille blocs"
+}
 
-# Si l'utilisateur refuse d'en monter :
-if [ ! $? = 0 ]; then
-	exit
-fi
-
-# Boucle d'affichage pour les partitions FAT :
-while [ 0 ]; do
-	
-	selectfat
-	
-	# En cas de problème, on quitte :
-	if [ ! $? = 0 ]; then
-		rm -f $TMP/reponse
-		exit
-	fi
-	
-	PARTITIONFAT="`cat $TMP/reponse`"
-	rm -f $TMP/reponse
-	
-	# Si l'on choisit une rubrique vide, on quitte :
-	if [ "$PARTITIONFAT" = "---" ]; then
-		break;
-	# Si l'on choisit une rubrique déjà configurée, on continue la boucle :
-	elif [ "$PARTITIONFAT" = "(${CONFIGURED_MSG})" ]; then
-		continue;
-	fi
-	
-	# Si la partition choisie est en NTFS, on doit s'occuper du masque des permissions :
-	if echo "$LISTEFAT" | grep -w ${PARTITIONFAT} | grep NTFS 1> /dev/null 2> /dev/null; then
-	
-		ntfssecu 2> $TMP/ntfs_umask
-		
-		# En cas de problème, on quitte :
-		if [ ! $? = 0 ]; then
-			rm -f $TMP/{ntfs_umask,choix_partitions_fat}
-			echo 1
+# Afficher si les partitions FAT/NTFS sont configurées ou pas :
+afficherfat() {
+	listefat | while [ 0 ]; do
+		read PARTITION;
+		# Pas de partitions ? On quitte :
+		if [ "$PARTITION" = "" ]; then
+			break
 		fi
-		
-		FS_UMASK="$(cat $TMP/ntfs_umask)"
-		rm -f $TMP/ntfs_umask
-		
-		if [ "$FS_UMASK" = "1" ]; then
-			exit 1
+		NOMPARTITION=$(echo $PARTITION | crunch | cut -d' ' -f1)
+		DESCMONTAGE=""
+		# On scanne le fichier temporaire pour savoir si la partition est déjà utilisée :
+		if grep "${NOMPARTITION} " $TMP/choix_partitions_fat 1> /dev/null; then
+			# On extrait le point de montage choisi :
+			POINTMONTAGE=$(grep "$NOMPARTITION " $TMP/choix_partitions | crunch | cut -d' ' -f2)
+		fi
+		if [ "${POINTMONTAGE}" = "" ]; then
+			echo "${NOMPARTITION}, partition FAT/NTFS de $(taille_partition ${NOMPARTITION})"
 		else
-			# Le pilote du noyau ne gère pas le masque :
-			if [ "$FS_UMASK" = "umask=222" ]; then
-				FS_TYPE="ntfs"
-				FS_UMASK="defaults"
-			# Seul le programme en espace utilisateur 'ntfs-3g' le gère :
-			else
-				FS_TYPE="ntfs-3g"
-			fi
+			echo "${NOMPARTITION}, déjà montée sur ${POINTMONTAGE} ($(taille_partition ${NOMPARTITION}))"
 		fi
-	
-	# Si le système de fichiers est du simple FAT :
-	else
-		FS_TYPE=vfat
-		FS_UMASK=defaults
-	fi
-	
-	selectfatmountpoint 2> $TMP/reponse
-	
-	if [ ! $? = 0 ]; then
-		rm -f $TMP/{ntfs_umask,reponse}
-		exit
-	fi
-	
-	POINTMONTAGEFAT="`cat $TMP/reponse`"
-	rm -f $TMP/reponse
-	
-	# Si le point de montage est vide ou est un simple slash, on quitte :
-	if [ "${POINTMONTAGEFAT}" = "" -o "${POINTMONTAGEFAT}" = "/" ]; then
-		continue;
-	fi
-	
-	# Si le point de montage commence par un espace, on quitte :
-	if [ "`echo ${POINTMONTAGEFAT} | cut -b1`" = " " ]; then
-		continue;
-	fi
-	
-	# Si le point de montage ne commence pas par un slash, on est gentil et on corrige :
-	if [ ! "`echo ${POINTMONTAGEFAT} | cut -b1`" = "/" ]; then
-		POINTMONTAGEFAT="/${POINTMONTAGEFAT}"1
-	fi
-	
-	# On crée le point de montage :
-	mkdir -p ${SETUPROOT}/${POINTMONTAGEFAT}
-	
-	# On ajoute le choix de la partition à ajouter à '/etc/fstab' :
-	echo "${PARTITIONFAT}     ${POINTMONTAGEFAT}     ${FS_TYPE}     ${FS_UMASK}     1     0" >> $TMP/choix_partitions_fat
-	
-done
+	done
+}
 
-# Message récapitulatif :
-fatpartitionscreated
+# Si des partitions FAT/NTFS sont détectées :
+if [ $(listefat | wc -l) -gt "1" ]; then
+
+	# Boucle d'affichage du choix des montages supplémentaires :
+	while [ ! "${OKPARTS}" = "ok" ]; do
+		clear
+		echo -e "\033[1;32mPartitions FAT/NTFS détectées.\033[0;0m"
+		echo ""
+		echo "D'autres partitions FAT/NTFS (typiquement pour DOS/Windows)sont"
+		echo "présentes sur cette machine."
+		echo "Vous pouvez monter ces partitions dans un répertoire de votre choix,"
+		echo "par exemple /windows, pour pouvoir y accéder depuis votre système Linux."
+		echo "Voulez-vous configurer ces partitions pour les monter automatiquement"
+		echo "à chaque démarrage ?"
+		echo ""
+		echo -n "Votre choix (oui/non): "
+		read AJOUFAT;
+		if [ "$AJOUTFAT" = "non" ]; then
+			break
+		elif [ "$AJOUTFAT" = "oui" ]; then
+			# Boucle d'affichage du menu du choix de la partition à ajouter :
+			while [ 0 ]; do
+				unset SECUOK
+				clear
+				echo -e "\033[1;32mAjouter une partition FAT/NTFS à monter.\033[0;0m"
+				echo ""
+				echo "Entrez la partition FAT/NTFS que vous souhaitez"
+				echo "monter dans votre système parmi la liste ci-dessous et/ou entrez"
+				echo "« continuer » pour terminer cette étape."
+				echo ""
+				# On liste les partitions Linux utilisées ou pas :
+				afficherfat
+				echo "continuer : terminer l'ajout de partitions FAT/NTFS"
+				echo ""
+				echo -n "Votre choix : "
+				read FATADD;
+				if [ "$FATADD" = "continuer" ]; then
+					OKPARTS = "ok"
+					break
+				elif [ "$FATADD" = "" ]; then
+					echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
+					sleep 2
+					continue
+				else
+					# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
+					if ! grep "/dev/" ${FATADD}; then
+						echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
+						sleep 2
+						continue
+					else
+						# Boucle d'affichage du menu du choix du point de montage :
+						while [ ! "${SECUOK}" = "ok" ]; do
+							clear
+							echo -e "\033[1;32mChoix du point de montage pour ${FATADD}.\033[0;0m"
+							echo ""
+							echo "Bien, il vous faut maintenant indiquer l'emplacement"
+							echo "de votre choix pour monter et accéder à cette partition. Par exemple,"
+							echo "pour la monter dans le répertoire '/windows', répondez : /windows"
+							echo "Dans quel répertoire désirez-vous monter ${FATADD} ?"
+							echo ""
+							echo -n "Votre choix : "
+							read MOUNTPOINT;
+							# Si le point de montage est incorrect :
+							if [ "${MOUNTPOINT}" = "" -o "$(echo ${MOUNTPOINT} | cut -b1)" = " " -o ! "$(echo ${MOUNTPOINT} | cut -b1)" = "/"]; then
+								echo "Veuillez entrer un système de fichiers valide."
+								sleep 2
+								break
+							fi
+							# Si la partition choisie est une NTFS, on doit s'occuper du masque des permissions :
+							if listefat | grep -w ${FATADD} | grep NTFS 1> /dev/null 2> /dev/null; then
+								FSTYPE=ntfs
+								# Boucle d'affichage du choix des permissions par défaut :
+								while [ 0 ]; do
+									clear
+									echo -e "\033[1;32mPermission de la partitions NTFS ${FATADD}.\033[0;0m"
+									echo ""
+									echo "Puisque les utilisateurs peuvent accéder à cette partition NTFS, vous"
+									echo "devez definir ses permissions en lecture et en écriture. Les niveaux"
+									echo "de sécurité de ces permissions vont du tout-restrictif (aucun droit)"
+									echo "au tout-permissif (accès en lecture/écriture/exécution pour tous)."
+									echo "Une valeur raisonnable serait « 022 » ; beaucoup utilisent « 000 »."
+									echo "Quel masque de permissions voulez-vous utiliser pour ${FATADD} ?"
+									echo ""
+									echo "077 : aucun accès, seul root a tous les droits"
+									echo "222 : lecture seule pour tous"
+									echo "022 : lecture seule pour tous mais root a tous les droits"
+									echo "000 : tout le monde a tous les droits"
+									echo ""
+									echo -n "Votre choix : "
+									read SECU;
+									if [ "$SECU" = "" -o ! grep -E '077|222|022|000' ${SECU} ]; then
+										echo "Veuillez entrer un masque de permissions valide."
+										sleep 2
+										continue
+									else
+										# Le pilote du noyau ne gère pas le masque :
+										if [ "$SECU" = "umask=222" ]; then
+											FSTYPE="ntfs"
+											SECU="defaults"
+										# Seul le programme en espace utilisateur 'ntfs-3g' le gère :
+										else
+											FSTYPE="ntfs-3g"
+										fi
+										SECUOK="ok"
+										break
+									fi
+								done
+							# Sinon, la partition est une simple FAT :
+							else
+								FSTYPE="vfat"
+								SECU="defaults"
+								SECUOK="ok"
+								break
+							fi
+						done
+						# On crée le point de montage :
+						mkdir -p ${SETUPROOT}/${MOUNTPOINT}
+						
+						# On ajoute le choix de la partition à ajouter à '/etc/fstab' :
+						echo "${FATADD}     ${MOUNTPOINT}     ${FSTYPE}     ${SECU}     1     0" >> $TMP/choix_partitions_fat
+					fi
+				fi
+			done
+		fi
+	done
+fi
+
+# Message de fin avec récapitulatif :
+clear
+echo -e "\033[1;32mPartitions FAT/NTFS configurées.\033[0;0m"
+echo ""
+echo "Les informations suivantes seront ajoutées à votre"
+echo " fichier '/etc/fstab'" :
+echo ""
+cat $TMP/choix_partitions_fat
+echo -n "Appuyez sur ENTRÉE pour continuer."
+read BLAH;
 
 # C'est fini !

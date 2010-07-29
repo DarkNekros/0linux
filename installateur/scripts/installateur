@@ -79,6 +79,7 @@ while [ 0 ]; do
 	echo "installer  : lancer l'installation des paquets logiciels"
 	echo "configurer : configurer votre nouveau système Linux"
 	echo "quitter    : quitter l'installateur"
+	echo ""
 	echo -n "Votre choix : "
 	read CHOIXMENUPRINCIPAL;
 	if [ "$CHOIXMENUPRINCIPAL"  = "" ]; then
@@ -88,23 +89,28 @@ while [ 0 ]; do
 	"aide")
 		less ./aide.txt
 		unset CHOIXMENUPRINCIPAL
+		continue
 	;;
 	"clavier")
 		. clavier.sh
 		unset CHOIXMENUPRINCIPAL
+		continue
 	;;
 	"swap")
 		. swap.sh
 		unset CHOIXMENUPRINCIPAL
+		continue
 	;;
 	"partitions")
 		. partitions.sh
 		. partitions_fat.sh
 		unset CHOIXMENUPRINCIPAL
+		continue
 	;;
 	"média")
 		. media.sh
 		unset CHOIXMENUPRINCIPAL
+		continue
 	;;
 	"installer")
 		if [ ! -r $TMP/choix_media -o ! -r $TMP/choix_partitions ]; then
@@ -124,10 +130,12 @@ while [ 0 ]; do
 			. installer.sh
 		fi
 		unset CHOIXMENUPRINCIPAL
+		continue
 	;;
 	"configurer")
 		. configurer.sh
 		unset CHOIXMENUPRINCIPAL
+		break
 	;;
 	"quitter")
 		exit 0

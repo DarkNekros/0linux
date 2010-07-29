@@ -28,6 +28,7 @@ while [ 0 ]; do
 	echo "fr-dvorak-bepo      : BÉPO"
 	echo "dvorak-fr           : Dvorak français"
 	echo "us                  : QWERTY des États-Unis"
+	echo ""
 	echo -n "Votre choix : "
 	read CHOIXCLAVIER;
 	if [ "$CHOIXCLAVIER" = "" ]; then
@@ -36,30 +37,33 @@ while [ 0 ]; do
 	
 	# On charge le clavier :
 	loadkeys ${CHOIXCLAVIER} 1> /dev/null 2> /dev/null
+	break
+done
 	
-	# Test du clavier :
-	while [ 0 ]; do
-		echo -e "\033[1;32mTest de la disposition di clavier.\033[0;0m"
-		echo ""
-		echo "La nouvelle disposition est maintenant activée. Tapez tout ce que vous"
-		echo "voulez pour la tester. Pour quitter le test du clavier, entrez simplement"
-		echo "le chiffre « 1 » et appuyez sur ENTRÉE pour valider votre choix ou bien"
-		echo "entrez « 2 » pour refuser la disposition et en choisir une autre."
-		echo -n "Test : "
-		read TESTCLAVIER;
-		# Si le choix est validé, on sort du script :
-		if [ "$TESTCLAVIER" = "1" ]; then
-			touch $TMP/choix_clavier
-			echo "${CHOIXCLAVIER}" > $TMP/choix_clavier
-			exit 0
-		# Sinon, on retourne au choix du clavier :
-		elif  [ "$TESTCLAVIER" = "2" ]; then
-			# On recharge le clavier US par défaut et on sort de la boucle :
-			loadkeys us 1> /dev/null 2> /dev/null
-			unset CHOIXCLAVIER TESTCLAVIER
-			break;
-		fi
-	done
+# Test du clavier :
+while [ 0 ]; do
+	clear
+	echo -e "\033[1;32mTest de la disposition du clavier.\033[0;0m"
+	echo ""
+	echo "La nouvelle disposition est maintenant activée. Tapez tout ce que vous"
+	echo "voulez pour la tester. Pour quitter le test du clavier, entrez simplement"
+	echo "le chiffre « 1 » et appuyez sur ENTRÉE pour valider votre choix ou bien"
+	echo "entrez « 2 » pour refuser la disposition et en choisir une autre."
+	echo ""
+	echo -n "Test : "
+	read TESTCLAVIER;
+	# Si le choix est validé, on sort du script :
+	if [ "$TESTCLAVIER" = "1" ]; then
+		touch $TMP/choix_clavier
+		echo "${CHOIXCLAVIER}" > $TMP/choix_clavier
+		break
+	# Sinon, on retourne au choix du clavier :
+	elif  [ "$TESTCLAVIER" = "2" ]; then
+		# On recharge le clavier US par défaut et on sort de la boucle :
+		loadkeys us 1> /dev/null 2> /dev/null
+		unset CHOIXCLAVIER TESTCLAVIER
+		break
+	fi
 done
 
 # C'est fini !

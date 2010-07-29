@@ -29,26 +29,31 @@ while [ listeswap = "" ]; do
 	echo ""
 	echo "Aucune partition d'échange « swap » n'a été trouvée sur cette machine."
 	echo "Voulez-vous continuer l'installation sans partition d'échange ?"
+	echo ""
 	echo -n "Votre choix (oui/non) : "
 	read NOSWAP;
 	# Si l'utilisateur ne veut pas continuer :
 	if [ "$NOSWAP" = "non" ]; then
 		echo "Abandon. Créez une partition d'échange « swap » avec 'cfdisk',"
 		echo "'fdisk' ou 'parted' puis relancez l'installateur."
-		exit 1
+		touch $TMP/ignorer_swap
+		break
 	# Si l'utilisateur ne veut pas de swap :
 	elif [ "$NOSWAP" = "oui" ]; then
 		touch $TMP/ignorer_swap
-		exit 0
+		break
 	else
 		echo "Veuillez répondre par « oui » ou par « non » uniquement."
 		sleep 2
-		continue;
+		continue
 	fi
 done
 
 # Si l'on trouve une ou plusieurs swaps :
 while [ 0 ]; do
+	if [ -r $TMP/ignorer_swap ]; then
+		break
+	fi
 	clear
 	echo -e "\033[1;32mUne ou plusieurs partitions d'échange ont été détectées.\033[0;0m"
 	echo ""
@@ -67,26 +72,28 @@ while [ 0 ]; do
 	if [ "$SWAPSELECT" = "" ]; then
 		echo "Aucune partition n'a été entrée. Voulez-vous ignorer la création"
 		echo "d'une partition d'échange ?"
+		echo ""
 		echo -n "Votre choix (oui/non) : "
 		read ABANDONSWAP;
 		# Si l'utilisateur ne veut pas continuer :
 		if [ "$ABANDONSWAP" = "oui" ]; then
 			echo "La création de partition d'échange sera ignorée."
+			sleep 2
 			touch $TMP/ignorer_swap
-			exit 0
+			continue
 		elif [ "$ABANDONSWAP" = "non" ]; then
-			continue;
+			continue
 		else
 			echo "Veuillez répondre par « oui » ou par « non » uniquement."
 			sleep 2
-			continue;
+			continue
 		fi
 	else
 		# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
 		if ! grep "/dev/" ${SWAPSELECT}; then
 			echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 			sleep 2
-			continue;
+			continue
 		# Si tout semble OK, on active la swap et on l'ajoute au fichier 'choix_swap' :
 		else
 			mkswap -v1 ${SWAPSELECT}
@@ -101,7 +108,7 @@ while [ 0 ]; do
 			cat $TMP/choix_swap
 			echo -n "Appuyez sur ENTRÉE  pour continuer."
 			read BLAH;
-			exit 0
+			break
 		fi
 	fi
 done
