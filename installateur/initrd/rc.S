@@ -26,6 +26,9 @@ fi
 # On charge les paramètres pour le shell ($PATH, invite, etc.)
 . /etc/profile
 
+# On lance la configuration du clavier d'office :
+. /usr/lib/installateur/clavier.sh
+
 # On affiche la mini-aide de bienvenue :
 cat /etc/issue
 

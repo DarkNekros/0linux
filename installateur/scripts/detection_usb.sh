@@ -13,7 +13,7 @@ fi
 DETECTION="`cat $TMP/reponse`"
 rm -f $TMP/reponse
 
-# Saisie manuelle du lecteur optique :
+# Saisie manuelle du lecteur :
 if [ "$DETECTION" = "${MANUALDETECTUSB_LABEL}" ]; then
 	enterusbdev 2> $TMP/reponse
 	
@@ -32,7 +32,7 @@ else
 	
 	for usb in /dev/sd*; do
 		USBDEVDIR="`echo $usb | cut -d'/' -f2`"
-		mount -o ro -t vfat $usb /var/log/mount$USBDEVDIR 1> /dev/null 2> /dev/null
+		mount -o ro $usb /var/log/mount$USBDEVDIR 1> /dev/null 2> /dev/null
 		
 		# Périphérique trouvé :
 		if [ $? = 0 ]; then
