@@ -23,6 +23,9 @@ if [ -x /etc/rc.d/rc.inet1 ]; then
 	/bin/sh /etc/rc.d/rc.inet1
 fi
 
+# On charge la police :
+. /etc/rc.d/rc.font
+
 # On charge les paramètres pour le shell ($PATH, invite, etc.)
 . /etc/profile
 
@@ -30,6 +33,8 @@ fi
 . /usr/lib/installateur/clavier.sh
 
 # On affiche la mini-aide de bienvenue :
+clear
 cat /etc/issue
+echo ""
 
 # C'est fini  !
