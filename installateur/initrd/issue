@@ -1,4 +1,4 @@
-Système autonome 0 Linux - Bienvenue !
+\033[1;32mSystème autonome 0 Linux - Bienvenue !\033[0;0m
 --------------------------------------
 
 Vous devez avoir préparé une ou plusieurs partitions de type 'Linux' pour

@@ -37,4 +37,6 @@ clear
 cat /etc/issue
 echo ""
 
+/bin/bash --login
+
 # C'est fini  !

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Fichier profil pour le système autonome, différent de celui sur le système installé.
+# Fichier profil pour le système autonome, différent de celui du système installé.
 
 # On définit un PATH large :
 PATH="$PATH:/bin:/sbin:/usr/bin:/usr/lib/installateur"
@@ -36,8 +36,5 @@ date --date='2 days ago'
 
 # L'UTF-8 est censé fonctionner mais ça ne coûte rien :
 unicode_start 1> /dev/null 2> /dev/null
-
-# On charge d'office une police compatible avec le français et l'UTF-8 :
-setfont /lib/kbd/consolefonts/lat9w-12.psfu.gz
 
 # C'est fini !
