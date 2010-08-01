@@ -44,7 +44,7 @@ fi
 # La racine doit être montée en lecture seule :
 LECTURESEULE=oui
 if touch /fichier_test 2>/dev/null; then
-	rm -f /fsrwtestfile
+	rm -f /fichier_test
 	LECTURESEULE=non
 else
 	echo "Évaluation du système de fichiers racine : OK, lecture seule."

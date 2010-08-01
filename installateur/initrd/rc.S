@@ -1,42 +1,59 @@
 #!/bin/sh
 # rc.S : Initialisation du système.
 
+# On spécifie un $PATH avant tout:
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+export PATH
+
 # On supprime tout 'mtab' superflu :
-/bin/rm -f /etc/mtab* /etc/nologin 1> /dev/null 2> /dev/null
+rm -f /etc/mtab* /etc/nologin 1> /dev/null 2> /dev/null
 
 # On monte /proc :
-/sbin/mount /proc 1> /dev/null 2> /dev/null
+mount /proc 1> /dev/null 2> /dev/null
 
 # On lance 'udev' :
-/bin/bash /etc/rc.d/rc.udev start
+. /etc/rc.d/rc.udev start
+
+# On règle l'horloge système selon l'horloge matérielle :
+if [ -x /sbin/hwclock ]; then
+	if grep -wq "^UTC" /etc/hardwareclock ; then
+		hwclock --utc --hctosys
+	else
+		hwclock --localtime --hctosys
+	fi
+fi
 
 # On active 'syslog' pour épurer l'affichage :
-/sbin/syslogd 2> /dev/null
-/sbin/klogd -c 3 1> /dev/null
+syslogd 2> /dev/null
+klogd -c 3 1> /dev/null
 
 # On monte tout notre 'fstab' :
-/sbin/mount -o remount,rw /
-/sbin/mount -a 1> /dev/null 2> /dev/null
+mount -o remount,rw /
+mount -a 1> /dev/null 2> /dev/null
 
 # On tente d'activer le réseau :
 if [ -x /etc/rc.d/rc.inet1 ]; then
-	/bin/sh /etc/rc.d/rc.inet1
+	. /etc/rc.d/rc.inet1
 fi
 
 # On charge la police :
 . /etc/rc.d/rc.font
 
 # On charge les paramètres pour le shell ($PATH, invite, etc.)
-. /etc/profile
+source /etc/profile
 
 # On lance la configuration du clavier d'office :
 . /usr/lib/installateur/clavier.sh
 
 # On affiche la mini-aide de bienvenue :
 clear
-cat /etc/issue
+echo "\033[1;32mSystème autonome 0 Linux - Bienvenue !\033[0;0m"
+echo "--------------------------------------"
 echo ""
-
-/bin/bash --login
+echo "Vous devez avoir préparé une ou plusieurs partitions de type 'Linux' pour"
+echo "installer le système 0. Il est également recommandé de créer une partition"
+echo "d'échange (type 'swap'). Utilisez pour cela 'cfdik', 'fdisk' ou 'parted' ou"
+echo "bien voyez l'aide dans l'installateur ci-après."
+echo ""
 
 # C'est fini  !

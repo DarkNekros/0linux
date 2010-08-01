@@ -26,17 +26,17 @@ dmesg -s 65536 > /var/log/dmesg
 
 # Lancement de syslog :
 if [ -x /etc/rc.d/rc.syslog -a -x /usr/sbin/syslogd -a -d /var/log ]; then
-	. /etc/rc.d/rc.syslog start
+	. /etc/rc.d/rc.syslog start &
 fi
 
 # Initialisation du matériel réseau :
 if [ -x /etc/rc.d/rc.inet1 ]; then
-	. /etc/rc.d/rc.inet1
+	. /etc/rc.d/rc.inet1 &
 fi
 
 # Lancement des démons réseau :
 if [ -x /etc/rc.d/rc.inet2 ]; then
-	. /etc/rc.d/rc.inet2
+	. /etc/rc.d/rc.inet2 &
 fi
 
 # Montage du reste des systèmes de fichiers :
@@ -56,7 +56,7 @@ chmod 1777 /tmp /var/tmp
 
 # Lancement des scripts System V s'il en existe pour ce niveau d'exécution :
 if [ -x /etc/rc.d/rc.sysvinit ]; then
-	. /etc/rc.d/rc.sysvinit
+	. /etc/rc.d/rc.sysvinit &
 fi
 
 # Mise à jour de l'indexation des polices :
@@ -98,12 +98,12 @@ fi
 
 # Lancement de  D-Bus :
 if [ -x /etc/rc.d/rc.messagebus ]; then
-	. /etc/rc.d/rc.messagebus start
+	. /etc/rc.d/rc.messagebus start &
 fi
 
 # Lancement de HAL :
 if [ -x /etc/rc.d/rc.hald ]; then
-	. /etc/rc.d/rc.hald start
+	. /etc/rc.d/rc.hald start &
 fi
 
 # Lancement de dcron :
@@ -113,12 +113,12 @@ fi
 
 # Lancement du serveur de pointage GPM :
 if [ -x /etc/rc.d/rc.gpm ]; then
-	. /etc/rc.d/rc.gpm start
+	. /etc/rc.d/rc.gpm start &
 fi
 
-# Lancement du script « local» personnael :
+# Lancement du script « local » personnael :
 if [ -x /etc/rc.d/rc.local ]; then
-	. /etc/rc.d/rc.local
+	. /etc/rc.d/rc.local &
 fi
 
 # C'est fini !
