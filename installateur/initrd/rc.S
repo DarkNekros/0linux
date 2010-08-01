@@ -55,5 +55,7 @@ echo "installer le système 0. Il est également recommandé de créer une parti
 echo "d'échange (type 'swap'). Utilisez pour cela 'cfdik', 'fdisk' ou 'parted' ou"
 echo "bien voyez l'aide dans l'installateur ci-après."
 echo ""
+echo "Appuyez sur ENTRÉE pour continuer."
+read BLAH;
 
 # C'est fini  !
