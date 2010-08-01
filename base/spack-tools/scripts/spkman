@@ -181,7 +181,7 @@ pkginstall () {
         (growl 1 "Broken package: neither \"files.xz\" nor \"files.gz\" found inside.") || return 1
     fi
     preinstall $dry "$cpio" <"$cpio" || return 1
-    echo "  checking the the file archive..." >&3
+    echo "  checking the file archive..." >&3
     cpio -i --to-stdout "$files" < "$cpio" 2>"$TMPDIR/zsize"| $unzip 2>/dev/null \
                               | cpio -t 2>"$TMPDIR/size"| filescout $dry
     cpiocheck "$TMPDIR/zsize" "$files"|| return 1 # just skip the package.

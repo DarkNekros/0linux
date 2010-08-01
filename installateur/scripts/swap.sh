@@ -62,7 +62,8 @@ while [ 0 ]; do
 	echo "d'échange que vous souhaitez activer parmi la liste suivante :"
 	echo ""
 	# On liste les swaps et leur taille :
-	for partitionswap in listeswap ; do
+	listerswaps=listeswap
+	for partitionswap in listerswaps ; do
 		TAILLE=taille_partition ${partitionswap}
 		echo "${partitionswap} : swap de ${TAILLE}"
 	done
