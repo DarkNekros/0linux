@@ -47,15 +47,18 @@ source /etc/profile
 
 # On affiche la mini-aide de bienvenue :
 clear
-echo "\033[1;32mSystème autonome 0 Linux - Bienvenue !\033[0;0m"
+echo -e "\033[1;32mSystème autonome 0 Linux - Bienvenue !\033[0;0m"
 echo "--------------------------------------"
 echo ""
 echo "Vous devez avoir préparé une ou plusieurs partitions de type 'Linux' pour"
 echo "installer le système 0. Il est également recommandé de créer une partition"
-echo "d'échange (type 'swap'). Utilisez pour cela 'cfdik', 'fdisk' ou 'parted' ou"
-echo "bien voyez l'aide dans l'installateur ci-après."
+echo "d'échange (type 'swap')."
+echo "Utilisez pour cela 'cfdisk', 'fdisk' ou 'parted'. Voyez l'aide dans"
+echo "l'installateur ci-après pour plus d'informations."
 echo ""
 echo "Appuyez sur ENTRÉE pour continuer."
 read BLAH;
+
+/bin/bash --login +h
 
 # C'est fini  !
