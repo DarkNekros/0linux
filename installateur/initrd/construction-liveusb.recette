@@ -1,0 +1,52 @@
+#!/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+# *** À LANCER EN ROOT ! ***
+
+set -e
+umask 022
+CWD=$(pwd)
+
+PAQUETS=${PAQUETS:-/marmite/0/paquets}
+LIVEOS=${LIVEOS:-/marmite/0/liveos}
+INITRDGZ=${INITRDGZ:-/tmp/initrd.gz}
+
+# On crée et on vide le répertoire d'accueil :
+mkdir -p ${LIVEOS}
+rm -rf ${LIVEOS}/*
+
+# On installe les paquets pour le LiveOS :
+spkman -i ---quiet --root=${LIVEOS} ${PAQUETS}/base/*.cpio
+spkman -i ---quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
+
+for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* libidn* libpng* libssh2* popt*; do
+	spkman -i ---quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio
+done
+
+# On allège :
+rm -rf ${LIVEOS}/usr/doc/*
+rm -rf ${LIVEOS}/usr/share/gtk-doc/*
+rm -f ${LIVEOS}/lib/*.{a,la,so.*,so}
+rm -rf ${LIVEOS}/usr/lib/*
+
+# On copie nos fichiers spéciaux pour le Live :
+install -m 644 $CWD/fstab ${LIVEOS}/etc
+install -m 755 $CWD/{HOSTNAME,profile} ${LIVEOS}/etc
+install -m 755 $CWD/{rc.*} ${LIVEOS}/etc/rc.d
+
+# On copie l'installateur et l'aide :
+install -m 755 $CWD/../scripts/{installateur,*.sh} ${LIVEOS}/sbin
+install -m 644 $CWD/../scripts/aide.txt ${LIVEOS}
+
+# On crée le lien pour 'init' :
+ln -sf sbin/init ${LIVEOS}/init
+
+# On met à jour les liens des bibliothèques :
+cd ${LIVEOS}
+chroot . /sbin/ldconfig
+
+# On crée l'initrd :
+rm -f ${INITRDGZ}
+find . | cpio -o -H newc | gzip -9 > ${INITRDGZ}
+cd -
+
+exit 0
