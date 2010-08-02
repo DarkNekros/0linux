@@ -19,8 +19,8 @@ for paq in base-systeme* etc* eglibc* sgml*; do
 	spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq}
 done
 
-for paq in find ${PAQUETS}/base/*.cpio -print | grep -v "linux-source*" | \
-	grep -v "base-systeme*" | grep -v "etc*" | grep -v "eglibc*" | grep -v "sgml*"; do
+for paq in $(find ${PAQUETS}/base/*.cpio -print | grep -v "linux-source*" \
+	| grep -v "base-systeme*" | grep -v "etc*" | grep -v "eglibc*" | grep -v "sgml*"); do
 	spkman -i --quiet --root=${LIVEOS} ${paq}
 done
 
