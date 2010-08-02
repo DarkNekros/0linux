@@ -35,7 +35,7 @@ rm -rf ${LIVEOS}/usr/lib/*
 # On copie nos fichiers spéciaux pour le Live :
 install -m 644 $CWD/fstab ${LIVEOS}/etc
 install -m 755 $CWD/{HOSTNAME,profile} ${LIVEOS}/etc
-install -m 755 $CWD/{rc.*} ${LIVEOS}/etc/rc.d
+install -m 755 $CWD/rc.* ${LIVEOS}/etc/rc.d
 
 # On copie l'installateur et l'aide :
 install -m 755 $CWD/../scripts/{installateur,*.sh} ${LIVEOS}/sbin
