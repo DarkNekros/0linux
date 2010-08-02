@@ -19,11 +19,7 @@ for paq in base-systeme* etc* eglibc* sgml*; do
 	spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq}
 done
 
-for paq in $(find ${PAQUETS}/base \! -name "base-systeme*" -o \! -name "base-systeme*" \
-	-o \! -name "etc*" -o \! -name "eglibc*" -o \! -name "sgml*" | sort); do
-	spkman -i --quiet --root=${LIVEOS} ${paq}
-done
-
+spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/*.cpio
 spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
 
 for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* libidn* libpng* libssh2* popt*; do
@@ -50,7 +46,7 @@ ln -sf sbin/init ${LIVEOS}/init
 
 # On met à jour les liens des bibliothèques :
 cd ${LIVEOS}
-chroot . /sbin/ldconfig
+chroot . /sbin/spkman -r /var/log/paquets/linux-source-*.cpio
 
 # On crée l'initrd :
 rm -f ${INITRDGZ}
