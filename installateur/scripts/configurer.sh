@@ -11,8 +11,8 @@ if [ -r $TMP/choix_clavier ]; then
 	DISPOCLAVIER="`cat $TMP/choix_clavier`"
 	
 	echo "#!/bin/env bash" > ${SETUPROOT}/etc/rc.d/rc.keymap
-	echo "# Chargement de la disposition des touches du clavier. Les dispositions se trouvent dans /lib/kbd/keymaps." \
-		>> ${SETUPROOT}/etc/rc.d/rc.keymap
+	echo "# Chargement de la disposition des touches du clavier." >> ${SETUPROOT}/etc/rc.d/rc.keymap
+	echo "# Les dispositions se trouvent dans /lib/kbd/keymaps." >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "if [ -x /usr/bin/loadkeys ]; then" >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "	/usr/bin/loadkeys ${DISPOCLAVIER}" >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "fi" >> ${SETUPROOT}/etc/rc.d/rc.keymap

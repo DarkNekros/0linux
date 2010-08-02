@@ -87,7 +87,7 @@ while [ 0 ]; do
 	fi
 	case "$CHOIXMENUPRINCIPAL" in
 	"aide")
-		less /sbin/aide.txt
+		less /aide.txt
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;

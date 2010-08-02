@@ -31,6 +31,9 @@ klogd -c 3 1> /dev/null
 mount -o remount,rw /
 mount -a 1> /dev/null 2> /dev/null
 
+# On donne un nom à notre hôte :
+hostname --file /etc/HOSTNAME
+
 # On tente d'activer le réseau :
 if [ -x /etc/rc.d/rc.inet1 ]; then
 	. /etc/rc.d/rc.inet1
@@ -43,7 +46,7 @@ fi
 source /etc/profile
 
 # On lance la configuration du clavier d'office :
-. /usr/lib/installateur/clavier.sh
+. clavier.sh
 
 # On affiche la mini-aide de bienvenue :
 clear
@@ -57,6 +60,7 @@ echo "Utilisez pour cela 'cfdisk', 'fdisk' ou 'parted'. Voyez l'aide dans"
 echo "l'installateur ci-après pour plus d'informations."
 echo ""
 echo "Appuyez sur ENTRÉE pour continuer."
+echo ""
 read BLAH;
 
 /bin/bash --login +h

@@ -2,7 +2,7 @@
 # Fichier profil pour le système autonome, différent de celui du système installé.
 
 # On définit un PATH large :
-PATH="$PATH:/bin:/sbin:/usr/bin:/usr/lib/installateur"
+PATH="$PATH:/bin:/sbin:/usr/bin"
 PATH="$PATH:/mnt/usr/local/bin:/mnt/usr/bin:/mnt/bin"
 PATH="$PATH:/mnt/usr/local/sbin:/mnt/usr/sbin:/mnt/sbin"
 PATH="$PATH:/mnt/linux/usr/local/bin:/mnt/linux/usr/bin:/mnt/linux/bin"
