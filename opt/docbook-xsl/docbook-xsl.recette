@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://downloads.sourceforge.net/project/docbook/docbook-xsl-doc/1.75.2/docbook-xsl-1.75.2.tar.bz2?use_mirror=freefr}
+WGET=${WGET:-http://downloads.sourceforge.net/project/docbook/docbook-xsl-doc/1.75.2/docbook-xsl-doc-1.75.2.tar.bz2?use_mirror=freefr&ts=1280770527&r=http://sourceforge.net/projects/docbook/files/}
 WGETDOC=${WGETDOC:-http://downloads.sourceforge.net/project/docbook/docbook-xsl-doc/1.75.2/docbook-xsl-doc-1.75.2.tar.bz2?use_mirror=freefr}
 DOC="AUTHORS BUGS COPYING* INSTALL NEWS* README* RELEASE-NOTES.* TODO doc/"
 ########## |-----handy-ruler------------------------------------------------------|
