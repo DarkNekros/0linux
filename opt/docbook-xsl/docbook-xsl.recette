@@ -23,7 +23,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://downloads.sourceforge.net/project/docbook/docbook-xsl-doc/1.75.2/docbook-xsl-doc-1.75.2.tar.bz2?use_mirror=freefr&ts=1280770527&r=http://sourceforge.net/projects/docbook/files/}
 WGETDOC=${WGETDOC:-http://downloads.sourceforge.net/project/docbook/docbook-xsl-doc/1.75.2/docbook-xsl-doc-1.75.2.tar.bz2?use_mirror=freefr}
-DOC="AUTHORS BUGS COPYING* INSTALL NEWS* README* RELEASE-NOTES.* TODO doc/"
+DOC="AUTHORS COPYING"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Feuilles de style XSL pour docbook"
 ########################################
@@ -76,8 +76,8 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On copie l'ensemble des répertoires récursivement, exceptée la doc:
-cp -ar doc/{VERSION,common,eclipse,extensions,fo,highlighting,html*,images,javahelp,lib,manpages,params,profiling,slides,template,website,xhtml} \
-	${PKG}/usr/share/xml/docbook/xsl-stylesheets-${VERSION}
+cp -ar doc/ ${PKG}/usr/share/xml/docbook/xsl-stylesheets-${VERSION}
+rm -f ${PKG}/usr/share/xml/docbook/xsl-stylesheets-${VERSION}/{AUTHORS,COPYING}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
