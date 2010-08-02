@@ -15,7 +15,15 @@ mkdir -p ${LIVEOS}
 rm -rf ${LIVEOS}/*
 
 # On installe les paquets pour le LiveOS :
-spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/*.cpio
+for paq in base-systeme* etc* eglibc* sgml*; do
+	spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq}
+done
+
+for paq in find ${PAQUETS}/base/*.cpio -print | grep -v "linux-source*" | \
+	grep -v "base-systeme*" | grep -v "etc*" | grep -v "eglibc*" | grep -v "sgml*"; do
+	spkman -i --quiet --root=${LIVEOS} ${paq}
+done
+
 spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
 
 for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* libidn* libpng* libssh2* popt*; do
