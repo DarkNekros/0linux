@@ -48,6 +48,10 @@ ln -sf sbin/init ${LIVEOS}/init
 cd ${LIVEOS}
 chroot . /sbin/spkman -r /var/log/paquets/linux-source-*.cpio
 
+# On met à jour les dépendances des modules :
+cd ${LIVEOS}
+chroot . /sbin/depmod -a
+
 # On crée l'initrd :
 rm -f ${INITRDGZ}
 find . | cpio -o -H newc | gzip -9 > ${INITRDGZ}

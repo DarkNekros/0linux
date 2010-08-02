@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-docbook-xsl}
 VERSION=${VERSION:-1.75.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-docbook-xsl}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -124,17 +123,21 @@ config() {
 
 # On installe les catalogues :
 if [ ! -f /etc/xml/catalog ]; then
-	xmlcatalog --noout --create /etc/xml/catalog
+	xmlcatalog --noout --create etc/xml/catalog
 fi
 
 xmlcatalog --noout --add "rewriteSystem" "http://docbook.sourceforge.net/release/xsl/1.75.2" \
-	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" /etc/xml/catalog
+	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" \
+	etc/xml/catalog
 xmlcatalog --noout --add "rewriteURI" "http://docbook.sourceforge.net/release/xsl/1.75.2" \
-	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" /etc/xml/catalog
+	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" \
+	etc/xml/catalog
 xmlcatalog --noout --add "rewriteSystem" "http://docbook.sourceforge.net/release/xsl/current" \
-	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" /etc/xml/catalog
+	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" \
+	etc/xml/catalog
 xmlcatalog --noout --add "rewriteURI" "http://docbook.sourceforge.net/release/xsl/current" \
-	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" /etc/xml/catalog
+	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" \
+	etc/xml/catalog
 
 EOF
 
@@ -152,7 +155,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then

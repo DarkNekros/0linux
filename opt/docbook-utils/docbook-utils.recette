@@ -11,7 +11,6 @@ EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-docbook-utils}
 BUILD=${BUILD:-1}
 
-
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
 ARCH=${ARCH:-x86_64}
@@ -181,7 +180,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then

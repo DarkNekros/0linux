@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-docbook}
 VERSION=${VERSION:-4.5}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-docbook-dtd}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -136,10 +135,10 @@ config() {
 }
 
 # On installe les catalogues :
-install-catalog --add /etc/sgml/sgml-docbook-dtd-3.1.cat /usr/share/sgml/docbook/sgml-dtd-3.1/catalog
-install-catalog --add /etc/sgml/sgml-docbook-dtd-3.1.cat /etc/sgml/sgml-docbook.cat
-install-catalog --add /etc/sgml/sgml-docbook-dtd-4.5.cat /usr/share/sgml/docbook/sgml-dtd-4.5/catalog
-install-catalog --add /etc/sgml/sgml-docbook-dtd-4.5.cat /etc/sgml/sgml-docbook.cat
+install-catalog --add etc/sgml/sgml-docbook-dtd-3.1.cat usr/share/sgml/docbook/sgml-dtd-3.1/catalog
+install-catalog --add etc/sgml/sgml-docbook-dtd-3.1.cat etc/sgml/sgml-docbook.cat
+install-catalog --add etc/sgml/sgml-docbook-dtd-4.5.cat usr/share/sgml/docbook/sgml-dtd-4.5/catalog
+install-catalog --add etc/sgml/sgml-docbook-dtd-4.5.cat etc/sgml/sgml-docbook.cat
 
 EOF
 
@@ -157,7 +156,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then

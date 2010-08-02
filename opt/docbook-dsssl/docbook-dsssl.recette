@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-docbook-dsssl}
 VERSION=${VERSION:-1.79}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-docbook-dsssl}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -138,9 +137,9 @@ config() {
 }
 
 # On installe les catalogues :
-install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/catalog
-install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/common/catalog
-install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/dsssl-docbook-stylesheets.cat
+install-catalog --add etc/sgml/dsssl-docbook-stylesheets.cat usr/share/sgml/docbook/dsssl-stylesheets-1.79/catalog
+install-catalog --add etc/sgml/dsssl-docbook-stylesheets.cat usr/share/sgml/docbook/dsssl-stylesheets-1.79/common/catalog
+install-catalog --add etc/sgml/sgml-docbook.cat etc/sgml/dsssl-docbook-stylesheets.cat
 
 EOF
 
