@@ -24,19 +24,19 @@ while [ 0 ]; do
 	read MEDIA;
 	case "$MEDIA" in
 	"dvd")
-		. $PWD/dvd.sh
+		. dvd.sh
 		break
 	;;
 	"usb")
-		. $PWD/usb.sh
+		. usb.sh
 		break
 	;;
 	"distant")
-		. $PWD/rsync.sh
+		. rsync.sh
 		break
 	;;
 	"local")
-		. $PWD/hdd.sh
+		. hdd.sh
 		break
 	*)
 		echo "Veuillez entrer un média ou un emplacement valide."

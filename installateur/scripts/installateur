@@ -87,7 +87,7 @@ while [ 0 ]; do
 	fi
 	case "$CHOIXMENUPRINCIPAL" in
 	"aide")
-		less /usr/lib/installateur/aide.txt
+		less /sbin/aide.txt
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;
