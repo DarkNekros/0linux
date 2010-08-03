@@ -92,7 +92,7 @@ ln -sf ../../bin/tftp ${PKG}/usr/bin/tftp
 ln -sf ../../bin/traceroute ${PKG}/usr/bin/traceroute
 
 # Ces binaires doivent être setuid root :
-chmod 4711 /bin/{rcp,rlogin,rsh,ping,ping6,traceroute}
+fakeroot chmod 4711 /bin/{rcp,rlogin,rsh,ping,ping6,traceroute}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
