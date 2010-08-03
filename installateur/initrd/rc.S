@@ -45,26 +45,4 @@ fi
 # On charge les paramètres pour le shell ($PATH, invite, etc.)
 source /etc/profile
 
-# On lance la configuration du clavier d'office :
-. clavier.sh
-
-# On affiche la mini-aide de bienvenue :
-clear
-echo -e "\033[1;32mSystème autonome 0 Linux - Bienvenue !\033[0;0m"
-echo "--------------------------------------"
-echo ""
-echo "Vous devez avoir préparé une ou plusieurs partitions Linux pour"
-echo "installer le système 0. Il est également recommandé de créer une partition"
-echo "d'échange (ou « swap »)."
-echo ""
-echo "Pour partitionner vos disques durs, Utilisez 'cfdisk', 'fdisk' ou 'parted'."
-echo "Pour débutez l'installation, tapez « installateur »."
-echo ""
-echo "Voyez l'aide dans l'installateur pour plus d'informations."
-echo "Appuyez sur ENTRÉE pour continuer."
-echo ""
-read BLAH;
-
-/bin/bash --login +h
-
 # C'est fini  !

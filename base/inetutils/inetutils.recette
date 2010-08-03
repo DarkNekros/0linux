@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-inetutils}
-VERSION=${VERSION:-1.6.91}
+VERSION=${VERSION:-1.8}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-inetutils}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -20,10 +19,10 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-ftp://alpha.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS COPYING ChangeLog* INSTALL NEWS README* THANKS TODO"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Ensemble de programmes réseau basiques"
+SLACKDESC="Ensemble de programmes réseau de base"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -92,6 +91,9 @@ ln -sf ../../bin/rlogin ${PKG}/usr/bin/rlogin
 ln -sf ../../bin/tftp ${PKG}/usr/bin/tftp
 ln -sf ../../bin/traceroute ${PKG}/usr/bin/traceroute
 
+# Ces binaires doivent être setuid root :
+chmod 4711 /bin/{rcp,rlogin,rsh,ping,ping6,traceroute}
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -138,7 +140,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
