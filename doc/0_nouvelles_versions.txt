@@ -6,8 +6,8 @@ ImageMagick 6.6.3-1
 lvm 2.02.71
 berkeley-db 5.0.26 
 ruby 1.9.1-p429 
-autoconf-2.66
-linux 2.6.34.1 
+autoconf-2.67
+linux 2.6.35
 python 2.7
 udev 159
 pkg-config 0.25

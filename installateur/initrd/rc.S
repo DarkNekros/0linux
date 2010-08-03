@@ -11,9 +11,6 @@ rm -f /etc/mtab* /etc/nologin 1> /dev/null 2> /dev/null
 # On monte /proc :
 mount /proc 1> /dev/null 2> /dev/null
 
-# On lance 'udev' :
-. /etc/rc.d/rc.udev start
-
 # On règle l'horloge système selon l'horloge matérielle :
 if [ -x /sbin/hwclock ]; then
 	if grep -wq "^UTC" /etc/hardwareclock ; then
@@ -30,6 +27,9 @@ klogd -c 3 1> /dev/null
 # On monte tout notre 'fstab' :
 mount -o remount,rw /
 mount -a 1> /dev/null 2> /dev/null
+
+# On lance 'udev' :
+. /etc/rc.d/rc.udev start
 
 # On donne un nom à notre hôte :
 hostname --file /etc/HOSTNAME
