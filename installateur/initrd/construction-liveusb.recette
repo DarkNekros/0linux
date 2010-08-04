@@ -49,23 +49,20 @@ if [ -r ${LIVEOS}/bin/bash4.new ]; then
 	mv ${LIVEOS}/bin/bash{4.new,}
 fi
 
-# On chroot dans le système autonome :
-chroot ${LIVEOS}
+# On va chrooter dans le système autonome :
+cd ${LIVEOS}
 
 # On désinstalle 'linux-source', inutile ici :
-/sbin/spkman -r --quiet /var/log/paquets/linux-source-*.cpio
+chroot . /sbin/spkman -r --quiet /var/log/paquets/linux-source-*.cpio
 
 # On met à jour les liens des bibliothèques :
-/sbin/ldconfig
+chroot . /sbin/ldconfig
  
 # On met à jour les dépendances des modules du noyau :
-/sbin/depmod -a
+chroot . /sbin/depmod -a
 
 # On évite que se lance 'sshd' (+ effet d'escalier à l'affichage) :
-/bin/chmod -x /etc/rc.d/rc.sshd
-
-# On sort :
-exit
+chroot . /bin/chmod -x /etc/rc.d/rc.sshd
 
 # On crée l'initrd :
 rm -f ${INITRDGZ}
