@@ -46,17 +46,17 @@ ln -sf sbin/init ${LIVEOS}/init
 
 # On met à jour les liens des bibliothèques :
 cd ${LIVEOS}
-chroot . spkman -r --quiet /var/log/paquets/linux-source-*.cpio
+chroot . /sbin/spkman -r --quiet /var/log/paquets/linux-source-*.cpio
 
 # On met à jour les liens des bibliothèques :
-chroot . ldconfig
+chroot . /sbin/ldconfig
  
 # On met à jour les dépendances des modules du noyau :
 cd ${LIVEOS}
-chroot . depmod -a
+chroot . /sbin/depmod -a
 
 # On évite que se lance 'sshd' (effet d'escalier) :
-chroot . chmod -x /etc/rc.d/rc.sshd
+chroot . /bin/chmod -x /etc/rc.d/rc.sshd
 
 # On crée l'initrd :
 rm -f ${INITRDGZ}
