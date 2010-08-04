@@ -44,6 +44,11 @@ install -m 644 $CWD/../scripts/aide.txt ${LIVEOS}
 # On crée le lien pour 'init' :
 ln -sf sbin/init ${LIVEOS}/init
 
+# On s'assure de la présence de 'bash' :
+if [ -r ${LIVEOS}/bin/bash4.new ]; then
+	mv ${LIVEOS}/bin/bash{4.new,}
+fi
+
 # On chroot dans le système autonome :
 chroot ${LIVEOS}
 
