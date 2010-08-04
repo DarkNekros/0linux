@@ -44,19 +44,23 @@ install -m 644 $CWD/../scripts/aide.txt ${LIVEOS}
 # On crée le lien pour 'init' :
 ln -sf sbin/init ${LIVEOS}/init
 
-# On met à jour les liens des bibliothèques :
-cd ${LIVEOS}
-chroot . /sbin/spkman -r --quiet /var/log/paquets/linux-source-*.cpio
+# On chroot dans le système autonome :
+chroot ${LIVEOS}
 
 # On met à jour les liens des bibliothèques :
-chroot . /sbin/ldconfig
+/sbin/spkman -r --quiet /var/log/paquets/linux-source-*.cpio
+
+# On met à jour les liens des bibliothèques :
+/sbin/ldconfig
  
 # On met à jour les dépendances des modules du noyau :
-cd ${LIVEOS}
-chroot . /sbin/depmod -a
+/sbin/depmod -a
 
 # On évite que se lance 'sshd' (effet d'escalier) :
-chroot . /bin/chmod -x /etc/rc.d/rc.sshd
+/bin/chmod -x /etc/rc.d/rc.sshd
+
+# On sort :
+exit
 
 # On crée l'initrd :
 rm -f ${INITRDGZ}
