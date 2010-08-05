@@ -16,14 +16,14 @@ mkdir -p ${LIVEOS}
 
 # On installe les paquets pour le LiveOS :
 for paq in base-systeme* etc* eglibc* sgml*; do
-	spkman -i --root=${LIVEOS} ${PAQUETS}/base/${paq}
+	spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq}
 done
 
-spkman -i --root=${LIVEOS} ${PAQUETS}/base/*.cpio
-spkman -i --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
+spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/*.cpio
+spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
 
 for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* libidn* libpng* libssh2* popt*; do
-	spkman -i --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio
+	spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio
 done
 
 # On allège :
@@ -66,7 +66,7 @@ chroot . /bin/chmod -x /etc/rc.d/rc.sshd
 
 # On crée l'initrd :
 rm -f ${INITRDGZ}
-find . | cpio -o -H newc | gzip -9 > ${INITRDGZ}
+find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
 cd -
 
 exit 0

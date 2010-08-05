@@ -121,6 +121,9 @@ if [ -x /etc/rc.d/rc.local ]; then
 	. /etc/rc.d/rc.local &
 fi
 
+# On attend que les messages ne polluent plus l'écran :
+sleep 3
+
 # On lance la configuration du clavier d'office :
 . clavier.sh
 
@@ -139,7 +142,5 @@ echo "Pour partitionner vos disques durs, invoquez 'cfdisk', 'fdisk' ou 'parted'
 echo "Pour débutez l'installation, tapez « installateur »."
 echo ""
 echo "Vous pouvez maintenant vous connecter en « root »."
-echo "Le mot de passe est « route »".
-echo ""
 
 # C'est fini !
