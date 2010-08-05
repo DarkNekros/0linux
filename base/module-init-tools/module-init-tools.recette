@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-module-init-tools}
-VERSION=${VERSION:-3.11.1}
+VERSION=${VERSION:-3.12}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-module-init-tools}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -87,9 +86,10 @@ make install DESTDIR=${PKG}
 mkdir -p ${PKG}/bin
 ln -sf ../sbin/lsmod ${PKG}/bin/lsmod
 
-# On lie 'modprobe' à /sbin :
+# On lie 'modprobe' et 'depmod 'à /sbin :
 mkdir -p ${PKG}/sbin
 ln -sf ../usr/sbin/modprobe ${PKG}/sbin/modprobe
+ln -sf ../usr/sbin/depmod ${PKG}/sbin/depmod
 
 # On bannit l'usage de /etc/modprobe.conf !
 mkdir -p ${PKG}/etc/modprobe.d/
@@ -146,7 +146,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
