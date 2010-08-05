@@ -276,7 +276,7 @@ postinstall () {
     # $f DRY RUN
     local dry=$1 post="$TMPDIR/post-install.sh"
     echo "  executing the post-install script..." >&3
-    if [ $dry -ne 0 ]; then
+    if [ $dry -eq 0 ]; then
         [ -O /sbin/ldconfig -a -x /sbin/ldconfig ] && /sbin/ldconfig # user may not be root during tests & debugs...
         (cd "$ROOT/" && sh "$post")
     else

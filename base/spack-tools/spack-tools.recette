@@ -5,7 +5,7 @@ set -e
 umask 022
 CWD=$(pwd)
 
-VERSION=${VERSION:-2.4a}
+VERSION=${VERSION:-2.4b}
 NAMETGZ=${NAMETGZ:-spack-tools}
 BUILD=${BUILD:-1}
 
