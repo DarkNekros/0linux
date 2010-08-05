@@ -59,7 +59,7 @@ chroot . /sbin/spkman -r --quiet /var/log/paquets/linux-source-*.cpio
 chroot . /sbin/ldconfig
  
 # On met à jour les dépendances des modules du noyau :
-chroot . /sbin/depmod -a
+chroot . /usr/sbin/depmod -a
 
 # On évite que se lance 'sshd' (+ effet d'escalier à l'affichage) :
 chroot . /bin/chmod -x /etc/rc.d/rc.sshd
