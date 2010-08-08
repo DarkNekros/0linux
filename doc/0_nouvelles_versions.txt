@@ -17,7 +17,7 @@ dhcp 4.2.0
 jdk 6u21 
 gstreamer 0.10.30
 firefox 3.6.8
-thunderbird 3.1.1
+thunderbird 3.1.2
 sqlite 3.7.0.1
 git 1.7.2.1  
 perl-5.12.1
