@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-docbook-utils}
 VERSION=${VERSION:-0.6.14}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-docbook-utils}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -54,44 +54,6 @@ echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
 
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-sed -i 's:/html::' doc/HTML/Makefile.in
-
-# On positionne USE_ARCH :
-export USE_ARCH=32
-
-# Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
-LIBDIRSUFFIX=""
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--build=${TARGET32}
-
-make
-make install DESTDIR=${PKG}
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
-# On re-déballe et on se re-place dans les sources :
-cd $TMP
-rm -rf ${NAME}
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
-
 # On re-vérifie les permissions des sources :
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
@@ -122,6 +84,11 @@ make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On crée les alias utilisée par de nombreux paquets :
+for type in html ps dvi man pdf rtf tex texi txt; do
+	ln -sf docbook2${type} ${PKG}/usr/bin/db2${type}
+done
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
