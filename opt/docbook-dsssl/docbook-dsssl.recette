@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-docbook-dsssl}
 VERSION=${VERSION:-1.79}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-docbook-dsssl}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -136,10 +136,12 @@ config() {
 	fi
 }
 
-# On installe les catalogues :
-install-catalog --add etc/sgml/dsssl-docbook-stylesheets.cat usr/share/sgml/docbook/dsssl-stylesheets-1.79/catalog
-install-catalog --add etc/sgml/dsssl-docbook-stylesheets.cat usr/share/sgml/docbook/dsssl-stylesheets-1.79/common/catalog
-install-catalog --add etc/sgml/sgml-docbook.cat etc/sgml/dsssl-docbook-stylesheets.cat
+# On installe les catalogues (on n'oublie SURTOUT PAS d'indiquer la racine, auquel
+# cas on casse tout le système de documentation des autres paquets. On doit donc
+# chrooter ) :
+chroot . install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/catalog
+chroot . install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/common/catalog
+chroot . install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/dsssl-docbook-stylesheets.cat
 
 EOF
 
@@ -157,7 +159,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then

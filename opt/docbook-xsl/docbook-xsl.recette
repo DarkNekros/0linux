@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-docbook-xsl}
 VERSION=${VERSION:-1.75.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-docbook-xsl}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -121,23 +121,25 @@ config() {
 	fi
 }
 
-# On installe les catalogues :
+# On installe les catalogues (on n'oublie SURTOUT PAS d'indiquer la racine, auquel
+# cas on casse tout le système de documentation des autres paquets. On doit donc
+# chrooter ) :
 if [ ! -f /etc/xml/catalog ]; then
-	xmlcatalog --noout --create etc/xml/catalog
+	chroot . xmlcatalog --noout --create /etc/xml/catalog
 fi
 
-xmlcatalog --noout --add "rewriteSystem" "http://docbook.sourceforge.net/release/xsl/1.75.2" \
+chroot . xmlcatalog --noout --add "rewriteSystem" "http://docbook.sourceforge.net/release/xsl/1.75.2" \
 	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" \
-	etc/xml/catalog
-xmlcatalog --noout --add "rewriteURI" "http://docbook.sourceforge.net/release/xsl/1.75.2" \
+	/etc/xml/catalog
+chroot . xmlcatalog --noout --add "rewriteURI" "http://docbook.sourceforge.net/release/xsl/1.75.2" \
 	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" \
-	etc/xml/catalog
-xmlcatalog --noout --add "rewriteSystem" "http://docbook.sourceforge.net/release/xsl/current" \
+	/etc/xml/catalog
+chroot . xmlcatalog --noout --add "rewriteSystem" "http://docbook.sourceforge.net/release/xsl/current" \
 	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" \
-	etc/xml/catalog
-xmlcatalog --noout --add "rewriteURI" "http://docbook.sourceforge.net/release/xsl/current" \
+	/etc/xml/catalog
+chroot . xmlcatalog --noout --add "rewriteURI" "http://docbook.sourceforge.net/release/xsl/current" \
 	"/usr/share/xml/docbook/xsl-stylesheets-1.75.2" \
-	etc/xml/catalog
+	/etc/xml/catalog
 
 EOF
 
