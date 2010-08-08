@@ -64,8 +64,8 @@ cd ${PKG}/usr/lib${LIBDIRSUFFIX}
 chmod +x $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT
 rm -rf jdk1*
 echo "Extraction en cours..."
-yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT
-mv jdk1.6.0_20 jdk
+yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT --accept-license
+mv jdk1.6.0_21 jdk
 
 # On vérifie les permissions des sources :
 find jdk \
@@ -86,8 +86,8 @@ cd ${PKG}/usr/lib${LIBDIRSUFFIX}
 chmod +x $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT
 rm -rf jdk1*
 echo "Extraction en cours..."
-yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT
-mv jdk1.6.0_20 jdk
+yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT --accept-license
+mv jdk1.6.0_21 jdk
 
 # On vérifie les permissions des sources :
 find jdk \
