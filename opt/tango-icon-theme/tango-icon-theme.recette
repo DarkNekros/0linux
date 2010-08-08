@@ -51,12 +51,7 @@ if [ ! -r ${NAMESRC}-extras-0.1.0.tar.gz ]; then
 fi
 
 # On les vérifie :
-tar ft ${NAMESRC}-extras-0.1.0.tar.gz 1> /dev/null 2> /dev/null
-TARERROR=$?
-if [ ! "$TARERROR" = "0" ]; then
-	echo "Erreur à la lecture de l'archive source. Celle-ci semble corrompue (Erreur $TARERROR)."
-	exit 1
-fi
+tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
@@ -208,11 +203,8 @@ PACKAGING="
 	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
-	if [ ! \"X${NAME}\" = \"X\" ]; then
-		if [ -d $TMP/${NAME} ]; then
-			rm -rf $TMP/${NAME}
-		fi
-	fi"
+	rm -rf $TMP/tango-icon-theme*
+	"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot

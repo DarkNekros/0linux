@@ -198,6 +198,7 @@ PACKAGING="
 		if [ -d $TMP/${NAME} ]; then
 			rm -rf $TMP/${NAME}
 		fi
+		rm -rf $TMP/poppler-data-0.4.0
 	fi"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
