@@ -8,8 +8,7 @@ CWD=$(pwd)
 VERSION=${VERSION:-7.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-pilotes}
-BUILD=${BUILD:-3}
-
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -34,8 +33,8 @@ xf86-video-glint-1.2.4 xf86-video-i128-1.3.3 \
 xf86-video-i740-1.3.2 xf86-video-intel-2.11.0 \
 xf86-video-mach64-6.8.2 xf86-video-mga-1.4.11 \
 xf86-video-neomagic-1.2.4 xf86-video-newport-0.2.3 \
-xf86-video-nouveau-20100407 xf86-video-nv-2.1.17 \
-xf86-video-r128-6.8.1 xf86-video-radeonhd-1.3.0 xf86-video-rendition-4.2.3 \
+xf86-video-nv-2.1.17 xf86-video-r128-6.8.1 \
+xf86-video-radeonhd-1.3.0 xf86-video-rendition-4.2.3 \
 xf86-video-s3-0.6.3 xf86-video-s3virge-1.10.4 \
 xf86-video-savage-2.3.1 \
 xf86-video-sis-0.10.2 xf86-video-sisusb-0.9.3 \
@@ -156,7 +155,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}"
 

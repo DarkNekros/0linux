@@ -12,7 +12,7 @@ python 2.7
 udev 159
 pkg-config 0.25
 gparted 0.6.2 
-freetype 2.4.0 
+freetype 2.4.2
 dhcp 4.2.0
 jdk 6u21 
 gstreamer 0.10.30
