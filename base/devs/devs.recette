@@ -46,7 +46,7 @@ echo "Extraction en cours..."
 tar xpf $CWD/_devs.tar.gz
 
 # On déballe et on se place dans les sources :
-NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
