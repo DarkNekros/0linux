@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-makedev}
 VERSION=${VERSION:-2.3.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-devs}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -46,9 +45,13 @@ cd ${PKG}
 echo "Extraction en cours..."
 tar xpf $CWD/_devs.tar.gz
 
+# On déballe et on se place dans les sources :
+NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd MAKEDEV-${VERSION}
+cd ${NAME}
 
 cat $CWD/makedev_2.3.1-46.2.diff | patch -p1 -E
 cat $CWD/makedev_2.3.1.hd.diff | patch -p1 -E
@@ -139,7 +142,6 @@ find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || tru
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
@@ -147,7 +149,7 @@ PACKAGING="
 			rm -rf $TMP/${NAME}
 		fi
 	fi
-	rm -rf $TMP/MAKEDEV-${VERSION}"
+	"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot
