@@ -23,8 +23,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.python.org/ftp/python/$VERSION/Python-$VERSION.$EXT}
-WGETHTMLDOC=${WGETHTMLDOC:-http://docs.python.org/ftp/python/doc/current/python-$VERSION-docs-html.$EXT}
-WGETTEXTDOC=${WGETTEXTDOC:-http://docs.python.org/ftp/python/doc/current/python-$VERSION-docs-text.$EXT}
+WGETHTMLDOC=${WGETHTMLDOC:-http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-html.$EXT}
+WGETTEXTDOC=${WGETTEXTDOC:-http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-text.$EXT}
 DOC="LICENSE README Doc/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Langage de programmation interprété orienté objet"
