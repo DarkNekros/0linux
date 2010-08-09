@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-dejavu-fonts-ttf}
-VERSION=${VERSION:-2.30}
+VERSION=${VERSION:-2.31}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-dejavu-fonts}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/dejavu/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS BUGS LICENSE NEWS README *.txt"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Polices TrueType pour X"
