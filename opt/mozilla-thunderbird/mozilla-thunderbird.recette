@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-3.0.4}
+VERSION=${VERSION:-3.1.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -328,7 +327,7 @@ if [ -x usr/bin/update-desktop-database ]; then
 fi
 
 if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
+	chroot . gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
 
 EOF
@@ -347,7 +346,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
