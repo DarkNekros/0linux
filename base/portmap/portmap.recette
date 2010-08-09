@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-portmap}
 VERSION=${VERSION:-6.0}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-portmap}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -86,6 +85,9 @@ cp -a pmap_dump ${PKG}/sbin
 cp -a pmap_set ${PKG}/sbin
 chmod 755 ${PKG}/sbin/*
 
+# Un lien important : 
+ln -sf portmap ${PKG}/sbin/rpc.portmap
+
 # Les manuels :
 cp -a *.8 ${PKG}/usr/man/man8
 cp -a portmap.man ${PKG}/usr/man/man8/portmap.8
@@ -153,7 +155,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
