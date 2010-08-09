@@ -46,6 +46,12 @@ fi
 # On les vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
+# On télécharge l'archive Java ECJ :
+if [ ! -r ecj-4.3.jar ]; then
+	wget -vc $WGET_ECJ -O ecj-4.3.jar.part
+	mv ecj-4.3.jar.part ecj-4.3.jar
+fi
+
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
