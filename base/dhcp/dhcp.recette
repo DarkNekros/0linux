@@ -75,7 +75,10 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--build=${TARGET32}
 
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 make
+
 fakeroot make install LIBDIR=/usr/lib${LIBDIRSUFFIX} INCDIR=/usr/include DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -111,7 +114,10 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--build=${TARGET64}
 
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 make
+
 fakeroot make install LIBDIR=/usr/lib${LIBDIRSUFFIX} INCDIR=/usr/include DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
