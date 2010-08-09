@@ -72,9 +72,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info
 
-# On met 'vim' en tant qu'éditeur par défaut :
-sed -i 's@\(^#define DEFAULT_EDITOR_PROGRAM \).*@\1"vi"@' config.h
-
 make
 fakeroot make install DESTDIR=${PKG}
 
