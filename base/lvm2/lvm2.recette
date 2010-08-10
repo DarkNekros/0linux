@@ -170,6 +170,11 @@ rm -rf ${PKG}/usr/lib32
 # On veille à ne rien écraser :
 mv ${PKG}/etc/lvm/lvm.conf{,.new}
 
+# Grrrrrr !
+mkdir -p ${PKG}/usr/man
+mv ${PKG}/usr/share/man/man* ${PKG}/usr/man
+rm -rf ${PKG}/usr/share/man
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
