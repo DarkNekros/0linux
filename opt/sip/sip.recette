@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-sip}
-VERSION=${VERSION:-4.10}
+VERSION=${VERSION:-4.10.5}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sip}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -75,7 +74,7 @@ CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}"
 
 make LINK='$(CXX)'
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -106,7 +105,7 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}"
 
 make LINK='$(CXX)'
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -157,7 +156,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
