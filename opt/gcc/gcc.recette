@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-gcc}
 VERSION=${VERSION:-4.4.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gcc}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -60,6 +60,7 @@ mkdir -p ${PKG}
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
+rm -rf ${NAMETGZ}-build
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
@@ -127,10 +128,10 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--host=${TARGET64} \
 	--target=${TARGET64}
 
-make bootstrap
+make
 make info
-make install DESTDIR=${PKG}
-make -i install-info DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+fakeroot make -i install-info DESTDIR=${PKG}
 
 # On s'assure que le très important fichier « specs » soit présent :
 if [ ! -r ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/${TARGET64}/${VERSION}/specs ]; then
@@ -195,6 +196,7 @@ PACKAGING="
 		if [ -d $TMP/${NAME} ]; then
 			rm -rf $TMP/${NAME}
 		fi
+		rm -rf $TMP/${NAMETGZ}-build
 	fi"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
