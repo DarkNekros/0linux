@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-gettext}
-VERSION=${VERSION:-0.17}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-0.18.1.1}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-gettext}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -20,7 +19,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS COPYING ChangeLog DEPENDENCIES HACKING INSTALL NEWS PACKAGING README* THANKS"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Suite d'outils pour l'internationalisation"
@@ -58,9 +57,6 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On applique le correctif des mainteneurs concernant un problème de permissions :
-cat $CWD/gettext-0.17-upstream_fixes-2.patch | patch -p1
-
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
@@ -71,10 +67,11 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${TARGET32}
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -88,9 +85,6 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On applique le correctif des mainteneurs concernant un problème de permissions :
-cat $CWD/gettext-0.17-upstream_fixes-2.patch | patch -p1
-
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
@@ -101,10 +95,11 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${TARGET64}
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -152,7 +147,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
