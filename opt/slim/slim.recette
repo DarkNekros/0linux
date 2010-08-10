@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-slim}
 VERSION=${VERSION:-1.3.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-slim}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -73,7 +72,7 @@ LIBDIRSUFFIX="64"
 sed -i "s,^CFLAGS=,CFLAGS=$SLKCFLAGS ," Makefile
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On ajoute quelques thèmes indépendants :
 for theme in capernoited fingerprint flat flower2 lake mindlock \
@@ -88,11 +87,6 @@ parallel-dimensions previous rainbow rear-window scotland-road subway wave; do
 	
 	# On les vérifie :
 	tar ft $CWD/${NAMESRC}-${VERSION}.tar.gz 1> /dev/null 2> /dev/null
-	TARERROR=$?
-	if [ ! "$TARERROR" = "0" ]; then
-		echo "Erreur à la lecture de l'archive source. Celle-ci semble corrompue (Erreur $TARERROR)."
-		exit 1
-	fi
 	
 	# On les extrait où il faut :
 	tar -xf $CWD/slim-${theme}.tar.gz -C ${PKG}/usr/share/slim/themes;
@@ -171,7 +165,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
