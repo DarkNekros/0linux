@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.riverbankcomputing.com/static/Downloads/sip4/$NAMESRC-$VERSION.$EXT}
-DOC="ChangeLog LICENSE* NEWS README*"
+DOC="LICENSE* NEWS README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils d'interfaçage pour python"
 ########################################
