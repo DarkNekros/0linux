@@ -80,7 +80,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${TARGET32} \
+	--host=${TARGET32}
 
 make
 fakeroot make install DESTDIR=${PKG}
@@ -122,7 +124,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${TARGET64} \
+	--host=${TARGET64}
 
 make
 fakeroot make install DESTDIR=${PKG}
