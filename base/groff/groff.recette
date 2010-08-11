@@ -7,10 +7,9 @@ CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-groff}
 VERSION=${VERSION:-1.20.1}
-EXT=${EXT:-tar.bz2}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-groff}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -65,6 +64,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" PAGE=A4 \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -76,7 +77,7 @@ make
 
 # On s'assure à nouveau que notre « docdir » est respecté car le 'configure'
 # contient "/usr/share" codé en dur :
-make install docdir=/usr/doc/${NAMETGZ}/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
+fakeroot make install docdir=/usr/doc/${NAMETGZ}/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
 
 # On installe le formatage coloré de GXditview pour X :
 mkdir -p ${PKG}/etc/X11/app-defaults
@@ -141,7 +142,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
