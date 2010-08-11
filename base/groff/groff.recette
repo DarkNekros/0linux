@@ -77,7 +77,7 @@ make
 
 # On s'assure à nouveau que notre « docdir » est respecté car le 'configure'
 # contient "/usr/share" codé en dur :
-fakeroot make install docdir=/usr/doc/${NAMETGZ}/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
+fakeroot make install docdir=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
 
 # On installe le formatage coloré de GXditview pour X :
 mkdir -p ${PKG}/etc/X11/app-defaults
