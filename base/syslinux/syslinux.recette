@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-syslinux}
-VERSION=${VERSION:-4.00}
+VERSION=${VERSION:-4.02}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-syslinux}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -22,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/${NAMESRC}-${VERSION}-pre43.$EXT}
+WGET=${WGET:-http://www.kernel.org/pub/linux/utils/boot/syslinux/${NAMESRC}-${VERSION}.$EXT}
 DOC="COPYING NEWS README* com32/LICENCE doc/ sample/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Les chargeurs d'amorçage ISOLINUX, PXELINUX et SYSLINUX"
@@ -136,7 +135,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
