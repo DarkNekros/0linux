@@ -5,7 +5,7 @@ set -e
 umask 022
 CWD=$(pwd)
 
-NAMESRC=${NAMESRC:-lcms}
+NAMESRC=${NAMESRC:-lcms2}
 VERSION=${VERSION:-2.0a}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-lcms}
