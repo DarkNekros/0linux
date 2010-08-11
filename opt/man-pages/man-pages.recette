@@ -6,20 +6,19 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-man-pages}
-VERSION=${VERSION:-3.23}
+VERSION=${VERSION:-3.25}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-man-pages}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
 ARCH=${ARCH:-noarch}
 
 WGET=${WGET:-http://www.kernel.org/pub/linux/docs/man-pages/$NAMESRC-$VERSION.$EXT}
-DOC="Changes* man-pages-3.23.* README"
+DOC="Changes* man-pages-* README*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Documentation du système"
+SLACKDESC="Manuels du système Linux"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -109,7 +108,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
