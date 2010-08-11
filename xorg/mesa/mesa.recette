@@ -56,7 +56,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 # On télécharge l'archive « GLUT » :
 if [ ! -r MesaGLUT-${VERSION}.$EXT ]; then
 	wget -vc $WGETGLUT -O MesaGLUT-${VERSION}.$EXT.part
-	mv MesaDemos-${VERSION}.$EXT.part MesaGLUT-${VERSION}.$EXT
+	mv MesaGLUT-${VERSION}.$EXT.part MesaGLUT-${VERSION}.$EXT
 fi
 
 # On la vérifie :
