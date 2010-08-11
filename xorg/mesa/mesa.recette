@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-MesaLib}
 VERSION=${VERSION:-7.8.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mesa}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -22,9 +21,9 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.freedesktop.org/pub/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
-WGETDEMOS=${WGETDEMOS:-ftp://ftp.freedesktop.org/pub/$NAMESRC/$VERSION/MesaDemos-$VERSION.$EXT}
-WGETGLUT=${WGETGLUT:-ftp://ftp.freedesktop.org/pub/$NAMESRC/$VERSION/MesaGLUT-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT}
+WGETDEMOS=${WGETDEMOS:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/MesaDemos-$VERSION.$EXT}
+WGETGLUT=${WGETGLUT:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/MesaGLUT-$VERSION.$EXT}
 DOC="docs/*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèque graphique 3D"
@@ -44,11 +43,6 @@ fi
 
 # On les vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
-TARERROR=$?
-if [ ! "$TARERROR" = "0" ]; then
-	echo "Erreur à la lecture de l'archive source. Celle-ci semble corrompue (Erreur $TARERROR)."
-	exit 1
-fi
 
 # On télécharge l'archive des démo :
 if [ ! -r MesaDemos-${VERSION}.$EXT ]; then
@@ -56,22 +50,17 @@ if [ ! -r MesaDemos-${VERSION}.$EXT ]; then
 	mv MesaDemos-${VERSION}.$EXT.part MesaDemos-${VERSION}.$EXT
 fi
 
-# On les vérifie :
+# On la vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
-TARERROR=$?
-if [ ! "$TARERROR" = "0" ]; then
-	echo "Erreur à la lecture de l'archive source. Celle-ci semble corrompue (Erreur $TARERROR)."
-	exit 1
-fi
 
-# On télécharge l'archive «GLUT » :
+# On télécharge l'archive « GLUT » :
 if [ ! -r MesaGLUT-${VERSION}.$EXT ]; then
 	wget -vc $WGETGLUT -O MesaGLUT-${VERSION}.$EXT.part
-	mv MesaGLUT-${VERSION}.$EXT.part MesaGLUT-${VERSION}.$EXT
+	mv MesaDemos-${VERSION}.$EXT.part MesaGLUT-${VERSION}.$EXT
 fi
 
-# On les vérifie :
-tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
+# On la vérifie :
+tar ft MesaGLUT-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
@@ -119,6 +108,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -131,7 +121,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--build=${TARGET32}
 
 make default
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -177,6 +167,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -189,7 +180,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--build=${TARGET64}
 
 make default
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On compile 'glxgears' et 'glxinfo' :
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
@@ -249,7 +240,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
