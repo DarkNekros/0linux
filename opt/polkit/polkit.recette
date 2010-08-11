@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-polkit}
-VERSION=${VERSION:-20100330}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-0.97}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-polkit}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -22,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-	 http://hal.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://hal.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog COPYING HACKING INSTALL NEWS README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Ensemble de supervision système"
@@ -73,6 +72,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./autogen.sh \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -106,7 +106,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On applique le correctif pour se défaire de PAM et permettre de compiler 
-# contre 'shadow' :
+# avec 'shadow' :
 cat $CWD/polkit-shadow.patch | patch -p1
 
 # On positionne USE_ARCH :
@@ -118,6 +118,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./autogen.sh \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -199,7 +200,6 @@ PACKAGING="
 	chmod 4755 ${PKG}/usr/lib/polkit-agent-helper-1
 	chmod 4755 ${PKG}/usr/lib64/polkit-agent-helper-1
 	chmod 4755 ${PKG}/usr/bin/pkexec
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
