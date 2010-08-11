@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.slackware.at/slackware64-current/source/l/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.slackware.at/slackware64-current/source/l/${NAMESRC}/${NAMESRC}-${VERSION}.$EXT}
 DOC="AUTHORS ChangeLog COPYING HACKING INSTALL NEWS README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Ensemble de supervision système"
