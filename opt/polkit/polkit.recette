@@ -6,8 +6,8 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-polkit}
-VERSION=${VERSION:-0.97}
-EXT=${EXT:-tar.gz}
+VERSION=${VERSION:-1_a2edcef}
+EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-polkit}
 BUILD=${BUILD:-1}
 
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://hal.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.slackware.at/slackware64-current/source/l/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog COPYING HACKING INSTALL NEWS README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Ensemble de supervision système"
@@ -69,7 +69,7 @@ CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
+./autogen.sh \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
@@ -111,7 +111,7 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
+./autogen.sh \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
