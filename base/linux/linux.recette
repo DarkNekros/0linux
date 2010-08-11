@@ -1,6 +1,10 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
+# Positionnez la variable $MENUCONFIG à n'importe quelle valeur pour permettre
+# le 'make menuconfig' et personnaliser les options : 
+#		MENUCONFIG="pouet" ./linux.recette
+
 set -e
 umask 022
 CWD=$(pwd)
@@ -13,8 +17,7 @@ NAMETGZ=${NAMETGZ:-linux}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
-BUILD=${BUILD:-5}
-
+BUILD=${BUILD:-6}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -25,7 +28,7 @@ BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
 WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v2.6/$NAMESRC-$VERSION.$EXT}
-WGETRTPATCH=${WGETRTPATCH:-ftp://ftp.kernel.org/pub/linux/kernel/projects/rt/patch-$VERSION-$RTVERSION.bz2}
+WGETRTPATCH=${WGETRTPATCH:-ftp://ftp.kernel.org/pub/linux/kernel/projects/rt/older/patch-$VERSION-$RTVERSION.bz2}
 ##########
 SLACKDESC="Le noyau Linux"
 SLACKDESCHEADERS="Les fichiers d'en-tête du noyau Linux"
@@ -86,6 +89,9 @@ mkdir -p ${PKG}/boot
 # On copie la configuration du noyau (d'une version plus ancienne) :
 cat $CWD/config > .config
 
+# On conserve une copie de l'ancienne configuration :
+cp -a $CWD/config{,-old} 
+
 # Quoi de neuf ?
 make oldconfig
 
@@ -139,8 +145,7 @@ mkdir -p ${PKGMODULES}/etc/rc.d
 # On installe les modules noyau :
 make modules_install INSTALL_MOD_PATH=${PKGMODULES}
 
-# On copie le fichier rc.modules de Slackware, lequel finira peut-être
-# par disparaitre (ou du moins beaucoup maigrir) :
+# On copie le fichier rc.modules en prenant garde à ne rien écraser :
 cat $CWD/rc.modules.new > ${PKGMODULES}/etc/rc.d/rc.modules.new
 chmod 755 ${PKGMODULES}/etc/rc.d/rc.modules.new
 
@@ -217,7 +222,6 @@ EOF
 cd ${PKG}
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}_${RTVERSION}-${ARCH}-$BUILD"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
@@ -229,7 +233,6 @@ fi
 cd ${PKGHEADERS}
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZHEADERS}-${VERSION}_${RTVERSION}-${ARCH}-$BUILD"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
@@ -241,7 +244,6 @@ fi
 cd ${PKGMODULES}
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZMODULES}-${VERSION}_${RTVERSION}-${ARCH}-$BUILD"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
@@ -253,7 +255,6 @@ fi
 cd ${PKGSOURCE}
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZSOURCE}-${VERSION}_${RTVERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG} ${PKGHEADERS} ${PKGMODULES} ${PKGSOURCE}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
