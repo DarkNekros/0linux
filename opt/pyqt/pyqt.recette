@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-PyQt-x11-gpl}
-VERSION=${VERSION:-4.7.3}
+VERSION=${VERSION:-4.7.4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-pyqt}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -71,7 +70,8 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" QMAKESPEC=linux-g++-32 \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+QMAKESPEC=linux-g++-32 \
 python configure.py --confirm-license \
 --destdir=${PYTHONLIB} \
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
@@ -81,7 +81,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}"
 sed -i -e "s@= gcc@& -m32@g" -e "s@= g++@& -m32@g" $(find . -name "Makefile" -print)
 
 make
-make install INSTALL_ROOT=${PKG} DESTDIR=${PKG}
+fakeroot make install INSTALL_ROOT=${PKG} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -116,7 +116,7 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}"
 
 make
-make install INSTALL_ROOT=${PKG} DESTDIR=${PKG}
+fakeroot make install INSTALL_ROOT=${PKG} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -174,7 +174,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ -d $TMP/${NAME} ]; then
