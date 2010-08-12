@@ -9,7 +9,7 @@ ruby 1.9.1-p429
 autoconf-2.67
 linux 2.6.35.1
 python 2.7
-udev 159
+udev 161
 pkg-config 0.25
 gparted 0.6.2 
 freetype 2.4.2
