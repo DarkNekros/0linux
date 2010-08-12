@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-perl}
 VERSION=${VERSION:-5.10.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-perl}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -20,7 +19,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.cpan.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS Artistic Changes Copying INSTALL MANIFEST README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Le « Langage pratique d'extraction et de rapport »"
@@ -95,7 +94,7 @@ sh Configure -des \
 	-Dbuild=${TARGET32}
 
 make
-make install DESTDIR=$PKG
+fakeroot make install DESTDIR=$PKG
 
 # On évite d'écraser 'perllocal.pod' :
 if [ -r ${PKG}/usr/lib${LIBDIRSUFFIX}/perl5/${VERSION}/i686-linux-thread-multi/perllocal.pod ]; then
@@ -160,7 +159,7 @@ sh Configure -des \
 	-Dbuild=${TARGET64}
 
 make
-make install DESTDIR=$PKG
+fakeroot make install DESTDIR=$PKG
 
 # On évite d'écraser 'perllocal.pod' :
 if [ -r ${PKG}/usr/lib${LIBDIRSUFFIX}/perl5/${VERSION}/${ARCH}-linux-thread-multi/perllocal.pod ]; then
@@ -240,7 +239,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
