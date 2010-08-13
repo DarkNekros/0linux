@@ -83,6 +83,7 @@ while [ 0 ]; do
 		else
 			echo "Veuillez répondre par « oui » ou par « non » uniquement."
 			sleep 2
+			unset ABANDONSWAP
 			continue
 		fi
 	else

@@ -1,5 +1,9 @@
 #!/bin/env bash
 
+# On nettoie avant toute chose :
+rm -f $TMP/choix_partitions_fat
+unset AJOUTFAT FATADD okparts MOUNTPOINT SECU SECUOK FSTYPE BLAH
+
 # On tente de détecter une ou plusieurs partitions FAT/DOS/Windows, partition étendue exceptée.
 # On retire l'astérisque "*" des partitions amorçables pour avoir 6 champs partout :
 listefat() {
@@ -50,12 +54,11 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 		clear
 		echo -e "\033[1;32mPartitions FAT/NTFS détectées.\033[0;0m"
 		echo ""
-		echo "D'autres partitions FAT/NTFS (typiquement pour DOS/Windows)sont"
+		echo "D'autres partitions FAT/NTFS (typiquement pour DOS/Windows) sont"
 		echo "présentes sur cette machine."
 		echo "Vous pouvez monter ces partitions dans un répertoire de votre choix,"
 		echo "par exemple /windows, pour pouvoir y accéder depuis votre système Linux."
-		echo "Voulez-vous configurer ces partitions pour les monter automatiquement"
-		echo "à chaque démarrage ?"
+		echo "Voulez-vous configurer ces partitions pour y accéder automatiquement ?"
 		echo ""
 		echo -n "Votre choix (oui/non): "
 		read AJOUFAT;
@@ -70,9 +73,9 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 				echo ""
 				echo "Entrez la partition FAT/NTFS que vous souhaitez"
 				echo "monter dans votre système parmi la liste ci-dessous et/ou entrez"
-				echo "« continuer » pour terminer cette étape."
+				echo "le mot-clé « continuer » pour terminer cette étape."
 				echo ""
-				# On liste les partitions Linux utilisées ou pas :
+				# On liste les partitions FAT utilisées ou pas :
 				afficherfat
 				echo "continuer : terminer l'ajout de partitions FAT/NTFS"
 				echo ""
@@ -84,12 +87,14 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 				elif [ "$FATADD" = "" ]; then
 					echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 					sleep 2
+					unset FATADD
 					continue
 				else
 					# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
 					if ! grep "/dev/" ${FATADD}; then
 						echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 						sleep 2
+						unset FATADD
 						continue
 					else
 						# Boucle d'affichage du menu du choix du point de montage :
@@ -106,8 +111,10 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 							read MOUNTPOINT;
 							# Si le point de montage est incorrect :
 							if [ "${MOUNTPOINT}" = "" -o "$(echo ${MOUNTPOINT} | cut -b1)" = " " -o ! "$(echo ${MOUNTPOINT} | cut -b1)" = "/"]; then
-								echo "Veuillez entrer un système de fichiers valide."
+								cho "Veuillez entrer un système de fichiers de la forme « /quelquepart» ou"
+								echo "« /quelque/part»."
 								sleep 2
+								unset MOUNTPOINT
 								break
 							fi
 							# Si la partition choisie est une NTFS, on doit s'occuper du masque des permissions :
@@ -135,6 +142,7 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 									if [ "$SECU" = "" -o ! grep -E '077|222|022|000' ${SECU} ]; then
 										echo "Veuillez entrer un masque de permissions valide."
 										sleep 2
+										unset SECU
 										continue
 									else
 										# Le pilote du noyau ne gère pas le masque :
@@ -165,6 +173,11 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 					fi
 				fi
 			done
+		else
+			echo "Veuillez répondre par « oui » ou par « non » uniquement."
+			sleep 2
+			unset AJOUTFAT
+			continue
 		fi
 	done
 fi
@@ -174,9 +187,10 @@ clear
 echo -e "\033[1;32mPartitions FAT/NTFS configurées.\033[0;0m"
 echo ""
 echo "Les informations suivantes seront ajoutées à votre"
-echo " fichier '/etc/fstab'" :
+echo "fichier '/etc/fstab'" :
 echo ""
 cat $TMP/choix_partitions_fat
+echo ""
 echo -n "Appuyez sur ENTRÉE pour continuer."
 read BLAH;
 
