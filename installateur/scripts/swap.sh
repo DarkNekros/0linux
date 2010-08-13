@@ -2,11 +2,11 @@
 
 # On nettoie avant toute chose :
 rm -f $TMP/choix_swap $TMP/ignorer_swap
-unset NOSWAP SWAPSELECT ABANDONSWAP BLAH
+unset NOSWAP JHVF SWAPSELECT ABANDONSWAP BLAH
 
 # On tente de détecter une ou plusieurs partitions swap existantes :
 listeswap() {
-	LISTESWAP=$(fdisk -l 2> /dev/null | grep swap 2> /dev/null)
+	LISTESWAP=$(fdisk -l | grep swap 2> /dev/null)
 	echo "${LISTESWAP}"
 }
 
@@ -14,12 +14,6 @@ listeswap() {
 crunch() {
 	read STRING;
 	echo $STRING;
-}
-
-# taille_partition(périphérique) :
-taille_partition() {
-	Taille=$(fdisk -l | grep $1 | crunch | tr -d "*" | tr -d "+" | cut -f4 -d' ')
-	echo "$Taille blocs"
 }
 
 # Si aucune swap n'est détectée :
@@ -35,8 +29,10 @@ while [ listeswap = "" ]; do
 	# Si l'utilisateur ne veut pas continuer :
 	if [ "$NOSWAP" = "non" ]; then
 		echo "Abandon. Créez une partition d'échange « swap » avec 'cfdisk',"
-		echo "'fdisk' ou 'parted' puis relancez l'installateur."
+		echo "'fdisk' ou 'parted' puis recommencez cette étape."
+		echo -n "Appuyez sur ENTRÉE pour continuer."
 		touch $TMP/ignorer_swap
+		read JHVF;
 		break
 	# Si l'utilisateur ne veut pas de swap :
 	elif [ "$NOSWAP" = "oui" ]; then
@@ -57,16 +53,15 @@ while [ 0 ]; do
 	clear
 	echo -e "\033[1;32mUne ou plusieurs partitions d'échange ont été détectées.\033[0;0m"
 	echo ""
-	echo "Le programme a détecté une ou plusieurs partitions d'échange"
-	echo "(de type « swap ») sur votre système. Veuillez entrer la partition"
-	echo "d'échange que vous souhaitez activer parmi la liste suivante :"
+	echo "Dans la console n°2, utilisez les outils suivants pour déterminer vos"
+	echo "partitions d'échange « swap » existantes :"
 	echo ""
-	# On liste les swaps et leur taille :
-	listerswaps=listeswap
-	for partitionswap in listerswaps ; do
-		TAILLE=taille_partition ${partitionswap}
-		echo "${partitionswap} : swap de ${TAILLE}"
-	done
+	echo "		# cfdisk"
+	echo "		# fdisk -l"
+	echo ""
+	echo "Puis, entrez ci-dessous la partition d'échange « swap » que vous souhaitez"
+	echo "activer pour votre système Linux. Exemples : /dev/sda1 ; /dev/hda3 ; etc."
+	echo ""
 	echo -n "Votre choix : "
 	read SWAPSELECT;
 	# Si l'utilisateur n'entre aucune partition :
@@ -83,6 +78,7 @@ while [ 0 ]; do
 			touch $TMP/ignorer_swap
 			continue
 		elif [ "$ABANDONSWAP" = "non" ]; then
+			unset SWAPSELECT ABANDONSWAP
 			continue
 		else
 			echo "Veuillez répondre par « oui » ou par « non » uniquement."
@@ -94,10 +90,15 @@ while [ 0 ]; do
 		if ! grep "/dev/" ${SWAPSELECT}; then
 			echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 			sleep 2
+			unset SWAPSELECT
 			continue
 		# Si tout semble OK, on active la swap et on l'ajoute au fichier 'choix_swap' :
 		else
+			echo "Création de la partition d'échange : "
+			echo "		mkswap -v1 ${SWAPSELECT}"
 			mkswap -v1 ${SWAPSELECT}
+			echo "Activation de la partition d'échange :"
+			echo "		swapon ${SWAPSELECT}"
 			swapon ${SWAPSELECT}
 			touch $TMP/choix_swap
 			echo "${SWAPSELECT}     swap         swap       defaults           0     0" >> $TMP/choix_swap

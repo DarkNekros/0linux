@@ -95,8 +95,6 @@ Pour partitionner le second disque dur SATA ou SCSI avec 'cfdisk', tapez :
 2- Lancement de l'installateur
 
 Après avoir tapé 'installateur', suivez simplement les rubriques à m'écran.
-Si vous faites les choses dans l'ordre, l'installateur vous mènera aux 
-rubriques suivantes automatiquement. 
 
 Espérons que les rubriques parlent d'elles-mêmes :). Lisez attentivement ce
 qui est inscrit à l'écran et tout devrait bien se passer.

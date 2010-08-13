@@ -1,9 +1,14 @@
 #!/bin/env bash
 
+# On nettoie avant toute chose :
+rm -f $TMP/choix_partitions
+unset KHGFKJ ROOTSELECT DOFORMAT VERIF FSFORMAT AJOUTLINUX OKPARTS
+unset MOUNTPOINT LINUXADD formatok BLAH
+
 # On tente de détecter une ou plusieurs partitions Linux, swap exceptée.
 # On retire l'astérisque "*" des partitions amorçables pour avoir 6 champs partout :
 listelinux() {
-	LISTELINUX=$(fdisk -l 2> /dev/null | grep Linux 2> /dev/null | grep -v swap 2> /dev/null | tr -d "*" 2> /dev/null)
+	LISTELINUX=$(fdisk -l | grep Linux 2> /dev/null | grep -v swap 2> /dev/null | tr -d "*" 2> /dev/null)
 	echo "${LISTELINUX}"
 }
 
@@ -85,20 +90,37 @@ afficherlinux() {
 	done
 }
 
+# On détecte les partitions Linux, si aucune on prévient l'utilisateur :
+if listelinux 1> /dev/null 2> /dev/null; then
+	listelinux 1> $TMP/liste_partitions 2> /dev/null
+else
+	clear
+	echo -e "\033[1;32mAucune partition Linux n'a été détectée.\033[0;0m"
+	echo ""
+	echo "Il ne semble pas y avoir de partition de type Linux sur cette"
+	echo "machine. Il vous faut au moins une partition de ce type pour installer"
+	echo "Linux. Pour ce faire, vous devez créer ces partitions en utilisant "
+	echo "'cfdisk', 'fdisk' ou 'parted'. Pour en savoir plus, lisez"
+	echo "l'aide de l'installateur."
+	echo ""
+	echo -n "Appuyez sur ENTRÉE pour continuer."
+	read KJGFKJ;
+fi
 
 # Boucle d'affichage du menu du choix de racine :
-while [ 0 ]; do
+while [ "$(cat $TMP/liste_partitions)" = "" ]; do
 	clear
 	echo -e "\033[1;32mPréparer la partition racine pour Linux.\033[0;0m"
 	echo ""
-	echo "Entrez la partition qui va servir de racine (« / ») pour"
-	echo "accueillir votre installation de Linux :"
+	echo "Dans la console n°2, utilisez les outils suivants pour déterminer vos"
+	echo "partitions Linux existantes :"
 	echo ""
-	# On liste les swaps et leur taille :
-	for partitionlinux in listelinux ; do
-		TAILLE=taille_partition ${partitionlinux}
-		echo "${partitionlinux} : partition Linux de ${TAILLE}"
-	done
+	echo "		# cfdisk"
+	echo "		# fdisk -l"
+	echo ""
+	echo "Entrez la partition qui va servir de racine (« / ») pour accueillir"
+	echo "votre installation de Linux. Exemples : /dev/sda1 ; /dev/hda3 ; etc."
+	echo ""
 	echo -n "Votre choix : "
 	read ROOTSELECT;
 	if [ "$ROOTSELECT" = "" ]; then
@@ -126,11 +148,13 @@ while [ 0 ]; do
 	echo ""
 	echo "Si cette partition n'a pas été formatée, vous devez le faire"
 	echo "maintenant. N.B.: Ceci effacera toutes les données s'y trouvant !"
+	echo "La vérification des secteurs défectueux est généralement inutile,"
+	echo "les disques durs intégrant déjà nativement ce type de vérification."
 	echo "Entrez la méthode de formatage souhaitée parmi la liste suivante :"
 	echo ""
 	echo "formater : formater sans vérification des secteurs défectueux"
 	echo "vérifier : formater avec vérification des secteurs défectueux"
-	echo "non      : ne rien faire, la partition est déjà formatée"
+	echo "non      : ne rien faire, la partition est déjà formatée correctement"
 	echo ""
 	echo -n "Votre choix : "
 	read DOFORMAT;
@@ -160,8 +184,8 @@ while [ 0 ]; do
 			echo "Entrez le système de fichiers souhaité parmi la liste ci-dessous."
 			echo ""
 			echo "ext2     : système de fichiers traditionnel sous Linux"
-			echo "ext3     : version journalisée et plus récente de Ext2"
-			echo "ext4     : le récent successeur de Ext3"
+			echo "ext3     : version journalisée répandue et plus récente de Ext2"
+			echo "ext4     : le très récent successeur de Ext3"
 			echo "jfs      : système de fichiers journalisé d'IBM"
 			echo "reiserfs : système journalisé performant"
 			echo "xfs      : système de SGI performant sur les gros fichiers"
@@ -171,12 +195,14 @@ while [ 0 ]; do
 			if [ "$FSFORMAT" = "" ]; then
 				echo "Veuillez entrer un système de fichiers valide."
 				sleep 2
+				unset FSFORMAT
 				continue
 			else
 				# Si l'utilisateur écrit n'importe quoi :
 				if [ ! grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs' ${FSFORMAT} ]; then
 					echo "Veuillez entrer un système de fichiers valide."
 					sleep 2
+					unset FSFORMAT
 					continue
 				# Sinon, on formate :
 				else
@@ -196,6 +222,7 @@ sync
 FSRACINE=$(blkid -s TYPE ${ROOTSELECT} | cut -d'=' -f2 | tr -d \")
 
 # On monte enfin le système de fichiers racine dans $SETUPROOT :
+echo "Montage de ${ROOTSELECT} dans ${SETUPROOT}..."
 mount ${ROOTSELECT} ${SETUPROOT} -t ${FSRACINE} 1> /dev/null 2> /dev/null
 
 # On ajoute le choix de la racine à ajouter à '/etc/fstab' :
@@ -212,10 +239,11 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 		echo "D'autres partitions Linux sont présentes sur cette machine."
 		echo "Vous pouvez utiliser ces partitions pour distribuer votre système"
 		echo "Linux sur plusieurs partitions. Actuellement, votre racine (« / »)"
-		echo "pour Linux est montée. Vous pouvez également monter des répertoires"
-		echo "tels que '/home', '/usr/local' ou '/sauvagarde' sur des partitions séparées."
-		echo "Voulez-vous configurer ces partitions pour les monter automatiquement"
-		echo "à chaque démarrage ?"
+		echo "pour Linux est montée. Vous pouvez également monter des partitions"
+		echo "sur des répertoires séparés tels que '/home', '/usr/local',"
+		echo "'/sauvegarde' ou '/mes_documents'."
+		echo ""
+		echo "Voulez-vous configurer ces partitions pour y accéder automatiquement ?"
 		echo ""
 		echo -n "Votre choix (oui/non): "
 		read AJOUTLINUX;
@@ -228,12 +256,14 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 				echo -e "\033[1;32mAjouter une partition Linux à monter.\033[0;0m"
 				echo ""
 				echo "Entrez la partition Linux supplémentaire que vous souhaitez"
-				echo "monter dans votre système parmi la liste ci-dessous et/ou entrez"
-				echo "« continuer » pour terminer cette étape."
+				echo "monter dans votre système (exemples : /dev/sda1 ; /dev/hda3 ;"
+				echo "etc) parmi la liste ci-dessous et/ou entrez le mot-clé « continuer »"
+				echo "pour terminer maintenant cette étape."
 				echo ""
 				# On liste les partitions Linux utilisées ou pas :
 				afficherlinux
 				echo "continuer : terminer l'ajout de partitions Linux"
+				echo ""
 				echo -n "Votre choix : "
 				read LINUXADD;
 				if [ "$LINUXADD" = "continuer" ]; then
@@ -242,12 +272,14 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 				elif [ "$LINUXADD" = "" ]; then
 					echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 					sleep 2
+					unset LINUXADD
 					continue
 				else
 					# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
 					if ! grep "/dev/" ${LINUXADD}; then
 						echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 						sleep 2
+						unset LINUXADD
 						continue
 					else
 						# Boucle d'affichage du menu du choix du point de montage :
@@ -256,16 +288,18 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 							echo -e "\033[1;32mChoix du point de montage pour ${LINUXADD}.\033[0;0m"
 							echo ""
 							echo "Bien, il vous faut maintenant indiquer l'emplacement"
-							echo "de votre choix pour monter et accéder à cette partition. Par exemple,"
-							echo "pour la monter dans le répertoire '/usr/local', répondez : /usr/local"
+							echo "de votre choix pour monter et accéder à cette partition."
+							echo "Exemples : /home ; /usr/local ; /sauvegarde ;  /mes_documents"
 							echo "Dans quel répertoire désirez-vous monter ${LINUXADD} ?"
 							echo ""
 							echo -n "Votre choix : "
 							read MOUNTPOINT;
 							# Si le point de montage est incorrect :
 							if [ "${MOUNTPOINT}" = "" -o "$(echo ${MOUNTPOINT} | cut -b1)" = " " -o ! "$(echo ${MOUNTPOINT} | cut -b1)" = "/"]; then
-								echo "Veuillez entrer un système de fichiers valide."
+								echo "Veuillez entrer un système de fichiers de la forme « /quelquepart» ou"
+								echo "« /quelque/part»."
 								sleep 2
+								unset MOUNTPOINT
 								break
 							fi
 							# Boucle d'affichage du formatage :
@@ -286,6 +320,7 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 								if [ "$DOFORMAT" = "" ]; then
 									echo "Veuillez entrer une méthode de formatage valide."
 									sleep 2
+									unet DOFORMAT
 									continue
 								else
 									if [ "$DOFORMAT" = "non" ]; then
@@ -298,6 +333,7 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 									else
 										echo "Veuillez entrer une méthode de formatage valide."
 										sleep 2
+										unset DOFORMAT
 										continue
 									fi
 								# Boucle d'affichage du choix du système de fichiers :
@@ -309,8 +345,8 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 										echo "Entrez le système de fichiers souhaité parmi la liste ci-dessous."
 										echo ""
 										echo "ext2     : système de fichiers traditionnel sous Linux"
-										echo "ext3     : version journalisée et plus récente de Ext2"
-										echo "ext4     : le récent successeur de Ext3"
+										echo "ext3     : version journalisée répandue et plus récente de Ext2"
+										echo "ext4     : le très récent successeur de Ext3"
 										echo "jfs      : système de fichiers journalisé d'IBM"
 										echo "reiserfs : système journalisé performant"
 										echo "xfs      : système de SGI performant sur les gros fichiers"
@@ -320,12 +356,14 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 										if [ "$FSFORMAT" = "" ]; then
 											echo "Veuillez entrer un système de fichiers valide."
 											sleep 2
+											unset FSFORMAT
 											continue
 										else
 											# Si l'utilisateur écrit n'importe quoi :
 											if [ ! grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs' ${FSFORMAT} ]; then
 												echo "Veuillez entrer un système de fichiers valide."
 												sleep 2
+												unset FSFORMAT
 												continue
 											# Sinon, on formate :
 											else
@@ -349,6 +387,7 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 						mkdir -p ${SETUPROOT}/${MOUNTPOINT}
 						
 						# On monte enfin le système de fichiers :
+						echo "Montage de ${LINUXADD} dans ${SETUPROOT}/${MOUNTPOINT}..."
 						mount ${LINUXADD} ${SETUPROOT}/${MOUNTPOINT} -t ${FSLINUXADD} 1> /dev/null 2> /dev/null
 						
 						# On ajoute le choix de la partition à ajouter à '/etc/fstab' :
@@ -365,9 +404,10 @@ clear
 echo -e "\033[1;32mPartitions Linux configurées.\033[0;0m"
 echo ""
 echo "Les informations suivantes seront ajoutées à votre"
-echo " fichier '/etc/fstab'" :
+echo "fichier '/etc/fstab'" :
 echo ""
 cat $TMP/choix_partitions
+echo ""
 echo -n "Appuyez sur ENTRÉE pour continuer."
 read BLAH;
 

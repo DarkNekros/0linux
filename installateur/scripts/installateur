@@ -16,29 +16,8 @@ crunch() {
 	echo ${STRING};
 }
 
-# On tente de détecter une ou plusieurs partitions Linux, swap exceptée.
-# On retire l'astérisque "*" des partitions amorçables pour avoir 6 champs partout :
-listelinux() {
-	LISTELINUX=$(fdisk -l 2> /dev/null | grep Linux 2> /dev/null | grep -v swap 2> /dev/null | tr -d "*" 2> /dev/null)
-	echo "${LISTELINUX}"
-}
-
 # On vide $TMP au cas où :
 rm -f $TMP/*
-
-# On détecte les partitions Linux, si aucune on prévient l'utilisateur :
-if listelinux 1> /dev/null 2> /dev/null; then
-	listelinux 1> $TMP/liste_partitions 2> /dev/null
-else
-	clear
-	echo -e "\033[1;32mAucune partition Linux n'a été détectée.\033[0;0m"
-	echo "Il ne semble pas y avoir de partition de type Linux sur cette"
-	echo "machine. Il vous faut au moins une partition de ce type pour installer"
-	echo "Linux. Pour ce faire, vous devez créer ces partitions en utilisant "
-	echo "'cfdisk', 'fdisk' ou 'parted'. Pour en savoir plus, lisez"
-	echo "l'aide de l'installateur. L'installateur va maintenent s'arrêter."
-	exit 1
-fi
 
 # On détecte la partition racine :
 ROOT_DEVICE="`mount | grep "on / " | cut -f 1 -d ' '`"
@@ -61,6 +40,41 @@ if [ -d /var/log/mount/lost+found -o -d /var/log/mount/recycled -o -r /var/log/m
 	exit 1
 fi
 
+# On affiche l'introduction : 
+clear
+echo -e "\033[1;32mIntroduction à l'installation\033[0;0m"
+echo ""
+echo "Bonjour ! Bienvenue dans l'installateur."
+echo ""
+echo "Pour commencer, basculez sur la console n°2 avec Alt+F2 et connectez-"
+echo "vous en root. Puis, revenez sur cette console avec Alt+F1. La console"
+echo "n°2 vous servira à lancer les outils vous permettant de renseigner"
+echo "l'installateur sur votre système (oui, il est un peu feignant)."
+echo ""
+echo "Vous pouvez quitter cet installateur à tout moment avec la combinaison"
+echo "de touches Ctrl+C."
+echo ""
+echo "Consultez l'aide dans le menu qui va suivre pour en savoir plus."
+echo ""
+echo -n "Appuyez sur ENTRÉE pour continuer."
+read GNAH1;
+
+# On demande à préparer les disques :affiche l'introduction : 
+clear
+echo -e "\033[1;32mPréparation de vos disques durs.\033[0;0m"
+echo ""
+echo "Vos disques durs doivent être partitionnés pour Linux avant d'installer"
+echo "votre système."
+echo ""
+echo "Pour cela, passez sur la console n°2 et invoquez « cfdisk » pour afficher"
+echo "et partitionner vos disques durs. Les outils de partitionnement 'fdisk'"
+echo "et 'parted' sont également disponibles."
+echo ""
+echo "Consultez l'aide dans le menu qui va suivre pour en savoir plus."
+echo ""
+echo -n "Appuyez sur ENTRÉE pour continuer."
+read GNAH2;
+
 # Boucle pour l'affichage du menu :
 unset CHOIXMENUNPRINCIPAL
 
@@ -68,7 +82,6 @@ while [ 0 ]; do
 	clear
 	echo -e "\033[1;32mInstallation de votre système Linux.\033[0;0m"
 	echo ""
-	echo "Bienvenue dans l'installateur."
 	echo "Entrez ci-après la rubrique souhaitée et appuyez sur ENTRÉE."
 	echo ""
 	echo "aide       : lire l'aide de l'installateur"
