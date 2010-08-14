@@ -10,15 +10,16 @@ fi
 clear
 echo -e "\033[1;32mConfiguration du système.\033[0;0m"
 echo ""
-echo "L'installation des paquets est terminée. Le système doit maintenant"
-echo "être configuré."
+echo "L'installation des paquets est terminée. Passons à la configuration"
+echo "de votre nouveau système Linux."
 echo ""
 echo -n "Appuyez sur ENTRÉE pour continuer."
 read YOP;
 
 # On définit le clavier à charger à chaque démarrage :
-echo "Ajout de « loadkeys ${DISPOCLAVIER} » pour le chargement de la disposition"
-echo "du clavier dans votre fichier '/etc/rc.d/rc.keymap'..."
+echo "Ajout de « loadkeys ${DISPOCLAVIER} » dans votre fichier"
+echo "'/etc/rc.d/rc.keymap' pour le chargement de la disposition"
+echo "du clavier..."
 
 if [ -r $TMP/choix_clavier ]; then
 	DISPOCLAVIER="`cat $TMP/choix_clavier`"
