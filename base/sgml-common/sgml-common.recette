@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-sgml-common}
 VERSION=${VERSION:-0.6.3}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-sgml-common}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -142,8 +142,8 @@ config etc/sgml/sgml.conf.new
 # On crée les catalogues (on n'oublie SURTOUT PAS d'indiquer la racine, auquel
 # cas on casse tout le système de documentation des autres paquets. On doit donc
 # chrooter ) :
-chroot . /usr/bin/install-catalog --add /etc/sgml/sgml-ent.cat /usr/share/sgml/sgml-iso-entities-8879.1986/catalog
-chroot . /usr/bin/install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/sgml-ent.cat
+install-catalog --add etc/sgml/sgml-ent.cat /usr/share/sgml/sgml-iso-entities-8879.1986/catalog
+install-catalog --add etc/sgml/sgml-docbook.cat /etc/sgml/sgml-ent.cat
 
 EOF
 
