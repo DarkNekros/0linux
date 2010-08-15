@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-lcms}
-VERSION=${VERSION:-2.0a}
+VERSION=${VERSION:-1.19}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-lcms}
 BUILD=${BUILD:-1}
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}2-${VERSION}.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}-${VERSION}.$EXT}
 DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README* doc/*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques et moteur de gestion des couleurs"
