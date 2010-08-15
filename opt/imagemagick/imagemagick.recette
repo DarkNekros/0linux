@@ -81,6 +81,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--disable-openmp \
 	--with-x \
 	--with-modules \
+	--with-dejavu-font-dir=/usr/share/fonts/TTF \
 	--build=${TARGET32}
 
 make
@@ -132,6 +133,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--disable-openmp \
 	--with-x \
 	--with-modules \
+	--with-dejavu-font-dir=/usr/share/fonts/TTF \
 	--build=${TARGET64}
 
 make
