@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-ImageMagick}
 VERSION=${VERSION:-6.6.3}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-imagemagick}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
