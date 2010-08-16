@@ -5,7 +5,7 @@ util-linux 2.18
 ImageMagick 6.6.3-1
 lvm 2.02.71
 berkeley-db 5.0.26 
-ruby 1.9.1-p429 
+ruby 1.9.1-p430
 autoconf-2.67
 linux 2.6.35.1
 python 2.7
@@ -26,3 +26,4 @@ make 3.82
 gcc 4.5.1
 ntfs-3g 2010.8.8 
 curl 7.21.1 
+vim 7.3 
