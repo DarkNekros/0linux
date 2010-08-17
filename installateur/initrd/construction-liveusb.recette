@@ -64,6 +64,10 @@ chroot . /usr/sbin/depmod -a
 # On évite que se lance 'sshd' (+ effet d'escalier à l'affichage) :
 chroot . /bin/chmod -x /etc/rc.d/rc.sshd
 
+# On copie le nouveau noyau dans /tmp sans sa version, il faudra le placer
+# ensuite sur la clé dans extlinux/ :
+cp -a ${LIVEOS}/boot/noyau-2* /tmp/noyau
+
 # On crée l'initrd :
 rm -f ${INITRDGZ}
 find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
