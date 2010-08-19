@@ -3,21 +3,18 @@ xorg-server 1.8.2
 rpm 5.3.2 
 util-linux 2.18 
 ImageMagick 6.6.3-1
-lvm 2.02.71
+lvm 2.02.73
 berkeley-db 5.0.26 
 ruby 1.9.1-p430
 autoconf-2.67
-linux 2.6.35.1
+linux 2.6.35.2
 python 2.7
 udev 161
 pkg-config 0.25
 gparted 0.6.2 
 freetype 2.4.2
 dhcp 4.2.0
-jdk 6u21 
 gstreamer 0.10.30
-firefox 3.6.8
-thunderbird 3.1.2
 sqlite 3.7.0.1
 git 1.7.2.1  
 perl-5.12.1
