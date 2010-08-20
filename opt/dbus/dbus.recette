@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-dbus}
 VERSION=${VERSION:-1.3.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-dbus}
-BUILD=${BUILD:-3}
-
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -68,6 +67,8 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -83,7 +84,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--build=${TARGET32}
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -108,6 +109,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -123,15 +126,15 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--build=${TARGET64}
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On place le fichier de service et on veille à ne rien écraser :
+# On place le fichier de service :
 rm ${PKG}/etc/rc.d/*
-cat $CWD/rc.messagebus > ${PKG}/etc/rc.d/rc.messagebus.new
-chmod 0755 ${PKG}/etc/rc.d/rc.messagebus.new
+cp -a $CWD/rc.messagebus ${PKG}/etc/rc.d/rc.messagebus
+chmod 0755 ${PKG}/etc/rc.d/rc.messagebus
 
 # On veille à ne pas écraser de fichiers de configuration :
 mv ${PKG}/etc/dbus-1/session.conf{,.new}
@@ -180,7 +183,6 @@ config() {
 
 config etc/dbus-1/session.conf.new
 config etc/dbus-1/system.conf.new
-config etc/rc.d/rc.messagebus.new
 
 EOF
 
@@ -198,7 +200,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then

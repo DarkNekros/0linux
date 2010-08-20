@@ -26,17 +26,17 @@ dmesg -s 65536 > /var/log/dmesg
 
 # Lancement de syslog :
 if [ -x /etc/rc.d/rc.syslog -a -x /usr/sbin/syslogd -a -d /var/log ]; then
-	. /etc/rc.d/rc.syslog start &
+	. /etc/rc.d/rc.syslog start
 fi
 
 # Initialisation du matériel réseau :
 if [ -x /etc/rc.d/rc.inet1 ]; then
-	. /etc/rc.d/rc.inet1 &
+	. /etc/rc.d/rc.inet1
 fi
 
 # Lancement des démons réseau :
 if [ -x /etc/rc.d/rc.inet2 ]; then
-	. /etc/rc.d/rc.inet2 &
+	. /etc/rc.d/rc.inet2
 fi
 
 # Montage du reste des systèmes de fichiers :
@@ -56,32 +56,32 @@ chmod 1777 /tmp /var/tmp
 
 # Lancement des scripts System V s'il en existe pour ce niveau d'exécution :
 if [ -x /etc/rc.d/rc.sysvinit ]; then
-	. /etc/rc.d/rc.sysvinit &
+	. /etc/rc.d/rc.sysvinit
 fi
 
 # Mise à jour de l'indexation des polices :
 if [ -x /usr/bin/fc-cache ]; then
-	/usr/bin/fc-cache -f &
+	/usr/bin/fc-cache -f
 fi
 
 # Lancement des programmes pour GTK+ et Pango dans les 2 architectures :
 if [ -d /etc/gtk-2.0 ]; then
-	gdk-pixbuf-query-loaders-32 > /etc/gtk-2.0-32/gdk-pixbuf.loaders &
-	gdk-pixbuf-query-loaders-64 > /etc/gtk-2.0-64/gdk-pixbuf.loaders &
-	gtk-query-immodules-2.0-32 > /etc/gtk-2.0-32/gtk.immodules &
-	gtk-query-immodules-2.0-64 > /etc/gtk-2.0-64/gtk.immodules &
+	gdk-pixbuf-query-loaders-32 > /etc/gtk-2.0-32/gdk-pixbuf.loaders
+	gdk-pixbuf-query-loaders-64 > /etc/gtk-2.0-64/gdk-pixbuf.loaders
+	gtk-query-immodules-2.0-32 > /etc/gtk-2.0-32/gtk.immodules
+	gtk-query-immodules-2.0-64 > /etc/gtk-2.0-64/gtk.immodules
 fi
 
 if [ -d /etc/pango ]; then
-	pango-querymodules-32 > /etc/pango-32/pango.modules &
-	pango-querymodules-64 > /etc/pango-64/pango.modules &
+	pango-querymodules-32 > /etc/pango-32/pango.modules
+	pango-querymodules-64 > /etc/pango-64/pango.modules
 fi
 
 # Mise à jour du cache des icônes :
 if find /usr/share/icons 2> /dev/null | grep -q icon-theme.cache ; then
 	for theme_dir in /usr/share/icons/* ; do
 		if [ -r ${theme_dir}/icon-theme.cache ]; then
-			/usr/bin/gtk-update-icon-cache -t -f ${theme_dir} 1> /dev/null 2> /dev/null &
+			/usr/bin/gtk-update-icon-cache -t -f ${theme_dir} 1> /dev/null 2> /dev/null
 		fi
 	done
 	
@@ -93,17 +93,17 @@ fi
 
 # Mise à jour de la base de données de types MIME :
 if [ -x /usr/bin/update-mime-database -a -d /usr/share/mime ]; then
-	/usr/bin/update-mime-database /usr/share/mime 1> /dev/null 2> /dev/null &
+	/usr/bin/update-mime-database /usr/share/mime 1> /dev/null 2> /dev/null
 fi
 
 # Lancement de  D-Bus :
 if [ -x /etc/rc.d/rc.messagebus ]; then
-	. /etc/rc.d/rc.messagebus start &
+	. /etc/rc.d/rc.messagebus start
 fi
 
 # Lancement de HAL :
 if [ -x /etc/rc.d/rc.hald ]; then
-	. /etc/rc.d/rc.hald start &
+	. /etc/rc.d/rc.hald start
 fi
 
 # Lancement de dcron :
@@ -113,12 +113,12 @@ fi
 
 # Lancement du serveur de pointage GPM :
 if [ -x /etc/rc.d/rc.gpm ]; then
-	. /etc/rc.d/rc.gpm start &
+	. /etc/rc.d/rc.gpm start
 fi
 
 # Lancement du script « local » personnael :
 if [ -x /etc/rc.d/rc.local ]; then
-	. /etc/rc.d/rc.local &
+	. /etc/rc.d/rc.local
 fi
 
 # C'est fini !

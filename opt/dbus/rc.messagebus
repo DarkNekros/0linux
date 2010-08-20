@@ -2,8 +2,8 @@
 PIDFILE=/var/run/dbus/dbus.pid
 
 start() {
+	rm -f $(dirname $PIDFILE)/*
 	if ! ps axc | grep -w dbus-daemon ; then
-		rm -f $(dirname $PIDFILE)/*
 		if [ -x /usr/bin/dbus-uuidgen -a -x /usr/bin/dbus-daemon ] ; then
 			echo "Démarrage du système de messages D-BUS: /usr/bin/dbus-uuidgen --ensure ; /usr/bin/dbus-daemon --system"
 			/usr/bin/dbus-uuidgen --ensure

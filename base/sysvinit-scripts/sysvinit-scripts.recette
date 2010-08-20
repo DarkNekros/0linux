@@ -5,10 +5,9 @@ set -e
 umask 022
 CWD=$(pwd)
 
-VERSION=${VERSION:-0.6}
+VERSION=${VERSION:-0.7}
 NAMETGZ=${NAMETGZ:-sysvinit-scripts}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -83,7 +82,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
