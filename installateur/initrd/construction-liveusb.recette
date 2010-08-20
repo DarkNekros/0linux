@@ -6,9 +6,14 @@ set -e
 umask 022
 CWD=$(pwd)
 
+# Changer ces paramètres via la ligne de commande, par ex. :
+# 	# SOURCES=/ici PAQUETS=/quelque/part LIVEOS=/ailleurs USBDEV=/dev/sdd ./construction-liveusb.recette
+
+SOURCES=${SOURCES:-/marmite/0/sources}
 PAQUETS=${PAQUETS:-/marmite/0/paquets}
 LIVEOS=${LIVEOS:-/marmite/0/liveos}
 INITRDGZ=${INITRDGZ:-/tmp/initrd.gz}
+USBDEV=${USBDEV:-/dev/sdc}
 
 # On crée et on vide le répertoire d'accueil :
 rm -rf ${LIVEOS}
@@ -64,13 +69,40 @@ chroot . /usr/sbin/depmod -a
 # On évite que se lance 'sshd' (+ effet d'escalier à l'affichage) :
 chroot . /bin/chmod -x /etc/rc.d/rc.sshd
 
-# On copie le nouveau noyau dans /tmp sans sa version, il faudra le placer
-# ensuite sur la clé dans extlinux/ :
+# On copie le nouveau noyau dans /tmp sans sa version :
+rm -f /tmp/noyau
 cp -a ${LIVEOS}/boot/noyau-2* /tmp/noyau
 
 # On crée l'initrd :
 rm -f ${INITRDGZ}
 find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
 cd -
+
+# On monte la clé, sans la presser :
+mount ${USBDEV}1 /mnt/tmp 2>/dev/null
+sleep 4
+
+# On nettoie la clé :
+chattr -i /mnt/tmp/extlinux/ldlinux.sys
+rm -rf /mnt/tmp/extlinux
+mkdir -p /mnt/tmp/0/paquets
+
+# On copie toutes les sources de extlinux/ :
+cp -a ${SOURCES}/installateur/extlinux /mnt/tmp
+chmod -R root:root /mnt/tmp/extlinux/*
+
+# On copie le noyau et l'initrd :
+cp -a ${INITRDGZ} /tmp/noyau /mnt/tmp/extlinux/
+
+# On copie les paquets :
+rsync -auv --delete-after ${PAQUETS}/* /mnt/tmp/0/paquets
+
+# On copie un MBR propre :
+dd if=/usr/share/syslinux/mbr.bin of=${USBDEV}1
+
+# On installe enfin extlinux :
+extlinux --install /mnt/tmp/extlinux
+
+umount /mnt/tmp
 
 exit 0
