@@ -89,7 +89,7 @@ mkdir -p /mnt/tmp/0/paquets
 
 # On copie toutes les sources de extlinux/ :
 cp -a ${SOURCES}/installateur/extlinux /mnt/tmp
-chmod -R root:root /mnt/tmp/extlinux/*
+chown -R root:root /mnt/tmp/extlinux/*
 
 # On copie le noyau et l'initrd :
 cp -a ${INITRDGZ} /tmp/noyau /mnt/tmp/extlinux/
