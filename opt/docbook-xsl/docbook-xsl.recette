@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-docbook-xsl}
 VERSION=${VERSION:-1.75.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-docbook-xsl}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-6}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -21,9 +21,9 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://downloads.sourceforge.net/project/docbook/docbook-xsl-doc/1.75.2/docbook-xsl-doc-1.75.2.tar.bz2?use_mirror=freefr&ts=1280770527&r=http://sourceforge.net/projects/docbook/files/}
-WGETDOC=${WGETDOC:-http://downloads.sourceforge.net/project/docbook/docbook-xsl-doc/1.75.2/docbook-xsl-doc-1.75.2.tar.bz2?use_mirror=freefr}
-DOC="AUTHORS COPYING* README*"
+WGET=${WGET:-http://prdownloads.sourceforge.net/docbook/${NAMESRC}-${VERSION}.$EXT}
+WGETDOC=${WGETDOC:-http://prdownloads.sourceforge.net/docbook/${NAMESRC}-doc-${VERSION}.$EXT}
+DOC="doc/*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Feuilles de style XSL pour docbook"
 ########################################
@@ -59,7 +59,7 @@ fi
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}/usr/share/xml/docbook/xsl-stylesheets-${VERSION}
+mkdir -p ${PKG}/usr/share/xml/docbook/stylesheet/docbook-xsl/${VERSION}
 
 # On déballe les 2 archives et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -76,7 +76,10 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On copie l'ensemble des répertoires récursivement, exceptée la doc:
-cp -ar doc/* ${PKG}/usr/share/xml/docbook/xsl-stylesheets-${VERSION}
+cp -ar VERSION common eclipse extensions fo highlighting html \
+	htmlhelp images javahelp lib manpages params \
+	profiling slides template website xhtml \
+	${PKG}/usr/share/xml/docbook/stylesheet/docbook-xsl/${VERSION}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -95,9 +98,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cd doc
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cd -
+cp -ar ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
