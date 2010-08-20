@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-docbook-xsl}
 VERSION=${VERSION:-1.75.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-docbook-xsl}
-BUILD=${BUILD:-6}
+BUILD=${BUILD:-7}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -59,7 +59,7 @@ fi
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}/usr/share/xml/docbook/stylesheet/docbook-xsl/${VERSION}
+mkdir -p ${PKG}/usr/share/xml/docbook/xsl-stylesheets-${VERSION}
 
 # On déballe les 2 archives et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -79,7 +79,7 @@ find . \
 cp -ar VERSION common eclipse extensions fo highlighting html \
 	htmlhelp images javahelp lib manpages params \
 	profiling slides template website xhtml \
-	${PKG}/usr/share/xml/docbook/stylesheet/docbook-xsl/${VERSION}
+	${PKG}/usr/share/xml/docbook/xsl-stylesheets-${VERSION}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
