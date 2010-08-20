@@ -16,7 +16,7 @@ freetype 2.4.2
 dhcp 4.2.0
 gstreamer 0.10.30
 sqlite 3.7.0.1
-git 1.7.2.1  
+git 1.7.2.2  
 perl-5.12.1
 grep-2.6.3
 make 3.82

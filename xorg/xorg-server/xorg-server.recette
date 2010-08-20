@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-xorg-server}
 VERSION=${VERSION:-1.8.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -72,7 +72,7 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-XSERVERLIBS_LIBS='-L/usr/lib64 -lXfont -lXau -lpixman-1 -ldbus-1 -lpthread -lrt -lXdmcp -ldl' \
+XSERVERLIBS_LIBS+="-L/usr/lib${LIBDIRSUFFIX} -lXfont -lXau -lpixman-1 -ldbus-1 -lpthread -lrt -lXdmcp -ldl" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -96,6 +96,13 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On place les fichiers de configuration en veillant à ne rien écraser :
+mkdir -p ${PKG}/etc/X11/xorg.conf.d
+
+for fichierconfig in evdev graphique synaptics; do
+	cp -a $CWD/${fichierconfig}.conf ${PKG}/etc/X11/xorg.conf.d/${fichierconfig}.conf.new
+done
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
