@@ -83,7 +83,6 @@ mount ${USBDEV}1 /mnt/tmp 2>/dev/null
 sleep 4
 
 # On nettoie la clé :
-chattr -i /mnt/tmp/extlinux/ldlinux.sys
 rm -rf /mnt/tmp/extlinux
 mkdir -p /mnt/tmp/0/paquets
 
