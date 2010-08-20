@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-xorg-server}
 VERSION=${VERSION:-1.8.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -133,6 +133,21 @@ cat > ${PKG}/install/doinst.sh << "EOF"
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
+
+config() {
+	NEW="$1"
+	OLD="`dirname $NEW`/`basename $NEW .new`"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "`cat $OLD | md5sum`" = "`cat $NEW | md5sum`" ]; then
+		rm $NEW
+	fi
+}
+
+config etc/X11/xorg.conf.d/evdev.conf.new
+config etc/X11/xorg.conf.d/graphique.conf.new
+config etc/X11/xorg.conf.d/synaptics.conf.new
 
 EOF
 
