@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-xorg-server}
 VERSION=${VERSION:-1.8.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-6}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
