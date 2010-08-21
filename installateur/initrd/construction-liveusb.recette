@@ -79,7 +79,7 @@ find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
 cd -
 
 # On monte la clé, sans la presser :
-mount ${USBDEV}1 /mnt/tmp 2>/dev/null
+mount ${USBDEV}1 /mnt/tmp || true
 sleep 4
 
 # On nettoie la clé :
