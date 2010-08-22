@@ -111,10 +111,15 @@ growl () {
 
 linkregister () {
     # Print the link list attached to the package, storing the others.
-    # $f PACKAGE, KEPT LINK LIST
-    local log="$SCRIPTLOG/$1" logc=$(ls -1 "$SCRIPTLOG"| wc -l) kept="$2"
+    # $f PACKAGE, KEPT LINK LIST, SCRIPTS
+    local log="$SCRIPTLOG/$1" kept="$2" post="$TMPDIR/post-install.sh"; shift 2
     echo "FILE LIST:" >"$kept"
-    [ $logc -gt 0 ] || return 1 # no more script left...
+    if [ "$1" = "$SCRIPTLOG/*" ]; then
+        shift 1 # no more script left...
+        [ -s "$post" ] || return 1 # nothing to save...
+    elif [ ! -s "$post" ]; then
+        post="/dev/null"
+    fi
     [ -s "$log" ] || log="/dev/null" # no valid script attached to the package...
     awk 'BEGIN{C=0;STORE= (ARGV[1] == "/dev/null") ? 0 : 1}
          (++C != FNR){if(STORE > 0)DELFILE=ARGV[1];C=FNR;STORE = 0}
@@ -125,7 +130,7 @@ linkregister () {
          (STORE > 0) {DEL[$0]; next}
          ($0 in DEL){delete DEL[$0]; next}
          {print $0 >"/dev/stderr"}
-         END{for(i in DEL) print i}' "$log" "$SCRIPTLOG/"* 2>>"$kept" | sort
+         END{for(i in DEL) print i}' "$log" "$post" "$@" 2>>"$kept" | sort
 }
 
 logfmt () {
@@ -190,13 +195,6 @@ pkginstall () {
     echo "  installing the files..." >&3
     [ $dry -eq 0 ] || return 0
     (cd "$ROOT/"; cpio --quiet -i --to-stdout "$files" | $unzip | cpio --quiet -m -i -u) < "$cpio" || return 1
-    if [ -s "$post" ]; then
-        # We copy the script now, for the remove to have new links during the upgrades.
-        cp -f "$post" "$SCRIPTLOG/$name"
-        chmod 755 "$SCRIPTLOG/$name"
-    else
-        return 0
-    fi
 }
 
 pkgmatch () {
@@ -234,7 +232,7 @@ pkgremove () {
         echo "================================================================================" >&3
         rm -f "$TMPDIR/files" "$TMPDIR/dirs" "$TMPDIR/symkept" "$TMPDIR/cats"
         touch "$TMPDIR/files" "$TMPDIR/dirs" "$TMPDIR/symkept" "$TMPDIR/cats"
-        linkregister "$1" "$TMPDIR/symkept" | while read -r link; do
+        linkregister "$1" "$TMPDIR/symkept" "$SCRIPTLOG/"* | while read -r link; do
             if [ -h "$ROOT/$link" ]; then
                 echo "  unlink  $link" >&3
                 [ $dry -gt 0 ] || rm -f "$ROOT/$link"
@@ -273,14 +271,15 @@ pkgremove () {
 
 postinstall () {
     # Perform the post-install operations.
-    # $f DRY RUN
-    local dry=$1 post="$TMPDIR/post-install.sh"
-    echo "  executing the post-install script..." >&3
-    if [ $dry -eq 0 ]; then
-        [ -O /sbin/ldconfig -a -x /sbin/ldconfig ] && /sbin/ldconfig # user may not be root during tests & debugs...
+    # $f DRY RUN, PACKAGE
+    local dry=$1 name="$(basename "$2" .cpio)" post="$TMPDIR/post-install.sh"
+    [ -O /sbin/ldconfig -a -x /sbin/ldconfig ] && /sbin/ldconfig # user may not be root during tests & debugs...
+    if [ -f "$post" ]; then
+        echo "  executing the post-install script..." >&3
+        [ $dry -eq 0 ] || return 0
         (cd "$ROOT/" && sh "$post")
-    else
-        return 0
+        cp -f "$post" "$SCRIPTLOG/$name"
+        chmod 755 "$SCRIPTLOG/$name"
     fi
 }
 
@@ -434,7 +433,7 @@ while [ "$ARGV" ]; do
         pkginstall 0 "$dry" "$1" || [ $? -ne 2 -a $rmode -ne 0 ] || continue
         [ "$arg" ] && pkgremove "$dry" 1 $arg
     fi
-    [ $uimode -eq 0 -o ! -s "$TMPDIR/post-install.sh" ] || postinstall "$dry"
+    [ $uimode -eq 0 -o ! -s "$TMPDIR/post-install.sh" ] || postinstall "$dry" "$1"
 done
 [ "$TMPDIR" ] && tmpclear $debug
 exec 3>&-

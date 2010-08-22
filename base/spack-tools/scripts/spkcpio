@@ -49,6 +49,20 @@ emptywarn () {
            | awk '($2 == 0){print "(W) The \""$4".gz\" gzipped file is empty."}' >&2
 }
 
+explode () {
+    # Extract the content of a Slackware(R) package.
+    # $f TMPDIR, PACKAGE
+    local fmt=$(echo "$2" | sed 's/.*\.t\([gx]\)z$/\1/;/^[gx]$/!d;s/g/z/') 
+    local file="$(cd "$(dirname "$2")"; pwd -P)/$(basename "$2")"
+    local tmp="$1/$(basename "$2" | sed 's/t[gx]z$/tmpXXXXXX/')"
+    [ "$fmt" -a -f "$file" ] || growl 1 "The \"$file\" does not exist or is not a Slackware(R) package."
+    tmp="$(mktemp -d "$tmp" 2>/dev/null)" || growl 1 "Can't create a secure temporary directory."
+    ( cd "$tmp" || exit 1
+      tar xf$fmt "$file" --same-permissions --same-owner
+    ) || growl 1 "Extraction failed."
+    echo "$tmp"
+}
+
 getfiles () {
     # Print the list of packaged files
     # $f
@@ -194,7 +208,7 @@ spkcpio - make a Slackware(R) compatible CPIO-based package.
     Spkcpio makes packages in the Slackware(R) fashion but use CPIO instead of
     the antediluvian TAR-1.13 to do it.
 
-    Usage: spkcpio <directory> [output] [options]
+    Usage: spkcpio <directory|T[GX]Z Slackware(R) package> [output] [options]
 
     Options:
 
@@ -257,21 +271,25 @@ for arg in "$@"; do
         -z|--gzip) zip="gzip" ;;
         -*) growl 1 "\"$arg\": illegal option.";;
         *)  if [ ! "$source" ]; then
-                [ -d "$arg" ] || growl 1 "\"$arg\" is not a directory."
-                source="$(cd "$arg" && pwd -P)" || growl 1 "Can't enter the \"$arg\" directory."
+                if [ ! -d "$arg" ]; then
+                    echo "The source is not a directory, trying to convert a Slackware(R) package..." >&3
+                    source="$(explode "$tmpdir" "$arg")" || exit 1
+                else
+                    source="$(cd "$arg" && pwd -P)" || growl 1 "Can't enter the \"$arg\" directory."
+                fi
             else
                 [ ! "$target" ] || growl 1 "Too many arguments."
                 target="$arg"
                 arg="$(cd $(dirname "$arg") && pwd -P)" || growl 1 "No path to \"$target\"."
                 if awk 'BEGIN{exit (index("'"$arg"'/","'"$source"'/") == 1) ? 0 : 1}'; then
-                    growl 1 "Can't generate the target in the source directory."
+                    growl 1 "Can't generate the package into its source directory."
                 fi
                 target="$arg/$(basename "$target" .cpio).cpio"
             fi
     esac
 done
 [ "$source" ] || usage 1
-[ "$target" ] || target="$source.cpio"
+[ "$target" ] || target="$(echo "$source" | sed 's/\(\.tmp......\)\?$/.cpio/')"
 echo "Generating the \"$target\" package..." >&3
 rm -fr "$target" || growl 1 "\"$target\" already exists and can't be removed."
 tmpdir=$(mktemp -d "$tmpdir/pkg-$$-XXXXXX" 2>/dev/null) || growl 1 "Can't create a secure temporary directory."
@@ -281,7 +299,7 @@ if [ $reset -ne 0 ]; then
     chown 0:0 -R .
     echo "Forcing directory mode to 755 (rwx-r-x-r-x)..." >&3
     # NOTE: POSIX minima allows 4096 arguments, but Linux generally goes over 100000.
-    # Both cases seems to be enough to make some optimizations with "find".
+    # Both cases seem to be enough to make some optimizations with "find".
     find . -type d -exec chmod 0755 {} +
 fi
 deadwarn "$source" >&3
