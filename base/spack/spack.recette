@@ -22,7 +22,6 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://requiescant.tuxfamily.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Suite d'outils de gestion de paquets"
 ########################################
@@ -99,10 +98,6 @@ if [ -d ${PKG}/usr/info ]; then
 	rm -f ${PKG}/usr/info/dir
 	gzip -9 ${PKG}/usr/info/*.info*
 fi
-
-# Installation de la documentation :
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
