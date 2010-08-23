@@ -79,7 +79,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	tar=$(tar --version | head -n 1 | cut -d' ' -f4)
 
 make
-fakeroot make install DESTDIR=${PKG}
+fakeroot make install
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
