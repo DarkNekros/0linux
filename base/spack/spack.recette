@@ -70,7 +70,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
-	tar=$(tar --version | head -n 1 | cut -d' ' -f4))
+	tar=$(tar --version | head -n 1 | cut -d' ' -f4)
 	--prefix=/usr \
 	--bindir=/bin \
 	--sbindir=/sbin \
