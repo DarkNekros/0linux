@@ -76,7 +76,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	sysconfdir=/etc \
 	varlibdir=/var/lib \
 	mandir=/usr/man \
-	infodir=/usr/info \
 	docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	tar=$(tar --version | head -n 1 | cut -d' ' -f4)
 
