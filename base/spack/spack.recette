@@ -81,6 +81,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make
 fakeroot make install
 
+# On crée ce répertoire absent :
+mkdir -p ${PKG}/var/lib/spkdb
+
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
