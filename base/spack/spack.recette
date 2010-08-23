@@ -70,16 +70,15 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
-	--prefix=/usr \
-	--bindir=/bin \
-	--sbindir=/sbin \
-	--sysconfdir=/etc \
-	--varlibdir=/var/lib \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	prefix=/usr \
+	bindir=/bin \
+	sbindir=/sbin \
+	sysconfdir=/etc \
+	varlibdir=/var/lib \
+	mandir=/usr/man \
+	infodir=/usr/info \
+	docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	tar=$(tar --version | head -n 1 | cut -d' ' -f4)
-	--build=${TARGET64}
 
 make
 fakeroot make install DESTDIR=${PKG}
