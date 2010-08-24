@@ -90,9 +90,10 @@ sleep 4
 chattr -i $(find /mnt/tmp -name "ldlinux.sys" -print)
 rm -rf /mnt/tmp/boot/extlinux
 mkdir -p /mnt/tmp/0/paquets
+mkdir -p /mnt/tmp/boot/extlinux
 
 # On copie toutes les sources de extlinux/ :
-cp -ar ${SOURCES}/installateur/extlinux /mnt/tmp/boot/
+cp -ar ${SOURCES}/installateur/extlinux/* /mnt/tmp/boot/extlinux/
 
 # On copie le noyau et l'initrd :
 cp -a ${INITRDGZ} /tmp/noyau /mnt/tmp/boot/

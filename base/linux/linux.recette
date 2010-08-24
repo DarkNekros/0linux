@@ -17,7 +17,7 @@ NAMETGZ=${NAMETGZ:-linux}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -101,10 +101,9 @@ if [ ! "X${MENUCONFIG}" = "X" ]; then
 fi
 
 # On compile le noyau :
-SLKCFLAGS="-O2 -fPIC -pipe"
-CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+SLKCFLAGS="-pipe"
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-make -j3
+make -j3 CROSS_COMPILE=x86_64-0-linux-gnu- 
 
 # On copie le noyau fraîchement compilé, le fichier System.map et le .config
 # dans /boot, agrémentés de leur version et on récupère le '.config' pour nos
@@ -160,6 +159,9 @@ ln -sf ../../../usr/src/linux-${VERSION}-${RTVERSION} ${PKGMODULES}/lib/modules/
 # On crée le seul répertoire nécessaire :
 mkdir -p ${PKGSOURCE}/usr/src
 
+# On nettoie les sources :
+make mrproper
+
 # On copie toutes les sources et on crée le lien symbolique générique 'linux' :
 cp -a $TMP/${NAME} ${PKGSOURCE}/usr/src/${NAME}-${RTVERSION}
 ln -sf ${NAME}-${RTVERSION} ${PKGSOURCE}/usr/src/linux
@@ -167,17 +169,12 @@ ln -sf ${NAME}-${RTVERSION} ${PKGSOURCE}/usr/src/linux
 # On copie le fichier de configuration dans les sources :
 cat $CWD/config > ${PKGSOURCE}/usr/src/${NAME}-${RTVERSION}/.config
 
-# On nettoie et on prépare l'arborescence à la compilation de modules :
-make clean
-make prepare
-rm -f .version
-
 # Installation de la documentation (on crée simplement un lien) :
 mkdir -p ${PKGSOURCE}/usr/doc/${NAMETGZSOURCE}-${VERSION}-${RTVERSION}
 ln -sf ../../src/${NAMESRC}-${VERSION}-${RTVERSION}/Documentation ${PKGSOURCE}/usr/doc/${NAMETGZSOURCE}-${VERSION}-${RTVERSION}/Documentation
 # Il y a un peu de doc pour les firmwares :
 mkdir -p ${PKGMODULES}/usr/doc/${NAMETGZMODULES}-${VERSION}-${RTVERSION}
-cp -a $TMP/${NAME}/firmware/{README.AddingFirmware,WHENCE} ${PKGMODULES}/usr/doc/${NAMETGZMODULES}-${VERSION}-${RTVERSION}
+cp -a $TMP/${NAME}/firmware/{README*,WHENCE} ${PKGMODULES}/usr/doc/${NAMETGZMODULES}-${VERSION}-${RTVERSION}
 
 # On installe les slack-desc :
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
@@ -215,6 +212,14 @@ fi
 if [ -x sbin/depmod ]; then
 	chroot . depmod -a 1> /dev/null 2> /dev/null
 fi
+
+EOF
+
+# On installe le doinst.sh des sources :
+cat > ${PKGSOURCES}/install/doinst.sh << EOF
+#!/bin/env bash
+chroot . make -C /usr/src/linux-${VERSION} clean oldconfig prepare
+rm -f usr/src/linux-${VERSION}/.version
 
 EOF
 
