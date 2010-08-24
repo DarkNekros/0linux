@@ -71,7 +71,7 @@ chroot . /bin/chmod -x /etc/rc.d/rc.sshd
 
 # On copie le nouveau noyau dans /tmp sans sa version :
 rm -f /tmp/noyau
-cp -a ${LIVEOS}/boot/noyau-2* /tmp/noyau
+cp ${LIVEOS}/boot/noyau-2* /tmp/noyau
 
 # On crée l'initrd :
 rm -f ${INITRDGZ}
@@ -82,19 +82,20 @@ cd -
 mount ${USBDEV}1 /mnt/tmp || true
 sleep 4
 
-# On nettoie la clé :
-rm -rf /mnt/tmp/extlinux
+# On nettoie la clé en ignorant l'erreur sur 'ldlinux.sys' :
+rm -rf /mnt/tmp/extlinux || true
 mkdir -p /mnt/tmp/0/paquets
 
 # On copie toutes les sources de extlinux/ :
 cp ${SOURCES}/installateur/extlinux /mnt/tmp
-chown -R root:root /mnt/tmp/extlinux/*
+chown -R root:root /mnt/tmp/extlinux/* || true
 
 # On copie le noyau et l'initrd :
 cp -a ${INITRDGZ} /tmp/noyau /mnt/tmp/extlinux/
 
 # On copie les paquets :
 rsync -auv --delete-after ${PAQUETS}/* /mnt/tmp/0/paquets
+chown -R root:root /mnt/tmp/0/paquets || true
 
 # On copie un MBR propre :
 dd if=/usr/share/syslinux/mbr.bin of=${USBDEV}
