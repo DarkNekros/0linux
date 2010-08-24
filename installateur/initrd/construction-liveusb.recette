@@ -87,7 +87,7 @@ rm -rf /mnt/tmp/extlinux
 mkdir -p /mnt/tmp/0/paquets
 
 # On copie toutes les sources de extlinux/ :
-cp -a ${SOURCES}/installateur/extlinux /mnt/tmp
+cp ${SOURCES}/installateur/extlinux /mnt/tmp
 chown -R root:root /mnt/tmp/extlinux/*
 
 # On copie le noyau et l'initrd :
@@ -97,10 +97,10 @@ cp -a ${INITRDGZ} /tmp/noyau /mnt/tmp/extlinux/
 rsync -auv --delete-after ${PAQUETS}/* /mnt/tmp/0/paquets
 
 # On copie un MBR propre :
-dd if=/usr/share/syslinux/mbr.bin of=${USBDEV}1
+dd if=/usr/share/syslinux/mbr.bin of=${USBDEV}
 
 # On installe enfin extlinux :
-extlinux --install /mnt/tmp/extlinux
+extlinux --install /mnt/tmp
 
 umount /mnt/tmp
 
