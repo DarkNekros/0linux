@@ -73,6 +73,10 @@ chroot . /bin/chmod -x /etc/rc.d/rc.sshd
 rm -f /tmp/noyau
 cp ${LIVEOS}/boot/noyau-2* /tmp/noyau
 
+# On positionne le fuseau à Paris car on est franco-français et chauvin :
+echo "localtime" > /etc/hardwareclock
+chroot . ln -sf ../usr/share/zoneinfo/Europe/Paris /etc/localtime
+
 # On crée l'initrd :
 rm -f ${INITRDGZ}
 find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
@@ -82,26 +86,28 @@ cd -
 mount ${USBDEV}1 /mnt/tmp || true
 sleep 4
 
-# On nettoie la clé en ignorant l'erreur sur 'ldlinux.sys' :
-rm -rf /mnt/tmp/extlinux || true
+# On nettoie la clé et on dévérouille 'ldlinux.sys' :
+chattr -i $(find /mnt/tmp -name "ldlinux.sys" -print)
+rm -rf /mnt/tmp/boot/extlinux
 mkdir -p /mnt/tmp/0/paquets
 
 # On copie toutes les sources de extlinux/ :
-cp -r ${SOURCES}/installateur/extlinux /mnt/tmp
-chown -R root:root /mnt/tmp/extlinux/* || true
+cp -ar ${SOURCES}/installateur/extlinux /mnt/tmp/boot/
 
 # On copie le noyau et l'initrd :
-cp -a ${INITRDGZ} /tmp/noyau /mnt/tmp/extlinux/
+cp -a ${INITRDGZ} /tmp/noyau /mnt/tmp/boot/
 
 # On copie les paquets :
 rsync -auv --delete-after ${PAQUETS}/* /mnt/tmp/0/paquets
-chown -R root:root /mnt/tmp/0/paquets || true
 
 # On copie un MBR propre :
 dd if=/usr/share/syslinux/mbr.bin of=${USBDEV}
 
 # On installe enfin extlinux :
-extlinux --install /mnt/tmp
+extlinux --install /mnt/tmp/boot/extlinux
+
+# On s'assure des permissions :
+chown -R root:root /mnt/tmp/* || true
 
 umount /mnt/tmp
 
