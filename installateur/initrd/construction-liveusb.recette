@@ -108,7 +108,7 @@ dd if=/usr/share/syslinux/mbr.bin of=${USBDEV}
 extlinux --install /mnt/tmp/boot/extlinux
 
 # On s'assure des permissions :
-chown -R root:root /mnt/tmp/* || true
+chown -R root:root /mnt/tmp/* 2> /dev/null || true
 
 umount /mnt/tmp
 

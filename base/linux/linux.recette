@@ -103,7 +103,7 @@ fi
 # On compile le noyau :
 SLKCFLAGS="-pipe"
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-make -j3 CROSS_COMPILE=x86_64-0-linux-gnu- 
+make -j3
 
 # On copie le noyau fraîchement compilé, le fichier System.map et le .config
 # dans /boot, agrémentés de leur version et on récupère le '.config' pour nos
