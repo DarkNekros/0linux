@@ -87,7 +87,7 @@ rm -rf /mnt/tmp/extlinux || true
 mkdir -p /mnt/tmp/0/paquets
 
 # On copie toutes les sources de extlinux/ :
-cp ${SOURCES}/installateur/extlinux /mnt/tmp
+cp -r ${SOURCES}/installateur/extlinux /mnt/tmp
 chown -R root:root /mnt/tmp/extlinux/* || true
 
 # On copie le noyau et l'initrd :
