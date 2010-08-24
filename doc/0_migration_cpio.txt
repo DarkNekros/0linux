@@ -1,4 +1,0 @@
-Migration vers les paquets CPIO .paq :
-
-less : Modifier /usr/bin/lesspipe.sh pour y ajouter .cpio et .paq
-coreutils : modifier et traduire /etc/DIR_COLORS pour y ajouter .paq

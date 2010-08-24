@@ -24,3 +24,4 @@ gcc 4.5.1
 ntfs-3g 2010.8.8 
 curl 7.21.1 
 vim 7.3 
+openssh 5.6p1 
