@@ -87,7 +87,10 @@ mount ${USBDEV}1 /mnt/tmp || true
 sleep 4
 
 # On nettoie la clé et on dévérouille 'ldlinux.sys' :
-chattr -i $(find /mnt/tmp -name "ldlinux.sys" -print)
+for f in $(find /mnt/tmp -name "ldlinux.sys" -print); do
+	chattr -i ${f}
+	rm -f ${f}
+done
 rm -rf /mnt/tmp/boot/extlinux
 mkdir -p /mnt/tmp/0/paquets
 mkdir -p /mnt/tmp/boot/extlinux
