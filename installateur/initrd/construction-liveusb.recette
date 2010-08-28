@@ -127,7 +127,7 @@ chown -R root:root /mnt/tmp/* 2> /dev/null || true
 dd if=/usr/share/syslinux/mbr.bin of=${USBDEV}
 
 # On installe enfin extlinux :
-extlinux --install /mnt/tmp
+extlinux --install /mnt/tmp/boot/extlinux
 
 # On démonte la clé :
 umount /mnt/tmp
