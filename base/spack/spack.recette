@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-spack}
 VERSION=${VERSION:-2.5}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-spack}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -81,11 +81,14 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make
 fakeroot make install
 
-# On crée ce répertoire absent :
-mkdir -p ${PKG}/var/lib/spkdb
-
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On modifie 'spkman' pour les messages francophones :
+patch -p1 ${PKG}/sbin/spkman < $CWD/spkman-fr.patch
+
+# On crée ce répertoire absent :
+mkdir -p ${PKG}/var/lib/spkdb
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

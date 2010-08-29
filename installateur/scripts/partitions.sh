@@ -129,7 +129,7 @@ while [ "$(cat $TMP/liste_partitions)" = "" ]; do
 		continue
 	else
 		# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-		if ! grep "/dev/" ${ROOTSELECT}; then
+		if [ "$(echo ${ROOTSELECT} | grep '/dev/')" = "" ]; then
 			echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 			sleep 2
 			continue
@@ -199,7 +199,7 @@ while [ 0 ]; do
 				continue
 			else
 				# Si l'utilisateur écrit n'importe quoi :
-				if [ ! grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs' ${FSFORMAT} ]; then
+				if [ "$(echo ${FSFORMAT} | grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs')" = "" ]; then
 					echo "Veuillez entrer un système de fichiers valide."
 					sleep 2
 					unset FSFORMAT
@@ -276,7 +276,7 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 					continue
 				else
 					# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-					if ! grep "/dev/" ${LINUXADD}; then
+					if [ "$(echo ${LINUXADD} | grep '/dev/')" = "" ]; then
 						echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 						sleep 2
 						unset LINUXADD
@@ -296,7 +296,7 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 							read MOUNTPOINT;
 							# Si le point de montage est incorrect :
 							if [ "${MOUNTPOINT}" = "" -o "$(echo ${MOUNTPOINT} | cut -b1)" = " " -o ! "$(echo ${MOUNTPOINT} | cut -b1)" = "/"]; then
-								echo "Veuillez entrer un système de fichiers de la forme « /quelquepart» ou"
+								echo "Veuillez entrer un point de montage de la forme « /quelquepart» ou"
 								echo "« /quelque/part»."
 								sleep 2
 								unset MOUNTPOINT
@@ -360,7 +360,7 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 											continue
 										else
 											# Si l'utilisateur écrit n'importe quoi :
-											if [ ! grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs' ${FSFORMAT} ]; then
+											if [ "$(echo ${FSFORMAT} | grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs')" = "" ]; then
 												echo "Veuillez entrer un système de fichiers valide."
 												sleep 2
 												unset FSFORMAT

@@ -1,0 +1,229 @@
+--- a/spkman	2010-08-30 00:45:13.000000000 +0200
++++ b/spkman	2010-08-30 01:20:59.000000000 +0200
+@@ -36,7 +36,7 @@
+     local buffer="$1"; shift 1
+     awk '{E=1}/^[0-9]+/{E=0}{exit E}' "$buffer" && return 0 # we should only have size here..
+     local list="$(echo "$*" | sed 's/ /, /g;s/$/ file/;s/,\([^,]*\)$/ and\1s/')"
+-    growl -1 "The package is corrupted (check $list)."
++    growl -1 "Le paquet est corrompu (vérifiez $list)."
+     return 1
+ }
+ 
+@@ -47,7 +47,7 @@
+     while read d; do
+         [ -d "$d" ] && continue # directory is ok...
+         [ ! -h "$d" -a ! -e "$d" ] && continue # not exist and not a broken symlink is also ok...
+-        growl 0 "\"$d\" is not a directory as expected. Remove it..."
++        growl 0 "\"$d\" n'est pas un répertoire mais un fichier. Supprimez-le..."
+         [ $dry -eq 0 ] && rm -f "$d"
+     done
+ }
+@@ -57,10 +57,10 @@
+     # $f FILE
+     local spec="$(basename $1 | awk '/[^-]+-[^-]+-[^-]+-[^-]+.cpio$/{print 0;exit}{print 1}')"
+     if [ ! -f "$1" ]; then
+-        growl -1 "\"$1\" is not a regular file."
++        growl -1 "\"$1\" n'existe pas."
+         return 1
+     elif [ $spec -ne 0 ]; then
+-        growl -1 "\"$1\" is not a well-formatted CPIO package name."
++        growl -1 "\"$1\" n'a pas un nom de paquet CPIO valide."
+         return 2
+     fi
+     return 0
+@@ -89,7 +89,7 @@
+     local dry="$1"
+     awk '{print; print >"/dev/stderr"}' 2>"$TMPDIR/files" | while read f; do
+         [ -d "$f" ] || continue
+-        growl 0 "found a \"$f\" directory where a file was expected. Remove it..."
++        growl 0 "\"$f\" n'est pas un fichier mais un répertoire. Supprimez-le..."
+         [ $dry -eq 0 ] && rm -rf "$f"
+     done
+ }
+@@ -167,7 +167,7 @@
+     SCRIPTLOG="$r/scripts"; RMSCRIPTLOG="$r/removed_scripts"
+     mkdir -p "$PKGLOG" "$RMPKGLOG" "$SCRIPTLOG" "$RMSCRIPTLOG"
+     TMPDIR="$(mktemp -d "$ROOT/tmp-$$-XXXXXX" 2>/dev/null)"
+-    [ "$TMPDIR" ] || growl 1 "Can't create secure temporary directory."
++    [ "$TMPDIR" ] || growl 1 "Impossible de créer un répertoire temporaire avec 'mktemp'."
+ }
+ 
+ pkginstall () {
+@@ -175,24 +175,22 @@
+     # $f FORCE REINSTALL, DRY RUN, PACKAGE
+     local re=$1 dry=$2 name="$(basename "$3" .cpio)" cpio="$3" unzip="xz -d -c"
+     filecheck "$cpio" || return 1
+-    echo "================================================================================" >&3
+-    echo "Installing the $name package..."
+-    echo "================================================================================" >&3
++    echo "Installation de $name..."
+     [ ! -f "$PKGLOG/$name" ] || (growl $((1 - $re)) "\"$name\" is already installed.") || return 2
+     local files=$(cpio --quiet -t "files.?z" <"$cpio") post="$TMPDIR/post-install.sh"
+     if [ "$files" = "files.gz" ]; then
+         unzip="gzip -d -c"
+     elif [ ! "$files" = "files.xz" ]; then
+-        (growl 1 "Broken package: neither \"files.xz\" nor \"files.gz\" found inside.") || return 1
++        (growl 1 "Paquet corrompu : ni \"files.xz\" ni \"files.gz\" n'ont été trouvés.") || return 1
+     fi
+     preinstall $dry "$cpio" <"$cpio" || return 1
+-    echo "  checking the file archive..." >&3
++    echo "  Vérification de l'archive des fichiers..." >&3
+     cpio -i --to-stdout "$files" < "$cpio" 2>"$TMPDIR/zsize"| $unzip 2>/dev/null \
+                               | cpio -t 2>"$TMPDIR/size"| filescout $dry
+     cpiocheck "$TMPDIR/zsize" "$files"|| return 1 # just skip the package.
+-    [ -s  "$TMPDIR/files" ] || (growl 1 "Broken package: can't get files from \"$files\".") || return 1
++    [ -s  "$TMPDIR/files" ] || (growl 1 "Paquet corrompu : impossible d'extraire \"$files\".") || return 1
+     logfmt $dry "$name" "$cpio"
+-    echo "  installing the files..." >&3
++    echo "  Installation des fichiers..." >&3
+     [ $dry -eq 0 ] || return 0
+     (cd "$ROOT/"; cpio --quiet -i --to-stdout "$files" | $unzip | cpio --quiet -m -i -u) < "$cpio" || return 1
+ }
+@@ -215,7 +213,7 @@
+         echo "$pat"
+     elif [ $(($umode + $imode)) -lt 2 ]; then
+         # We are not in "upgrade or install new" mode...
+-        growl -1 "No matching installed package for the \"$name\" removing request."
++        growl -1 "Aucun paquet nommé \"$name\" n'est installé sur ce système."
+         imode=$((($imode-1)*-1)) # return 0 if we are in "remove then install" mode...
+         return $imode
+     fi
+@@ -227,9 +225,7 @@
+     # $f DRY RUN, UPGRADE CONTEXT, PACKAGE(S)
+     local dry=$1 up=$2 stamp=""; shift 2
+     while [ $# -gt 0 ]; do
+-        echo "================================================================================" >&3
+-        echo "Removing the \"$1\" package..."
+-        echo "================================================================================" >&3
++        echo "Désinstallation de \"$1\"..."
+         rm -f "$TMPDIR/files" "$TMPDIR/dirs" "$TMPDIR/symkept" "$TMPDIR/cats"
+         touch "$TMPDIR/files" "$TMPDIR/dirs" "$TMPDIR/symkept" "$TMPDIR/cats"
+         linkregister "$1" "$TMPDIR/symkept" "$SCRIPTLOG/"* | while read -r link; do
+@@ -237,7 +233,7 @@
+                 echo "  unlink  $link" >&3
+                 [ $dry -gt 0 ] || rm -f "$ROOT/$link"
+             else
+-                growl 0 "Can't unlink \"$link\" (missing or not a symbolic link)."
++                growl 0 "Impossible de supprimer \"$link\" (lien manquant ou cassé)."
+             fi
+         done
+         fileregister "$1" "$TMPDIR/dirs" "$TMPDIR/files" "$TMPDIR/cats" "$TMPDIR/symkept"
+@@ -246,7 +242,7 @@
+                 echo "  delete    (file)     $file" >&3
+                 [ $dry -gt 0 ] || rm -f "$ROOT/$file"
+             else
+-                growl 0 "Can't delete \"$file\" (missing or not a regular file)."
++                growl 0 "Impossible de supprimer \"$file\" (fichier manquant)."
+             fi
+         done
+         sort "$TMPDIR/cats" | while read -r cat; do
+@@ -259,7 +255,7 @@
+                 echo "  delete  (directory)  $dir" >&3
+                 [ $dry -gt 0 ] || rmdir "$ROOT/$dir" 2>/dev/null || growl 0 "\"$dir\" is not empty. Won't be deleted..."
+             else
+-                growl 0 "Can't delete \"$dir\" (missing or not a directory)."
++                growl 0 "Impossible de supprimer \"$dir\" (répertoire manquant)."
+             fi
+         done
+         [ $up -eq 0 ] || stamp=$(date "+-upgraded-%Y-%m-%d,%T")
+@@ -275,7 +271,7 @@
+     local dry=$1 name="$(basename "$2" .cpio)" post="$TMPDIR/post-install.sh"
+     [ -O /sbin/ldconfig -a -x /sbin/ldconfig ] && /sbin/ldconfig # user may not be root during tests & debugs...
+     if [ -f "$post" ]; then
+-        echo "  executing the post-install script..." >&3
++        echo "  Exécution du script post-installation..." >&3
+         [ $dry -eq 0 ] || return 0
+         (cd "$ROOT/" && sh "$post")
+         cp -f "$post" "$SCRIPTLOG/$name"
+@@ -292,11 +288,11 @@
+         cpio -i about.txt post-install.sh pre-install.sh <&0 2>./size
+         cpiocheck ./size about.txt post-install.sh pre-install.sh || return 1
+         [ -r ./about.txt ] && whatabout "$name" < ./about.txt >&3
+-        echo "  building the directory tree..." >&3
++        echo "  Création de l'arborescence..." >&3
+         sed '/^mkdir/{s/^[^"]*"\|" *$//g;s/\\\\/"ESC/g;s/\([^\\]\)" "/\1\n/g;s/\\//g;s/"ESC/\\/g;p}' \
+            -n ./pre-install.sh 2>/dev/null >./dirs  # we format the list of directories
+            if [ ! -s ./dirs ]; then
+-               growl 1 "Broken or missing pre-install.sh script."
++               growl 1 "Script 'pre-install.sh' manquant ou corrompu."
+            fi) || return 1
+         ( cd "$ROOT/" 
+         dirscout $dry < "$TMPDIR/dirs"
+@@ -327,47 +323,42 @@
+     local out=1 code="$1"
+     [ $code -eq 0 ] || out=2
+     cat >&$out << HELP
+-spkman - manage the Slackware(R) compatible CPIO-based packages.
++spkman - gestionnaire de paquets basés sur CPIO compatibles Slackware(R).
+ 
+-    Spkman install, remove or upgrade the packages requested or given on the
+-    command line. In order to be installed or upgraded, the packages must meet
+-    the standard Slackware(R) naming pattern: "name-version-architecture-build"
+-    and bear a ".cpio" extension. Otherwise, for removing you can just give the
+-    "name-version" base names, each matching installed package will then be
+-    wiped out.
++    Spkman installe, désinstalle et met à niveau les paquets spécifiés à
++    l'invocation. Pour être installés ou mis à niveau, les paquets doivent
++    répondre à la convention de nommage : "nom-version-architecture-révision",
++    et doit porter l'extension ".cpio". En outre, pour la désinstallation, le
++    paquet "nom-version" suffit à déisnstaller tout paquet correspondant.
+ 
+-    By default, spkman just prints the description of the given packaged
+-    softwares.
++    Par défaut, spkman affiche simplement la description du paquet spécifié.
+ 
+-    Usage: spkman <package(s)|name(s)> [option(s)|action(s)]
++    Utilisation : spkman <paquet(s)|nom(s)> [option(s)|action(s)]
+ 
+     Options:
+ 
+-        -f, --force     ---     install a package even if it is already
+-                                installed. Has no effect during upgrade.
+-        -g, --debug     ---     do not remove intermediate files attached to the
+-                                current process.
+-        -h, --help      ---     print this help on stdout then exit.
+-        -i, --install   ---     install the given packages. Can be combined with
+-                                the remove action to reinstall the packages
+-                                properly.
+-        -q, --quiet     ---     reduce the output to the strict necessary.
+-        -r, --remove    ---     remove the given packages.
+-        --root=<dir>    ---     use <dir> as root instead of "/".
+-        -u, --upgrade   ---     replace previous versions of the packages with
+-                                these ones. When combined with the install
+-                                action, install the packages even if they have
+-                                no previous installed version. When combined
+-                                with the remove action, attempt to remove the
+-                                packages even if they have no installable
+-                                counterpart.
+-        -y, --dry-run   ---     do not really perform actions, just try to show
+-                                what would be produce if it was the case.
+-
+-
+-    Bug reports, suggestions, feedbacks, questions, and so on, should be sent to
+-    Seb (author/maintainer, the license -- MIT/X11 -- is at the head of the
+-    script) here: <sbb at tuxfamily dot org>.
++        -f, --force     ---     installe de spaquets même si ceux-ci sont déjà
++                                installés. N'a aucun effet abvec --upgrade.
++        -g, --debug     ---     ne supprime pas les fichiers de traitement
++                                intermédiaires attachés au processus.
++        -h, --help      ---     affiche cette aide sur la sortie et quitte.
++        -i, --install   ---     installe les paquets spécifiés. Peut se combiner
++                                à --remove pour réinstaller des paquets.
++        -q, --quiet     ---     réduit les messages au strict nécessaire.
++        -r, --remove    ---     désinstalle les paquets spécifiés.
++        --root=<rép.>    ---    utilise la racine <rép.> au lieu de "/".
++        -u, --upgrade   ---     remplace les paquets installés de différente
++                                version par ceux spécifiés et les met à niveau.
++                                Combiné à --install, installe les paquets même
++                                si aucune version n'est déjà installée. Combiné
++                                à --remove, tente de désinstaller les paquets.
++        -y, --dry-run   ---     ne fait rien. Montre seulement ce qui devrait
++                                se produire.
++
++
++    Raport de bogues, suggestions, retours d'expérience, questions, etc. sont à
++    envoyer à Seb (auteur/mainteneur, la licence d'utilisation - MIT/X11 - se
++    trouve en entête de ce script) à l'adresse : <sbb CHEZ tuxfamily POINT org>.
+ 
+ HELP
+     exit $code

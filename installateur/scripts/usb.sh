@@ -27,7 +27,7 @@ while [ 0 ]; do
 		continue
 	else
 		# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-		if ! grep "/dev/" ${ROOTSELECT}; then
+		if [ "$(echo ${USBSELECT} | grep '/dev/')" = "" ]; then
 			echo "Veuillez entrer un périphérique de la forme « /dev/xxxx »."
 			sleep 2
 			unset USBSELECT

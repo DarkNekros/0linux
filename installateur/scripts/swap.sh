@@ -102,14 +102,15 @@ while [ 0 ]; do
 			echo "		swapon ${SWAPSELECT}"
 			swapon ${SWAPSELECT}
 			touch $TMP/choix_swap
-			echo "${SWAPSELECT}     swap         swap       defaults           0     0" >> $TMP/choix_swap
+			echo "${SWAPSELECT}     swap         swap       defaults           0     0" > $TMP/choix_swap
 			clear
 			echo -e "\033[1;32mPartition d'échange configurée.\033[0;0m"
 			echo ""
 			echo "La partition d'échange ${SWAPSELECT} sera ajoutée à votre"
 			echo "fichier '/etc/fstab' de la façon suivante :"
+			echo ""
 			cat $TMP/choix_swap
-			echo -n "Appuyez sur ENTRÉE  pour continuer."
+			echo -n "Appuyez sur ENTRÉE pour continuer."
 			read BLAH;
 			break
 		fi

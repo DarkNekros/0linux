@@ -91,7 +91,7 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 					continue
 				else
 					# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-					if ! grep "/dev/" ${FATADD}; then
+					if [ "$(echo ${FATADD} | grep '/dev/')" = "" ]; then
 						echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 						sleep 2
 						unset FATADD
@@ -139,7 +139,7 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 									echo ""
 									echo -n "Votre choix : "
 									read SECU;
-									if [ "$SECU" = "" -o ! grep -E '077|222|022|000' ${SECU} ]; then
+									if [ "$SECU" = "" -o "$(echo ${SECU} | grep -E '077|222|022|000')" = "" ]; then
 										echo "Veuillez entrer un masque de permissions valide."
 										sleep 2
 										unset SECU

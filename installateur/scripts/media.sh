@@ -35,6 +35,7 @@ while [ 0 ]; do
 	"local")
 		#. hdd.sh
 		break
+	;;
 	*)
 		echo "Veuillez entrer un média ou un emplacement valide."
 		sleep 2

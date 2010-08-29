@@ -1,11 +1,9 @@
 #!/bin/env bash
 
-# On crée le répertoire temporaire s'il n'existe pas :
+# On crée les répertoires temporaires s'ils n'existent pas :
 TMP=${TMP:-/var/log/setup/tmp}
-
-if [ ! -d ${TMP} ]; then
-	mkdir -p ${TMP}
-fi
+TMPMOUNT=${TMPMOUNT:-/var/log/mount}
+mkdir -p ${TMP} ${TMPMOUNT}
 
 # La racine de destination du système à installer:
 export SETUPROOT=${SETUPROOT:-/mnt}
