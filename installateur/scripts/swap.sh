@@ -56,8 +56,8 @@ while [ 0 ]; do
 	echo "Dans la console n°2, utilisez les outils suivants pour déterminer vos"
 	echo "partitions d'échange « swap » existantes :"
 	echo ""
-	echo "		# cfdisk"
-	echo "		# fdisk -l"
+	echo "	# cfdisk"
+	echo "	# fdisk -l"
 	echo ""
 	echo "Puis, entrez ci-dessous la partition d'échange « swap » que vous souhaitez"
 	echo "activer pour votre système Linux. Exemples : /dev/sda1 ; /dev/hda3 ; etc."
@@ -88,7 +88,7 @@ while [ 0 ]; do
 		fi
 	else
 		# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-		if ! grep "/dev/" ${SWAPSELECT}; then
+		if [ "$(echo ${SWAPSELECT} | grep '/dev/')" = "" ]; then
 			echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 			sleep 2
 			unset SWAPSELECT

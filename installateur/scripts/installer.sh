@@ -10,6 +10,10 @@ echo -n "Appuyez sur ENTRÉE pour continuer."
 read BLURB;
 
 # Boucle d'installation des paquets :
+for paq in base-systeme* etc* eglibc* sgml*; do
+	spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq} 2> /dev/null
+done
+
 for paquet in /var/log/mount/0/paquets/*/*.* ; do
 	spkman -i --quiet --root=${SETUPROOT} ${paquet} 2> /dev/null
 done
