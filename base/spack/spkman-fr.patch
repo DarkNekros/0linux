@@ -1,5 +1,5 @@
 --- a/spkman	2010-08-30 00:45:13.000000000 +0200
-+++ b/spkman	2010-08-30 01:20:59.000000000 +0200
++++ b/spkman	2010-08-30 12:41:45.000000000 +0200
 @@ -36,7 +36,7 @@
      local buffer="$1"; shift 1
      awk '{E=1}/^[0-9]+/{E=0}{exit E}' "$buffer" && return 0 # we should only have size here..
@@ -56,8 +56,9 @@
 -    echo "================================================================================" >&3
 -    echo "Installing the $name package..."
 -    echo "================================================================================" >&3
+-    [ ! -f "$PKGLOG/$name" ] || (growl $((1 - $re)) "\"$name\" is already installed.") || return 2
 +    echo "Installation de $name..."
-     [ ! -f "$PKGLOG/$name" ] || (growl $((1 - $re)) "\"$name\" is already installed.") || return 2
++    [ ! -f "$PKGLOG/$name" ] || (growl $((1 - $re)) "\"$name\" est déjà installé.") || return 2
      local files=$(cpio --quiet -t "files.?z" <"$cpio") post="$TMPDIR/post-install.sh"
      if [ "$files" = "files.gz" ]; then
          unzip="gzip -d -c"
