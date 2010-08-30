@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-python}
-VERSION=${VERSION:-2.6.5}
+VERSION=${VERSION:-2.6.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-python}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -53,11 +52,6 @@ fi
 
 # On la vérifie :
 tar ft ${NAMESRC}-${VERSION}-docs-text.$EXT 1> /dev/null 2> /dev/null
-TARERROR=$?
-if [ ! "$TARERROR" = "0" ]; then
-	echo "Erreur à la lecture de l'archive source. Celle-ci semble corrompue (Erreur $TARERROR)."
-	exit 1
-fi
 
 # On télécharge la doc au format HTML :
 if [ ! -r ${NAMESRC}-${VERSION}-docs-html.$EXT ]; then
@@ -67,11 +61,6 @@ fi
 
 # On la vérifie :
 tar ft ${NAMESRC}-${VERSION}-docs-html.$EXT 1> /dev/null 2> /dev/null
-TARERROR=$?
-if [ ! "$TARERROR" = "0" ]; then
-	echo "Erreur à la lecture de l'archive source. Celle-ci semble corrompue (Erreur $TARERROR)."
-	exit 1
-fi
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
@@ -90,6 +79,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On positionne USE_ARCH :
+export USE_ARCH=32
+
 # L'emplacement de X11 est codé en dur :
 sed -i "s@/usr/X11R6@/usr@g" setup.py
 
@@ -101,7 +93,7 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
@@ -114,7 +106,10 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 
 make clean
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
 
 # On renomme les binaires et l'entête 32 bits :
 mv ${PKG}/usr/bin/python{,-32}
@@ -132,6 +127,9 @@ cd ${NAME}
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=64
 
 # On applique le correctif de Slackware pour le 64 bits :
 cat $CWD/python.x86_64.diff |  patch -p1
@@ -159,7 +157,10 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64}
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
 
 # On renomme les binaires et l'entête 64 bits :
 mv ${PKG}/usr/bin/python{,-64} &&
@@ -232,8 +233,7 @@ find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || tru
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
-	chown root:root . -R
-	
+	chown root:root . -R	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
