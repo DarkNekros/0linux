@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-python}
 VERSION=${VERSION:-2.6.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-python}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -130,9 +130,6 @@ find . \
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
-
-# On applique le correctif de Slackware pour le 64 bits :
-cat $CWD/python.x86_64.diff |  patch -p1
 
 # L'emplacement de X11 est codé en dur :
 sed -i "s@/usr/X11R6@/usr@g" setup.py
