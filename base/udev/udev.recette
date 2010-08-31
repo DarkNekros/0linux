@@ -136,11 +136,6 @@ cp -a $CWD/config/udev.conf ${PKG}/etc/udev/udev.conf
 # On copie les règles de Slackware :
 cp -a $CWD/config/rules.d/* ${PKG}/lib/udev/rules.d
 
-# On copie quelques règles des mainteneurs :
-for regle in {40-isdn,40-pilot-links,40-zaptel,40-infiniband,64-md-raid,64-device-mapper}.rules; do
-	cp -a $TMP/${NAME}/rules/packages/${regle} ${PKG}/lib/udev/rules.d
-done
-
 # On copie le script du service ainsi ainsi que les options des modules :
 cp -a $CWD/config/rc.d/rc.udev.new ${PKG}/etc/rc.d/rc.udev.new
 cp -a $CWD/config/modprobe.d/* ${PKG}/etc/modprobe.d
