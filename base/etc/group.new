@@ -21,6 +21,7 @@ cdrom:x:19:root
 games:x:20:
 slocate:x:21:
 utmp:x:22:
+tape:x:23
 smmsp:x:25:smmsp
 polkit:x:26:root
 mysql:x:27:
