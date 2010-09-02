@@ -11,7 +11,7 @@ NAMESRC=${NAMESRC:-udev}
 VERSION=${VERSION:-161}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-udev}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -219,6 +219,9 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# On génère le fichier des dépendances :
+. /sbin/0ldd.sh
 
 # Empaquetage !
 cd ${PKG}
