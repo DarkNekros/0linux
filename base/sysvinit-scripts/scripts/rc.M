@@ -61,11 +61,13 @@ fi
 
 # Mise à jour de l'indexation des polices :
 if [ -x /usr/bin/fc-cache ]; then
+	echo "Mise à jour de l'indexation des polices..."
 	/usr/bin/fc-cache -f
 fi
 
 # Lancement des programmes pour GTK+ et Pango dans les 2 architectures :
 if [ -d /etc/gtk-2.0 ]; then
+	echo "Mise à jour des modules GTK+..."
 	gdk-pixbuf-query-loaders-32 > /etc/gtk-2.0-32/gdk-pixbuf.loaders
 	gdk-pixbuf-query-loaders-64 > /etc/gtk-2.0-64/gdk-pixbuf.loaders
 	gtk-query-immodules-2.0-32 > /etc/gtk-2.0-32/gtk.immodules
@@ -73,12 +75,14 @@ if [ -d /etc/gtk-2.0 ]; then
 fi
 
 if [ -d /etc/pango ]; then
+	echo "Mise à jour des modules Pango..."
 	pango-querymodules-32 > /etc/pango-32/pango.modules
 	pango-querymodules-64 > /etc/pango-64/pango.modules
 fi
 
 # Mise à jour du cache des icônes :
 if find /usr/share/icons 2> /dev/null | grep -q icon-theme.cache ; then
+	echo "Mise à jour du cache des icônes..."
 	for theme_dir in /usr/share/icons/* ; do
 		if [ -r ${theme_dir}/icon-theme.cache ]; then
 			/usr/bin/gtk-update-icon-cache -t -f ${theme_dir} 1> /dev/null 2> /dev/null
@@ -93,20 +97,17 @@ fi
 
 # Mise à jour de la base de données de types MIME :
 if [ -x /usr/bin/update-mime-database -a -d /usr/share/mime ]; then
+	echo "Mise à jour de la base de données de types MIME..."
 	/usr/bin/update-mime-database /usr/share/mime 1> /dev/null 2> /dev/null
 fi
 
-# Lancement de  D-Bus :
+# Lancement de D-Bus :
 if [ -x /etc/rc.d/rc.messagebus ]; then
 	. /etc/rc.d/rc.messagebus start
 fi
 
-# Lancement de HAL :
-if [ -x /etc/rc.d/rc.hald ]; then
-	. /etc/rc.d/rc.hald start
-fi
-
 # Lancement de dcron :
+echo "Lancement de dcron..."
 if [ -x /usr/sbin/crond ]; then
 	/usr/sbin/crond -l10 >> /var/log/cron 2>&1
 fi
@@ -116,7 +117,7 @@ if [ -x /etc/rc.d/rc.gpm ]; then
 	. /etc/rc.d/rc.gpm start
 fi
 
-# Lancement du script « local » personnael :
+# Lancement du script « local » personnel :
 if [ -x /etc/rc.d/rc.local ]; then
 	. /etc/rc.d/rc.local
 fi

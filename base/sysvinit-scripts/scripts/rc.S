@@ -175,7 +175,7 @@ if [ -x /sbin/sysctl -a -r /etc/sysctl.conf ]; then
 fi
 
 # On vérifie tous les systèmes de fichiers hors racine :
-echo "Vérification des systèmes de fichiers :"
+echo "Vérification des systèmes de fichiers..."
 fsck $FORCEFSCK -C -R -A -a
 
 # On monte l'usbfs s'il y a lieu :
@@ -192,7 +192,7 @@ fi
 # On monte tous les systèmes de fichiers locaux et non distants (le réseau
 # n'est pas encore activé à ce stade). devpts est déjà monté par udev, sysfs et
 # et proc sont déjà montés aussi :
-echo "Montage des sytèmes de fichiers locaux :"
+echo "Montage des sytèmes de fichiers locaux..."
 mount -a -v -t nonfs,nosmbfs,nocifs,noproc,nosysfs,nodevpts
 
 # On réactive la partition d'échange au cas où :
@@ -238,7 +238,7 @@ fi
 
 # Si random-seed est présent, on « crée du hasard » :
 if [ -f /etc/random-seed ]; then
-	echo "Utilisation de /etc/random-seed pour initialiser /dev/urandom."
+	echo "Utilisation de /etc/random-seed pour initialiser /dev/urandom..."
 	cat /etc/random-seed > /dev/urandom
 fi
 
