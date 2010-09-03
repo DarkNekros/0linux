@@ -124,7 +124,7 @@ config() {
 	if [ ! -r $OLD ]; then
 		mv $NEW $OLD
 	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
-		rm $NEW
+		mv $NEW $OLD
 	fi
 }
 
