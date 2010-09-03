@@ -8,10 +8,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-udev}
-VERSION=${VERSION:-161}
+VERSION=${VERSION:-162}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-udev}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
