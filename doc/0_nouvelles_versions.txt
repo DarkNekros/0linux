@@ -25,7 +25,6 @@ rpm 5.3.2
 ruby 1.9.1-p430
 sharutils 4.10
 sqlite 3.7.1
-udev 161
 util-linux 2.18 
 vim 7.3 
 xfsprogs 3.1.3 

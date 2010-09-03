@@ -105,6 +105,9 @@ fi
 
 EOF
 
+# On génère le fichier des dépendances :
+. /sbin/0ldd.sh
+
 # Empaquetage !
 cd $PKG
 mkdir -p $OUT
