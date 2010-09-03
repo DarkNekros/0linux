@@ -141,7 +141,7 @@ config() {
 	OLD="$(dirname $NEW)/$(basename $NEW .new)"
 	if [ ! -f $OLD ]; then
 		mv $NEW $OLD
-	elif [ "$(cat $OLD | md5sum)" = "$(cat $NEW | md5sum)" ]; then
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
 		rm -f $NEW
 	fi
 }
