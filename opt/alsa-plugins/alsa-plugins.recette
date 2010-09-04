@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://ftp.alsa-project.org/pub/plugins/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+DOC="COPYING* doc/README* doc/*.txt"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Jeu de greffons pour ALSA"
 ########################################
