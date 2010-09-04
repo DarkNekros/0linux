@@ -89,7 +89,7 @@ unset USE_ARCH
 
 # On place nos modules Python en lieu sûr :
 mkdir -p ${PKG}/usr/lib32
-mv ${PKG}/usr/lib/python2.6 ${PKG}/usr/lib32
+cp -ra ${PKG}/usr/lib/python2.6 ${PKG}/usr/lib32
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -133,8 +133,8 @@ unset USE_ARCH
 
 # On place nos modules Python 64 bits où il faut et on récupère nos modules 32 bits :
 mkdir -p ${PKG}/usr/lib64
-mv ${PKG}/usr/lib/python2.6 ${PKG}/usr/lib64
-mv ${PKG}/usr/lib32/python2.6 ${PKG}/usr/lib
+cp -ra ${PKG}/usr/lib/python2.6 ${PKG}/usr/lib64
+cp -ra ${PKG}/usr/lib32/python2.6 ${PKG}/usr/lib
 rm -rf ${PKG}/usr/lib32
 
 # On crée le fichier de configuration en affectant d'office le client 'dhcpcd'
