@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-dbus}
 VERSION=${VERSION:-1.3.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-dbus}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -77,7 +77,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/dbus-1 \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/dbus-1.0 \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
@@ -122,7 +122,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/dbus-1 \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/dbus-1.0 \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
@@ -208,8 +208,8 @@ find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || tru
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
-	chown root:messagebus ${PKG}/usr/lib{,64}/dbus-1/dbus-daemon-launch-helper
-	chmod 4750 ${PKG}/usr/lib{,64}/dbus-1/dbus-daemon-launch-helper
+	chown root:messagebus ${PKG}/usr/lib{,64}/dbus-1.0/dbus-daemon-launch-helper
+	chmod 4750 ${PKG}/usr/lib{,64}/dbus-1.0/dbus-daemon-launch-helper
 	chown messagebus ${PKG}/var/lib/dbus
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
