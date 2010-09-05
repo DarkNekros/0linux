@@ -1,0 +1,2881 @@
+Submitted By: William Harrington <wwh04660 at ucmo dot edu>
+Date: 2009-03-05
+Initial Package Version: 2.6.1
+Upstream Status: Not submitted - LFS Specific
+Origin: Jim Gifford and Joe Ciccone
+Description: Makes changes so we can fix the lib directories
+             for multilib builds with the following sed.
+
+sed -i -e "s:@@MULTILIB_DIR@@:lib64:g" \
+        Lib/distutils/command/install.py \
+        Lib/distutils/sysconfig.py \
+        Lib/site.py \
+        Makefile.pre.in \
+        Modules/Setup.dist \
+        Modules/getpath.c \
+        setup.py
+diff -Naur Python-2.6.5.orig/Lib/distutils/command/install.py Python-2.6.5/Lib/distutils/command/install.py
+--- Python-2.6.5.orig/Lib/distutils/command/install.py	2008-05-06 22:41:46.000000000 +0000
++++ Python-2.6.5/Lib/distutils/command/install.py	2010-04-11 13:34:03.000000000 +0000
+@@ -41,15 +41,15 @@
+ 
+ INSTALL_SCHEMES = {
+     'unix_prefix': {
+-        'purelib': '$base/lib/python$py_version_short/site-packages',
+-        'platlib': '$platbase/lib/python$py_version_short/site-packages',
++        'purelib': '$base/@@MULTILIB_DIR@@/python$py_version_short/site-packages',
++        'platlib': '$platbase/@@MULTILIB_DIR@@/python$py_version_short/site-packages',
+         'headers': '$base/include/python$py_version_short/$dist_name',
+         'scripts': '$base/bin',
+         'data'   : '$base',
+         },
+     'unix_home': {
+-        'purelib': '$base/lib/python',
+-        'platlib': '$base/lib/python',
++        'purelib': '$base/@@MULTILIB_DIR@@/python',
++        'platlib': '$base/@@MULTILIB_DIR@@/python',
+         'headers': '$base/include/python/$dist_name',
+         'scripts': '$base/bin',
+         'data'   : '$base',
+diff -Naur Python-2.6.5.orig/Lib/distutils/command/install.py.orig Python-2.6.5/Lib/distutils/command/install.py.orig
+--- Python-2.6.5.orig/Lib/distutils/command/install.py.orig	1970-01-01 00:00:00.000000000 +0000
++++ Python-2.6.5/Lib/distutils/command/install.py.orig	2008-05-06 22:41:46.000000000 +0000
+@@ -0,0 +1,686 @@
++"""distutils.command.install
++
++Implements the Distutils 'install' command."""
++
++from distutils import log
++
++# This module should be kept compatible with Python 2.1.
++
++__revision__ = "$Id: install.py 62788 2008-05-06 22:41:46Z christian.heimes $"
++
++import sys, os, string
++from types import *
++from distutils.core import Command
++from distutils.debug import DEBUG
++from distutils.sysconfig import get_config_vars
++from distutils.errors import DistutilsPlatformError
++from distutils.file_util import write_file
++from distutils.util import convert_path, subst_vars, change_root
++from distutils.util import get_platform
++from distutils.errors import DistutilsOptionError
++from site import USER_BASE
++from site import USER_SITE
++
++
++if sys.version < "2.2":
++    WINDOWS_SCHEME = {
++        'purelib': '$base',
++        'platlib': '$base',
++        'headers': '$base/Include/$dist_name',
++        'scripts': '$base/Scripts',
++        'data'   : '$base',
++    }
++else:
++    WINDOWS_SCHEME = {
++        'purelib': '$base/Lib/site-packages',
++        'platlib': '$base/Lib/site-packages',
++        'headers': '$base/Include/$dist_name',
++        'scripts': '$base/Scripts',
++        'data'   : '$base',
++    }
++
++INSTALL_SCHEMES = {
++    'unix_prefix': {
++        'purelib': '$base/lib/python$py_version_short/site-packages',
++        'platlib': '$platbase/lib/python$py_version_short/site-packages',
++        'headers': '$base/include/python$py_version_short/$dist_name',
++        'scripts': '$base/bin',
++        'data'   : '$base',
++        },
++    'unix_home': {
++        'purelib': '$base/lib/python',
++        'platlib': '$base/lib/python',
++        'headers': '$base/include/python/$dist_name',
++        'scripts': '$base/bin',
++        'data'   : '$base',
++        },
++    'unix_user': {
++        'purelib': '$usersite',
++        'platlib': '$usersite',
++        'headers': '$userbase/include/python$py_version_short/$dist_name',
++        'scripts': '$userbase/bin',
++        'data'   : '$userbase',
++        },
++    'nt': WINDOWS_SCHEME,
++    'nt_user': {
++        'purelib': '$usersite',
++        'platlib': '$usersite',
++        'headers': '$userbase/Python$py_version_nodot/Include/$dist_name',
++        'scripts': '$userbase/Scripts',
++        'data'   : '$userbase',
++        },
++    'mac': {
++        'purelib': '$base/Lib/site-packages',
++        'platlib': '$base/Lib/site-packages',
++        'headers': '$base/Include/$dist_name',
++        'scripts': '$base/Scripts',
++        'data'   : '$base',
++        },
++    'mac_user': {
++        'purelib': '$usersite',
++        'platlib': '$usersite',
++        'headers': '$userbase/$py_version_short/include/$dist_name',
++        'scripts': '$userbase/bin',
++        'data'   : '$userbase',
++        },
++    'os2': {
++        'purelib': '$base/Lib/site-packages',
++        'platlib': '$base/Lib/site-packages',
++        'headers': '$base/Include/$dist_name',
++        'scripts': '$base/Scripts',
++        'data'   : '$base',
++        },
++    'os2_home': {
++        'purelib': '$usersite',
++        'platlib': '$usersite',
++        'headers': '$userbase/include/python$py_version_short/$dist_name',
++        'scripts': '$userbase/bin',
++        'data'   : '$userbase',
++        },
++    }
++
++# The keys to an installation scheme; if any new types of files are to be
++# installed, be sure to add an entry to every installation scheme above,
++# and to SCHEME_KEYS here.
++SCHEME_KEYS = ('purelib', 'platlib', 'headers', 'scripts', 'data')
++
++
++class install (Command):
++
++    description = "install everything from build directory"
++
++    user_options = [
++        # Select installation scheme and set base director(y|ies)
++        ('prefix=', None,
++         "installation prefix"),
++        ('exec-prefix=', None,
++         "(Unix only) prefix for platform-specific files"),
++        ('home=', None,
++         "(Unix only) home directory to install under"),
++        ('user', None,
++         "install in user site-package '%s'" % USER_SITE),
++
++        # Or, just set the base director(y|ies)
++        ('install-base=', None,
++         "base installation directory (instead of --prefix or --home)"),
++        ('install-platbase=', None,
++         "base installation directory for platform-specific files " +
++         "(instead of --exec-prefix or --home)"),
++        ('root=', None,
++         "install everything relative to this alternate root directory"),
++
++        # Or, explicitly set the installation scheme
++        ('install-purelib=', None,
++         "installation directory for pure Python module distributions"),
++        ('install-platlib=', None,
++         "installation directory for non-pure module distributions"),
++        ('install-lib=', None,
++         "installation directory for all module distributions " +
++         "(overrides --install-purelib and --install-platlib)"),
++
++        ('install-headers=', None,
++         "installation directory for C/C++ headers"),
++        ('install-scripts=', None,
++         "installation directory for Python scripts"),
++        ('install-data=', None,
++         "installation directory for data files"),
++
++        # Byte-compilation options -- see install_lib.py for details, as
++        # these are duplicated from there (but only install_lib does
++        # anything with them).
++        ('compile', 'c', "compile .py to .pyc [default]"),
++        ('no-compile', None, "don't compile .py files"),
++        ('optimize=', 'O',
++         "also compile with optimization: -O1 for \"python -O\", "
++         "-O2 for \"python -OO\", and -O0 to disable [default: -O0]"),
++
++        # Miscellaneous control options
++        ('force', 'f',
++         "force installation (overwrite any existing files)"),
++        ('skip-build', None,
++         "skip rebuilding everything (for testing/debugging)"),
++
++        # Where to install documentation (eventually!)
++        #('doc-format=', None, "format of documentation to generate"),
++        #('install-man=', None, "directory for Unix man pages"),
++        #('install-html=', None, "directory for HTML documentation"),
++        #('install-info=', None, "directory for GNU info files"),
++
++        ('record=', None,
++         "filename in which to record list of installed files"),
++        ]
++
++    boolean_options = ['compile', 'force', 'skip-build', 'user']
++    negative_opt = {'no-compile' : 'compile'}
++
++
++    def initialize_options (self):
++
++        # High-level options: these select both an installation base
++        # and scheme.
++        self.prefix = None
++        self.exec_prefix = None
++        self.home = None
++        self.user = 0
++
++        # These select only the installation base; it's up to the user to
++        # specify the installation scheme (currently, that means supplying
++        # the --install-{platlib,purelib,scripts,data} options).
++        self.install_base = None
++        self.install_platbase = None
++        self.root = None
++
++        # These options are the actual installation directories; if not
++        # supplied by the user, they are filled in using the installation
++        # scheme implied by prefix/exec-prefix/home and the contents of
++        # that installation scheme.
++        self.install_purelib = None     # for pure module distributions
++        self.install_platlib = None     # non-pure (dists w/ extensions)
++        self.install_headers = None     # for C/C++ headers
++        self.install_lib = None         # set to either purelib or platlib
++        self.install_scripts = None
++        self.install_data = None
++        self.install_userbase = USER_BASE
++        self.install_usersite = USER_SITE
++
++        self.compile = None
++        self.optimize = None
++
++        # These two are for putting non-packagized distributions into their
++        # own directory and creating a .pth file if it makes sense.
++        # 'extra_path' comes from the setup file; 'install_path_file' can
++        # be turned off if it makes no sense to install a .pth file.  (But
++        # better to install it uselessly than to guess wrong and not
++        # install it when it's necessary and would be used!)  Currently,
++        # 'install_path_file' is always true unless some outsider meddles
++        # with it.
++        self.extra_path = None
++        self.install_path_file = 1
++
++        # 'force' forces installation, even if target files are not
++        # out-of-date.  'skip_build' skips running the "build" command,
++        # handy if you know it's not necessary.  'warn_dir' (which is *not*
++        # a user option, it's just there so the bdist_* commands can turn
++        # it off) determines whether we warn about installing to a
++        # directory not in sys.path.
++        self.force = 0
++        self.skip_build = 0
++        self.warn_dir = 1
++
++        # These are only here as a conduit from the 'build' command to the
++        # 'install_*' commands that do the real work.  ('build_base' isn't
++        # actually used anywhere, but it might be useful in future.)  They
++        # are not user options, because if the user told the install
++        # command where the build directory is, that wouldn't affect the
++        # build command.
++        self.build_base = None
++        self.build_lib = None
++
++        # Not defined yet because we don't know anything about
++        # documentation yet.
++        #self.install_man = None
++        #self.install_html = None
++        #self.install_info = None
++
++        self.record = None
++
++
++    # -- Option finalizing methods -------------------------------------
++    # (This is rather more involved than for most commands,
++    # because this is where the policy for installing third-
++    # party Python modules on various platforms given a wide
++    # array of user input is decided.  Yes, it's quite complex!)
++
++    def finalize_options (self):
++
++        # This method (and its pliant slaves, like 'finalize_unix()',
++        # 'finalize_other()', and 'select_scheme()') is where the default
++        # installation directories for modules, extension modules, and
++        # anything else we care to install from a Python module
++        # distribution.  Thus, this code makes a pretty important policy
++        # statement about how third-party stuff is added to a Python
++        # installation!  Note that the actual work of installation is done
++        # by the relatively simple 'install_*' commands; they just take
++        # their orders from the installation directory options determined
++        # here.
++
++        # Check for errors/inconsistencies in the options; first, stuff
++        # that's wrong on any platform.
++
++        if ((self.prefix or self.exec_prefix or self.home) and
++            (self.install_base or self.install_platbase)):
++            raise DistutilsOptionError, \
++                  ("must supply either prefix/exec-prefix/home or " +
++                   "install-base/install-platbase -- not both")
++
++        if self.home and (self.prefix or self.exec_prefix):
++            raise DistutilsOptionError, \
++                  "must supply either home or prefix/exec-prefix -- not both"
++
++        if self.user and (self.prefix or self.exec_prefix or self.home or
++                self.install_base or self.install_platbase):
++            raise DistutilsOptionError("can't combine user with with prefix/"
++                                       "exec_prefix/home or install_(plat)base")
++
++        # Next, stuff that's wrong (or dubious) only on certain platforms.
++        if os.name != "posix":
++            if self.exec_prefix:
++                self.warn("exec-prefix option ignored on this platform")
++                self.exec_prefix = None
++
++        # Now the interesting logic -- so interesting that we farm it out
++        # to other methods.  The goal of these methods is to set the final
++        # values for the install_{lib,scripts,data,...}  options, using as
++        # input a heady brew of prefix, exec_prefix, home, install_base,
++        # install_platbase, user-supplied versions of
++        # install_{purelib,platlib,lib,scripts,data,...}, and the
++        # INSTALL_SCHEME dictionary above.  Phew!
++
++        self.dump_dirs("pre-finalize_{unix,other}")
++
++        if os.name == 'posix':
++            self.finalize_unix()
++        else:
++            self.finalize_other()
++
++        self.dump_dirs("post-finalize_{unix,other}()")
++
++        # Expand configuration variables, tilde, etc. in self.install_base
++        # and self.install_platbase -- that way, we can use $base or
++        # $platbase in the other installation directories and not worry
++        # about needing recursive variable expansion (shudder).
++
++        py_version = (string.split(sys.version))[0]
++        (prefix, exec_prefix) = get_config_vars('prefix', 'exec_prefix')
++        self.config_vars = {'dist_name': self.distribution.get_name(),
++                            'dist_version': self.distribution.get_version(),
++                            'dist_fullname': self.distribution.get_fullname(),
++                            'py_version': py_version,
++                            'py_version_short': py_version[0:3],
++                            'py_version_nodot': py_version[0] + py_version[2],
++                            'sys_prefix': prefix,
++                            'prefix': prefix,
++                            'sys_exec_prefix': exec_prefix,
++                            'exec_prefix': exec_prefix,
++                            'userbase': self.install_userbase,
++                            'usersite': self.install_usersite,
++                           }
++        self.expand_basedirs()
++
++        self.dump_dirs("post-expand_basedirs()")
++
++        # Now define config vars for the base directories so we can expand
++        # everything else.
++        self.config_vars['base'] = self.install_base
++        self.config_vars['platbase'] = self.install_platbase
++
++        if DEBUG:
++            from pprint import pprint
++            print "config vars:"
++            pprint(self.config_vars)
++
++        # Expand "~" and configuration variables in the installation
++        # directories.
++        self.expand_dirs()
++
++        self.dump_dirs("post-expand_dirs()")
++
++        # Create directories in the home dir:
++        if self.user:
++            self.create_home_path()
++
++        # Pick the actual directory to install all modules to: either
++        # install_purelib or install_platlib, depending on whether this
++        # module distribution is pure or not.  Of course, if the user
++        # already specified install_lib, use their selection.
++        if self.install_lib is None:
++            if self.distribution.ext_modules: # has extensions: non-pure
++                self.install_lib = self.install_platlib
++            else:
++                self.install_lib = self.install_purelib
++
++
++        # Convert directories from Unix /-separated syntax to the local
++        # convention.
++        self.convert_paths('lib', 'purelib', 'platlib',
++                           'scripts', 'data', 'headers',
++                           'userbase', 'usersite')
++
++        # Well, we're not actually fully completely finalized yet: we still
++        # have to deal with 'extra_path', which is the hack for allowing
++        # non-packagized module distributions (hello, Numerical Python!) to
++        # get their own directories.
++        self.handle_extra_path()
++        self.install_libbase = self.install_lib # needed for .pth file
++        self.install_lib = os.path.join(self.install_lib, self.extra_dirs)
++
++        # If a new root directory was supplied, make all the installation
++        # dirs relative to it.
++        if self.root is not None:
++            self.change_roots('libbase', 'lib', 'purelib', 'platlib',
++                              'scripts', 'data', 'headers')
++
++        self.dump_dirs("after prepending root")
++
++        # Find out the build directories, ie. where to install from.
++        self.set_undefined_options('build',
++                                   ('build_base', 'build_base'),
++                                   ('build_lib', 'build_lib'))
++
++        # Punt on doc directories for now -- after all, we're punting on
++        # documentation completely!
++
++    # finalize_options ()
++
++
++    def dump_dirs (self, msg):
++        if DEBUG:
++            from distutils.fancy_getopt import longopt_xlate
++            print msg + ":"
++            for opt in self.user_options:
++                opt_name = opt[0]
++                if opt_name[-1] == "=":
++                    opt_name = opt_name[0:-1]
++                if opt_name in self.negative_opt:
++                    opt_name = string.translate(self.negative_opt[opt_name],
++                                                longopt_xlate)
++                    val = not getattr(self, opt_name)
++                else:
++                    opt_name = string.translate(opt_name, longopt_xlate)
++                    val = getattr(self, opt_name)
++                print "  %s: %s" % (opt_name, val)
++
++
++    def finalize_unix (self):
++
++        if self.install_base is not None or self.install_platbase is not None:
++            if ((self.install_lib is None and
++                 self.install_purelib is None and
++                 self.install_platlib is None) or
++                self.install_headers is None or
++                self.install_scripts is None or
++                self.install_data is None):
++                raise DistutilsOptionError, \
++                      ("install-base or install-platbase supplied, but "
++                      "installation scheme is incomplete")
++            return
++
++        if self.user:
++            if self.install_userbase is None:
++                raise DistutilsPlatformError(
++                    "User base directory is not specified")
++            self.install_base = self.install_platbase = self.install_userbase
++            self.select_scheme("unix_user")
++        elif self.home is not None:
++            self.install_base = self.install_platbase = self.home
++            self.select_scheme("unix_home")
++        else:
++            if self.prefix is None:
++                if self.exec_prefix is not None:
++                    raise DistutilsOptionError, \
++                          "must not supply exec-prefix without prefix"
++
++                self.prefix = os.path.normpath(sys.prefix)
++                self.exec_prefix = os.path.normpath(sys.exec_prefix)
++
++            else:
++                if self.exec_prefix is None:
++                    self.exec_prefix = self.prefix
++
++            self.install_base = self.prefix
++            self.install_platbase = self.exec_prefix
++            self.select_scheme("unix_prefix")
++
++    # finalize_unix ()
++
++
++    def finalize_other (self):          # Windows and Mac OS for now
++
++        if self.user:
++            if self.install_userbase is None:
++                raise DistutilsPlatformError(
++                    "User base directory is not specified")
++            self.install_base = self.install_platbase = self.install_userbase
++            self.select_scheme(os.name + "_user")
++        elif self.home is not None:
++            self.install_base = self.install_platbase = self.home
++            self.select_scheme("unix_home")
++        else:
++            if self.prefix is None:
++                self.prefix = os.path.normpath(sys.prefix)
++
++            self.install_base = self.install_platbase = self.prefix
++            try:
++                self.select_scheme(os.name)
++            except KeyError:
++                raise DistutilsPlatformError, \
++                      "I don't know how to install stuff on '%s'" % os.name
++
++    # finalize_other ()
++
++
++    def select_scheme (self, name):
++        # it's the caller's problem if they supply a bad name!
++        scheme = INSTALL_SCHEMES[name]
++        for key in SCHEME_KEYS:
++            attrname = 'install_' + key
++            if getattr(self, attrname) is None:
++                setattr(self, attrname, scheme[key])
++
++
++    def _expand_attrs (self, attrs):
++        for attr in attrs:
++            val = getattr(self, attr)
++            if val is not None:
++                if os.name == 'posix' or os.name == 'nt':
++                    val = os.path.expanduser(val)
++                val = subst_vars(val, self.config_vars)
++                setattr(self, attr, val)
++
++
++    def expand_basedirs (self):
++        self._expand_attrs(['install_base',
++                            'install_platbase',
++                            'root'])
++
++    def expand_dirs (self):
++        self._expand_attrs(['install_purelib',
++                            'install_platlib',
++                            'install_lib',
++                            'install_headers',
++                            'install_scripts',
++                            'install_data',])
++
++
++    def convert_paths (self, *names):
++        for name in names:
++            attr = "install_" + name
++            setattr(self, attr, convert_path(getattr(self, attr)))
++
++
++    def handle_extra_path (self):
++
++        if self.extra_path is None:
++            self.extra_path = self.distribution.extra_path
++
++        if self.extra_path is not None:
++            if type(self.extra_path) is StringType:
++                self.extra_path = string.split(self.extra_path, ',')
++
++            if len(self.extra_path) == 1:
++                path_file = extra_dirs = self.extra_path[0]
++            elif len(self.extra_path) == 2:
++                (path_file, extra_dirs) = self.extra_path
++            else:
++                raise DistutilsOptionError, \
++                      ("'extra_path' option must be a list, tuple, or "
++                      "comma-separated string with 1 or 2 elements")
++
++            # convert to local form in case Unix notation used (as it
++            # should be in setup scripts)
++            extra_dirs = convert_path(extra_dirs)
++
++        else:
++            path_file = None
++            extra_dirs = ''
++
++        # XXX should we warn if path_file and not extra_dirs? (in which
++        # case the path file would be harmless but pointless)
++        self.path_file = path_file
++        self.extra_dirs = extra_dirs
++
++    # handle_extra_path ()
++
++
++    def change_roots (self, *names):
++        for name in names:
++            attr = "install_" + name
++            setattr(self, attr, change_root(self.root, getattr(self, attr)))
++
++    def create_home_path(self):
++        """Create directories under ~
++        """
++        if not self.user:
++            return
++        home = convert_path(os.path.expanduser("~"))
++        for name, path in self.config_vars.iteritems():
++            if path.startswith(home) and not os.path.isdir(path):
++                self.debug_print("os.makedirs('%s', 0700)" % path)
++                os.makedirs(path, 0700)
++
++    # -- Command execution methods -------------------------------------
++
++    def run (self):
++
++        # Obviously have to build before we can install
++        if not self.skip_build:
++            self.run_command('build')
++            # If we built for any other platform, we can't install.
++            build_plat = self.distribution.get_command_obj('build').plat_name
++            # check warn_dir - it is a clue that the 'install' is happening
++            # internally, and not to sys.path, so we don't check the platform
++            # matches what we are running.
++            if self.warn_dir and build_plat != get_platform():
++                raise DistutilsPlatformError("Can't install when "
++                                             "cross-compiling")
++
++        # Run all sub-commands (at least those that need to be run)
++        for cmd_name in self.get_sub_commands():
++            self.run_command(cmd_name)
++
++        if self.path_file:
++            self.create_path_file()
++
++        # write list of installed files, if requested.
++        if self.record:
++            outputs = self.get_outputs()
++            if self.root:               # strip any package prefix
++                root_len = len(self.root)
++                for counter in xrange(len(outputs)):
++                    outputs[counter] = outputs[counter][root_len:]
++            self.execute(write_file,
++                         (self.record, outputs),
++                         "writing list of installed files to '%s'" %
++                         self.record)
++
++        sys_path = map(os.path.normpath, sys.path)
++        sys_path = map(os.path.normcase, sys_path)
++        install_lib = os.path.normcase(os.path.normpath(self.install_lib))
++        if (self.warn_dir and
++            not (self.path_file and self.install_path_file) and
++            install_lib not in sys_path):
++            log.debug(("modules installed to '%s', which is not in "
++                       "Python's module search path (sys.path) -- "
++                       "you'll have to change the search path yourself"),
++                       self.install_lib)
++
++    # run ()
++
++    def create_path_file (self):
++        filename = os.path.join(self.install_libbase,
++                                self.path_file + ".pth")
++        if self.install_path_file:
++            self.execute(write_file,
++                         (filename, [self.extra_dirs]),
++                         "creating %s" % filename)
++        else:
++            self.warn("path file '%s' not created" % filename)
++
++
++    # -- Reporting methods ---------------------------------------------
++
++    def get_outputs (self):
++        # Assemble the outputs of all the sub-commands.
++        outputs = []
++        for cmd_name in self.get_sub_commands():
++            cmd = self.get_finalized_command(cmd_name)
++            # Add the contents of cmd.get_outputs(), ensuring
++            # that outputs doesn't contain duplicate entries
++            for filename in cmd.get_outputs():
++                if filename not in outputs:
++                    outputs.append(filename)
++
++        if self.path_file and self.install_path_file:
++            outputs.append(os.path.join(self.install_libbase,
++                                        self.path_file + ".pth"))
++
++        return outputs
++
++    def get_inputs (self):
++        # XXX gee, this looks familiar ;-(
++        inputs = []
++        for cmd_name in self.get_sub_commands():
++            cmd = self.get_finalized_command(cmd_name)
++            inputs.extend(cmd.get_inputs())
++
++        return inputs
++
++
++    # -- Predicates for sub-command list -------------------------------
++
++    def has_lib (self):
++        """Return true if the current distribution has any Python
++        modules to install."""
++        return (self.distribution.has_pure_modules() or
++                self.distribution.has_ext_modules())
++
++    def has_headers (self):
++        return self.distribution.has_headers()
++
++    def has_scripts (self):
++        return self.distribution.has_scripts()
++
++    def has_data (self):
++        return self.distribution.has_data_files()
++
++
++    # 'sub_commands': a list of commands this command might have to run to
++    # get its work done.  See cmd.py for more info.
++    sub_commands = [('install_lib',     has_lib),
++                    ('install_headers', has_headers),
++                    ('install_scripts', has_scripts),
++                    ('install_data',    has_data),
++                    ('install_egg_info', lambda self:True),
++                   ]
++
++# class install
+diff -Naur Python-2.6.5.orig/Lib/distutils/sysconfig.py Python-2.6.5/Lib/distutils/sysconfig.py
+--- Python-2.6.5.orig/Lib/distutils/sysconfig.py	2009-12-10 10:29:05.000000000 +0000
++++ Python-2.6.5/Lib/distutils/sysconfig.py	2010-04-11 13:34:03.000000000 +0000
+@@ -115,8 +115,12 @@
+         prefix = plat_specific and EXEC_PREFIX or PREFIX
+ 
+     if os.name == "posix":
++        if plat_specific or standard_lib:
++            lib = "@@MULTILIB_DIR@@"
++        else:
++            lib = "lib"
+         libpython = os.path.join(prefix,
+-                                 "lib", "python" + get_python_version())
++                                 "@@MULTILIB_DIR@@", "python" + get_python_version())
+         if standard_lib:
+             return libpython
+         else:
+diff -Naur Python-2.6.5.orig/Lib/site.py Python-2.6.5/Lib/site.py
+--- Python-2.6.5.orig/Lib/site.py	2008-05-10 17:36:24.000000000 +0000
++++ Python-2.6.5/Lib/site.py	2010-04-11 13:34:03.000000000 +0000
+@@ -243,7 +243,7 @@
+                                  "site-packages")
+     else:
+         USER_BASE = env_base if env_base else joinuser("~", ".local")
+-        USER_SITE = os.path.join(USER_BASE, "lib",
++        USER_SITE = os.path.join(USER_BASE, "@@MULTILIB_DIR@@",
+                                  "python" + sys.version[:3],
+                                  "site-packages")
+ 
+@@ -263,15 +263,15 @@
+         seen.append(prefix)
+ 
+         if sys.platform in ('os2emx', 'riscos'):
+-            sitedirs.append(os.path.join(prefix, "Lib", "site-packages"))
++            sitedirs.append(os.path.join(prefix, "@@MULTILIB_DIR@@", "site-packages"))
+         elif os.sep == '/':
+-            sitedirs.append(os.path.join(prefix, "lib",
++            sitedirs.append(os.path.join(prefix, "@@MULTILIB_DIR@@",
+                                         "python" + sys.version[:3],
+                                         "site-packages"))
+-            sitedirs.append(os.path.join(prefix, "lib", "site-python"))
++            sitedirs.append(os.path.join(prefix, "@@MULTILIB_DIR@@", "site-python"))
+         else:
+             sitedirs.append(prefix)
+-            sitedirs.append(os.path.join(prefix, "lib", "site-packages"))
++            sitedirs.append(os.path.join(prefix, "@@MULTILIB_DIR@@", "site-packages"))
+ 
+         if sys.platform == "darwin":
+             # for framework builds *only* we add the standard Apple
+diff -Naur Python-2.6.5.orig/Makefile.pre.in Python-2.6.5/Makefile.pre.in
+--- Python-2.6.5.orig/Makefile.pre.in	2009-12-24 14:19:38.000000000 +0000
++++ Python-2.6.5/Makefile.pre.in	2010-04-11 13:34:03.000000000 +0000
+@@ -87,11 +87,11 @@
+ 
+ # Expanded directories
+ BINDIR=		$(exec_prefix)/bin
+-LIBDIR=		$(exec_prefix)/lib
++LIBDIR=		$(exec_prefix)/@@MULTILIB_DIR@@
+ MANDIR=		@mandir@
+ INCLUDEDIR=	@includedir@
+ CONFINCLUDEDIR=	$(exec_prefix)/include
+-SCRIPTDIR=	$(prefix)/lib
++SCRIPTDIR=	$(prefix)/@@MULTILIB_DIR@@
+ 
+ # Detailed destination directories
+ BINLIBDEST=	$(LIBDIR)/python$(VERSION)
+diff -Naur Python-2.6.5.orig/Modules/Setup.dist Python-2.6.5/Modules/Setup.dist
+--- Python-2.6.5.orig/Modules/Setup.dist	2008-11-27 10:15:12.000000000 +0000
++++ Python-2.6.5/Modules/Setup.dist	2010-04-11 13:34:03.000000000 +0000
+@@ -343,7 +343,7 @@
+ # *** Uncomment and edit to reflect your Tcl/Tk versions:
+ #	-ltk8.2 -ltcl8.2 \
+ # *** Uncomment and edit to reflect where your X11 libraries are:
+-#	-L/usr/X11R6/lib \
++# 	-L/usr/X11R6/@@MULTILIB_DIR@@ \
+ # *** Or uncomment this for Solaris:
+ #	-L/usr/openwin/lib \
+ # *** Uncomment these for TOGL extension only:
+@@ -414,7 +414,7 @@
+ #DB=/usr/local/BerkeleyDB.4.0
+ #DBLIBVER=4.0
+ #DBINC=$(DB)/include
+-#DBLIB=$(DB)/lib
++DBLIB=$(DB)/@@MULTILIB_DIR@@
+ #_bsddb _bsddb.c -I$(DBINC) -L$(DBLIB) -ldb-$(DBLIBVER)
+ 
+ # Historical Berkeley DB 1.85
+@@ -460,7 +460,7 @@
+ # Andrew Kuchling's zlib module.
+ # This require zlib 1.1.3 (or later).
+ # See http://www.gzip.org/zlib/
+-#zlib zlibmodule.c -I$(prefix)/include -L$(exec_prefix)/lib -lz
++zlib zlibmodule.c -I$(prefix)/include -L$(exec_prefix)/@@MULTILIB_DIR@@ -lz
+ 
+ # Interface to the Expat XML parser
+ #
+diff -Naur Python-2.6.5.orig/Modules/getpath.c Python-2.6.5/Modules/getpath.c
+--- Python-2.6.5.orig/Modules/getpath.c	2007-03-10 07:38:14.000000000 +0000
++++ Python-2.6.5/Modules/getpath.c	2010-04-11 13:34:03.000000000 +0000
+@@ -117,8 +117,8 @@
+ #endif
+ 
+ #ifndef PYTHONPATH
+-#define PYTHONPATH PREFIX "/lib/python" VERSION ":" \
+-              EXEC_PREFIX "/lib/python" VERSION "/lib-dynload"
++#define PYTHONPATH PREFIX "/@@MULTILIB_DIR@@/python" VERSION ":" \
++              EXEC_PREFIX "/@@MULTILIB_DIR@@/python" VERSION "/lib-dynload"
+ #endif
+ 
+ #ifndef LANDMARK
+@@ -129,7 +129,7 @@
+ static char exec_prefix[MAXPATHLEN+1];
+ static char progpath[MAXPATHLEN+1];
+ static char *module_search_path = NULL;
+-static char lib_python[] = "lib/python" VERSION;
++static char lib_python[] = "@@MULTILIB_DIR@@/python" VERSION;
+ 
+ static void
+ reduce(char *dir)
+@@ -524,7 +524,7 @@
+     }
+     else
+         strncpy(zip_path, PREFIX, MAXPATHLEN);
+-    joinpath(zip_path, "lib/python00.zip");
++    joinpath(zip_path, "@@MULTILIB_DIR@@/python00.zip");
+     bufsz = strlen(zip_path);	/* Replace "00" with version */
+     zip_path[bufsz - 6] = VERSION[0];
+     zip_path[bufsz - 5] = VERSION[2];
+@@ -534,7 +534,7 @@
+             fprintf(stderr,
+                 "Could not find platform dependent libraries <exec_prefix>\n");
+         strncpy(exec_prefix, EXEC_PREFIX, MAXPATHLEN);
+-        joinpath(exec_prefix, "lib/lib-dynload");
++        joinpath(exec_prefix, "@@MULTILIB_DIR@@/lib-dynload");
+     }
+     /* If we found EXEC_PREFIX do *not* reduce it!  (Yet.) */
+ 
+diff -Naur Python-2.6.5.orig/setup.py Python-2.6.5/setup.py
+--- Python-2.6.5.orig/setup.py	2010-03-08 07:08:25.000000000 +0000
++++ Python-2.6.5/setup.py	2010-04-11 13:34:03.000000000 +0000
+@@ -310,7 +310,7 @@
+ 
+     def detect_modules(self):
+         # Ensure that /usr/local is always used
+-        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
++        add_dir_to_list(self.compiler.library_dirs, '/usr/local/@@MULTILIB_DIR@@')
+         add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+ 
+         # Add paths specified in the environment variables LDFLAGS and
+@@ -362,7 +362,7 @@
+         # if a file is found in one of those directories, it can
+         # be assumed that no additional -I,-L directives are needed.
+         lib_dirs = self.compiler.library_dirs + [
+-            '/lib64', '/usr/lib64',
++            '/@@MULTILIB_DIR@@', '/usr/@@MULTILIB_DIR@@',
+             '/lib', '/usr/lib',
+             ]
+         inc_dirs = self.compiler.include_dirs + ['/usr/include']
+@@ -588,11 +588,11 @@
+             elif self.compiler.find_library_file(lib_dirs, 'curses'):
+                 readline_libs.append('curses')
+             elif self.compiler.find_library_file(lib_dirs +
+-                                               ['/usr/lib/termcap'],
++                                               ['/usr/@@MULTILIB_DIR@@/termcap'],
+                                                'termcap'):
+                 readline_libs.append('termcap')
+             exts.append( Extension('readline', ['readline.c'],
+-                                   library_dirs=['/usr/lib/termcap'],
++                                   library_dirs=['/usr/@@MULTILIB_DIR@@/termcap'],
+                                    extra_link_args=readline_extra_link_args,
+                                    libraries=readline_libs) )
+         else:
+@@ -629,8 +629,8 @@
+             if krb5_h:
+                 ssl_incs += krb5_h
+         ssl_libs = find_library_file(self.compiler, 'ssl',lib_dirs,
+-                                     ['/usr/local/ssl/lib',
+-                                      '/usr/contrib/ssl/lib/'
++                                     ['/usr/local/ssl/@@MULTILIB_DIR@@',
++                                      '/usr/contrib/ssl/@@MULTILIB_DIR@@/'
+                                      ] )
+ 
+         if (ssl_incs is not None and
+@@ -841,7 +841,7 @@
+ 
+                 # check lib directories parallel to the location of the header
+                 db_dirs_to_check = [
+-                    db_incdir.replace("include", 'lib64'),
++                    db_incdir.replace("include", '@@MULTILIB_DIR@@'),
+                     db_incdir.replace("include", 'lib'),
+                 ]
+                 db_dirs_to_check = filter(os.path.isdir, db_dirs_to_check)
+@@ -932,9 +932,9 @@
+ 
+         if sqlite_incdir:
+             sqlite_dirs_to_check = [
+-                os.path.join(sqlite_incdir, '..', 'lib64'),
++                os.path.join(sqlite_incdir, '..', '@@MULTILIB_DIR@@'),
+                 os.path.join(sqlite_incdir, '..', 'lib'),
+-                os.path.join(sqlite_incdir, '..', '..', 'lib64'),
++                os.path.join(sqlite_incdir, '..', '..', '@@MULTILIB_DIR@@'),
+                 os.path.join(sqlite_incdir, '..', '..', 'lib'),
+             ]
+             sqlite_libfile = self.compiler.find_library_file(
+@@ -1600,17 +1600,21 @@
+         if platform == 'sunos5':
+             include_dirs.append('/usr/openwin/include')
+             added_lib_dirs.append('/usr/openwin/lib')
++        elif os.path.exists('/usr/X11R7/include'):
++            include_dirs.append('/usr/X11R7/include')
++            added_lib_dirs.append('/usr/X11R7/@@MULTILIB_DIR@@')
++            added_lib_dirs.append('/usr/X11R7/lib')
+         elif os.path.exists('/usr/X11R6/include'):
+             include_dirs.append('/usr/X11R6/include')
+-            added_lib_dirs.append('/usr/X11R6/lib64')
++            added_lib_dirs.append('/usr/X11R6/@@MULTILIB_DIR@@')
+             added_lib_dirs.append('/usr/X11R6/lib')
+         elif os.path.exists('/usr/X11R5/include'):
+             include_dirs.append('/usr/X11R5/include')
+-            added_lib_dirs.append('/usr/X11R5/lib')
++            added_lib_dirs.append('/usr/X11R5/@@MULTILIB_DIR@@')
+         else:
+             # Assume default location for X11
+             include_dirs.append('/usr/X11/include')
+-            added_lib_dirs.append('/usr/X11/lib')
++            added_lib_dirs.append('/usr/X11/@@MULTILIB_DIR@@')
+ 
+         # If Cygwin, then verify that X is installed before proceeding
+         if platform == 'cygwin':
+diff -Naur Python-2.6.5.orig/setup.py.orig Python-2.6.5/setup.py.orig
+--- Python-2.6.5.orig/setup.py.orig	1970-01-01 00:00:00.000000000 +0000
++++ Python-2.6.5/setup.py.orig	2010-03-08 07:08:25.000000000 +0000
+@@ -0,0 +1,1919 @@
++# Autodetecting setup.py script for building the Python extensions
++#
++
++__version__ = "$Revision: 78785 $"
++
++import sys, os, imp, re, optparse
++from glob import glob
++from platform import machine as platform_machine
++
++from distutils import log
++from distutils import sysconfig
++from distutils import text_file
++from distutils.errors import *
++from distutils.core import Extension, setup
++from distutils.command.build_ext import build_ext
++from distutils.command.install import install
++from distutils.command.install_lib import install_lib
++
++# This global variable is used to hold the list of modules to be disabled.
++disabled_module_list = []
++
++def add_dir_to_list(dirlist, dir):
++    """Add the directory 'dir' to the list 'dirlist' (at the front) if
++    1) 'dir' is not already in 'dirlist'
++    2) 'dir' actually exists, and is a directory."""
++    if dir is not None and os.path.isdir(dir) and dir not in dirlist:
++        dirlist.insert(0, dir)
++
++def find_file(filename, std_dirs, paths):
++    """Searches for the directory where a given file is located,
++    and returns a possibly-empty list of additional directories, or None
++    if the file couldn't be found at all.
++
++    'filename' is the name of a file, such as readline.h or libcrypto.a.
++    'std_dirs' is the list of standard system directories; if the
++        file is found in one of them, no additional directives are needed.
++    'paths' is a list of additional locations to check; if the file is
++        found in one of them, the resulting list will contain the directory.
++    """
++
++    # Check the standard locations
++    for dir in std_dirs:
++        f = os.path.join(dir, filename)
++        if os.path.exists(f): return []
++
++    # Check the additional directories
++    for dir in paths:
++        f = os.path.join(dir, filename)
++        if os.path.exists(f):
++            return [dir]
++
++    # Not found anywhere
++    return None
++
++def find_library_file(compiler, libname, std_dirs, paths):
++    result = compiler.find_library_file(std_dirs + paths, libname)
++    if result is None:
++        return None
++
++    # Check whether the found file is in one of the standard directories
++    dirname = os.path.dirname(result)
++    for p in std_dirs:
++        # Ensure path doesn't end with path separator
++        p = p.rstrip(os.sep)
++        if p == dirname:
++            return [ ]
++
++    # Otherwise, it must have been in one of the additional directories,
++    # so we have to figure out which one.
++    for p in paths:
++        # Ensure path doesn't end with path separator
++        p = p.rstrip(os.sep)
++        if p == dirname:
++            return [p]
++    else:
++        assert False, "Internal error: Path not found in std_dirs or paths"
++
++def module_enabled(extlist, modname):
++    """Returns whether the module 'modname' is present in the list
++    of extensions 'extlist'."""
++    extlist = [ext for ext in extlist if ext.name == modname]
++    return len(extlist)
++
++def find_module_file(module, dirlist):
++    """Find a module in a set of possible folders. If it is not found
++    return the unadorned filename"""
++    list = find_file(module, [], dirlist)
++    if not list:
++        return module
++    if len(list) > 1:
++        log.info("WARNING: multiple copies of %s found"%module)
++    return os.path.join(list[0], module)
++
++class PyBuildExt(build_ext):
++
++    def __init__(self, dist):
++        build_ext.__init__(self, dist)
++        self.failed = []
++
++    def build_extensions(self):
++
++        # Detect which modules should be compiled
++        missing = self.detect_modules()
++
++        # Remove modules that are present on the disabled list
++        extensions = [ext for ext in self.extensions
++                      if ext.name not in disabled_module_list]
++        # move ctypes to the end, it depends on other modules
++        ext_map = dict((ext.name, i) for i, ext in enumerate(extensions))
++        if "_ctypes" in ext_map:
++            ctypes = extensions.pop(ext_map["_ctypes"])
++            extensions.append(ctypes)
++        self.extensions = extensions
++
++        # Fix up the autodetected modules, prefixing all the source files
++        # with Modules/ and adding Python's include directory to the path.
++        (srcdir,) = sysconfig.get_config_vars('srcdir')
++        if not srcdir:
++            # Maybe running on Windows but not using CYGWIN?
++            raise ValueError("No source directory; cannot proceed.")
++
++        # Figure out the location of the source code for extension modules
++        # (This logic is copied in distutils.test.test_sysconfig,
++        # so building in a separate directory does not break test_distutils.)
++        moddir = os.path.join(os.getcwd(), srcdir, 'Modules')
++        moddir = os.path.normpath(moddir)
++        srcdir, tail = os.path.split(moddir)
++        srcdir = os.path.normpath(srcdir)
++        moddir = os.path.normpath(moddir)
++
++        moddirlist = [moddir]
++        incdirlist = ['./Include']
++
++        # Platform-dependent module source and include directories
++        platform = self.get_platform()
++        if platform in ('darwin', 'mac') and ("--disable-toolbox-glue" not in
++            sysconfig.get_config_var("CONFIG_ARGS")):
++            # Mac OS X also includes some mac-specific modules
++            macmoddir = os.path.join(os.getcwd(), srcdir, 'Mac/Modules')
++            moddirlist.append(macmoddir)
++            incdirlist.append('./Mac/Include')
++
++        alldirlist = moddirlist + incdirlist
++
++        # Fix up the paths for scripts, too
++        self.distribution.scripts = [os.path.join(srcdir, filename)
++                                     for filename in self.distribution.scripts]
++
++        # Python header files
++        headers = glob("Include/*.h") + ["pyconfig.h"]
++
++        for ext in self.extensions[:]:
++            ext.sources = [ find_module_file(filename, moddirlist)
++                            for filename in ext.sources ]
++            if ext.depends is not None:
++                ext.depends = [find_module_file(filename, alldirlist)
++                               for filename in ext.depends]
++            else:
++                ext.depends = []
++            # re-compile extensions if a header file has been changed
++            ext.depends.extend(headers)
++
++            ext.include_dirs.append( '.' ) # to get config.h
++            for incdir in incdirlist:
++                ext.include_dirs.append( os.path.join(srcdir, incdir) )
++
++            # If a module has already been built statically,
++            # don't build it here
++            if ext.name in sys.builtin_module_names:
++                self.extensions.remove(ext)
++
++        if platform != 'mac':
++            # Parse Modules/Setup and Modules/Setup.local to figure out which
++            # modules are turned on in the file.
++            remove_modules = []
++            for filename in ('Modules/Setup', 'Modules/Setup.local'):
++                input = text_file.TextFile(filename, join_lines=1)
++                while 1:
++                    line = input.readline()
++                    if not line: break
++                    line = line.split()
++                    remove_modules.append(line[0])
++                input.close()
++
++            for ext in self.extensions[:]:
++                if ext.name in remove_modules:
++                    self.extensions.remove(ext)
++
++        # When you run "make CC=altcc" or something similar, you really want
++        # those environment variables passed into the setup.py phase.  Here's
++        # a small set of useful ones.
++        compiler = os.environ.get('CC')
++        args = {}
++        # unfortunately, distutils doesn't let us provide separate C and C++
++        # compilers
++        if compiler is not None:
++            (ccshared,cflags) = sysconfig.get_config_vars('CCSHARED','CFLAGS')
++            args['compiler_so'] = compiler + ' ' + ccshared + ' ' + cflags
++        self.compiler.set_executables(**args)
++
++        build_ext.build_extensions(self)
++
++        longest = max([len(e.name) for e in self.extensions])
++        if self.failed:
++            longest = max(longest, max([len(name) for name in self.failed]))
++
++        def print_three_column(lst):
++            lst.sort(key=str.lower)
++            # guarantee zip() doesn't drop anything
++            while len(lst) % 3:
++                lst.append("")
++            for e, f, g in zip(lst[::3], lst[1::3], lst[2::3]):
++                print "%-*s   %-*s   %-*s" % (longest, e, longest, f,
++                                              longest, g)
++
++        if missing:
++            print
++            print "Failed to find the necessary bits to build these modules:"
++            print_three_column(missing)
++            print ("To find the necessary bits, look in setup.py in"
++                   " detect_modules() for the module's name.")
++            print
++
++        if self.failed:
++            failed = self.failed[:]
++            print
++            print "Failed to build these modules:"
++            print_three_column(failed)
++            print
++
++    def build_extension(self, ext):
++
++        if ext.name == '_ctypes':
++            if not self.configure_ctypes(ext):
++                return
++
++        try:
++            build_ext.build_extension(self, ext)
++        except (CCompilerError, DistutilsError), why:
++            self.announce('WARNING: building of extension "%s" failed: %s' %
++                          (ext.name, sys.exc_info()[1]))
++            self.failed.append(ext.name)
++            return
++        # Workaround for Mac OS X: The Carbon-based modules cannot be
++        # reliably imported into a command-line Python
++        if 'Carbon' in ext.extra_link_args:
++            self.announce(
++                'WARNING: skipping import check for Carbon-based "%s"' %
++                ext.name)
++            return
++
++        if self.get_platform() == 'darwin' and (
++                sys.maxint > 2**32 and '-arch' in ext.extra_link_args):
++            # Don't bother doing an import check when an extension was
++            # build with an explicit '-arch' flag on OSX. That's currently
++            # only used to build 32-bit only extensions in a 4-way
++            # universal build and loading 32-bit code into a 64-bit
++            # process will fail.
++            self.announce(
++                'WARNING: skipping import check for "%s"' %
++                ext.name)
++            return
++
++        # Workaround for Cygwin: Cygwin currently has fork issues when many
++        # modules have been imported
++        if self.get_platform() == 'cygwin':
++            self.announce('WARNING: skipping import check for Cygwin-based "%s"'
++                % ext.name)
++            return
++        ext_filename = os.path.join(
++            self.build_lib,
++            self.get_ext_filename(self.get_ext_fullname(ext.name)))
++        try:
++            imp.load_dynamic(ext.name, ext_filename)
++        except ImportError, why:
++            self.failed.append(ext.name)
++            self.announce('*** WARNING: renaming "%s" since importing it'
++                          ' failed: %s' % (ext.name, why), level=3)
++            assert not self.inplace
++            basename, tail = os.path.splitext(ext_filename)
++            newname = basename + "_failed" + tail
++            if os.path.exists(newname):
++                os.remove(newname)
++            os.rename(ext_filename, newname)
++
++            # XXX -- This relies on a Vile HACK in
++            # distutils.command.build_ext.build_extension().  The
++            # _built_objects attribute is stored there strictly for
++            # use here.
++            # If there is a failure, _built_objects may not be there,
++            # so catch the AttributeError and move on.
++            try:
++                for filename in self._built_objects:
++                    os.remove(filename)
++            except AttributeError:
++                self.announce('unable to remove files (ignored)')
++        except:
++            exc_type, why, tb = sys.exc_info()
++            self.announce('*** WARNING: importing extension "%s" '
++                          'failed with %s: %s' % (ext.name, exc_type, why),
++                          level=3)
++            self.failed.append(ext.name)
++
++    def get_platform(self):
++        # Get value of sys.platform
++        for platform in ['cygwin', 'beos', 'darwin', 'atheos', 'osf1']:
++            if sys.platform.startswith(platform):
++                return platform
++        return sys.platform
++
++    def detect_modules(self):
++        # Ensure that /usr/local is always used
++        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
++        add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
++
++        # Add paths specified in the environment variables LDFLAGS and
++        # CPPFLAGS for header and library files.
++        # We must get the values from the Makefile and not the environment
++        # directly since an inconsistently reproducible issue comes up where
++        # the environment variable is not set even though the value were passed
++        # into configure and stored in the Makefile (issue found on OS X 10.3).
++        for env_var, arg_name, dir_list in (
++                ('LDFLAGS', '-R', self.compiler.runtime_library_dirs),
++                ('LDFLAGS', '-L', self.compiler.library_dirs),
++                ('CPPFLAGS', '-I', self.compiler.include_dirs)):
++            env_val = sysconfig.get_config_var(env_var)
++            if env_val:
++                # To prevent optparse from raising an exception about any
++                # options in env_val that it doesn't know about we strip out
++                # all double dashes and any dashes followed by a character
++                # that is not for the option we are dealing with.
++                #
++                # Please note that order of the regex is important!  We must
++                # strip out double-dashes first so that we don't end up with
++                # substituting "--Long" to "-Long" and thus lead to "ong" being
++                # used for a library directory.
++                env_val = re.sub(r'(^|\s+)-(-|(?!%s))' % arg_name[1],
++                                 ' ', env_val)
++                parser = optparse.OptionParser()
++                # Make sure that allowing args interspersed with options is
++                # allowed
++                parser.allow_interspersed_args = True
++                parser.error = lambda msg: None
++                parser.add_option(arg_name, dest="dirs", action="append")
++                options = parser.parse_args(env_val.split())[0]
++                if options.dirs:
++                    for directory in reversed(options.dirs):
++                        add_dir_to_list(dir_list, directory)
++
++        if os.path.normpath(sys.prefix) != '/usr':
++            add_dir_to_list(self.compiler.library_dirs,
++                            sysconfig.get_config_var("LIBDIR"))
++            add_dir_to_list(self.compiler.include_dirs,
++                            sysconfig.get_config_var("INCLUDEDIR"))
++
++        try:
++            have_unicode = unicode
++        except NameError:
++            have_unicode = 0
++
++        # lib_dirs and inc_dirs are used to search for files;
++        # if a file is found in one of those directories, it can
++        # be assumed that no additional -I,-L directives are needed.
++        lib_dirs = self.compiler.library_dirs + [
++            '/lib64', '/usr/lib64',
++            '/lib', '/usr/lib',
++            ]
++        inc_dirs = self.compiler.include_dirs + ['/usr/include']
++        exts = []
++        missing = []
++
++        config_h = sysconfig.get_config_h_filename()
++        config_h_vars = sysconfig.parse_config_h(open(config_h))
++
++        platform = self.get_platform()
++        (srcdir,) = sysconfig.get_config_vars('srcdir')
++
++        # Check for AtheOS which has libraries in non-standard locations
++        if platform == 'atheos':
++            lib_dirs += ['/system/libs', '/atheos/autolnk/lib']
++            lib_dirs += os.getenv('LIBRARY_PATH', '').split(os.pathsep)
++            inc_dirs += ['/system/include', '/atheos/autolnk/include']
++            inc_dirs += os.getenv('C_INCLUDE_PATH', '').split(os.pathsep)
++
++        # OSF/1 and Unixware have some stuff in /usr/ccs/lib (like -ldb)
++        if platform in ['osf1', 'unixware7', 'openunix8']:
++            lib_dirs += ['/usr/ccs/lib']
++
++        if platform == 'darwin':
++            # This should work on any unixy platform ;-)
++            # If the user has bothered specifying additional -I and -L flags
++            # in OPT and LDFLAGS we might as well use them here.
++            #   NOTE: using shlex.split would technically be more correct, but
++            # also gives a bootstrap problem. Let's hope nobody uses directories
++            # with whitespace in the name to store libraries.
++            cflags, ldflags = sysconfig.get_config_vars(
++                    'CFLAGS', 'LDFLAGS')
++            for item in cflags.split():
++                if item.startswith('-I'):
++                    inc_dirs.append(item[2:])
++
++            for item in ldflags.split():
++                if item.startswith('-L'):
++                    lib_dirs.append(item[2:])
++
++        # Check for MacOS X, which doesn't need libm.a at all
++        math_libs = ['m']
++        if platform in ['darwin', 'beos', 'mac']:
++            math_libs = []
++
++        # XXX Omitted modules: gl, pure, dl, SGI-specific modules
++
++        #
++        # The following modules are all pretty straightforward, and compile
++        # on pretty much any POSIXish platform.
++        #
++
++        # Some modules that are normally always on:
++        exts.append( Extension('_weakref', ['_weakref.c']) )
++
++        # array objects
++        exts.append( Extension('array', ['arraymodule.c']) )
++        # complex math library functions
++        exts.append( Extension('cmath', ['cmathmodule.c'],
++                               libraries=math_libs) )
++
++        # math library functions, e.g. sin()
++        exts.append( Extension('math',  ['mathmodule.c'],
++                               libraries=math_libs) )
++        # fast string operations implemented in C
++        exts.append( Extension('strop', ['stropmodule.c']) )
++        # time operations and variables
++        exts.append( Extension('time', ['timemodule.c'],
++                               libraries=math_libs) )
++        exts.append( Extension('datetime', ['datetimemodule.c', 'timemodule.c'],
++                               libraries=math_libs) )
++        # fast iterator tools implemented in C
++        exts.append( Extension("itertools", ["itertoolsmodule.c"]) )
++        # code that will be builtins in the future, but conflict with the
++        #  current builtins
++        exts.append( Extension('future_builtins', ['future_builtins.c']) )
++        # random number generator implemented in C
++        exts.append( Extension("_random", ["_randommodule.c"]) )
++        # high-performance collections
++        exts.append( Extension("_collections", ["_collectionsmodule.c"]) )
++        # bisect
++        exts.append( Extension("_bisect", ["_bisectmodule.c"]) )
++        # heapq
++        exts.append( Extension("_heapq", ["_heapqmodule.c"]) )
++        # operator.add() and similar goodies
++        exts.append( Extension('operator', ['operator.c']) )
++        # Python 3.0 _fileio module
++        exts.append( Extension("_fileio", ["_fileio.c"]) )
++        # Python 3.0 _bytesio module
++        exts.append( Extension("_bytesio", ["_bytesio.c"]) )
++        # _functools
++        exts.append( Extension("_functools", ["_functoolsmodule.c"]) )
++        # _json speedups
++        exts.append( Extension("_json", ["_json.c"]) )
++        # Python C API test module
++        exts.append( Extension('_testcapi', ['_testcapimodule.c'],
++                               depends=['testcapi_long.h']) )
++        # profilers (_lsprof is for cProfile.py)
++        exts.append( Extension('_hotshot', ['_hotshot.c']) )
++        exts.append( Extension('_lsprof', ['_lsprof.c', 'rotatingtree.c']) )
++        # static Unicode character database
++        if have_unicode:
++            exts.append( Extension('unicodedata', ['unicodedata.c']) )
++        else:
++            missing.append('unicodedata')
++        # access to ISO C locale support
++        data = open('pyconfig.h').read()
++        m = re.search(r"#s*define\s+WITH_LIBINTL\s+1\s*", data)
++        if m is not None:
++            locale_libs = ['intl']
++        else:
++            locale_libs = []
++        if platform == 'darwin':
++            locale_extra_link_args = ['-framework', 'CoreFoundation']
++        else:
++            locale_extra_link_args = []
++
++
++        exts.append( Extension('_locale', ['_localemodule.c'],
++                               libraries=locale_libs,
++                               extra_link_args=locale_extra_link_args) )
++
++        # Modules with some UNIX dependencies -- on by default:
++        # (If you have a really backward UNIX, select and socket may not be
++        # supported...)
++
++        # fcntl(2) and ioctl(2)
++        exts.append( Extension('fcntl', ['fcntlmodule.c']) )
++        if platform not in ['mac']:
++            # pwd(3)
++            exts.append( Extension('pwd', ['pwdmodule.c']) )
++            # grp(3)
++            exts.append( Extension('grp', ['grpmodule.c']) )
++            # spwd, shadow passwords
++            if (config_h_vars.get('HAVE_GETSPNAM', False) or
++                    config_h_vars.get('HAVE_GETSPENT', False)):
++                exts.append( Extension('spwd', ['spwdmodule.c']) )
++            else:
++                missing.append('spwd')
++        else:
++            missing.extend(['pwd', 'grp', 'spwd'])
++
++        # select(2); not on ancient System V
++        exts.append( Extension('select', ['selectmodule.c']) )
++
++        # Fred Drake's interface to the Python parser
++        exts.append( Extension('parser', ['parsermodule.c']) )
++
++        # cStringIO and cPickle
++        exts.append( Extension('cStringIO', ['cStringIO.c']) )
++        exts.append( Extension('cPickle', ['cPickle.c']) )
++
++        # Memory-mapped files (also works on Win32).
++        if platform not in ['atheos', 'mac']:
++            exts.append( Extension('mmap', ['mmapmodule.c']) )
++        else:
++            missing.append('mmap')
++
++        # Lance Ellinghaus's syslog module
++        if platform not in ['mac']:
++            # syslog daemon interface
++            exts.append( Extension('syslog', ['syslogmodule.c']) )
++        else:
++            missing.append('syslog')
++
++        # George Neville-Neil's timing module:
++        # Deprecated in PEP 4 http://www.python.org/peps/pep-0004.html
++        # http://mail.python.org/pipermail/python-dev/2006-January/060023.html
++        #exts.append( Extension('timing', ['timingmodule.c']) )
++
++        #
++        # Here ends the simple stuff.  From here on, modules need certain
++        # libraries, are platform-specific, or present other surprises.
++        #
++
++        # Multimedia modules
++        # These don't work for 64-bit platforms!!!
++        # These represent audio samples or images as strings:
++
++        # Operations on audio samples
++        # According to #993173, this one should actually work fine on
++        # 64-bit platforms.
++        exts.append( Extension('audioop', ['audioop.c']) )
++
++        # Disabled on 64-bit platforms
++        if sys.maxint != 9223372036854775807L:
++            # Operations on images
++            exts.append( Extension('imageop', ['imageop.c']) )
++        else:
++            missing.extend(['imageop'])
++
++        # readline
++        do_readline = self.compiler.find_library_file(lib_dirs, 'readline')
++        if platform == 'darwin':
++            os_release = int(os.uname()[2].split('.')[0])
++            dep_target = sysconfig.get_config_var('MACOSX_DEPLOYMENT_TARGET')
++            if dep_target and dep_target.split('.') < ['10', '5']:
++                os_release = 8
++            if os_release < 9:
++                # MacOSX 10.4 has a broken readline. Don't try to build
++                # the readline module unless the user has installed a fixed
++                # readline package
++                if find_file('readline/rlconf.h', inc_dirs, []) is None:
++                    do_readline = False
++        if do_readline:
++            if platform == 'darwin' and os_release < 9:
++                # In every directory on the search path search for a dynamic
++                # library and then a static library, instead of first looking
++                # for dynamic libraries on the entiry path.
++                # This way a staticly linked custom readline gets picked up
++                # before the (broken) dynamic library in /usr/lib.
++                readline_extra_link_args = ('-Wl,-search_paths_first',)
++            else:
++                readline_extra_link_args = ()
++
++            readline_libs = ['readline']
++            if self.compiler.find_library_file(lib_dirs,
++                                                 'ncursesw'):
++                readline_libs.append('ncursesw')
++            elif self.compiler.find_library_file(lib_dirs,
++                                                 'ncurses'):
++                readline_libs.append('ncurses')
++            elif self.compiler.find_library_file(lib_dirs, 'curses'):
++                readline_libs.append('curses')
++            elif self.compiler.find_library_file(lib_dirs +
++                                               ['/usr/lib/termcap'],
++                                               'termcap'):
++                readline_libs.append('termcap')
++            exts.append( Extension('readline', ['readline.c'],
++                                   library_dirs=['/usr/lib/termcap'],
++                                   extra_link_args=readline_extra_link_args,
++                                   libraries=readline_libs) )
++        else:
++            missing.append('readline')
++
++        if platform not in ['mac']:
++            # crypt module.
++
++            if self.compiler.find_library_file(lib_dirs, 'crypt'):
++                libs = ['crypt']
++            else:
++                libs = []
++            exts.append( Extension('crypt', ['cryptmodule.c'], libraries=libs) )
++        else:
++            missing.append('crypt')
++
++        # CSV files
++        exts.append( Extension('_csv', ['_csv.c']) )
++
++        # socket(2)
++        exts.append( Extension('_socket', ['socketmodule.c'],
++                               depends = ['socketmodule.h']) )
++        # Detect SSL support for the socket module (via _ssl)
++        search_for_ssl_incs_in = [
++                              '/usr/local/ssl/include',
++                              '/usr/contrib/ssl/include/'
++                             ]
++        ssl_incs = find_file('openssl/ssl.h', inc_dirs,
++                             search_for_ssl_incs_in
++                             )
++        if ssl_incs is not None:
++            krb5_h = find_file('krb5.h', inc_dirs,
++                               ['/usr/kerberos/include'])
++            if krb5_h:
++                ssl_incs += krb5_h
++        ssl_libs = find_library_file(self.compiler, 'ssl',lib_dirs,
++                                     ['/usr/local/ssl/lib',
++                                      '/usr/contrib/ssl/lib/'
++                                     ] )
++
++        if (ssl_incs is not None and
++            ssl_libs is not None):
++            exts.append( Extension('_ssl', ['_ssl.c'],
++                                   include_dirs = ssl_incs,
++                                   library_dirs = ssl_libs,
++                                   libraries = ['ssl', 'crypto'],
++                                   depends = ['socketmodule.h']), )
++        else:
++            missing.append('_ssl')
++
++        # find out which version of OpenSSL we have
++        openssl_ver = 0
++        openssl_ver_re = re.compile(
++            '^\s*#\s*define\s+OPENSSL_VERSION_NUMBER\s+(0x[0-9a-fA-F]+)' )
++        for ssl_inc_dir in inc_dirs + search_for_ssl_incs_in:
++            name = os.path.join(ssl_inc_dir, 'openssl', 'opensslv.h')
++            if os.path.isfile(name):
++                try:
++                    incfile = open(name, 'r')
++                    for line in incfile:
++                        m = openssl_ver_re.match(line)
++                        if m:
++                            openssl_ver = eval(m.group(1))
++                            break
++                except IOError:
++                    pass
++
++            # first version found is what we'll use (as the compiler should)
++            if openssl_ver:
++                break
++
++        #print 'openssl_ver = 0x%08x' % openssl_ver
++
++        if (ssl_incs is not None and
++            ssl_libs is not None and
++            openssl_ver >= 0x00907000):
++            # The _hashlib module wraps optimized implementations
++            # of hash functions from the OpenSSL library.
++            exts.append( Extension('_hashlib', ['_hashopenssl.c'],
++                                   include_dirs = ssl_incs,
++                                   library_dirs = ssl_libs,
++                                   libraries = ['ssl', 'crypto']) )
++            # these aren't strictly missing since they are unneeded.
++            #missing.extend(['_sha', '_md5'])
++        else:
++            # The _sha module implements the SHA1 hash algorithm.
++            exts.append( Extension('_sha', ['shamodule.c']) )
++            # The _md5 module implements the RSA Data Security, Inc. MD5
++            # Message-Digest Algorithm, described in RFC 1321.  The
++            # necessary files md5.c and md5.h are included here.
++            exts.append( Extension('_md5',
++                            sources = ['md5module.c', 'md5.c'],
++                            depends = ['md5.h']) )
++            missing.append('_hashlib')
++
++        if (openssl_ver < 0x00908000):
++            # OpenSSL doesn't do these until 0.9.8 so we'll bring our own hash
++            exts.append( Extension('_sha256', ['sha256module.c']) )
++            exts.append( Extension('_sha512', ['sha512module.c']) )
++
++        # Modules that provide persistent dictionary-like semantics.  You will
++        # probably want to arrange for at least one of them to be available on
++        # your machine, though none are defined by default because of library
++        # dependencies.  The Python module anydbm.py provides an
++        # implementation independent wrapper for these; dumbdbm.py provides
++        # similar functionality (but slower of course) implemented in Python.
++
++        # Sleepycat^WOracle Berkeley DB interface.
++        #  http://www.oracle.com/database/berkeley-db/db/index.html
++        #
++        # This requires the Sleepycat^WOracle DB code. The supported versions
++        # are set below.  Visit the URL above to download
++        # a release.  Most open source OSes come with one or more
++        # versions of BerkeleyDB already installed.
++
++        max_db_ver = (4, 7)
++        min_db_ver = (3, 3)
++        db_setup_debug = False   # verbose debug prints from this script?
++
++        def allow_db_ver(db_ver):
++            """Returns a boolean if the given BerkeleyDB version is acceptable.
++
++            Args:
++              db_ver: A tuple of the version to verify.
++            """
++            if not (min_db_ver <= db_ver <= max_db_ver):
++                return False
++            # Use this function to filter out known bad configurations.
++            if (4, 6) == db_ver[:2]:
++                # BerkeleyDB 4.6.x is not stable on many architectures.
++                arch = platform_machine()
++                if arch not in ('i386', 'i486', 'i586', 'i686',
++                                'x86_64', 'ia64'):
++                    return False
++            return True
++
++        def gen_db_minor_ver_nums(major):
++            if major == 4:
++                for x in range(max_db_ver[1]+1):
++                    if allow_db_ver((4, x)):
++                        yield x
++            elif major == 3:
++                for x in (3,):
++                    if allow_db_ver((3, x)):
++                        yield x
++            else:
++                raise ValueError("unknown major BerkeleyDB version", major)
++
++        # construct a list of paths to look for the header file in on
++        # top of the normal inc_dirs.
++        db_inc_paths = [
++            '/usr/include/db4',
++            '/usr/local/include/db4',
++            '/opt/sfw/include/db4',
++            '/usr/include/db3',
++            '/usr/local/include/db3',
++            '/opt/sfw/include/db3',
++            # Fink defaults (http://fink.sourceforge.net/)
++            '/sw/include/db4',
++            '/sw/include/db3',
++        ]
++        # 4.x minor number specific paths
++        for x in gen_db_minor_ver_nums(4):
++            db_inc_paths.append('/usr/include/db4%d' % x)
++            db_inc_paths.append('/usr/include/db4.%d' % x)
++            db_inc_paths.append('/usr/local/BerkeleyDB.4.%d/include' % x)
++            db_inc_paths.append('/usr/local/include/db4%d' % x)
++            db_inc_paths.append('/pkg/db-4.%d/include' % x)
++            db_inc_paths.append('/opt/db-4.%d/include' % x)
++            # MacPorts default (http://www.macports.org/)
++            db_inc_paths.append('/opt/local/include/db4%d' % x)
++        # 3.x minor number specific paths
++        for x in gen_db_minor_ver_nums(3):
++            db_inc_paths.append('/usr/include/db3%d' % x)
++            db_inc_paths.append('/usr/local/BerkeleyDB.3.%d/include' % x)
++            db_inc_paths.append('/usr/local/include/db3%d' % x)
++            db_inc_paths.append('/pkg/db-3.%d/include' % x)
++            db_inc_paths.append('/opt/db-3.%d/include' % x)
++
++        # Add some common subdirectories for Sleepycat DB to the list,
++        # based on the standard include directories. This way DB3/4 gets
++        # picked up when it is installed in a non-standard prefix and
++        # the user has added that prefix into inc_dirs.
++        std_variants = []
++        for dn in inc_dirs:
++            std_variants.append(os.path.join(dn, 'db3'))
++            std_variants.append(os.path.join(dn, 'db4'))
++            for x in gen_db_minor_ver_nums(4):
++                std_variants.append(os.path.join(dn, "db4%d"%x))
++                std_variants.append(os.path.join(dn, "db4.%d"%x))
++            for x in gen_db_minor_ver_nums(3):
++                std_variants.append(os.path.join(dn, "db3%d"%x))
++                std_variants.append(os.path.join(dn, "db3.%d"%x))
++
++        db_inc_paths = std_variants + db_inc_paths
++        db_inc_paths = [p for p in db_inc_paths if os.path.exists(p)]
++
++        db_ver_inc_map = {}
++
++        class db_found(Exception): pass
++        try:
++            # See whether there is a Sleepycat header in the standard
++            # search path.
++            for d in inc_dirs + db_inc_paths:
++                f = os.path.join(d, "db.h")
++                if db_setup_debug: print "db: looking for db.h in", f
++                if os.path.exists(f):
++                    f = open(f).read()
++                    m = re.search(r"#define\WDB_VERSION_MAJOR\W(\d+)", f)
++                    if m:
++                        db_major = int(m.group(1))
++                        m = re.search(r"#define\WDB_VERSION_MINOR\W(\d+)", f)
++                        db_minor = int(m.group(1))
++                        db_ver = (db_major, db_minor)
++
++                        # Avoid 4.6 prior to 4.6.21 due to a BerkeleyDB bug
++                        if db_ver == (4, 6):
++                            m = re.search(r"#define\WDB_VERSION_PATCH\W(\d+)", f)
++                            db_patch = int(m.group(1))
++                            if db_patch < 21:
++                                print "db.h:", db_ver, "patch", db_patch,
++                                print "being ignored (4.6.x must be >= 4.6.21)"
++                                continue
++
++                        if ( (db_ver not in db_ver_inc_map) and
++                            allow_db_ver(db_ver) ):
++                            # save the include directory with the db.h version
++                            # (first occurrence only)
++                            db_ver_inc_map[db_ver] = d
++                            if db_setup_debug:
++                                print "db.h: found", db_ver, "in", d
++                        else:
++                            # we already found a header for this library version
++                            if db_setup_debug: print "db.h: ignoring", d
++                    else:
++                        # ignore this header, it didn't contain a version number
++                        if db_setup_debug:
++                            print "db.h: no version number version in", d
++
++            db_found_vers = db_ver_inc_map.keys()
++            db_found_vers.sort()
++
++            while db_found_vers:
++                db_ver = db_found_vers.pop()
++                db_incdir = db_ver_inc_map[db_ver]
++
++                # check lib directories parallel to the location of the header
++                db_dirs_to_check = [
++                    db_incdir.replace("include", 'lib64'),
++                    db_incdir.replace("include", 'lib'),
++                ]
++                db_dirs_to_check = filter(os.path.isdir, db_dirs_to_check)
++
++                # Look for a version specific db-X.Y before an ambiguoius dbX
++                # XXX should we -ever- look for a dbX name?  Do any
++                # systems really not name their library by version and
++                # symlink to more general names?
++                for dblib in (('db-%d.%d' % db_ver),
++                              ('db%d%d' % db_ver),
++                              ('db%d' % db_ver[0])):
++                    dblib_file = self.compiler.find_library_file(
++                                    db_dirs_to_check + lib_dirs, dblib )
++                    if dblib_file:
++                        dblib_dir = [ os.path.abspath(os.path.dirname(dblib_file)) ]
++                        raise db_found
++                    else:
++                        if db_setup_debug: print "db lib: ", dblib, "not found"
++
++        except db_found:
++            if db_setup_debug:
++                print "bsddb using BerkeleyDB lib:", db_ver, dblib
++                print "bsddb lib dir:", dblib_dir, " inc dir:", db_incdir
++            db_incs = [db_incdir]
++            dblibs = [dblib]
++            # We add the runtime_library_dirs argument because the
++            # BerkeleyDB lib we're linking against often isn't in the
++            # system dynamic library search path.  This is usually
++            # correct and most trouble free, but may cause problems in
++            # some unusual system configurations (e.g. the directory
++            # is on an NFS server that goes away).
++            exts.append(Extension('_bsddb', ['_bsddb.c'],
++                                  depends = ['bsddb.h'],
++                                  library_dirs=dblib_dir,
++                                  runtime_library_dirs=dblib_dir,
++                                  include_dirs=db_incs,
++                                  libraries=dblibs))
++        else:
++            if db_setup_debug: print "db: no appropriate library found"
++            db_incs = None
++            dblibs = []
++            dblib_dir = None
++            missing.append('_bsddb')
++
++        # The sqlite interface
++        sqlite_setup_debug = False   # verbose debug prints from this script?
++
++        # We hunt for #define SQLITE_VERSION "n.n.n"
++        # We need to find >= sqlite version 3.0.8
++        sqlite_incdir = sqlite_libdir = None
++        sqlite_inc_paths = [ '/usr/include',
++                             '/usr/include/sqlite',
++                             '/usr/include/sqlite3',
++                             '/usr/local/include',
++                             '/usr/local/include/sqlite',
++                             '/usr/local/include/sqlite3',
++                           ]
++        MIN_SQLITE_VERSION_NUMBER = (3, 0, 8)
++        MIN_SQLITE_VERSION = ".".join([str(x)
++                                    for x in MIN_SQLITE_VERSION_NUMBER])
++
++        # Scan the default include directories before the SQLite specific
++        # ones. This allows one to override the copy of sqlite on OSX,
++        # where /usr/include contains an old version of sqlite.
++        for d in inc_dirs + sqlite_inc_paths:
++            f = os.path.join(d, "sqlite3.h")
++            if os.path.exists(f):
++                if sqlite_setup_debug: print "sqlite: found %s"%f
++                incf = open(f).read()
++                m = re.search(
++                    r'\s*.*#\s*.*define\s.*SQLITE_VERSION\W*"(.*)"', incf)
++                if m:
++                    sqlite_version = m.group(1)
++                    sqlite_version_tuple = tuple([int(x)
++                                        for x in sqlite_version.split(".")])
++                    if sqlite_version_tuple >= MIN_SQLITE_VERSION_NUMBER:
++                        # we win!
++                        if sqlite_setup_debug:
++                            print "%s/sqlite3.h: version %s"%(d, sqlite_version)
++                        sqlite_incdir = d
++                        break
++                    else:
++                        if sqlite_setup_debug:
++                            print "%s: version %d is too old, need >= %s"%(d,
++                                        sqlite_version, MIN_SQLITE_VERSION)
++                elif sqlite_setup_debug:
++                    print "sqlite: %s had no SQLITE_VERSION"%(f,)
++
++        if sqlite_incdir:
++            sqlite_dirs_to_check = [
++                os.path.join(sqlite_incdir, '..', 'lib64'),
++                os.path.join(sqlite_incdir, '..', 'lib'),
++                os.path.join(sqlite_incdir, '..', '..', 'lib64'),
++                os.path.join(sqlite_incdir, '..', '..', 'lib'),
++            ]
++            sqlite_libfile = self.compiler.find_library_file(
++                                sqlite_dirs_to_check + lib_dirs, 'sqlite3')
++            if sqlite_libfile:
++                sqlite_libdir = [os.path.abspath(os.path.dirname(sqlite_libfile))]
++
++        if sqlite_incdir and sqlite_libdir:
++            sqlite_srcs = ['_sqlite/cache.c',
++                '_sqlite/connection.c',
++                '_sqlite/cursor.c',
++                '_sqlite/microprotocols.c',
++                '_sqlite/module.c',
++                '_sqlite/prepare_protocol.c',
++                '_sqlite/row.c',
++                '_sqlite/statement.c',
++                '_sqlite/util.c', ]
++
++            sqlite_defines = []
++            if sys.platform != "win32":
++                sqlite_defines.append(('MODULE_NAME', '"sqlite3"'))
++            else:
++                sqlite_defines.append(('MODULE_NAME', '\\"sqlite3\\"'))
++
++
++            if sys.platform == 'darwin':
++                # In every directory on the search path search for a dynamic
++                # library and then a static library, instead of first looking
++                # for dynamic libraries on the entiry path.
++                # This way a staticly linked custom sqlite gets picked up
++                # before the dynamic library in /usr/lib.
++                sqlite_extra_link_args = ('-Wl,-search_paths_first',)
++            else:
++                sqlite_extra_link_args = ()
++
++            exts.append(Extension('_sqlite3', sqlite_srcs,
++                                  define_macros=sqlite_defines,
++                                  include_dirs=["Modules/_sqlite",
++                                                sqlite_incdir],
++                                  library_dirs=sqlite_libdir,
++                                  runtime_library_dirs=sqlite_libdir,
++                                  extra_link_args=sqlite_extra_link_args,
++                                  libraries=["sqlite3",]))
++        else:
++            missing.append('_sqlite3')
++
++        # Look for Berkeley db 1.85.   Note that it is built as a different
++        # module name so it can be included even when later versions are
++        # available.  A very restrictive search is performed to avoid
++        # accidentally building this module with a later version of the
++        # underlying db library.  May BSD-ish Unixes incorporate db 1.85
++        # symbols into libc and place the include file in /usr/include.
++        #
++        # If the better bsddb library can be built (db_incs is defined)
++        # we do not build this one.  Otherwise this build will pick up
++        # the more recent berkeleydb's db.h file first in the include path
++        # when attempting to compile and it will fail.
++        f = "/usr/include/db.h"
++        if os.path.exists(f) and not db_incs:
++            data = open(f).read()
++            m = re.search(r"#s*define\s+HASHVERSION\s+2\s*", data)
++            if m is not None:
++                # bingo - old version used hash file format version 2
++                ### XXX this should be fixed to not be platform-dependent
++                ### but I don't have direct access to an osf1 platform and
++                ### seemed to be muffing the search somehow
++                libraries = platform == "osf1" and ['db'] or None
++                if libraries is not None:
++                    exts.append(Extension('bsddb185', ['bsddbmodule.c'],
++                                          libraries=libraries))
++                else:
++                    exts.append(Extension('bsddb185', ['bsddbmodule.c']))
++            else:
++                missing.append('bsddb185')
++        else:
++            missing.append('bsddb185')
++
++        # The standard Unix dbm module:
++        if platform not in ['cygwin']:
++            if find_file("ndbm.h", inc_dirs, []) is not None:
++                # Some systems have -lndbm, others don't
++                if self.compiler.find_library_file(lib_dirs, 'ndbm'):
++                    ndbm_libs = ['ndbm']
++                else:
++                    ndbm_libs = []
++                exts.append( Extension('dbm', ['dbmmodule.c'],
++                                       define_macros=[('HAVE_NDBM_H',None)],
++                                       libraries = ndbm_libs ) )
++            elif self.compiler.find_library_file(lib_dirs, 'gdbm'):
++                gdbm_libs = ['gdbm']
++                if self.compiler.find_library_file(lib_dirs, 'gdbm_compat'):
++                    gdbm_libs.append('gdbm_compat')
++                if find_file("gdbm/ndbm.h", inc_dirs, []) is not None:
++                    exts.append( Extension(
++                        'dbm', ['dbmmodule.c'],
++                        define_macros=[('HAVE_GDBM_NDBM_H',None)],
++                        libraries = gdbm_libs ) )
++                elif find_file("gdbm-ndbm.h", inc_dirs, []) is not None:
++                    exts.append( Extension(
++                        'dbm', ['dbmmodule.c'],
++                        define_macros=[('HAVE_GDBM_DASH_NDBM_H',None)],
++                        libraries = gdbm_libs ) )
++                else:
++                    missing.append('dbm')
++            elif db_incs is not None:
++                exts.append( Extension('dbm', ['dbmmodule.c'],
++                                       library_dirs=dblib_dir,
++                                       runtime_library_dirs=dblib_dir,
++                                       include_dirs=db_incs,
++                                       define_macros=[('HAVE_BERKDB_H',None),
++                                                      ('DB_DBM_HSEARCH',None)],
++                                       libraries=dblibs))
++            else:
++                missing.append('dbm')
++
++        # Anthony Baxter's gdbm module.  GNU dbm(3) will require -lgdbm:
++        if (self.compiler.find_library_file(lib_dirs, 'gdbm')):
++            exts.append( Extension('gdbm', ['gdbmmodule.c'],
++                                   libraries = ['gdbm'] ) )
++        else:
++            missing.append('gdbm')
++
++        # Unix-only modules
++        if platform not in ['mac', 'win32']:
++            # Steen Lumholt's termios module
++            exts.append( Extension('termios', ['termios.c']) )
++            # Jeremy Hylton's rlimit interface
++            if platform not in ['atheos']:
++                exts.append( Extension('resource', ['resource.c']) )
++            else:
++                missing.append('resource')
++
++            # Sun yellow pages. Some systems have the functions in libc.
++            if (platform not in ['cygwin', 'atheos', 'qnx6'] and
++                find_file('rpcsvc/yp_prot.h', inc_dirs, []) is not None):
++                if (self.compiler.find_library_file(lib_dirs, 'nsl')):
++                    libs = ['nsl']
++                else:
++                    libs = []
++                exts.append( Extension('nis', ['nismodule.c'],
++                                       libraries = libs) )
++            else:
++                missing.append('nis')
++        else:
++            missing.extend(['nis', 'resource', 'termios'])
++
++        # Curses support, requiring the System V version of curses, often
++        # provided by the ncurses library.
++        panel_library = 'panel'
++        if (self.compiler.find_library_file(lib_dirs, 'ncursesw')):
++            curses_libs = ['ncursesw']
++            # Bug 1464056: If _curses.so links with ncursesw,
++            # _curses_panel.so must link with panelw.
++            panel_library = 'panelw'
++            exts.append( Extension('_curses', ['_cursesmodule.c'],
++                                   libraries = curses_libs) )
++        elif (self.compiler.find_library_file(lib_dirs, 'ncurses')):
++            curses_libs = ['ncurses']
++            exts.append( Extension('_curses', ['_cursesmodule.c'],
++                                   libraries = curses_libs) )
++        elif (self.compiler.find_library_file(lib_dirs, 'curses')
++              and platform != 'darwin'):
++                # OSX has an old Berkeley curses, not good enough for
++                # the _curses module.
++            if (self.compiler.find_library_file(lib_dirs, 'terminfo')):
++                curses_libs = ['curses', 'terminfo']
++            elif (self.compiler.find_library_file(lib_dirs, 'termcap')):
++                curses_libs = ['curses', 'termcap']
++            else:
++                curses_libs = ['curses']
++
++            exts.append( Extension('_curses', ['_cursesmodule.c'],
++                                   libraries = curses_libs) )
++        else:
++            missing.append('_curses')
++
++        # If the curses module is enabled, check for the panel module
++        if (module_enabled(exts, '_curses') and
++            self.compiler.find_library_file(lib_dirs, panel_library)):
++            exts.append( Extension('_curses_panel', ['_curses_panel.c'],
++                                   libraries = [panel_library] + curses_libs) )
++        else:
++            missing.append('_curses_panel')
++
++        # Andrew Kuchling's zlib module.  Note that some versions of zlib
++        # 1.1.3 have security problems.  See CERT Advisory CA-2002-07:
++        # http://www.cert.org/advisories/CA-2002-07.html
++        #
++        # zlib 1.1.4 is fixed, but at least one vendor (RedHat) has decided to
++        # patch its zlib 1.1.3 package instead of upgrading to 1.1.4.  For
++        # now, we still accept 1.1.3, because we think it's difficult to
++        # exploit this in Python, and we'd rather make it RedHat's problem
++        # than our problem <wink>.
++        #
++        # You can upgrade zlib to version 1.1.4 yourself by going to
++        # http://www.gzip.org/zlib/
++        zlib_inc = find_file('zlib.h', [], inc_dirs)
++        have_zlib = False
++        if zlib_inc is not None:
++            zlib_h = zlib_inc[0] + '/zlib.h'
++            version = '"0.0.0"'
++            version_req = '"1.1.3"'
++            fp = open(zlib_h)
++            while 1:
++                line = fp.readline()
++                if not line:
++                    break
++                if line.startswith('#define ZLIB_VERSION'):
++                    version = line.split()[2]
++                    break
++            if version >= version_req:
++                if (self.compiler.find_library_file(lib_dirs, 'z')):
++                    if sys.platform == "darwin":
++                        zlib_extra_link_args = ('-Wl,-search_paths_first',)
++                    else:
++                        zlib_extra_link_args = ()
++                    exts.append( Extension('zlib', ['zlibmodule.c'],
++                                           libraries = ['z'],
++                                           extra_link_args = zlib_extra_link_args))
++                    have_zlib = True
++                else:
++                    missing.append('zlib')
++            else:
++                missing.append('zlib')
++        else:
++            missing.append('zlib')
++
++        # Helper module for various ascii-encoders.  Uses zlib for an optimized
++        # crc32 if we have it.  Otherwise binascii uses its own.
++        if have_zlib:
++            extra_compile_args = ['-DUSE_ZLIB_CRC32']
++            libraries = ['z']
++            extra_link_args = zlib_extra_link_args
++        else:
++            extra_compile_args = []
++            libraries = []
++            extra_link_args = []
++        exts.append( Extension('binascii', ['binascii.c'],
++                               extra_compile_args = extra_compile_args,
++                               libraries = libraries,
++                               extra_link_args = extra_link_args) )
++
++        # Gustavo Niemeyer's bz2 module.
++        if (self.compiler.find_library_file(lib_dirs, 'bz2')):
++            if sys.platform == "darwin":
++                bz2_extra_link_args = ('-Wl,-search_paths_first',)
++            else:
++                bz2_extra_link_args = ()
++            exts.append( Extension('bz2', ['bz2module.c'],
++                                   libraries = ['bz2'],
++                                   extra_link_args = bz2_extra_link_args) )
++        else:
++            missing.append('bz2')
++
++        # Interface to the Expat XML parser
++        #
++        # Expat was written by James Clark and is now maintained by a
++        # group of developers on SourceForge; see www.libexpat.org for
++        # more information.  The pyexpat module was written by Paul
++        # Prescod after a prototype by Jack Jansen.  The Expat source
++        # is included in Modules/expat/.  Usage of a system
++        # shared libexpat.so/expat.dll is not advised.
++        #
++        # More information on Expat can be found at www.libexpat.org.
++        #
++        expatinc = os.path.join(os.getcwd(), srcdir, 'Modules', 'expat')
++        define_macros = [
++            ('HAVE_EXPAT_CONFIG_H', '1'),
++        ]
++
++        exts.append(Extension('pyexpat',
++                              define_macros = define_macros,
++                              include_dirs = [expatinc],
++                              sources = ['pyexpat.c',
++                                         'expat/xmlparse.c',
++                                         'expat/xmlrole.c',
++                                         'expat/xmltok.c',
++                                         ],
++                              ))
++
++        # Fredrik Lundh's cElementTree module.  Note that this also
++        # uses expat (via the CAPI hook in pyexpat).
++
++        if os.path.isfile(os.path.join(srcdir, 'Modules', '_elementtree.c')):
++            define_macros.append(('USE_PYEXPAT_CAPI', None))
++            exts.append(Extension('_elementtree',
++                                  define_macros = define_macros,
++                                  include_dirs = [expatinc],
++                                  sources = ['_elementtree.c'],
++                                  ))
++        else:
++            missing.append('_elementtree')
++
++        # Hye-Shik Chang's CJKCodecs modules.
++        if have_unicode:
++            exts.append(Extension('_multibytecodec',
++                                  ['cjkcodecs/multibytecodec.c']))
++            for loc in ('kr', 'jp', 'cn', 'tw', 'hk', 'iso2022'):
++                exts.append(Extension('_codecs_%s' % loc,
++                                      ['cjkcodecs/_codecs_%s.c' % loc]))
++        else:
++            missing.append('_multibytecodec')
++            for loc in ('kr', 'jp', 'cn', 'tw', 'hk', 'iso2022'):
++                missing.append('_codecs_%s' % loc)
++
++        # Dynamic loading module
++        if sys.maxint == 0x7fffffff:
++            # This requires sizeof(int) == sizeof(long) == sizeof(char*)
++            dl_inc = find_file('dlfcn.h', [], inc_dirs)
++            if (dl_inc is not None) and (platform not in ['atheos']):
++                exts.append( Extension('dl', ['dlmodule.c']) )
++            else:
++                missing.append('dl')
++        else:
++            missing.append('dl')
++
++        # Thomas Heller's _ctypes module
++        self.detect_ctypes(inc_dirs, lib_dirs)
++
++        # Richard Oudkerk's multiprocessing module
++        if platform == 'win32':             # Windows
++            macros = dict()
++            libraries = ['ws2_32']
++
++        elif platform == 'darwin':          # Mac OSX
++            macros = dict(
++                HAVE_SEM_OPEN=1,
++                HAVE_SEM_TIMEDWAIT=0,
++                HAVE_FD_TRANSFER=1,
++                HAVE_BROKEN_SEM_GETVALUE=1
++                )
++            libraries = []
++
++        elif platform == 'cygwin':          # Cygwin
++            macros = dict(
++                HAVE_SEM_OPEN=1,
++                HAVE_SEM_TIMEDWAIT=1,
++                HAVE_FD_TRANSFER=0,
++                HAVE_BROKEN_SEM_UNLINK=1
++                )
++            libraries = []
++
++        elif platform in ('freebsd4', 'freebsd5', 'freebsd6', 'freebsd7', 'freebsd8'):
++            # FreeBSD's P1003.1b semaphore support is very experimental
++            # and has many known problems. (as of June 2008)
++            macros = dict(                  # FreeBSD
++                HAVE_SEM_OPEN=0,
++                HAVE_SEM_TIMEDWAIT=0,
++                HAVE_FD_TRANSFER=1,
++                )
++            libraries = []
++
++        elif platform.startswith('openbsd'):
++            macros = dict(                  # OpenBSD
++                HAVE_SEM_OPEN=0,            # Not implemented
++                HAVE_SEM_TIMEDWAIT=0,
++                HAVE_FD_TRANSFER=1,
++                )
++            libraries = []
++
++        elif platform.startswith('netbsd'):
++            macros = dict(                  # at least NetBSD 5
++                HAVE_SEM_OPEN=1,
++                HAVE_SEM_TIMEDWAIT=0,
++                HAVE_FD_TRANSFER=1,
++                HAVE_BROKEN_SEM_GETVALUE=1
++                )
++            libraries = []
++
++        else:                                   # Linux and other unices
++            macros = dict(
++                HAVE_SEM_OPEN=1,
++                HAVE_SEM_TIMEDWAIT=1,
++                HAVE_FD_TRANSFER=1
++                )
++            libraries = ['rt']
++
++        if platform == 'win32':
++            multiprocessing_srcs = [ '_multiprocessing/multiprocessing.c',
++                                     '_multiprocessing/semaphore.c',
++                                     '_multiprocessing/pipe_connection.c',
++                                     '_multiprocessing/socket_connection.c',
++                                     '_multiprocessing/win32_functions.c'
++                                   ]
++
++        else:
++            multiprocessing_srcs = [ '_multiprocessing/multiprocessing.c',
++                                     '_multiprocessing/socket_connection.c'
++                                   ]
++
++            if macros.get('HAVE_SEM_OPEN', False):
++                multiprocessing_srcs.append('_multiprocessing/semaphore.c')
++
++        if sysconfig.get_config_var('WITH_THREAD'):
++            exts.append ( Extension('_multiprocessing', multiprocessing_srcs,
++                                    define_macros=macros.items(),
++                                    include_dirs=["Modules/_multiprocessing"]))
++        else:
++            missing.append('_multiprocessing')
++
++        # End multiprocessing
++
++
++        # Platform-specific libraries
++        if platform == 'linux2':
++            # Linux-specific modules
++            exts.append( Extension('linuxaudiodev', ['linuxaudiodev.c']) )
++        else:
++            missing.append('linuxaudiodev')
++
++        if platform in ('linux2', 'freebsd4', 'freebsd5', 'freebsd6',
++                        'freebsd7', 'freebsd8'):
++            exts.append( Extension('ossaudiodev', ['ossaudiodev.c']) )
++        else:
++            missing.append('ossaudiodev')
++
++        if platform == 'sunos5':
++            # SunOS specific modules
++            exts.append( Extension('sunaudiodev', ['sunaudiodev.c']) )
++        else:
++            missing.append('sunaudiodev')
++
++        if platform == 'darwin':
++            # _scproxy
++            exts.append(Extension("_scproxy", [os.path.join(srcdir, "Mac/Modules/_scproxy.c")],
++                extra_link_args= [
++                    '-framework', 'SystemConfiguration',
++                    '-framework', 'CoreFoundation'
++                ]))
++
++
++        if platform == 'darwin' and ("--disable-toolbox-glue" not in
++                sysconfig.get_config_var("CONFIG_ARGS")):
++
++            if int(os.uname()[2].split('.')[0]) >= 8:
++                # We're on Mac OS X 10.4 or later, the compiler should
++                # support '-Wno-deprecated-declarations'. This will
++                # surpress deprecation warnings for the Carbon extensions,
++                # these extensions wrap the Carbon APIs and even those
++                # parts that are deprecated.
++                carbon_extra_compile_args = ['-Wno-deprecated-declarations']
++            else:
++                carbon_extra_compile_args = []
++
++            # Mac OS X specific modules.
++            def macSrcExists(name1, name2=''):
++                if not name1:
++                    return None
++                names = (name1,)
++                if name2:
++                    names = (name1, name2)
++                path = os.path.join(srcdir, 'Mac', 'Modules', *names)
++                return os.path.exists(path)
++
++            def addMacExtension(name, kwds, extra_srcs=[]):
++                dirname = ''
++                if name[0] == '_':
++                    dirname = name[1:].lower()
++                cname = name + '.c'
++                cmodulename = name + 'module.c'
++                # Check for NNN.c, NNNmodule.c, _nnn/NNN.c, _nnn/NNNmodule.c
++                if macSrcExists(cname):
++                    srcs = [cname]
++                elif macSrcExists(cmodulename):
++                    srcs = [cmodulename]
++                elif macSrcExists(dirname, cname):
++                    # XXX(nnorwitz): If all the names ended with module, we
++                    # wouldn't need this condition.  ibcarbon is the only one.
++                    srcs = [os.path.join(dirname, cname)]
++                elif macSrcExists(dirname, cmodulename):
++                    srcs = [os.path.join(dirname, cmodulename)]
++                else:
++                    raise RuntimeError("%s not found" % name)
++
++                # Here's the whole point:  add the extension with sources
++                exts.append(Extension(name, srcs + extra_srcs, **kwds))
++
++            # Core Foundation
++            core_kwds = {'extra_compile_args': carbon_extra_compile_args,
++                         'extra_link_args': ['-framework', 'CoreFoundation'],
++                        }
++            addMacExtension('_CF', core_kwds, ['cf/pycfbridge.c'])
++            addMacExtension('autoGIL', core_kwds)
++
++
++
++            # Carbon
++            carbon_kwds = {'extra_compile_args': carbon_extra_compile_args,
++                           'extra_link_args': ['-framework', 'Carbon'],
++                          }
++            CARBON_EXTS = ['ColorPicker', 'gestalt', 'MacOS', 'Nav',
++                           'OSATerminology', 'icglue',
++                           # All these are in subdirs
++                           '_AE', '_AH', '_App', '_CarbonEvt', '_Cm', '_Ctl',
++                           '_Dlg', '_Drag', '_Evt', '_File', '_Folder', '_Fm',
++                           '_Help', '_Icn', '_IBCarbon', '_List',
++                           '_Menu', '_Mlte', '_OSA', '_Res', '_Qd', '_Qdoffs',
++                           '_Scrap', '_Snd', '_TE',
++                          ]
++            for name in CARBON_EXTS:
++                addMacExtension(name, carbon_kwds)
++
++            # Workaround for a bug in the version of gcc shipped with Xcode 3.
++            # The _Win extension should build just like the other Carbon extensions, but
++            # this actually results in a hard crash of the linker.
++            #
++            if '-arch ppc64' in cflags and '-arch ppc' in cflags:
++                win_kwds = {'extra_compile_args': carbon_extra_compile_args + ['-arch', 'i386', '-arch', 'ppc'],
++                               'extra_link_args': ['-framework', 'Carbon', '-arch', 'i386', '-arch', 'ppc'],
++                           }
++                addMacExtension('_Win', win_kwds)
++            else:
++                addMacExtension('_Win', carbon_kwds)
++
++
++            # Application Services & QuickTime
++            app_kwds = {'extra_compile_args': carbon_extra_compile_args,
++                        'extra_link_args': ['-framework','ApplicationServices'],
++                       }
++            addMacExtension('_Launch', app_kwds)
++            addMacExtension('_CG', app_kwds)
++
++            exts.append( Extension('_Qt', ['qt/_Qtmodule.c'],
++                        extra_compile_args=carbon_extra_compile_args,
++                        extra_link_args=['-framework', 'QuickTime',
++                                     '-framework', 'Carbon']) )
++
++
++        self.extensions.extend(exts)
++
++        # Call the method for detecting whether _tkinter can be compiled
++        self.detect_tkinter(inc_dirs, lib_dirs)
++
++        if '_tkinter' not in [e.name for e in self.extensions]:
++            missing.append('_tkinter')
++
++        return missing
++
++    def detect_tkinter_darwin(self, inc_dirs, lib_dirs):
++        # The _tkinter module, using frameworks. Since frameworks are quite
++        # different the UNIX search logic is not sharable.
++        from os.path import join, exists
++        framework_dirs = [
++            '/Library/Frameworks',
++            '/System/Library/Frameworks/',
++            join(os.getenv('HOME'), '/Library/Frameworks')
++        ]
++
++        # Find the directory that contains the Tcl.framework and Tk.framework
++        # bundles.
++        # XXX distutils should support -F!
++        for F in framework_dirs:
++            # both Tcl.framework and Tk.framework should be present
++            for fw in 'Tcl', 'Tk':
++                if not exists(join(F, fw + '.framework')):
++                    break
++            else:
++                # ok, F is now directory with both frameworks. Continure
++                # building
++                break
++        else:
++            # Tk and Tcl frameworks not found. Normal "unix" tkinter search
++            # will now resume.
++            return 0
++
++        # For 8.4a2, we must add -I options that point inside the Tcl and Tk
++        # frameworks. In later release we should hopefully be able to pass
++        # the -F option to gcc, which specifies a framework lookup path.
++        #
++        include_dirs = [
++            join(F, fw + '.framework', H)
++            for fw in 'Tcl', 'Tk'
++            for H in 'Headers', 'Versions/Current/PrivateHeaders'
++        ]
++
++        # For 8.4a2, the X11 headers are not included. Rather than include a
++        # complicated search, this is a hard-coded path. It could bail out
++        # if X11 libs are not found...
++        include_dirs.append('/usr/X11R6/include')
++        frameworks = ['-framework', 'Tcl', '-framework', 'Tk']
++
++        # All existing framework builds of Tcl/Tk don't support 64-bit
++        # architectures.
++        cflags = sysconfig.get_config_vars('CFLAGS')[0]
++        archs = re.findall('-arch\s+(\w+)', cflags)
++        fp = os.popen("file %s/Tk.framework/Tk | grep 'for architecture'"%(F,))
++        detected_archs = []
++        for ln in fp:
++            a = ln.split()[-1]
++            if a in archs:
++                detected_archs.append(ln.split()[-1])
++        fp.close()
++
++        for a in detected_archs:
++            frameworks.append('-arch')
++            frameworks.append(a)
++
++        ext = Extension('_tkinter', ['_tkinter.c', 'tkappinit.c'],
++                        define_macros=[('WITH_APPINIT', 1)],
++                        include_dirs = include_dirs,
++                        libraries = [],
++                        extra_compile_args = frameworks[2:],
++                        extra_link_args = frameworks,
++                        )
++        self.extensions.append(ext)
++        return 1
++
++
++    def detect_tkinter(self, inc_dirs, lib_dirs):
++        # The _tkinter module.
++
++        # Rather than complicate the code below, detecting and building
++        # AquaTk is a separate method. Only one Tkinter will be built on
++        # Darwin - either AquaTk, if it is found, or X11 based Tk.
++        platform = self.get_platform()
++        if (platform == 'darwin' and
++            self.detect_tkinter_darwin(inc_dirs, lib_dirs)):
++            return
++
++        # Assume we haven't found any of the libraries or include files
++        # The versions with dots are used on Unix, and the versions without
++        # dots on Windows, for detection by cygwin.
++        tcllib = tklib = tcl_includes = tk_includes = None
++        for version in ['8.5', '85', '8.4', '84', '8.3', '83', '8.2',
++                        '82', '8.1', '81', '8.0', '80']:
++            tklib = self.compiler.find_library_file(lib_dirs, 'tk' + version)
++            tcllib = self.compiler.find_library_file(lib_dirs, 'tcl' + version)
++            if tklib and tcllib:
++                # Exit the loop when we've found the Tcl/Tk libraries
++                break
++
++        # Now check for the header files
++        if tklib and tcllib:
++            # Check for the include files on Debian and {Free,Open}BSD, where
++            # they're put in /usr/include/{tcl,tk}X.Y
++            dotversion = version
++            if '.' not in dotversion and "bsd" in sys.platform.lower():
++                # OpenBSD and FreeBSD use Tcl/Tk library names like libtcl83.a,
++                # but the include subdirs are named like .../include/tcl8.3.
++                dotversion = dotversion[:-1] + '.' + dotversion[-1]
++            tcl_include_sub = []
++            tk_include_sub = []
++            for dir in inc_dirs:
++                tcl_include_sub += [dir + os.sep + "tcl" + dotversion]
++                tk_include_sub += [dir + os.sep + "tk" + dotversion]
++            tk_include_sub += tcl_include_sub
++            tcl_includes = find_file('tcl.h', inc_dirs, tcl_include_sub)
++            tk_includes = find_file('tk.h', inc_dirs, tk_include_sub)
++
++        if (tcllib is None or tklib is None or
++            tcl_includes is None or tk_includes is None):
++            self.announce("INFO: Can't locate Tcl/Tk libs and/or headers", 2)
++            return
++
++        # OK... everything seems to be present for Tcl/Tk.
++
++        include_dirs = [] ; libs = [] ; defs = [] ; added_lib_dirs = []
++        for dir in tcl_includes + tk_includes:
++            if dir not in include_dirs:
++                include_dirs.append(dir)
++
++        # Check for various platform-specific directories
++        if platform == 'sunos5':
++            include_dirs.append('/usr/openwin/include')
++            added_lib_dirs.append('/usr/openwin/lib')
++        elif os.path.exists('/usr/X11R6/include'):
++            include_dirs.append('/usr/X11R6/include')
++            added_lib_dirs.append('/usr/X11R6/lib64')
++            added_lib_dirs.append('/usr/X11R6/lib')
++        elif os.path.exists('/usr/X11R5/include'):
++            include_dirs.append('/usr/X11R5/include')
++            added_lib_dirs.append('/usr/X11R5/lib')
++        else:
++            # Assume default location for X11
++            include_dirs.append('/usr/X11/include')
++            added_lib_dirs.append('/usr/X11/lib')
++
++        # If Cygwin, then verify that X is installed before proceeding
++        if platform == 'cygwin':
++            x11_inc = find_file('X11/Xlib.h', [], include_dirs)
++            if x11_inc is None:
++                return
++
++        # Check for BLT extension
++        if self.compiler.find_library_file(lib_dirs + added_lib_dirs,
++                                           'BLT8.0'):
++            defs.append( ('WITH_BLT', 1) )
++            libs.append('BLT8.0')
++        elif self.compiler.find_library_file(lib_dirs + added_lib_dirs,
++                                           'BLT'):
++            defs.append( ('WITH_BLT', 1) )
++            libs.append('BLT')
++
++        # Add the Tcl/Tk libraries
++        libs.append('tk'+ version)
++        libs.append('tcl'+ version)
++
++        if platform in ['aix3', 'aix4']:
++            libs.append('ld')
++
++        # Finally, link with the X11 libraries (not appropriate on cygwin)
++        if platform != "cygwin":
++            libs.append('X11')
++
++        ext = Extension('_tkinter', ['_tkinter.c', 'tkappinit.c'],
++                        define_macros=[('WITH_APPINIT', 1)] + defs,
++                        include_dirs = include_dirs,
++                        libraries = libs,
++                        library_dirs = added_lib_dirs,
++                        )
++        self.extensions.append(ext)
++
++##         # Uncomment these lines if you want to play with xxmodule.c
++##         ext = Extension('xx', ['xxmodule.c'])
++##         self.extensions.append(ext)
++
++        # XXX handle these, but how to detect?
++        # *** Uncomment and edit for PIL (TkImaging) extension only:
++        #       -DWITH_PIL -I../Extensions/Imaging/libImaging  tkImaging.c \
++        # *** Uncomment and edit for TOGL extension only:
++        #       -DWITH_TOGL togl.c \
++        # *** Uncomment these for TOGL extension only:
++        #       -lGL -lGLU -lXext -lXmu \
++
++    def configure_ctypes_darwin(self, ext):
++        # Darwin (OS X) uses preconfigured files, in
++        # the Modules/_ctypes/libffi_osx directory.
++        (srcdir,) = sysconfig.get_config_vars('srcdir')
++        ffi_srcdir = os.path.abspath(os.path.join(srcdir, 'Modules',
++                                                  '_ctypes', 'libffi_osx'))
++        sources = [os.path.join(ffi_srcdir, p)
++                   for p in ['ffi.c',
++                             'x86/darwin64.S',
++                             'x86/x86-darwin.S',
++                             'x86/x86-ffi_darwin.c',
++                             'x86/x86-ffi64.c',
++                             'powerpc/ppc-darwin.S',
++                             'powerpc/ppc-darwin_closure.S',
++                             'powerpc/ppc-ffi_darwin.c',
++                             'powerpc/ppc64-darwin_closure.S',
++                             ]]
++
++        # Add .S (preprocessed assembly) to C compiler source extensions.
++        self.compiler.src_extensions.append('.S')
++
++        include_dirs = [os.path.join(ffi_srcdir, 'include'),
++                        os.path.join(ffi_srcdir, 'powerpc')]
++        ext.include_dirs.extend(include_dirs)
++        ext.sources.extend(sources)
++        return True
++
++    def configure_ctypes(self, ext):
++        if not self.use_system_libffi:
++            if sys.platform == 'darwin':
++                return self.configure_ctypes_darwin(ext)
++
++            (srcdir,) = sysconfig.get_config_vars('srcdir')
++            ffi_builddir = os.path.join(self.build_temp, 'libffi')
++            ffi_srcdir = os.path.abspath(os.path.join(srcdir, 'Modules',
++                                         '_ctypes', 'libffi'))
++            ffi_configfile = os.path.join(ffi_builddir, 'fficonfig.py')
++
++            from distutils.dep_util import newer_group
++
++            config_sources = [os.path.join(ffi_srcdir, fname)
++                              for fname in os.listdir(ffi_srcdir)
++                              if os.path.isfile(os.path.join(ffi_srcdir, fname))]
++            if self.force or newer_group(config_sources,
++                                         ffi_configfile):
++                from distutils.dir_util import mkpath
++                mkpath(ffi_builddir)
++                config_args = []
++
++                # Pass empty CFLAGS because we'll just append the resulting
++                # CFLAGS to Python's; -g or -O2 is to be avoided.
++                cmd = "cd %s && env CFLAGS='' '%s/configure' %s" \
++                      % (ffi_builddir, ffi_srcdir, " ".join(config_args))
++
++                res = os.system(cmd)
++                if res or not os.path.exists(ffi_configfile):
++                    print "Failed to configure _ctypes module"
++                    return False
++
++            fficonfig = {}
++            exec open(ffi_configfile) in fficonfig
++
++            # Add .S (preprocessed assembly) to C compiler source extensions.
++            self.compiler.src_extensions.append('.S')
++
++            include_dirs = [os.path.join(ffi_builddir, 'include'),
++                            ffi_builddir,
++                            os.path.join(ffi_srcdir, 'src')]
++            extra_compile_args = fficonfig['ffi_cflags'].split()
++
++            ext.sources.extend(os.path.join(ffi_srcdir, f) for f in
++                               fficonfig['ffi_sources'])
++            ext.include_dirs.extend(include_dirs)
++            ext.extra_compile_args.extend(extra_compile_args)
++        return True
++
++    def detect_ctypes(self, inc_dirs, lib_dirs):
++        self.use_system_libffi = False
++        include_dirs = []
++        extra_compile_args = []
++        extra_link_args = []
++        sources = ['_ctypes/_ctypes.c',
++                   '_ctypes/callbacks.c',
++                   '_ctypes/callproc.c',
++                   '_ctypes/stgdict.c',
++                   '_ctypes/cfield.c',
++                   '_ctypes/malloc_closure.c']
++        depends = ['_ctypes/ctypes.h']
++
++        if sys.platform == 'darwin':
++            sources.append('_ctypes/darwin/dlfcn_simple.c')
++            extra_compile_args.append('-DMACOSX')
++            include_dirs.append('_ctypes/darwin')
++# XXX Is this still needed?
++##            extra_link_args.extend(['-read_only_relocs', 'warning'])
++
++        elif sys.platform == 'sunos5':
++            # XXX This shouldn't be necessary; it appears that some
++            # of the assembler code is non-PIC (i.e. it has relocations
++            # when it shouldn't. The proper fix would be to rewrite
++            # the assembler code to be PIC.
++            # This only works with GCC; the Sun compiler likely refuses
++            # this option. If you want to compile ctypes with the Sun
++            # compiler, please research a proper solution, instead of
++            # finding some -z option for the Sun compiler.
++            extra_link_args.append('-mimpure-text')
++
++        elif sys.platform.startswith('hp-ux'):
++            extra_link_args.append('-fPIC')
++
++        ext = Extension('_ctypes',
++                        include_dirs=include_dirs,
++                        extra_compile_args=extra_compile_args,
++                        extra_link_args=extra_link_args,
++                        libraries=[],
++                        sources=sources,
++                        depends=depends)
++        ext_test = Extension('_ctypes_test',
++                             sources=['_ctypes/_ctypes_test.c'])
++        self.extensions.extend([ext, ext_test])
++
++        if not '--with-system-ffi' in sysconfig.get_config_var("CONFIG_ARGS"):
++            return
++
++        if sys.platform == 'darwin':
++            # OS X 10.5 comes with libffi.dylib; the include files are
++            # in /usr/include/ffi
++            inc_dirs.append('/usr/include/ffi')
++
++        ffi_inc = find_file('ffi.h', [], inc_dirs)
++        if ffi_inc is not None:
++            ffi_h = ffi_inc[0] + '/ffi.h'
++            fp = open(ffi_h)
++            while 1:
++                line = fp.readline()
++                if not line:
++                    ffi_inc = None
++                    break
++                if line.startswith('#define LIBFFI_H'):
++                    break
++        ffi_lib = None
++        if ffi_inc is not None:
++            for lib_name in ('ffi_convenience', 'ffi_pic', 'ffi'):
++                if (self.compiler.find_library_file(lib_dirs, lib_name)):
++                    ffi_lib = lib_name
++                    break
++
++        if ffi_inc and ffi_lib:
++            ext.include_dirs.extend(ffi_inc)
++            ext.libraries.append(ffi_lib)
++            self.use_system_libffi = True
++
++
++class PyBuildInstall(install):
++    # Suppress the warning about installation into the lib_dynload
++    # directory, which is not in sys.path when running Python during
++    # installation:
++    def initialize_options (self):
++        install.initialize_options(self)
++        self.warn_dir=0
++
++class PyBuildInstallLib(install_lib):
++    # Do exactly what install_lib does but make sure correct access modes get
++    # set on installed directories and files. All installed files with get
++    # mode 644 unless they are a shared library in which case they will get
++    # mode 755. All installed directories will get mode 755.
++
++    so_ext = sysconfig.get_config_var("SO")
++
++    def install(self):
++        outfiles = install_lib.install(self)
++        self.set_file_modes(outfiles, 0644, 0755)
++        self.set_dir_modes(self.install_dir, 0755)
++        return outfiles
++
++    def set_file_modes(self, files, defaultMode, sharedLibMode):
++        if not self.is_chmod_supported(): return
++        if not files: return
++
++        for filename in files:
++            if os.path.islink(filename): continue
++            mode = defaultMode
++            if filename.endswith(self.so_ext): mode = sharedLibMode
++            log.info("changing mode of %s to %o", filename, mode)
++            if not self.dry_run: os.chmod(filename, mode)
++
++    def set_dir_modes(self, dirname, mode):
++        if not self.is_chmod_supported(): return
++        os.path.walk(dirname, self.set_dir_modes_visitor, mode)
++
++    def set_dir_modes_visitor(self, mode, dirname, names):
++        if os.path.islink(dirname): return
++        log.info("changing mode of %s to %o", dirname, mode)
++        if not self.dry_run: os.chmod(dirname, mode)
++
++    def is_chmod_supported(self):
++        return hasattr(os, 'chmod')
++
++SUMMARY = """
++Python is an interpreted, interactive, object-oriented programming
++language. It is often compared to Tcl, Perl, Scheme or Java.
++
++Python combines remarkable power with very clear syntax. It has
++modules, classes, exceptions, very high level dynamic data types, and
++dynamic typing. There are interfaces to many system calls and
++libraries, as well as to various windowing systems (X11, Motif, Tk,
++Mac, MFC). New built-in modules are easily written in C or C++. Python
++is also usable as an extension language for applications that need a
++programmable interface.
++
++The Python implementation is portable: it runs on many brands of UNIX,
++on Windows, DOS, OS/2, Mac, Amiga... If your favorite system isn't
++listed here, it may still be supported, if there's a C compiler for
++it. Ask around on comp.lang.python -- or just try compiling Python
++yourself.
++"""
++
++CLASSIFIERS = """
++Development Status :: 6 - Mature
++License :: OSI Approved :: Python Software Foundation License
++Natural Language :: English
++Programming Language :: C
++Programming Language :: Python
++Topic :: Software Development
++"""
++
++def main():
++    # turn off warnings when deprecated modules are imported
++    import warnings
++    warnings.filterwarnings("ignore",category=DeprecationWarning)
++    setup(# PyPI Metadata (PEP 301)
++          name = "Python",
++          version = sys.version.split()[0],
++          url = "http://www.python.org/%s" % sys.version[:3],
++          maintainer = "Guido van Rossum and the Python community",
++          maintainer_email = "python-dev@python.org",
++          description = "A high-level object-oriented programming language",
++          long_description = SUMMARY.strip(),
++          license = "PSF license",
++          classifiers = filter(None, CLASSIFIERS.split("\n")),
++          platforms = ["Many"],
++
++          # Build info
++          cmdclass = {'build_ext':PyBuildExt, 'install':PyBuildInstall,
++                      'install_lib':PyBuildInstallLib},
++          # The struct module is defined here, because build_ext won't be
++          # called unless there's at least one extension module defined.
++          ext_modules=[Extension('_struct', ['_struct.c'])],
++
++          # Scripts to install
++          scripts = ['Tools/scripts/pydoc', 'Tools/scripts/idle',
++                     'Tools/scripts/2to3',
++                     'Lib/smtpd.py']
++        )
++
++# --install-platlib
++if __name__ == '__main__':
++    main()
