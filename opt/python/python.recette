@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-python}
 VERSION=${VERSION:-2.6.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-python}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -24,7 +24,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 WGET=${WGET:-http://www.python.org/ftp/python/$VERSION/Python-$VERSION.$EXT}
 WGETHTMLDOC=${WGETHTMLDOC:-http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-html.$EXT}
 WGETTEXTDOC=${WGETTEXTDOC:-http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-text.$EXT}
-DOC="LICENSE README Doc/"
+DOC="LICENSE README Demo/ Doc/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Langage de programmation interprété orienté objet"
 ########################################
@@ -111,7 +111,10 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On renomme les binaires et l'entête 32 bits :
+# On copie les outils dans les modules :
+cp -a Tools/* ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.6/site-packages
+
+# On renomme les binaires et l'entête 32 bits pour les envelopper :
 mv ${PKG}/usr/bin/python{,-32}
 mv ${PKG}/usr/bin/python2.6{,-32}
 mv ${PKG}/usr/include/python2.6/pyconfig{,-32}.h
@@ -127,6 +130,12 @@ cd ${NAME}
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# Python doit afficher "python_lib_dir" avec "/usr/lib64" :
+cat $CWD/python.packages64.patch | patch -p1
+
+# On force Python à s'installer dans /usr/lib64 :
+cat $CWD/python.lib64.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -164,11 +173,14 @@ mv ${PKG}/usr/bin/python{,-64} &&
 mv ${PKG}/usr/bin/python2.6{,-64} &&
 mv ${PKG}/usr/include/python2.6/pyconfig{,-64}.h
 
+# On copie les outils dans les modules :
+cp -a Tools/* ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.6/site-packages
+
 # On lie de faux binaires au programme enveloppe :
 ln -sf multiarch_wrapper ${PKG}/usr/bin/python
 ln -sf multiarch_wrapper ${PKG}/usr/bin/python2.6
 
-# On crée un entête « stub » pou s'adapter au multilib :
+# On crée un faux entête pour s'adapter au multilib :
 cat > ${PKG}/usr/include/python2.6/pyconfig.h << "EOF"
 #ifndef __STUB__PYCONFIG_H__
 #define __STUB__PYCONFIG_H__
@@ -199,8 +211,10 @@ if [ -d ${PKG}/usr/info ]; then
 fi
 
 # Installation de la documentation :
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/Tools
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+ln -sf ../../../usr/lib/python2.6/site-packages/Tools ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/Tools-32
+ln -sf ../../../usr/lib64/python2.6/site-packages/Tools ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/Tools-64
 tar xf $CWD/${NAMESRC}-${VERSION}-docs-html.$EXT -C ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 tar xf $CWD/${NAMESRC}-${VERSION}-docs-text.$EXT -C ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
