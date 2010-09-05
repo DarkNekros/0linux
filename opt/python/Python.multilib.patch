@@ -957,8 +957,8 @@ diff -Naur Python-2.6.5.orig/setup.py Python-2.6.5/setup.py
          # If Cygwin, then verify that X is installed before proceeding
          if platform == 'cygwin':
 diff -Naur Python-2.6.5.orig/setup.py.orig Python-2.6.5/setup.py.orig
---- Python-2.6.5.orig/setup.py.orig	1970-01-01 00:00:00.000000000 +0000
-+++ Python-2.6.5/setup.py.orig	2010-03-08 07:08:25.000000000 +0000
+--- Python-2.6.5.orig/setup.py	1970-01-01 00:00:00.000000000 +0000
++++ Python-2.6.5/setup.py	2010-03-08 07:08:25.000000000 +0000
 @@ -0,0 +1,1919 @@
 +# Autodetecting setup.py script for building the Python extensions
 +#
