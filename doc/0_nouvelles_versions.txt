@@ -1,6 +1,5 @@
 autoconf-2.67
 berkeley-db 5.0.26 
-curl 7.21.1 
 freetype 2.4.2
 gcc 4.5.1
 gnutls 2.10.1 
