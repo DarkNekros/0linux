@@ -21,8 +21,6 @@ BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
 WGET=${WGET:-ftp://ftp.vim.org/pub/vim/unix/$NAMESRC-$VERSION.$EXT}
-WGETLANG=${WGETLANG:-ftp://ftp.vim.org/pub/vim/extra/$NAMESRC-$VERSION-lang.tar.gz}
-WGETEXTRA=${WGETEXTRA:-ftp://ftp.vim.org/pub/vim/extra/$NAMESRC-$VERSION-extra.tar.gz}
 CORRECTIFS=`find $CWD/patches -type f | wc -l 2> /dev/null`
 if [ "$CORRECTIFS" = "" ]; then
 	$CORRECTIFS = 0
@@ -46,24 +44,6 @@ fi
 
 # On les vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
-
-# On télécharge l'archive des langues :
-if [ ! -r ${NAMESRC}-${VERSION}-lang.tar.gz ]; then
-	wget -vc $WGETLANG -O ${NAMESRC}-${VERSION}-lang.tar.gz.part
-	mv ${NAMESRC}-${VERSION}-lang.tar.gz.part ${NAMESRC}-${VERSION}-lang.tar.gz
-fi
-
-# On la vérifie :
-tar ft ${NAMESRC}-${VERSION}-lang.tar.gz 1> /dev/null 2> /dev/null
-
-# On télécharge l'archive des suppléments :
-if [ ! -r ${NAMESRC}-${VERSION}-extra.tar.gz ]; then
-	wget -vc $WGETEXTRA -O ${NAMESRC}-${VERSION}-extra.tar.gz.part
-	mv ${NAMESRC}-${VERSION}-extra.tar.gz.part ${NAMESRC}-${VERSION}-extra.tar.gz
-fi
-
-# On la vérifie :
-tar ft ${NAMESRC}-${VERSION}-extra.tar.gz 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
@@ -119,7 +99,7 @@ make
 fakeroot make install DESTDIR=${PKG}
 
 # On ajoute le dictionnaire pour le français en encodage UTF-8 :
-cp -a $CWD/fr.utf-8.* ${PKG}/usr/share/vim/vim72/spell
+cp -a $CWD/fr.utf-8.* ${PKG}/usr/share/vim/vim$(echo ${VERSION} | tr -d ".")/spell
 
 # On copie le vimrc à sa place :
 cp -a runtime/vimrc_example.vim ${PKG}/usr/share/vim
@@ -160,8 +140,8 @@ fi
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}.$CORRECTIFS/doc
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}.$CORRECTIFS
 
-# On lie la doc de /usr/share/vim/vim72/doc à /usr/doc/vim-*/doc :
-ln -sf ${PKG}/usr/share/vim/vim72/doc ${PKG}/usr/doc/${NAMETGZ}-${VERSION}.$CORRECTIFS/doc
+# On lie la doc de /usr/share/vim/vim*/doc à /usr/doc/vim-*/doc :
+ln -sf ${PKG}/usr/share/vim/vim$(echo ${VERSION} | tr -d ".")/doc ${PKG}/usr/doc/${NAMETGZ}-${VERSION}.$CORRECTIFS/doc
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
