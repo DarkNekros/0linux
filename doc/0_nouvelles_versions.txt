@@ -9,7 +9,6 @@ gstreamer 0.10.30
 imagemagick 6.6.3-10
 iproute2 2.6.35
 linux 2.6.35.3
-lvm 2.02.73
 m4 1.4.15
 make 3.82
 openssh 5.6p1 
