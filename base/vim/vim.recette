@@ -67,6 +67,9 @@ for patch in $CWD/patches/${VERSION}.???; do
 	cat $patch | patch -p0
 done
 
+# On positionne USE_ARCH :
+export USE_ARCH=64
+
 # On force l'emplacement de 'vimrc' dans /etc :
 echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 
@@ -91,6 +94,9 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 
 make
 fakeroot make install DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
 
 # On ajoute le dictionnaire pour le français en encodage UTF-8 :
 cp -a $CWD/fr.utf-8.* ${PKG}/usr/share/vim/vim$(echo ${VERSION} | tr -d ".")/spell
