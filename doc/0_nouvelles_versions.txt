@@ -4,7 +4,6 @@ curl 7.21.1
 dhcp 4.2.0
 freetype 2.4.2
 gcc 4.5.1
-git 1.7.2.3  
 gnutls 2.10.1 
 gparted 0.6.2 
 grep-2.6.3
