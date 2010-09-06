@@ -90,7 +90,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--with-features=huge \
 	--without-x \
 	--disable-gui \
-	--with-compiledby="<appzer0@free.fr>"
+	--with-compiledby="<appzer0@free.fr>" \
 	--build=${TARGET64}
 
 make
