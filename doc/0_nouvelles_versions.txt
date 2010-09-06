@@ -8,7 +8,6 @@ grep-2.6.3
 gstreamer 0.10.30
 imagemagick 6.6.3-10
 iproute2 2.6.35
-iptables 1.4.9
 linux 2.6.35.3
 lvm 2.02.73
 m4 1.4.15
