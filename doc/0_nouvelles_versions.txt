@@ -16,7 +16,6 @@ pkg-config 0.25
 python 2.7
 rpm 5.3.2 
 ruby 1.9.1-p430
-sharutils 4.10
 sqlite 3.7.1
 util-linux 2.18 
 xorg-server 1.9.0
