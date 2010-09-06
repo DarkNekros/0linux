@@ -53,10 +53,8 @@ mkdir -p ${PKG}
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
-echo "Extractions en cours..."
+echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-tar xf $CWD/vim-7.2-lang.tar.gz
-tar xf $CWD/vim-7.2-extra.tar.gz
 cd ${NAME}
 
 # On vérifie les permissions des sources :
