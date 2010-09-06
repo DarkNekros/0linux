@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/1.9/$NAMESRC-1.9.2-p0.$EXT}
-DOC="ChangeLog *COPYING* *KNOWNBUGS* *LEGAL* *README* doc/"
+DOC="ChangeLog *COPYING* *KNOWNBUGS* *LEGAL* *README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="langage de programmation « élégant »"
 ########################################
