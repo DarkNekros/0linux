@@ -62,9 +62,6 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# Quelle est notre version de Python ?
-PYVER=$(python -V 2>&1 | cut -f 2 -d' ' | cut -f 1-2 -d.)
-
 # On applique un à un les correctifs des mainteneurs :
 for patch in $CWD/patches/${VERSION}.???; do
 	cat $patch | patch -p0
@@ -83,7 +80,6 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--enable-pythoninterp \
-	--with-python-config-dir=/usr/lib${LIBDIRSUFFIX}/python$PYVER/config \
 	--enable-perlinterp \
 	--enable-rubyinterp \
 	--enable-multibyte \
