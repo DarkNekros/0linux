@@ -6,8 +6,8 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-ruby}
-VERSION=${VERSION:-1.9.2}
-EXT=${EXT:-tar.gz}
+VERSION=${VERSION:-1.9.2p0}
+EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ruby}
 BUILD=${BUILD:-1}
 
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/1.9/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/1.9/$NAMESRC-1.9.2-p0.$EXT}
 DOC="ChangeLog COPYING* GPL LEGAL LGPL NEWS README* ToDo"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="langage de programmation « élégant »"
@@ -68,7 +68,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDCONFIG_FLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -83,7 +83,7 @@ LDCONFIG_FLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET32}
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -114,7 +114,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDCONFIG_FLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -129,7 +129,7 @@ LDCONFIG_FLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64}
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
