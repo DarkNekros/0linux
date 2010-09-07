@@ -1,5 +1,6 @@
 autoconf-2.67
 berkeley-db 5.0.26 
+ed 1.5
 freetype 2.4.2
 gcc 4.5.1
 gnutls 2.10.1 
@@ -8,14 +9,12 @@ grep-2.6.3
 gstreamer 0.10.30
 imagemagick 6.6.3-10
 iproute2 2.6.35
-linux 2.6.35.3
+linux 2.6.35.4
 m4 1.4.15
 make 3.82
 perl-5.12.1
 pkg-config 0.25
 python 2.7
 rpm 5.3.2 
-ruby 1.9.1-p430
-sqlite 3.7.1
 util-linux 2.18 
 xorg-server 1.9.0
