@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-ImageMagick}
 VERSION=${VERSION:-6.6.3}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-imagemagick}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.imagemagick.org/pub/$NAMESRC/$NAMESRC-${VERSION}-4.$EXT}
+WGET=${WGET:-ftp://ftp.imagemagick.org/pub/$NAMESRC/$NAMESRC-${VERSION}-10.$EXT}
 DOC="ChangeLog LICENSE NOTICE *.txt"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de manipulation de fichiers graphiques"
