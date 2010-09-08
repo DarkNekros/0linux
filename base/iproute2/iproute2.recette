@@ -58,15 +58,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige afin de pouvoir spécifier un LIBDIR :
-cat $CWD/iproute2-2.6.29-1-libdir-1.patch | patch -p1
-
-# On corrige l'emplacement d'iptables, spécifié en dur à /usr/local/lib :
-sed -i -e "s#/usr/local/lib/iptables#/usr/lib${LIBDIRSUFFIX}/iptables#" include/iptables.h
-
-# Les emplacements corrigés pour l'architecture x86_64  :
-sed -i -e "s#/lib/tc#/lib${LIBDIRSUFFIX}/tc#" $(grep -lr '/lib/tc' *)
-sed -i -e "s#/usr/lib/#/usr/lib${LIBDIRSUFFIX}/#" include/iptables.h
-sed -i -e "s#/usr/lib/#/usr/lib${LIBDIRSUFFIX}/#" tc/m_ipt.c
+cat $CWD/iproute2.libdir.patch | patch -p1
 
 # Compilation pour 64 bits : compilation un peu spéciale.
 # /usr est spécifié en dur, on le spécifie vide :
@@ -76,10 +68,10 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-make DESTDIR=
+make LIBDIR=/usr/lib64 DESTDIR=
 
 # Installation :
-make install DESTDIR=${PKG} \
+fakeroot make install DESTDIR=${PKG} \
 	SBINDIR=/sbin \
 	DOCDIR=/usr/doc/${NAMETGZ}-${VERSION} \
 	MANDIR=/usr/man
