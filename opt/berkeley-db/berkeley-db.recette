@@ -78,6 +78,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-shared \
+	--enable-java \
 	--enable-pthread_api \
 	--enable-tcl \
 	--with-tcl=/usr/lib${LIBDIRSUFFIX} \
@@ -122,6 +123,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-shared \
+	--enable-java \
 	--enable-pthread_api \
 	--enable-tcl \
 	--with-tcl=/usr/lib${LIBDIRSUFFIX} \

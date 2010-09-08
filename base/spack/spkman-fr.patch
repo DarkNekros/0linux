@@ -1,5 +1,5 @@
 --- a/spkman	2010-08-30 00:45:13.000000000 +0200
-+++ b/spkman	2010-09-07 11:20:38.000000000 +0200
++++ b/spkman	2010-08-30 12:41:45.000000000 +0200
 @@ -36,7 +36,7 @@
      local buffer="$1"; shift 1
      awk '{E=1}/^[0-9]+/{E=0}{exit E}' "$buffer" && return 0 # we should only have size here..
@@ -89,7 +89,7 @@
          imode=$((($imode-1)*-1)) # return 0 if we are in "remove then install" mode...
          return $imode
      fi
-@@ -227,39 +225,37 @@
+@@ -227,9 +225,7 @@
      # $f DRY RUN, UPGRADE CONTEXT, PACKAGE(S)
      local dry=$1 up=$2 stamp=""; shift 2
      while [ $# -gt 0 ]; do
@@ -100,9 +100,8 @@
          rm -f "$TMPDIR/files" "$TMPDIR/dirs" "$TMPDIR/symkept" "$TMPDIR/cats"
          touch "$TMPDIR/files" "$TMPDIR/dirs" "$TMPDIR/symkept" "$TMPDIR/cats"
          linkregister "$1" "$TMPDIR/symkept" "$SCRIPTLOG/"* | while read -r link; do
-             if [ -h "$ROOT/$link" ]; then
--                echo "  unlink  $link" >&3
-+                echo "  suppression  (lien)     $link" >&3
+@@ -237,7 +233,7 @@
+                 echo "  unlink  $link" >&3
                  [ $dry -gt 0 ] || rm -f "$ROOT/$link"
              else
 -                growl 0 "Can't unlink \"$link\" (missing or not a symbolic link)."
@@ -110,10 +109,8 @@
              fi
          done
          fileregister "$1" "$TMPDIR/dirs" "$TMPDIR/files" "$TMPDIR/cats" "$TMPDIR/symkept"
-         sort "$TMPDIR/files" | while read -r file; do
-             if [ -f "$ROOT/$file" ]; then
--                echo "  delete    (file)     $file" >&3
-+                echo "  suppression  (fichier)     $file" >&3
+@@ -246,7 +242,7 @@
+                 echo "  delete    (file)     $file" >&3
                  [ $dry -gt 0 ] || rm -f "$ROOT/$file"
              else
 -                growl 0 "Can't delete \"$file\" (missing or not a regular file)."
@@ -121,15 +118,8 @@
              fi
          done
          sort "$TMPDIR/cats" | while read -r cat; do
-             [ -f "$ROOT/$cat" ] || continue
--            echo "  delete    (file)     $cat" >&3
-+            echo "  suppression  (fichier)     $cat" >&3
-             [ $dry -gt 0 ] || rm -f "$ROOT/$cat"
-         done
-         sort -r "$TMPDIR/dirs" | while read -r dir; do
-             if [ -d "$ROOT/$dir" ]; then
--                echo "  delete  (directory)  $dir" >&3
-+                echo "  suppression  (répertoire)  $dir" >&3
+@@ -259,7 +255,7 @@
+                 echo "  delete  (directory)  $dir" >&3
                  [ $dry -gt 0 ] || rmdir "$ROOT/$dir" 2>/dev/null || growl 0 "\"$dir\" is not empty. Won't be deleted..."
              else
 -                growl 0 "Can't delete \"$dir\" (missing or not a directory)."
