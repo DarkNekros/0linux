@@ -16,5 +16,4 @@ perl-5.12.2
 pkg-config 0.25
 python 2.7
 rpm 5.3.2 
-util-linux 2.18 
 xorg-server 1.9.0
