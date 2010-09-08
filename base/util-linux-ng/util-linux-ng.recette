@@ -88,7 +88,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-agetty \
 	--disable-init \
 	--enable-kill \
-	--enable-rdev \
 	--disable-last \
 	--enable-mesg \
 	--enable-raw \
@@ -135,7 +134,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-agetty \
 	--disable-init \
 	--enable-kill \
-	--enable-rdev \
 	--disable-last \
 	--enable-mesg \
 	--enable-raw \
@@ -155,11 +153,6 @@ fakeroot make install DESTDIR=${PKG}
 # appelant ce programme :
 mkdir -p ${PKG}/usr/bin
 ln -sf ../sbin/fdformat ${PKG}/usr/bin/fdformat
-
-# On installe manuellement rdev dans /sbin et on le lie à son emplacement originel :
-mv ${PKG}/usr/sbin/rdev ${PKG}/sbin
-chmod 755 ${PKG}/sbin/rdev
-ln -sf ../../sbin/rdev ${PKG}/usr/sbin/rdev
 
 # Comme Slackware, on passe 'getopt' et 'setterm' dans /bin (/usr peut ne pas être montée),
 # et on les lie à /usr/bin :
