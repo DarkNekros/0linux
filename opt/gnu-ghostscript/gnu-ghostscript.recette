@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-gnu-ghostscript}
-VERSION=${VERSION:-8.64.0}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-8.71.0}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gnu-ghostscript}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -53,11 +52,6 @@ fi
 
 # On les vérifie :
 tar ft ghostscript-fonts-std-8.11.tar.gz 1> /dev/null 2> /dev/null
-TARERROR=$?
-if [ ! "$TARERROR" = "0" ]; then
-	echo "Erreur à la lecture de l'archive source. Celle-ci semble corrompue (Erreur $TARERROR)."
-	exit 1
-fi
 
 # On télécharge les autres polices :
 if [ ! -r gnu-gs-fonts-other-6.0.tar.gz ]; then
@@ -67,11 +61,6 @@ fi
 
 # On les vérifie :
 tar ft gnu-gs-fonts-other-6.0.tar.gz 1> /dev/null 2> /dev/null
-TARERROR=$?
-if [ ! "$TARERROR" = "0" ]; then
-	echo "Erreur à la lecture de l'archive source. Celle-ci semble corrompue (Erreur $TARERROR)."
-	exit 1
-fi
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
@@ -99,6 +88,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -111,8 +101,8 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 
 make
 make so
-make install DESTDIR=${PKG}
-make soinstall DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+fakeroot make soinstall DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -138,7 +128,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib64" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -151,17 +141,11 @@ LDFLAGS="-L/usr/lib64" \
 
 make
 make so
-make install DESTDIR=${PKG}
-make soinstall DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+fakeroot make soinstall DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On place les entêtes et on lie 'ghostscript' à 'ps' :
-#mkdir -p ${PKG}/usr/include/ps
-#cp -a src/*.h ${PKG}/usr/include/ps
-#chmod 644 ${PKG}/usr/include/ps/*.h
-#ln -sf ps ${PKG}/usr/include/ghostscript
 
 # On déballe les polices :
 tar xf $CWD/ghostscript-fonts-std-8.11.tar.gz -C ${PKG}/usr/share/ghostscript
@@ -216,7 +200,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
