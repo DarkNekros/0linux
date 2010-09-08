@@ -57,6 +57,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On positionne USE_ARCH :
+export USE_ARCH=64
+
 # On corrige afin de pouvoir spécifier un LIBDIR :
 cat $CWD/iproute2.libdir.patch | patch -p1
 
@@ -76,6 +79,9 @@ fakeroot make install DESTDIR=${PKG} \
 	DOCDIR=/usr/doc/${NAMETGZ}-${VERSION} \
 	MANDIR=/usr/man
 
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
 # On crée les liens symboliques de /usr/sbin vers /sbin :
 mkdir -p ${PKG}/usr/sbin
 for binaire in arpd ctstat genl ifcfg ifstat ip lnstat nstat routef routel rtacct rtmon rtpr rtstat ss tc; do
@@ -84,7 +90,7 @@ done
 
 # On n'écrase aucun fichier existant :
 for fichier in ${PKG}/etc/iproute2/*; do
-	mv $fichier ${fichier}.new
+	mv ${fichier}{,.new}
 done
 
 # On crée de quoi accueillir l'activité de 'arpd' :
