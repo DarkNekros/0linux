@@ -70,9 +70,6 @@ find . \
 # On force 'firefox' à se conformer à la langue du système :
 cat $CWD/mozilla-firefox.lang.patch | patch -p1
 
-# On corrige ce bogue ressuscité concernant la compilation de 'sqlite' :
-cat $CWD/mozilla-firefox.sqlite-no-secure-delete.patch | patch -p1
-
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
@@ -93,7 +90,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--with-system-zlib \
 	--with-system-bz2 \
 	--with-system-jpeg \
-	--enable-system-sqlite \
 	--enable-system-cairo \
 	--enable-default-toolkit=cairo-gtk2 \
 	--enable-crypto \
@@ -189,9 +185,6 @@ find . \
 # On force 'firefox' à se conformer à la langue du système :
 cat $CWD/mozilla-firefox.lang.patch | patch -p1
 
-# On corrige ce bogue ressuscité concernant la compilation de 'sqlite' :
-cat $CWD/mozilla-firefox.sqlite-no-secure-delete.patch | patch -p1
-
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
@@ -212,7 +205,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--with-system-zlib \
 	--with-system-bz2 \
 	--with-system-jpeg \
-	--enable-system-sqlite \
 	--enable-system-cairo \
 	--enable-default-toolkit=cairo-gtk2 \
 	--enable-crypto \
