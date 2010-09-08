@@ -1,17 +1,15 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
-# Dépendances : Berkeley-DB
 
 set -e
 umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-iproute2}
-VERSION=${VERSION:-2.6.29.1}
+VERSION=${VERSION:-2.6.35}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-iproute2}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -21,7 +19,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-http://developer.osdl.org/dev/iproute2/download/iproute2-2.6.29-1.$EXT}  # Numéros de version différents !
+WGET=${WGET:-http://developer.osdl.org/dev/iproute2/download/$NAMESRC-$VERSION.$EXT}
 DOC="COPYING ChangeLog README* RELNOTES"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de routage d'IP"
@@ -62,9 +60,6 @@ find . \
 # On corrige afin de pouvoir spécifier un LIBDIR :
 cat $CWD/iproute2-2.6.29-1-libdir-1.patch | patch -p1
 
-# On n'a pas pas besoin de 'arpd' pour le moment, il dépend de Berkeley-DB :
-sed -i '/^TARGETS/s@arpd@@g' misc/Makefile
-
 # On corrige l'emplacement d'iptables, spécifié en dur à /usr/local/lib :
 sed -i -e "s#/usr/local/lib/iptables#/usr/lib${LIBDIRSUFFIX}/iptables#" include/iptables.h
 
@@ -79,6 +74,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make DESTDIR=
 
 # Installation :
@@ -89,7 +86,7 @@ make install DESTDIR=${PKG} \
 
 # On crée les liens symboliques de /usr/sbin vers /sbin :
 mkdir -p ${PKG}/usr/sbin
-for binaire in ctstat genl ifcfg ifstat ip lnstat nstat routef routel rtacct rtmon rtpr rtstat ss tc; do
+for binaire in arpd ctstat genl ifcfg ifstat ip lnstat nstat routef routel rtacct rtmon rtpr rtstat ss tc; do
 	ln -sf ../../sbin/$binaire $PKG/usr/sbin/$binaire
 done
 
@@ -100,7 +97,6 @@ done
 
 # On crée de quoi accueillir l'activité de 'arpd' :
 mkdir -p ${PKG}/var/lib/arpd
-
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -170,7 +166,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
