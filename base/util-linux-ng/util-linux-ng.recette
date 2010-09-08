@@ -19,7 +19,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-http://www.kernel.org/pub/linux/utils/util-linux-ng/v2.17/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.kernel.org/pub/linux/utils/util-linux-ng/$(echo ${VERSION} | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DOC="ABOUT-NLS AUTHORS COPYING DEPRECATED INSTALL NEWS README* TODO docs/*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Ensemble d'outils système vitaux"
