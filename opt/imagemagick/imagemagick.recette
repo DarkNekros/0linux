@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-ImageMagick}
-VERSION=${VERSION:-6.6.3}
+VERSION=${VERSION:-6.6.3.10}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-imagemagick}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
