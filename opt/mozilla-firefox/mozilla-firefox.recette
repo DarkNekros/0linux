@@ -70,6 +70,9 @@ find . \
 # On force 'firefox' à se conformer à la langue du système :
 cat $CWD/mozilla-firefox.lang.patch | patch -p1
 
+# On corrige ce bogue ressuscité concernant la compilation de 'sqlite' :
+cat $CWD/mozilla-firefox.sqlite-no-secure-delete.patch | patch -p1
+
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
@@ -185,6 +188,9 @@ find . \
 
 # On force 'firefox' à se conformer à la langue du système :
 cat $CWD/mozilla-firefox.lang.patch | patch -p1
+
+# On corrige ce bogue ressuscité concernant la compilation de 'sqlite' :
+cat $CWD/mozilla-firefox.sqlite-no-secure-delete.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
