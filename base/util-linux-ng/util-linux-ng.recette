@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-util-linux-ng}
-VERSION=${VERSION:-2.17.1}
+VERSION=${VERSION:-2.18}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-util-linux-ng}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -68,21 +67,15 @@ find . \
 # On n'installe pas non plus 'strings' de BSD, seul 'strings' de GNU est présent ;
 # voir le paquet 'binutils'.
 
-# On n'installe pas non plus 'hostname' (oui, je sais, sacrilège !). Quiconque n'installe
-# pas d'outil réseau n'aura pas non plus de nom d'hôte.
-
-# Le changement de l'affichage de fdisk -l concernant les partitions de type 83
-# casse les script d'installation de Slackware. 
-# L'affichage est donc modifié en « Linux swap » par Slackware. On verra à
-# l'usage quand supprimer cette malheureuse modification (comprendre : 
-# « quand on aura tout simplement modifié les scripts d'appel ») :
-cat $CWD/util-linux-ng.fdisk-no-solaris.diff | patch -p1
+# On n'installe pas non plus 'hostname' ; voir le paquet 'net-tools'
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -109,8 +102,6 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--build=${TARGET32}
 
 make
-
-# 'make install' tente de changer le groupe d'appartenance de certains binaires, d'où le 'fakeroot' :
 fakeroot make install DESTDIR=${PKG}
 
 # On re-déballe et on se re-place dans les sources :
@@ -125,18 +116,13 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# Le changement de l'affichage de fdisk -l concernant les partitions de type 83
-# casse les script d'installation de Slackware. 
-# L'affichage est donc modifié en « Linux swap » par Slackware. On verra à
-# l'usage quand supprimer cette malheureuse modification (comprendre : 
-# « quand on aura tout simplement modifié les scripts d'appel ») :
-cat $CWD/util-linux-ng.fdisk-no-solaris.diff | patch -p1
-
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -163,8 +149,6 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--build=${TARGET64}
 
 make
-
-# 'make install' tente de changer le groupe d'appartenance de certains binaires, d'où le 'fakeroot' :
 fakeroot make install DESTDIR=${PKG}
 
 # On crée un lien de /usr/bin vers /usr/sbin pour 'fdformat' pour les scripts de Slackware
@@ -246,7 +230,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
