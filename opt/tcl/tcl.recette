@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-tcl}
-VERSION=${VERSION:-8.5.8}
+VERSION=${VERSION:-8.5.9}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-tcl}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -20,7 +19,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-http://downloads.sourceforge.net/project/tcl/Tcl/8.5.8/tcl8.5.8-src.tar.gz?use_mirror=freefr}
+WGET=${WGET:-http://prdownloads.sourceforge.net/tcl/${NAMESRC}${VERSION}-src.$EXT}
 DOC="ChangeLog* README changes license.terms"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Langage de script interactif"
@@ -65,6 +64,8 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure --prefix=/usr \
 	--enable-threads \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -75,8 +76,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--enable-man-compression=gzip
 
 make
-make install DESTDIR=${PKG}
-make install-private-headers DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-private-headers DESTDIR=${PKG}
 
 # On renomme le binaire 32 bits :
 mv ${PKG}/usr/bin/tclsh8.5{,-32}
@@ -103,10 +104,13 @@ sed -i '/sprintf(installLib/s:"lib:&64:' tclUnixInit.c
 sed -i -e '/TCL_PACKAGE_PATH=/s:=.*:="/usr/lib64":' -e "/^TCL_LIBRARY=/s:=.*:='/usr/lib64/tcl\$(VERSION)':" configure
 
 # Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe"
+SLKCFLAGS="-O2 -fPIC -pipe"PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure --prefix=/usr \
 	--enable-threads \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -117,8 +121,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--enable-man-compression=gzip
 
 make
-make install DESTDIR=${PKG}
-make install-private-headers DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-private-headers DESTDIR=${PKG}
 
 cd $TMP/${NAME}
 
@@ -172,7 +176,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
