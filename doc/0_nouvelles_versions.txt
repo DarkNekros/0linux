@@ -1,9 +1,7 @@
 autoconf-2.67
 freetype 2.4.2
 gcc 4.5.1
-gnu-ghostscript 8.71.0
 gnutls 2.10.1 
-gparted 0.6.2 
 grep-2.6.3
 gstreamer 0.10.30
 (iproute2 2.6.35)
