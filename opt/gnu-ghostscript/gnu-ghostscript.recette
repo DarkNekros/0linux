@@ -22,8 +22,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ftp.gnu.org/gnu/ghostscript/$NAMESRC-$VERSION.$EXT}
-WGETSTDFONTS=${WGET:-http://mirror.cs.wisc.edu/pub/mirrors/ghost/fonts/ghostscript-fonts-std-8.11.tar.gz}
-WGETOTHERFONTS=${WGET:-http://ftp.gnu.org/pub/gnu/ghostscript/gnu-gs-fonts-other-6.0.tar.gz}
+WGETSTDFONTS=${WGETSTDFONTS:-http://mirror.cs.wisc.edu/pub/mirrors/ghost/fonts/ghostscript-fonts-std-8.11.tar.gz}
+WGETOTHERFONTS=${WGETOTHERFONTS:-http://ftp.gnu.org/pub/gnu/ghostscript/gnu-gs-fonts-other-6.0.tar.gz}
 DOC="AUTHORS ChangeLog COPYING examples/ LICENSE* README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques, interpréteurs et pilotes PostScript et PDF"
