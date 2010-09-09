@@ -204,9 +204,8 @@ config() {
 	fi
 }
 
-PERLVERSION="$(perl --version | grep "This is perl" | cut -d' ' -f4 | tr -d 'v')"
-config usr/lib/perl5/$PERLVERSION/x86_64-linux-thread-multi/perllocal.pod.new 2> /dev/null
-config usr/lib64/perl5/$PERLVERSION/x86_64-linux-thread-multi/perllocal.pod.new 2> /dev/null
+config usr/lib/perl5/5.12.2/x86_64-linux-thread-multi/perllocal.pod.new 2> /dev/null
+config usr/lib64/perl5/5.12.2/x86_64-linux-thread-multi/perllocal.pod.new 2> /dev/null
 
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
