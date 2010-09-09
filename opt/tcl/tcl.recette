@@ -104,8 +104,7 @@ sed -i '/sprintf(installLib/s:"lib:&64:' tclUnixInit.c
 sed -i -e '/TCL_PACKAGE_PATH=/s:=.*:="/usr/lib64":' -e "/^TCL_LIBRARY=/s:=.*:='/usr/lib64/tcl\$(VERSION)':" configure
 
 # Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe"PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
