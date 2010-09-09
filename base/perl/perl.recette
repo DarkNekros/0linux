@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-perl}
-VERSION=${VERSION:-5.10.1}
+VERSION=${VERSION:-5.12.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-perl}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -149,7 +149,7 @@ sh Configure -des \
 	-Dman3dir=/usr/man/man3 \
 	-Dpager="/usr/bin/less -isR" \
 	-Dlibpth="/usr/local/lib${LIBDIRSUFFIX} /usr/lib${LIBDIRSUFFIX} /lib${LIBDIRSUFFIX}" \
-	-Dinc_version_list='5.10.0 5.8.8 5.8.7 5.8.6 5.8.5 5.8.4 5.8.3 5.8.2 5.8.1 5.8.0' \
+	-Dinc_version_list='5.10.1 5.10.0 5.8.8 5.8.7 5.8.6 5.8.5 5.8.4 5.8.3 5.8.2 5.8.1 5.8.0' \
 	-Doptimize="$SLKCFLAGS" \
 	-Dcccdlflags='-fPIC' \
 	-Dcc="gcc ${BUILD64}" \
@@ -216,8 +216,9 @@ config() {
 	fi
 }
 
-config usr/lib/perl5/5.10.1/x86_64-linux-thread-multi/perllocal.pod.new 2> /dev/null
-config usr/lib64/perl5/5.10.1/x86_64-linux-thread-multi/perllocal.pod.new 2> /dev/null
+PERLVERSION="$(perl --version | grep "This is perl" | cut -d' ' -f4 | tr -d 'v')"
+config usr/lib/perl5/$PERLVERSION/x86_64-linux-thread-multi/perllocal.pod.new 2> /dev/null
+config usr/lib64/perl5/$PERLVERSION/x86_64-linux-thread-multi/perllocal.pod.new 2> /dev/null
 
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
