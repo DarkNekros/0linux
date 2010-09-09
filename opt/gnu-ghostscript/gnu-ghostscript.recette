@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-gnu-ghostscript}
-VERSION=${VERSION:-8.71.0}
+VERSION=${VERSION:-8.71.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gnu-ghostscript}
 BUILD=${BUILD:-1}
