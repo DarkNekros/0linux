@@ -24,7 +24,6 @@ faad2
 mpd
 flash-player
 win32codecs
-epdfview
 webcore-fonts
 
 
