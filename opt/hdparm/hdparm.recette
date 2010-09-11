@@ -44,7 +44,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}
+mkdir -p ${PKG}/usr/man/man8
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -72,12 +72,20 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS+="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-mandir=/usr/man make
+make
 
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On déplace le manuel où il faut :
+mv ${PKG}/usr/share/man/man8/hdparm.8 ${PKG}/usr/man/man8
+rm -rf ${PKG}/usr/share
+
+# On copie les 2 binaires contribués :
+cp -a contrib/{idectl,ultrabayd} ${PKG}/sbin
+chmod 755 ${PKG}/sbin/*
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
