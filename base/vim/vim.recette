@@ -1,6 +1,5 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
-# Dépendances : python.
 
 set -e
 umask 022
@@ -10,7 +9,7 @@ NAMESRC=${NAMESRC:-vim}
 VERSION=${VERSION:-7.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-vim}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -78,6 +77,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--mandir=/usr/man \

@@ -216,7 +216,7 @@ fi
 EOF
 
 # On installe le doinst.sh des sources :
-cat > ${PKGSOURCES}/install/doinst.sh << EOF
+cat > ${PKGSOURCE}/install/doinst.sh << EOF
 #!/bin/env bash
 chroot . make -C /usr/src/linux-${VERSION} clean oldconfig prepare
 rm -f usr/src/linux-${VERSION}/.version
