@@ -1,20 +1,20 @@
 #!/bin/env bash
-while [ "`cat ${SETUPROOT}/etc/shadow | grep 'root:' | cut -f 2 -d :`" = "" ]; do
-	# Si aucun mot de passe root n'est défini :
-	definerootpassword
+# Si aucun mot de passe root n'est défini :
+if [ "`cat ${SETUPROOT}/etc/shadow | grep 'root:' | cut -f 2 -d :`" = "" ]; then
+	clear
+	echo -e "\033[1;32mAucun mot de passe n'est défini pour « root »\033[0;0m"
+	echo ""
+	echo "Il n'y a actuellement aucun mot de passe défini pour le compte"
+	echo "de l'administrateur « root ». Il vous faut en définir un"
+	echo "maintenant afin qu'il soit actif dès le premier démarrage"
+	echo "de la machine."
+	echo ""
+	echo -n "Appuyez sur ENTRÉE pour continuer."
+	read ENTERPASSWD;
 	
-	# Si l'utilisateur veut définir un mot de passe pour root :
-	if [ $? = 0 ] ; then
-		# On passe en terminal :
-		clear
-		chroot ${SETUPROOT} /usr/bin/passwd root
-		pressentertocontinue
-		
-		read poop;
-	# Si l'utilisateur ne veut pas de mot de passe root (ha ha !) :
-	else
-		break;
-	fi
-done
+	# On passe en terminal :
+	clear
+	chroot ${SETUPROOT} /usr/bin/passwd root
+fi
 
 # C'est fini !
