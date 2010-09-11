@@ -1,0 +1,251 @@
+--- a/spkcpio	2010-09-11 18:25:55.796025511 +0200
++++ b/spkcpio	2010-09-11 18:51:48.900169163 +0200
+@@ -27,11 +27,11 @@
+ deadwarn () {
+     # Warn about broken symlinks
+     # $f CURRENT WORKING DIRECTORY
+-    echo "Checking the package for dead symbolic links..."
++    echo "Vérification des liens symboliques cassés..."
+     find * -type l -exec stat -c "%N" {} + | symresolv "$1"| while read ln; do
+         target="$(echo "$ln" | cut -f 2)"
+         [ -e "$target"  ] && continue
+-        growl 0 "The \"$(echo "$ln" | cut -f 1)\" symbolic link is broken."
++        growl 0 "Le lien \"$(echo "$ln" | cut -f 1)\" est cassé."
+     done
+ }
+ 
+@@ -39,14 +39,14 @@
+     # Warn about empty files
+     # $f
+     local type="-type f -size"
+-    echo "Checking the package for empty files..."
++    echo "Vérification des fichiers vides..."
+     # True empty files...
+-    find * $type 0c | awk '{print "(W) The \""$0"\" regular file is empty."}' >&2
++    find * $type 0c | awk '{print "(W) Le fichier \""$0"\" est vide."}' >&2
+     # Compressed empty files (check integrity first)...
+     find * $type +0c -name '*.gz' -exec gzip -t  {} + 2>&1 \
+-           | awk -F: '/./{gsub(/^ |$/,"\"",$2); print "(W) The "$2" gzipped file is corrupted."}' >&2
++           | awk -F: '/./{gsub(/^ |$/,"\"",$2); print "(W) Le fichier compressé "$2" est vide."}' >&2
+     find * $type +0c -name '*.gz' -exec gzip -l -q {} + 2>/dev/null \
+-           | awk '($2 == 0){print "(W) The \""$4".gz\" gzipped file is empty."}' >&2
++           | awk '($2 == 0){print "(W) Le fichier compressé \""$4".gz\" est vide."}' >&2
+ }
+ 
+ explode () {
+@@ -55,11 +55,11 @@
+     local fmt=$(echo "$2" | sed 's/.*\.t\([gx]\)z$/\1/;/^[gx]$/!d;s/g/z/') 
+     local file="$(cd "$(dirname "$2")"; pwd -P)/$(basename "$2")"
+     local tmp="$1/$(basename "$2" | sed 's/t[gx]z$/tmpXXXXXX/')"
+-    [ "$fmt" -a -f "$file" ] || growl 1 "The \"$file\" does not exist or is not a Slackware(R) package."
+-    tmp="$(mktemp -d "$tmp" 2>/dev/null)" || growl 1 "Can't create a secure temporary directory."
++    [ "$fmt" -a -f "$file" ] || growl 1 "\"$file\" n'existe pas ou n'est pas un paquet Slackware(R)."
++    tmp="$(mktemp -d "$tmp" 2>/dev/null)" || growl 1 "Impossible de créer un répertoire temporaire."
+     ( cd "$tmp" || exit 1
+       tar xf$fmt "$file" --same-permissions --same-owner
+-    ) || growl 1 "Extraction failed."
++    ) || growl 1 "Échec de l'extraction."
+     echo "$tmp"
+ }
+ 
+@@ -96,20 +96,20 @@
+     # Manage the installation-related files.
+     # $f SANCTUARY
+     local tmp="$1"
+-    echo "Looking for installation files..."
++    echo "Recherche des fichiers d'installation..."
+     if [ -s ./about.txt ]; then
+-        echo '    found "about.txt".' # native fashion
++        echo '    "about.txt" a été trouvé.' # native fashion
+     elif [ -s ./install/slack-desc ]; then
+-        echo '    found "install/slack-desc", move it as "about.txt".' # Slackware compatibility.
++        echo '    "install/slack-desc" a été trouvé, renommage en "about.txt".' # Slackware compatibility.
+         mv ./install/slack-desc ./about.txt
+     else
+-        growl 0 "No description for this package."
++        growl 0 "Aucune description dans ce paquet."
+         touch ./about.txt # create it to avoid errors in makefiles()
+     fi
+     if [ -s ./post-install.sh ]; then
+-        echo '    found "post-install.sh".' # native fashion
++        echo '    "post-install.sh" a été trouvé.' # native fashion
+     elif [ -s ./install/doinst.sh ]; then
+-        echo '    found "install/doinst.sh", move it as "post-install.sh".' # Slackware compatibility.
++        echo '    "install/doinst.sh" a été trouvé, renommage en "post-install.sh".' # Slackware compatibility.
+         mv ./install/doinst.sh ./post-install.sh
+     fi
+     rm -rf ./install/ # from now on useless.
+@@ -124,18 +124,14 @@
+     find * -type d -exec stat --printf="%n\t%U\t%G\t%a\n" {} + | makeseed > "$tmp/pre-install.sh"
+     # We archive and compress the files
+     ext=$(basename "$compress" | cut -c -2)
+-    echo "================================================================================"
+-    echo "Making the \"files.$ext\" sub-archive..."
+-    echo "================================================================================"
++    echo "Création de la sous-archive \"files.$ext\"..."
+     getfiles | cpio --quiet -o -v -H crc 2>&3 | $compress > "$tmp/files.$ext"
+     install -m 0644 ./about.txt "$tmp"
+     # We create the final package...
+-    echo "================================================================================"
+-    echo "Making the \"$target\" final archive..." 
+-    echo "================================================================================"
++    echo "Création de l'archive finale \"$target\"..." 
+     ( cd $tmp &&  ls -1 | cpio --quiet -o -v -H newc 2>&3 >"$target" ) || exit 1 # CRC useless here...
+     echo ""
+-    echo "Removing the temporary stuff..."
++    echo "Suppression des fichiers temporaires..."
+     rm -rf "$tmp"
+ }
+ 
+@@ -177,16 +173,16 @@
+ symrecord () {
+     # Remove the symlinks to restitue them during the post-installation.
+     # $f PREPEND/APPEND MODE, SANCTUARY
+-    local mode="$1" tmp="$2" target="post-install.sh" add="Appending"
++    local mode="$1" tmp="$2" target="post-install.sh" add="Ajout"
+     exec 4>"$tmp/$target"
+     if [ "$mode" -ne 0 ]; then 
+-        add="Prepending"
++        add="Ajout"
+     elif [ -f "./$target" ]; then
+         cat "./$target" >&4
+     fi
+-    echo "$add the symbolic links in the post-installation script..."
++    echo "$add des liens symboliques au script de post-installation..."
+     find * -type l | while read from; do
+-        echo "    store $from" 
++        echo "    Ajout de $from" 
+         dir=$(dirname "$from"); to=$(readlink "$from"); from=$(basename "$from")
+         echo "( cd "$dir" ; rm -rf "$from" )" >&4
+         echo "( cd "$dir" ; ln -sf "$to" "$from" )" >&4
+@@ -203,38 +199,37 @@
+     local out=1 code="$1"
+     [ $code -eq 0 ] || out=2
+     cat >&$out << HELP
+-spkcpio - make a Slackware(R) compatible CPIO-based package.
++spkcpio - crée un paquet basé sur CPIO compatible Slackware(R).
+ 
+-    Spkcpio makes packages in the Slackware(R) fashion but use CPIO instead of
+-    the antediluvian TAR-1.13 to do it.
++    Spkcpio crée des paquets à la mode Slackware(R) en utilisant CPIO au lieu
++    de l'obsolète TAR-1.13.
+ 
+-    Usage: spkcpio <directory|T[GX]Z Slackware(R) package> [output] [options]
++    Utilisation : spkcpio <répertoire|paquet Slackware(R) T[GX]Z> [sortie] [options]
+ 
+-    Options:
++    Options :
+ 
+-        -c, --clean-up          ---     remove the directory once it's packaged.
+-        -h, --help              ---     print this help on stdout then exit.
+-        -p, --prepend-symlinks  ---     prepend symlinks restitution code part
+-                                        to the "post-install.sh" script instead
+-                                        of append it.
+-        -q, --quiet             ---     mute the messages sent to stdout.
+-        -r, --reset-permissions ---     set the directories to mode to "0755"
+-                                        and attribute the tree to the superuser
+-                                        before packaging.
+-        -z, --gzip              ---     use "gzip" to compress the files instead
+-                                        of "xz". This is the default when "xz"
+-                                        is not found on the system.
+-
+-    Environment:
+-
+-        TMPDIR                  ---     define another directory instead of
+-                                        "/tmp", where intermediate steps of the
+-                                        packaging process will be performed.
+-
+-
+-    Bug reports, suggestions, feedbacks, questions, and so on, should be sent to
+-    Seb (author/maintainer, the license -- MIT/X11 -- is at the head of the
+-    script) here: <sbb at tuxfamily dot org>.
++        -c, --clean-up          ---     supprime le répertoire concerné après
++                                        son empaquetage.
++        -h, --help              ---     affiche cette aide et quitte.
++        -p, --prepend-symlinks  ---     ajoute la création des liens symboliques
++                                        d'abord au script "post-install.sh".
++        -q, --quiet             ---     comportement moins verbeux.
++        -r, --reset-permissions ---     fixe les permissions des répertoires à
++                                        "0755" et leur appartenance à root.
++        -z, --gzip              ---     utilise "gzip" pour compresser les fichiers
++                                        au lieu de "xz". Par défaut lorsque "xz"
++                                        est introuvable sur le système.
++
++    Environnement :
++
++        TMPDIR                  ---     définit un autre répertoire temporaire au
++                                        lieu de "/tmp" pour les traitements lors
++                                        de l'empaquetage.
++
++
++    Rapports de bogues, suggestions, retours, questions, etc. sont à adresser
++    à Seb (auteur/mainteneur, la licence d'utilisation - MIT/X11 - figure au
++    début du script) ici : <sbb CHEZ tuxfamily POINT org>.
+ 
+ HELP
+     exit $code
+@@ -246,7 +241,7 @@
+     local cmd="${1:-"xz"}"
+     cmd=$(which "$cmd" 2>/dev/null) || cmd="$(which "gzip" 2>/dev/null | sed 's/zip$/zip -9/')"
+     #        "-9" has no effect on xz and seems to (slightly) slow things ^^^^^^^^^^
+-    [ "$cmd" ] || growl 1 "Can't find gzip in your PATH."
++    [ "$cmd" ] || growl 1 "gzip est introuvable dans votre PATH."
+     echo "$cmd -c"
+ }
+ 
+@@ -269,20 +264,20 @@
+         -q|--quiet) exec 3>"/dev/null" ;;
+         -r|--reset-permissions) reset=1 ;;
+         -z|--gzip) zip="gzip" ;;
+-        -*) growl 1 "\"$arg\": illegal option.";;
++        -*) growl 1 "\"$arg\": option invalide.";;
+         *)  if [ ! "$source" ]; then
+                 if [ ! -d "$arg" ]; then
+-                    echo "The source is not a directory, trying to convert a Slackware(R) package..." >&3
++                    echo "La source n'est pas un répertoire, tentative de conversion de paquet Slackware(R)..." >&3
+                     source="$(explode "$tmpdir" "$arg")" || exit 1
+                 else
+-                    source="$(cd "$arg" && pwd -P)" || growl 1 "Can't enter the \"$arg\" directory."
++                    source="$(cd "$arg" && pwd -P)" || growl 1 "Impossible d'entrer dans le répertoire \"$arg\"."
+                 fi
+             else
+-                [ ! "$target" ] || growl 1 "Too many arguments."
++                [ ! "$target" ] || growl 1 "Arguments trop nombreux."
+                 target="$arg"
+-                arg="$(cd $(dirname "$arg") && pwd -P)" || growl 1 "No path to \"$target\"."
++                arg="$(cd $(dirname "$arg") && pwd -P)" || growl 1 "Aucun chemin vers \"$target\"."
+                 if awk 'BEGIN{exit (index("'"$arg"'/","'"$source"'/") == 1) ? 0 : 1}'; then
+-                    growl 1 "Can't generate the package into its source directory."
++                    growl 1 "Impossible de générer le paquet dans le répertoire source."
+                 fi
+                 target="$arg/$(basename "$target" .cpio).cpio"
+             fi
+@@ -290,14 +285,14 @@
+ done
+ [ "$source" ] || usage 1
+ [ "$target" ] || target="$(echo "$source" | sed 's/\(\.tmp......\)\?$/.cpio/')"
+-echo "Generating the \"$target\" package..." >&3
+-rm -fr "$target" || growl 1 "\"$target\" already exists and can't be removed."
+-tmpdir=$(mktemp -d "$tmpdir/pkg-$$-XXXXXX" 2>/dev/null) || growl 1 "Can't create a secure temporary directory."
++echo "Création du paquet \"$target\"..." >&3
++rm -fr "$target" || growl 1 "\"$target\" existe déjà et ne peut être supprimé."
++tmpdir=$(mktemp -d "$tmpdir/pkg-$$-XXXXXX" 2>/dev/null) || growl 1 "Impossible de créer un répertoire temporaire."
+ cd "$source" || exit 1
+ if [ $reset -ne 0 ]; then
+-    echo "Forcing general root ownership..." >&3
++    echo "Appartenance des fichiers forcée à root..." >&3
+     chown 0:0 -R .
+-    echo "Forcing directory mode to 755 (rwx-r-x-r-x)..." >&3
++    echo "Permissions des répertoires forcées à 755 (rwx-r-x-r-x)..." >&3
+     # NOTE: POSIX minima allows 4096 arguments, but Linux generally goes over 100000.
+     # Both cases seem to be enough to make some optimizations with "find".
+     find . -type d -exec chmod 0755 {} +
+@@ -308,7 +303,7 @@
+ symrecord "$prepend" "$tmpdir"  >&3
+ makefiles "$zip" "$target" "$tmpdir" >&3
+ if [ $clean -ne 0 ]; then
+-    echo "Removing the \"$source\" source directory..." >&3
++    echo "Suppression du répertoire source \"$source\"..." >&3
+     rm -rf "$source"
+ fi
+ 
