@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-procps}
 VERSION=${VERSION:-3.2.8}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-procps}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -96,6 +95,10 @@ make m64=""
 fakeroot make install lib64=lib64 man1=${PKG}/usr/man/man1/ \
 man5=${PKG}/usr/man/man5/ man8=${PKG}/usr/man/man8/ ldconfig="" DESTDIR=${PKG}
 
+# On copie 'sysctl.conf' et on veille à ne rien écraser :
+mkdir -p ${PKG}/etc
+cp -a $CWD/sysctl.conf ${PKG}/etc/sysctl.conf.new
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -148,7 +151,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
