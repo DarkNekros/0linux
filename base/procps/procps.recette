@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-procps}
 VERSION=${VERSION:-3.2.8}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-procps}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -131,6 +131,19 @@ cat > ${PKG}/install/doinst.sh << "EOF"
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
+
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
+
+config etc/sysctl.conf.new
 
 EOF
 
