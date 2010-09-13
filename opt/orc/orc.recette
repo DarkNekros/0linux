@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://code.entropywave.com/download/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+DOC="COPYING README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Compilateur et outils pour Oil"
 ########################################
