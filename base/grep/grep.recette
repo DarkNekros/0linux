@@ -7,7 +7,7 @@ CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-grep}
 VERSION=${VERSION:-2.6.3}
-EXT=${EXT:-tar.bz2}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-grep}
 BUILD=${BUILD:-1}
 
