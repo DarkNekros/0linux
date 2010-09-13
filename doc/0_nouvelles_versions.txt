@@ -2,7 +2,6 @@ autoconf-2.67
 freetype 2.4.2
 gcc 4.5.1
 grep-2.6.3
-gstreamer 0.10.30
 (iproute2 2.6.35)
 linux 2.6.35.4
 m4 1.4.15
