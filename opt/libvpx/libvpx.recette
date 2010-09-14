@@ -72,16 +72,13 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-debug-libs \
-    --disable-debug \
-    --enable-postproc \
-    --enable-vp8 \
-    --enable-shared \
-    --build=${TARGET32}
-
+	--disable-debug \
+	--enable-postproc \
+	--enable-vp8 \
+	--enable-shared \
+	--build=${TARGET32}
 
 make
 fakeroot make install DESTDIR=${PKG}
@@ -114,15 +111,13 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-debug-libs \
-    --disable-debug \
-    --enable-postproc \
-    --enable-vp8 \
-    --enable-shared \
-    --enable-pic \
+	--disable-debug \
+	--enable-postproc \
+	--enable-vp8 \
+	--enable-shared \
+	--enable-pic \
 	--build=${TARGET64}
 
 make
