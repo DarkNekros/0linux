@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://webm.googlecode.com/files/${NAMESRC}-v${VERSION}.$EXT}
-DOC="AUTHORS CHANGELOG LICENSE PATENTS README build-tmp/docs/html"
+DOC="AUTHORS CHANGELOG LICENSE PATENTS README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Le codec vidéo libre VP8/WebM"
 ########################################
