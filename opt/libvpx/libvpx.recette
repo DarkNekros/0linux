@@ -76,7 +76,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--disable-debug \
 	--enable-postproc \
 	--enable-vp8 \
-	--enable-shared
+	--enable-shared \
+	--target=x86-linux-gcc
 
 make
 fakeroot make install DESTDIR=${PKG}
@@ -114,7 +115,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-postproc \
 	--enable-vp8 \
 	--enable-shared \
-	--enable-pic
+	--enable-pic \
+	--target=x86_64-linux-gcc
 
 make
 fakeroot make install DESTDIR=${PKG}
