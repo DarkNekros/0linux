@@ -72,7 +72,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-debug-libs \
 	--disable-debug \
 	--enable-postproc \
@@ -111,7 +110,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-debug-libs \
 	--disable-debug \
 	--enable-postproc \
