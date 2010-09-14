@@ -141,8 +141,6 @@ fi
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-mv ${PKG}/usr/share/doc/libXrender/libXrender.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-rm -rf ${PKG}/usr/share
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
