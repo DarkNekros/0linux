@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-xorg-server}
-VERSION=${VERSION:-1.8.2}
+VERSION=${VERSION:-1.9.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -100,7 +100,7 @@ unset USE_ARCH
 # On place les fichiers de configuration en veillant à ne rien écraser :
 mkdir -p ${PKG}/etc/X11/xorg.conf.d
 
-for fichierconfig in evdev graphique synaptics; do
+for fichierconfig in accelerometre evdev graphique synaptics; do
 	cp -a $CWD/${fichierconfig}.conf ${PKG}/etc/X11/xorg.conf.d/${fichierconfig}.conf.new
 done
 
@@ -145,6 +145,7 @@ config() {
 	fi
 }
 
+config etc/X11/xorg.conf.d/accelerometre.conf.new
 config etc/X11/xorg.conf.d/evdev.conf.new
 config etc/X11/xorg.conf.d/graphique.conf.new
 config etc/X11/xorg.conf.d/synaptics.conf.new
