@@ -126,9 +126,9 @@ cd $TMP/${NAME}
 unset USE_ARCH
 
 # On corrige les bibliothèques (permissions, .so manquante) :
-chmod 755 ${PKG}/usr/lib{,64}/libxvidcore.?.?
-ln -sf libxvidcore.4 ${PKG}/usr/lib/libxvidcore.so
-ln -sf libxvidcore.4 ${PKG}/usr/lib64/libxvidcore.so
+chmod 755 ${PKG}/usr/lib{,64}/libxvidcore.so.?.?
+ln -sf libxvidcore.so.4 ${PKG}/usr/lib/libxvidcore.so
+ln -sf libxvidcore.so.4 ${PKG}/usr/lib64/libxvidcore.so
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
