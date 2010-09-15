@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.splitted-desktop.com/~gbeauchesne/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+DOC="AUTHORS COPYING NEWS README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Interfaçage VDPAU pour l'accélération vidéo"
 ########################################
