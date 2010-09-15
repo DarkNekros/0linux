@@ -60,7 +60,9 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige une fonction empêchant la détection des extensions GLX :
-cat $CWD/vdpau-video.vadriver-init.patch | patch -p1
+cat $CWD/vdpau-video.vadriver-init.patch | patch -p0
+
+autoreconf -if
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
@@ -102,7 +104,9 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige une fonction empêchant la détection des extensions GLX :
-cat $CWD/vdpau-video.vadriver-init.patch | patch -p1
+cat $CWD/vdpau-video.vadriver-init.patch | patch -p0
+
+autoreconf -if
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
