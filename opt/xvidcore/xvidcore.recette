@@ -5,7 +5,7 @@ set -e
 umask 022
 CWD=$(pwd)
 
-NAMESRC=${NAMESRC:-xvicore}
+NAMESRC=${NAMESRC:-xvidcore}
 VERSION=${VERSION:-1.2.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xvidcore}
