@@ -81,7 +81,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make
 fakeroot make install DESTDIR=${PKG}
 
-cd -
+cd $TMP/${NAME}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -120,7 +120,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make
 fakeroot make install DESTDIR=${PKG}
 
-cd -
+cd $TMP/${NAME}
+
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
