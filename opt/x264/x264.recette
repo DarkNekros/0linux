@@ -63,7 +63,7 @@ find . \
 export USE_ARCH=32
 
 # Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
+SLKCFLAGS="-march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
@@ -105,7 +105,7 @@ find . \
 export USE_ARCH=64
 
 # Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe"
+SLKCFLAGS="-fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
