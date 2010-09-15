@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-xvidcore}
 VERSION=${VERSION:-1.2.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xvidcore}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -124,6 +124,11 @@ cd $TMP/${NAME}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On corrige les bibliothèques (permissions, .so manquante) :
+chmod 755 ${PKG}/usr/lib{,64}/libxvidcore.?.?
+ln -sf libxvidcore.4 ${PKG}/usr/lib/libxvidcore.so
+ln -sf libxvidcore.4 ${PKG}/usr/lib64/libxvidcore.so
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
