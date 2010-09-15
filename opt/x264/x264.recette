@@ -81,7 +81,10 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET32}
 
 make
-fakeroot make install DESTDIR=${PKG}
+fakeroot make install bindir=/usr/bin \
+	libdir=/usr/lib${LIBDIRSUFFIX} \
+	includedir=/usr/include \
+	DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -120,7 +123,10 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64}
 
 make
-fakeroot make install DESTDIR=${PKG}
+fakeroot make install bindir=/usr/bin \
+	libdir=/usr/lib${LIBDIRSUFFIX} \
+	includedir=/usr/include \
+	DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -165,14 +171,6 @@ config() {
 		mv $NEW $OLD
 	fi
 }
-
-if [ -x usr/bin/update-desktop-database ]; then
-	chroot . /usr/bin/update-desktop-database &> /dev/null
-fi
-
-if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
-fi
 
 EOF
 
