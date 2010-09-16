@@ -73,7 +73,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--prefix=/usr \
 	--{,sh}libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-gpl \
 	--enable-libfaac \
 	--enable-libfaad  \
@@ -132,7 +131,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--prefix=/usr \
 	--{,sh}libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-gpl \
 	--enable-libfaac \
 	--enable-libfaad  \
