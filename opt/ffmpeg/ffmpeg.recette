@@ -94,6 +94,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-version3 \
 	--enable-x11grab \
 	--disable-debug \
+	--enable-cross-compile \
 	--host-cc=${TARGET32}-gcc \
 	--extra-cflags="-m32 ${SLKCFLAGS}"
 	--extra-ldflags="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}"
