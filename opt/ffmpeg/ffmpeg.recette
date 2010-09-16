@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ffmpeg.org/releases/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS Changelog COPYING* CREDITS INSTALL LICENSE MAINTAINERS README* doc/*.txt"
+DOC="Changelog COPYING* CREDITS INSTALL LICENSE MAINTAINERS README* doc/*.txt"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Solution de traitement de flux audio et vidéo"
 ########################################
