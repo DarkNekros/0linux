@@ -95,8 +95,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-x11grab \
 	--disable-debug \
 	--host-cc=${TARGET32}-gcc \
-	--host-cflags=" -m32 ${SLKCFLAGS}" \
-	--host-ldflags="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}"
+	--extra-cflags="-m32 ${SLKCFLAGS}"
+	--extra-ldflags="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}"
 
 make
 fakeroot make install DESTDIR=${PKG}
