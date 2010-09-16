@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-lame}
 VERSION=${VERSION:-3.98.4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-lame}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -79,6 +79,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-mp3rtp \
+	--enable-shared \
 	--build=${TARGET32}
 
 make
@@ -118,6 +119,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-mp3rtp \
+	--enable-shared \
 	--build=${TARGET64}
 
 make
