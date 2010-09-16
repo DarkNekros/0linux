@@ -73,6 +73,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--prefix=/usr \
 	--{,sh}libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
+	--arch=i686 \
 	--enable-gpl \
 	--enable-libfaac \
 	--enable-libmp3lame \
@@ -152,7 +153,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 
 make
 make tools/qt-faststart
-make doc/ff{mpeg,play,server}.1
 fakeroot make install install-man DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
