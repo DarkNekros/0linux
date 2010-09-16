@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-3.6.9}
+VERSION=${VERSION:-3.6.10}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
 BUILD=${BUILD:-1}
@@ -156,9 +156,7 @@ fi
 
 # On n'oublie pas de copier les icônes :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
-cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons
-cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
-cp ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons/*.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
+cp -a other-licenses/branding/${NAMESRC}/default48.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons
 
 # On installe les fichiers de localisation française :
 bsdtar xf $CWD/fr.xpi
@@ -276,9 +274,7 @@ fi
 
 # On n'oublie pas de copier les icônes :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
-cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons
-cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
-cp ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons/*.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
+cp -a other-licenses/branding/${NAMESRC}/default48.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons
 
 # On installe les fichiers de localisation française :
 bsdtar xf $CWD/fr.xpi
