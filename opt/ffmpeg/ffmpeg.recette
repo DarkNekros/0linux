@@ -93,7 +93,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-shared \
 	--enable-version3 \
 	--enable-x11grab \
-	--disable-debug
+	--disable-debug \
+	--extra-cflags=${BUILD32} \
+	--extra-ldflags="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}"
 
 make
 fakeroot make install DESTDIR=${PKG}
@@ -149,7 +151,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-shared \
 	--enable-version3 \
 	--enable-x11grab \
-	--disable-debug
+	--disable-debug \
+	--extra-cflags=${BUILD64} \
+	--extra-ldflags="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}"
 
 make
 make tools/qt-faststart
