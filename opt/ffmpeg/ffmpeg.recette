@@ -94,9 +94,11 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-version3 \
 	--enable-x11grab \
 	--disable-debug \
-	--host-cc=${TARGET32}-gcc \
-	--host-cflags="-m32 ${SLKCFLAGS}" \
-	--extra-cflags="-m32 ${SLKCFLAGS}"
+	--ar=${TARGET32}-ar \
+	--as=${TARGET32}-as \
+	--cc=${TARGET32}-gcc \
+	--ld=${TARGET32}-ld \
+	--extra-cflags="${BUILD32} ${SLKCFLAGS}" \
 	--extra-ldflags="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}"
 
 make
@@ -154,7 +156,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-version3 \
 	--enable-x11grab \
 	--disable-debug \
-	--extra-cflags=${BUILD64} \
+	--extra-cflags="${BUILD64} ${SLKCFLAGS}" \
 	--extra-ldflags="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}"
 
 make
