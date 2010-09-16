@@ -170,7 +170,7 @@ install -m 0755 tools/qt-faststart ${PKG}/usr/bin/qt-faststart
 mv ${PKG}/usr/bin/ffmpeg{,-64}
 
 # On lie un faux binaire au programme enveloppe :
-ln -sf multiarch_wrapper ${pkg}/usr/bin/ffmpeg
+ln -sf multiarch_wrapper ${PKG}/usr/bin/ffmpeg
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
