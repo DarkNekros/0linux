@@ -75,7 +75,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--enable-gpl \
 	--enable-libfaac \
-	--enable-libfaad  \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
@@ -133,7 +132,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--enable-gpl \
 	--enable-libfaac \
-	--enable-libfaad  \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
