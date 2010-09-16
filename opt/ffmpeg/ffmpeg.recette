@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-ffmpeg}
-VERSION=${VERSION:-16092010}
+VERSION=${VERSION:-0.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ffmpeg}
 BUILD=${BUILD:-1}
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://ffmpeg.org/releases/$NAMESRC-export-snapshot.$EXT}
+WGET=${WGET:-http://ffmpeg.org/releases/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS Changelog COPYING* CREDITS INSTALL LICENSE MAINTAINERS README* doc/*.txt"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Solution de traitement de flux audio et vidéo"
@@ -76,6 +76,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--arch=i686 \
 	--enable-gpl \
 	--enable-libfaac \
+	--enable-libfaad \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
@@ -134,6 +135,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--enable-gpl \
 	--enable-libfaac \
+	--enable-libfaad \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
