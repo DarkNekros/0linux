@@ -79,7 +79,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
-sed -i "s@prefix = /usr@prefix = ${PKG}/usr@'"
+sed -i "s@prefix = /usr@prefix = ${PKG}/usr@" Makefile
 make
 fakeroot make install
 
@@ -118,7 +118,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-sed -i "s@prefix = /usr@prefix = ${PKG}/usr@'"
+sed -i "s@prefix = /usr@prefix = ${PKG}/usr@"  Makefile
 make
 fakeroot make install
 
