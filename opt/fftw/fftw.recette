@@ -22,8 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://ftp.fftw.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYRIGHT CONVENTIONS INSTALL NEWS README* TODO \
-	doc/fftw3.pdf doc/html"
+DOC="AUTHORS ChangeLog COPYRIGHT CONVENTIONS INSTALL NEWS README* TODO doc/html"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèque scientifique C de calcul scalaire"
 ########################################
