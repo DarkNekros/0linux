@@ -210,7 +210,7 @@ fi
 
 config etc/timidity/eawpats.cfg.new
 config etc/timidity.cfg.new
-config etc/rc.d/rc.timidity.new
+config etc/rc.d/rc.timidity++.new
 
 EOF
 
