@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://librdf.org/dist/source/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+DOC="AUTHORS ChangeLog* COPYING* INSTALL* LICENSE* NEWS* NOTICE README* RELEASE*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques d'analyse XML/RDF"
 ########################################
