@@ -46,7 +46,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On télécharge les « patches » MIDI 'eawpats' :
 if [ ! -r eawpats12_full.tar.gz ]; then
-	wget -vc $WGET -O eawpats12_full.tar.gz.part
+	wget -vc $WGETEAWPATS -O eawpats12_full.tar.gz.part
 	mv eawpats12_full.tar.gz.part eawpats12_full.tar.gz
 fi
 
