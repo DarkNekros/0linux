@@ -5,7 +5,7 @@ set -e
 umask 022
 CWD=$(pwd)
 
-NAMESRC=${NAMESRC:-lilrdf}
+NAMESRC=${NAMESRC:-liblrdf}
 VERSION=${VERSION:-0.4.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-liblrdf}
