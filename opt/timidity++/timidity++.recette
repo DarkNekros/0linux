@@ -115,7 +115,7 @@ unset USE_ARCH
 
 # On place le fichier service en veillant à ne rien écraser :
 mkdir -p ${PKG}/etc/rc.d
-cp -a rc.timidy++ ${PKG}/etc/rc.d/rc.timidity++.new
+cp -a $CWD/rc.timidy++ ${PKG}/etc/rc.d/rc.timidity++.new
 chmod 755 ${PKG}/etc/rc.d/rc.timidity++.new
 
 # On crée le fichier de ocnfiguration et on veille à n'écraser

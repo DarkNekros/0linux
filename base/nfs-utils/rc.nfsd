@@ -4,7 +4,7 @@
 #
 
 nfsd_start() {
-	if [ ! -r /etc/exports ]; then # no config file, exit:
+	if [ ! -r /etc/exports ]; then 
 		exit
 	fi
 	
