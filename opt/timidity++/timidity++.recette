@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/timidity/$NAMESRC-$VERSION.$EXT}
 WGETEAWPATS=${WGETEAWPATS:-http://www.george.ca/interests/eawpats12_full.tar.gz}
 DOC="AUTHORS COPYING ChangeLog* INSTALL* NEWS README* TODO doc/C/README* \
 	doc/C/FAQ doc/C/CHANGES.02i"
