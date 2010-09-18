@@ -73,8 +73,16 @@ find . \
 # On décommente l'emplacement de la configuration dans /etc :
 sed -i "s|/\* #define CONFIG_FILE \"/etc/timidity.cfg\" \*/|#define CONFIG_FILE \"/etc/timidity.cfg\"|" timidity/timidity.h
 
+# On corrige d'importants problèmes avec ces correctifs de Debian :
+cat $CWD/timidity++.autoconf.patch | patch -p1
+cat $CWD/timidity++.manpages.patch | patch -p1
+cat $CWD/timidity++.other.patch | patch -p1
+cat $CWD/timidity++.scripts.patch | patch -p1
+
 # On positionne USE_ARCH :
 export USE_ARCH=64
+
+autoreconf -if
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
