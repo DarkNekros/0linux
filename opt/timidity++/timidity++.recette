@@ -153,7 +153,7 @@ mv *.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/eawpats12
 # On copie le reste (les patches, donc) :
 mv * $PKG/usr/share/sounds/eawpats
 
-cd $TMP
+cd $TMP/${NAME}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
