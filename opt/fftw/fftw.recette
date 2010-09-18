@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-fftw}
 VERSION=${VERSION:-3.2.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-fftw}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -70,6 +69,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -80,11 +80,61 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-shared \
 	--enable-threads \
+	--enable-portable-binary \
 	--build=${TARGET32}
 
 make
-make install DESTDIR=${PKG}
-make install-info DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+make clean
+
+# Compilation de 'fftw3f' :
+SLKCFLAGS="-O2 -march=i686 -fPIC -pipe"
+LIBDIRSUFFIX=""
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-shared \
+	--enable-threads \
+	--enable-portable-binary \
+	--enable-float \
+	--build=${TARGET32}
+
+make
+fakeroot make install DESTDIR=${PKG}
+make clean
+
+# Compilation de 'fftw3l' :
+SLKCFLAGS="-O2 -march=i686 -fPIC -pipe"
+LIBDIRSUFFIX=""
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-shared \
+	--enable-threads \
+	--enable-portable-binary \
+	--enable-long-double \
+	--build=${TARGET32}
+
+make
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -110,6 +160,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -120,11 +171,62 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-shared \
 	--enable-threads \
+	--enable-portable-binary \
 	--build=${TARGET64}
 
 make
-make install DESTDIR=${PKG}
-make install-info DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+make clean
+
+# Compilation de 'fftw3f' :
+SLKCFLAGS="-O2 -fPIC -pipe"
+LIBDIRSUFFIX="64"
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-shared \
+	--enable-threads \
+	--enable-portable-binary \
+	--enable-float \
+	--build=${TARGET64}
+
+make
+fakeroot make install DESTDIR=${PKG}
+make clean
+
+# Compilation de 'fftw3l' :
+SLKCFLAGS="-O2 -fPIC -pipe"
+LIBDIRSUFFIX="64"
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-shared \
+	--enable-threads \
+	--enable-portable-binary \
+	--enable-long-double \
+	--build=${TARGET64}
+
+make
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-info DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -159,6 +261,17 @@ if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
 
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
+
 EOF
 
 # On "strippe" tout ce qu'on trouve :
@@ -178,7 +291,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
