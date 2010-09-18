@@ -114,7 +114,7 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On place le fichier service en veillant à ne rien écraser :
-mkdir ${PKG}/etc/rc.d
+mkdir -p ${PKG}/etc/rc.d
 cp -a rc.timidy++ ${PKG}/etc/rc.d/rc.timidity++.new
 chmod 755 ${PKG}/etc/rc.d/rc.timidity++.new
 
