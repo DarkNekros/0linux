@@ -51,7 +51,7 @@ if [ ! -r eawpats12_full.tar.gz ]; then
 fi
 
 # On les vérifie :
-tar ft eawpats12_full.tar.gz 1> /dev/null 2> /dev/null
+tar ft eawpats12_full.tar.gz 1> /dev/null 2> /dev/null || true
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
@@ -62,7 +62,7 @@ NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT || true
 cd ${NAME}
 
 # On vérifie les permissions des sources :
