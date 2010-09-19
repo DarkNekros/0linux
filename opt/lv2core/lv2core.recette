@@ -111,7 +111,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build-docs
 
 ./waf build
-fakeroot ./waf install --destdir=${PKG}make
+fakeroot ./waf install --destdir=${PKG}
 
 #sed -i "s,/lib,/lib$LIBDIRSUFFIX," ${PKG}/usr/lib$LIBDIRSUFFIX/pkgconfig/$PRGNAM.pc
 
