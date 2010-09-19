@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-git}
-VERSION=${VERSION:-1.7.2.3}
+VERSION=${VERSION:-1.7.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-git}
 BUILD=${BUILD:-1}
