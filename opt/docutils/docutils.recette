@@ -6,8 +6,8 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-docutils}
-VERSION=${VERSION:-0.6}
-EXT=${EXT:-tgz}
+VERSION=${VERSION:-0.7}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-docutils}
 BUILD=${BUILD:-1}
 
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://docutils.sourceforge.net/${NAMESRC}-snapshot.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="*.txt docs/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils et convertisseurs de documentation"
@@ -60,6 +60,36 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On positionne USE_ARCH :
+export USE_ARCH=32
+
+# Compilation pour 32 bits :
+SLKCFLAGS="-O2 -march=i686 -pipe"
+LIBDIRSUFFIX=""
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+fakeroot python setup.py install --root=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On met à l'abri tous nos fichiers 32 bits, ou le 64 bits va tout écraser :
+mv ${PKG}/usr/lib{,32}
+
+# On re-déballe et on se re-place dans les sources :
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On re-vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
 export USE_ARCH=64
 
 # Compilation pour 64 bits :
@@ -69,10 +99,15 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-python setup.py install --root=${PKG}
+fakeroot python setup.py install --root=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On place nos fichiers 64 bits où il faut puis on rapatrie nos fichiers 32
+# bits dans /usr/lib :
+mv ${PKG}/usr/lib{,64}
+mv ${PKG}/usr/lib{32,}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
