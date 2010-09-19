@@ -73,8 +73,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
-	--htmldir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${TARGET32}
+	--htmldir=/usr/doc/${NAMETGZ}-${VERSION}
 
 ./waf build
 fakeroot ./waf install --destdir=${PKG}
@@ -109,7 +108,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--htmldir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${TARGET64}
+	--build-docs
 
 ./waf build
 fakeroot ./waf install --destdir=${PKG}make
