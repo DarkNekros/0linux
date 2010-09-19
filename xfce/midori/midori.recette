@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-midori}
-VERSION=${VERSION:-0.2.4}
+VERSION=${VERSION:-0.2.7}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-midori}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -178,6 +178,10 @@ config() {
 
 if [ -x usr/bin/update-desktop-database ]; then
 	chroot . /usr/bin/update-desktop-database &> /dev/null
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+  /usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
 fi
 
 if [ -x usr/bin/gtk-update-icon-cache ]; then
