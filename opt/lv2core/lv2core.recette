@@ -71,7 +71,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./waf configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libdir=/usr/lib${LIBDIRSUFFIX}/ \
 	--mandir=/usr/man \
 	--htmldir=/usr/doc/${NAMETGZ}-${VERSION}
 
@@ -105,7 +105,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./waf configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libdir=/usr/lib${LIBDIRSUFFIX}/ \
 	--mandir=/usr/man \
 	--htmldir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build-docs
