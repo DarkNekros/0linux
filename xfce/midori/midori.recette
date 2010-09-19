@@ -83,6 +83,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-nls \
 	--enable-docs \
 	--enable-userdocs \
+	--disable-vala \
 	--build=${TARGET32}
 
 make
@@ -127,6 +128,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-nls \
 	--enable-docs \
 	--enable-userdocs \
+	--disable-vala \
 	--build=${TARGET64}
 
 make
