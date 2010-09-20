@@ -5,11 +5,11 @@ set -e
 umask 022
 CWD=$(pwd)
 
-NAMESRC=${NAMESRC:-libcdio}
-VERSION=${VERSION:-0.82}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libcdio}
-BUILD=${BUILD:-2}
+NAMESRC=${NAMESRC:-cdparanoia}
+VERSION=${VERSION:-10.2}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-cdparanoia}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -21,15 +21,15 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING README THANKS TODO"
+WGET=${WGET:-http://downloads.xiph.org/releases/$NAMESRC/${NAMESRC}-III-${VERSION}.src.$EXT}
+DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Bibliothèques d'accès aux CD-ROM et images CD"
+SLACKDESC="Outils d'extraction de CD audio"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
-if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then # -1 pour l'UTF-8
-	echo "La description du slack-desc est trop longue (80 caractères max.) !"
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
+	echo "La description est trop longue (80 caractères max.) !"
 	exit 1
 fi
 
@@ -62,8 +62,7 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
-# On force l'installation des fichiers .pc :
-sed -i "s/libudf.pc$/& \$(paranoiapcs)/" Makefile.in
+sed -i 's/$(CC) -fpic/& $(LDFLAGS)/' {interface,paranoia}/Makefile.in
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
@@ -103,8 +102,7 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-# On force l'installation des fichiers .pc :
-sed -i "s/libudf.pc$/& \$(paranoiapcs)/" Makefile.in
+sed -i 's/$(CC) -fpic/& $(LDFLAGS)/' {interface,paranoia}/Makefile.in
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
@@ -128,6 +126,9 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On corrige les permissions de sbibliothèques :
+chmod 0755 ${PKG}/usr/lib{,64}/libcdda_*.so.*
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -158,6 +159,17 @@ cat > ${PKG}/install/doinst.sh << "EOF"
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
+
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
 
 EOF
 
