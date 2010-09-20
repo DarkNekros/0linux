@@ -43,10 +43,8 @@ fi
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On télécharge l'archive de localisation :
-if [ ! -r fr.xpi ]; then
-	wget -vc $WGETFRXPI -O fr.xpi.part
-	mv fr.xpi.part fr.xpi
-fi
+wget -vc $WGETFRXPI -O fr.xpi.part
+mv fr.xpi.part fr.xpi
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
