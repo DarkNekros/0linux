@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-thunderbird}
 VERSION=${VERSION:-3.1.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -320,6 +320,10 @@ config() {
 
 if [ -x usr/bin/update-desktop-database ]; then
 	chroot . /usr/bin/update-desktop-database &> /dev/null
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+  /usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
 fi
 
 if [ -x usr/bin/gtk-update-icon-cache ]; then
