@@ -66,6 +66,7 @@ cat $CWD/cdparanoia.appel-cc.patch | patch -p1
 export USE_ARCH=32
 
 sed -i 's/$(CC) -fpic/& $(LDFLAGS)/' {interface,paranoia}/Makefile.in
+autoreconf -if
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
@@ -108,6 +109,7 @@ cat $CWD/cdparanoia.appel-cc.patch | patch -p1
 export USE_ARCH=64
 
 sed -i 's/$(CC) -fpic/& $(LDFLAGS)/' {interface,paranoia}/Makefile.in
+autoreconf -if
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
