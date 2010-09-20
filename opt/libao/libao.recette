@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://downloads.xiph.org/releases/ao/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS CHANGES COPYING README TODO"
+DOC="AUTHORS CHANGES COPYING README TODO doc/*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques audio"
 ########################################
@@ -122,6 +122,9 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# La doc est incorrectement installée malgré le --docdir... :
+rm -rf ${PKG}/usr/share/doc
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
