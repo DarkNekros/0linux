@@ -91,6 +91,7 @@ make
 # 'make install' à la main ! :
 install -m 0755 {interface,paranoia}/libcdda_*.so.0* ${PKG}/usr/lib${LIBDIRSUFFIX}/
 install -m 0644 {interface,paranoia}/libcdda_*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_*.so.?
 ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so
 ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so.0
 ln -sf libcdda_interface.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_interface.so
@@ -142,6 +143,7 @@ make
 # 'make install' à la main ! :
 install -m 0755 {interface,paranoia}/libcdda_*.so.0* ${PKG}/usr/lib${LIBDIRSUFFIX}/
 install -m 0644 {interface,paranoia}/libcdda_*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_*.so.?
 ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so
 ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so.0
 ln -sf libcdda_interface.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_interface.so
