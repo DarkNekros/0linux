@@ -91,9 +91,10 @@ make
 # 'make install' à la main ! :
 install -m 0755 {interface,paranoia}/libcdda_*.so.0* ${PKG}/usr/lib${LIBDIRSUFFIX}/
 install -m 0644 {interface,paranoia}/libcdda_*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/
-ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so{,.0}
-ln -sf libcdda_interface.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_interface.so{,.0}
-
+ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so
+ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so.0
+ln -sf libcdda_interface.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_interface.so
+ln -sf libcdda_interface.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_interface.so.0
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -141,8 +142,10 @@ make
 # 'make install' à la main ! :
 install -m 0755 {interface,paranoia}/libcdda_*.so.0* ${PKG}/usr/lib${LIBDIRSUFFIX}/
 install -m 0644 {interface,paranoia}/libcdda_*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/
-ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so{,.0}
-ln -sf libcdda_interface.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_interface.so{,.0}
+ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so
+ln -sf libcdda_paranoia.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_paranoia.so.0
+ln -sf libcdda_interface.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_interface.so
+ln -sf libcdda_interface.so.0.10.? ${PKG}/usr/lib${LIBDIRSUFFIX}/libcdda_interface.so.0
 install -m 0755 cdparanoia ${PKG}/usr/bin/
 install -m 0644 cdparanoia.1 ${PKG}/usr/man/man1/
 install -m 0644 utils.h paranoia/cdda_paranoia.h interface/cdda_interface.h ${PKG}/usr/include/cdda/
