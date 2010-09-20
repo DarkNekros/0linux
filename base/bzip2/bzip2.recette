@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-bzip2}
-VERSION=${VERSION:-1.0.5}
+VERSION=${VERSION:-1.0.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-bzip2}
-BUILD=${BUILD:-8}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -19,7 +19,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-http://www.bzip.org//${VERSION}/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.bzip.org/$VERSION/$NAMESRC-$VERSION.$EXT}
 DOC="CHANGES LICENSE README* bzip2.txt manual.*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Compresseur de fichiers par blocs"
@@ -88,7 +88,7 @@ chmod 644 ${PKG}/usr/lib${LIBDIRSUFFIX}/libbz2.a
 
 # On copie la bibliothèque partagée :
 cp -a libbz2.so.* ${PKG}/lib${LIBDIRSUFFIX}/
-chmod 755 ${PKG}/lib${LIBDIRSUFFIX}/libbz2.so.1.0.4
+chmod 755 ${PKG}/lib${LIBDIRSUFFIX}/libbz2.so.*
 
 # On lie la bibliothèque à /usr/lib${LIBDIRSUFFIX} :
 ln -sf libbz2.so.1.0 ${PKG}/lib${LIBDIRSUFFIX}/libbz2.so
