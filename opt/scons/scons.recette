@@ -60,6 +60,33 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On positionne USE_ARCH :
+export USE_ARCH=32
+
+# Compilation pour 32 bits :
+SLKCFLAGS="-O2 -march=i686 -pipe"
+LIBDIRSUFFIX=""
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+fakeroot python ./setup.py install --root=${PKG} --symlink-scons
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On re-déballe et on se re-place dans les sources :
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On re-vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
 export USE_ARCH=64
 
 # Compilation pour 64 bits :
@@ -114,6 +141,18 @@ config() {
 		mv $NEW $OLD
 	fi
 }
+
+if [ -x usr/bin/update-desktop-database ]; then
+	chroot . /usr/bin/update-desktop-database &> /dev/null
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+  /usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -x usr/bin/gtk-update-icon-cache ]; then
+	chroot . /gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
+fi
 
 EOF
 
