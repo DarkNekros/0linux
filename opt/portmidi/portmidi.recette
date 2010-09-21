@@ -49,7 +49,7 @@ NAME=portmidi
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+unzip $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
 
 # On vérifie les permissions des sources :
@@ -96,7 +96,7 @@ unset USE_ARCH
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+unzip $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
 
 # On re-vérifie les permissions des sources :
