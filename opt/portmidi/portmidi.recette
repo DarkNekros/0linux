@@ -150,7 +150,7 @@ unset USE_ARCH
 mv ${PKG}/usr/bin/{,portmidi}test
 
 # On installe les entêtes  :
-cp -a pm_common/{portmidi,porttime,pmutil}.h ${PKG}/usr/include
+cp -a pm_common/{portmidi,pmutil}.h ${PKG}/usr/include
 
 # on crée le raccourci pour 'pmdefaults' :
 cat > ${PKG}/usr/share/applications/pmdefaults.desktop << "EOF"
