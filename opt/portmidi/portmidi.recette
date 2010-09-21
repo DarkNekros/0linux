@@ -43,6 +43,7 @@ fi
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/usr/share/applications
 mkdir -p ${PKG}/usr/share/icons/hicolor/128x128/apps
+mkdir -p ${PKG}/usr/include
 
 # On déballe et on se place dans les sources :
 NAME=portmidi
@@ -149,7 +150,7 @@ unset USE_ARCH
 mv ${PKG}/usr/bin/{,portmidi}test
 
 # On installe un entête oublié :
-install -m 0644 -D pm_common/pmutil.h ${PKG}/usr/include
+cp -a pm_common/pmutil.h ${PKG}/usr/include
 
 # on crée le raccourci pour 'pmdefaults' :
 cat > ${PKG}/usr/share/applications/pmdefaults.desktop << "EOF"
