@@ -61,7 +61,7 @@ find . \
 
 # On corrige la compilation avec le vilain petit canard, 'portmidi' :
 cat $CWD/porttime.patch | patch -p0
-cat $CWD/portmidi.patch | patch -p1
+# cat $CWD/portmidi.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
