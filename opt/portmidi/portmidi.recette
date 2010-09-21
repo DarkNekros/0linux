@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-portmidi}
 VERSION=${VERSION:-200}
 EXT=${EXT:-zip}
 NAMETGZ=${NAMETGZ:-portmidi}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -149,8 +149,8 @@ unset USE_ARCH
 # On renomme ce binaire au nom beaucoup trop générique :
 mv ${PKG}/usr/bin/{,portmidi}test
 
-# On installe un entête oublié :
-cp -a pm_common/pmutil.h ${PKG}/usr/include
+# On installe les entêtes  :
+cp -a pm_common/{portmidi,porttime,pmutil}.h ${PKG}/usr/include
 
 # on crée le raccourci pour 'pmdefaults' :
 cat > ${PKG}/usr/share/applications/pmdefaults.desktop << "EOF"
