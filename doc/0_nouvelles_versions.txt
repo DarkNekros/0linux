@@ -6,4 +6,5 @@ linux 2.6.35.5
 m4 1.4.15
 make 3.82
 python 2.7
+qt 4.7
 xorg-server 1.9.0

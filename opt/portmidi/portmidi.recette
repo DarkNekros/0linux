@@ -64,6 +64,9 @@ export USE_ARCH=32
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 
+# On corrige ce capharnaüm avec ce correctif de Gentoo :
+cat $CWD/portmidi-200-Makefile.patch | patch -p1
+
 sed -i "#set(JAVAVM_LIB .*$#JAVAVM_LIB /usr/lib${LIBDIRSUFFIX}/libjvm.so#" pm_common/CMakeLists.txt
 
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
@@ -110,6 +113,9 @@ export USE_ARCH=64
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
+
+# On corrige ce capharnaüm avec ce correctif de Gentoo :
+cat $CWD/portmidi-200-Makefile.patch | patch -p1
 
 sed -i "#set(JAVAVM_LIB .*$#JAVAVM_LIB /usr/lib${LIBDIRSUFFIX}/libjvm.so#" pm_common/CMakeLists.txt
 
