@@ -1,0 +1,50 @@
+Submitted By:            zippo zippo@oppiz.net
+Date:                    2009-09-20
+Initial Package Version: 1.2.2
+Upstream Status:         Unknown
+Origin:                  zippo@oppiz.net
+Description: Fixes missing headers, GCC-4.X.X
+diff -Naur cdrdao-1.2.2.old/trackdb/FormatConverter.cc cdrdao-1.2.2/trackdb/FormatConverter.cc
+--- cdrdao-1.2.2.old/trackdb/FormatConverter.cc	2009-09-21 03:29:10.035623353 +0000
++++ cdrdao-1.2.2/trackdb/FormatConverter.cc	2009-09-21 03:30:53.878762483 +0000
+@@ -18,6 +18,7 @@
+  */
+ 
+ #include <stdlib.h>
++#include <string.h>
+ #ifdef HAVE_AO
+ #include <ao/ao.h>
+ #endif
+diff -Naur cdrdao-1.2.2.old/trackdb/FormatMp3.cc cdrdao-1.2.2/trackdb/FormatMp3.cc
+--- cdrdao-1.2.2.old/trackdb/FormatMp3.cc	2009-09-21 03:29:10.035623353 +0000
++++ cdrdao-1.2.2/trackdb/FormatMp3.cc	2009-09-21 03:30:28.199459065 +0000
+@@ -22,6 +22,7 @@
+ //  Copyright (C) 2001 Joe Drew <drew@debian.org>
+ 
+ #include <stdio.h>
++#include <string.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+diff -Naur cdrdao-1.2.2.old/trackdb/FormatOgg.cc cdrdao-1.2.2/trackdb/FormatOgg.cc
+--- cdrdao-1.2.2.old/trackdb/FormatOgg.cc	2009-09-21 03:29:10.036623368 +0000
++++ cdrdao-1.2.2/trackdb/FormatOgg.cc	2009-09-21 03:30:06.899866244 +0000
+@@ -18,6 +18,7 @@
+  */
+ 
+ #include <stdio.h>
++#include <string.h>
+ 
+ #include "util.h"
+ #include "FormatOgg.h"
+diff -Naur cdrdao-1.2.2.old/trackdb/TempFileManager.cc cdrdao-1.2.2/trackdb/TempFileManager.cc
+--- cdrdao-1.2.2.old/trackdb/TempFileManager.cc	2009-09-21 03:29:10.036623368 +0000
++++ cdrdao-1.2.2/trackdb/TempFileManager.cc	2009-09-21 03:31:17.796182236 +0000
+@@ -19,6 +19,7 @@
+ 
+ #include "TempFileManager.h"
+ #include "util.h"
++#include <string.h>
+ 
+ #include <sys/types.h>
+ #include <sys/stat.h>
