@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/1.6/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+DOC="AUTHORS ChangeLog* COPYING* INSTALL MAINTAINERS NEWS README* TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Couche d'abstraction de systèmes de fichiers pour GNOME"
 ########################################
