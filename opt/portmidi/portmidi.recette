@@ -5,10 +5,10 @@ set -e
 umask 022
 CWD=$(pwd)
 
-NAMESRC=${NAMESRC:-hydrogen}
-VERSION=${VERSION:-0.9.4.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-hydrogen}
+NAMESRC=${NAMESRC:-portmidi}
+VERSION=${VERSION:-200}
+EXT=${EXT:-zip}
+NAMETGZ=${NAMETGZ:-portmidi}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -21,10 +21,10 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/portmedia/$NAMESRC-src-$VERSION.$EXT}
 DOC="*.txt"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Éditeur et boîte à rythmes"
+SLACKDESC="Bibliothèques pour entrées/sorties MIDI"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -48,7 +48,7 @@ mkdir -p ${PKG}/usr/share/applications
 mkdir -p ${PKG}/usr/share/icons/hicolor/128x128/apps
 
 # On déballe et on se place dans les sources :
-NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+NAME=portmidi
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
