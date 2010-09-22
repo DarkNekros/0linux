@@ -1,4 +1,4 @@
---- Sconstruct.orig	2009-10-29 12:05:41.000000000 +0000
+--- Sconstruct	2009-10-29 12:05:41.000000000 +0000
 +++ Sconstruct	2009-10-29 12:05:02.000000000 +0000
 @@ -265,7 +265,7 @@
  	if str(env['portaudio']) == "1": env.Append( LIBS = [ "portaudio" ] )
