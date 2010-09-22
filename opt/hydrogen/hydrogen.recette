@@ -61,7 +61,6 @@ find . \
 
 # On corrige la compilation avec portmidi/portaudio v19 :
 cat $CWD/porttime.patch | patch -p0
-cat patches/portmidi.patch | patch -p0
 cat patches/portaudio.patch | patch -p0
 
 # On positionne USE_ARCH :
