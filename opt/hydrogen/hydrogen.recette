@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-hydrogen}
-VERSION=${VERSION:-0.9.4.2}
+VERSION=${VERSION:-0.9.4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-hydrogen}
 BUILD=${BUILD:-1}
