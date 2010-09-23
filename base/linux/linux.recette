@@ -77,8 +77,10 @@ cd ${NAME}
 # On nettoie obligatoirement :
 make mrproper
 
-# On comble une vulnérabilité sévère :
-cat $CWD/linux.securite-compat.patch | patch -p1
+# On comble des vulnérabilités :
+for patch in $CWD/*.diff.gz; do
+	zcat ${PATCH} | patch -p1
+done
 
 # On applique le patch RT :
 bzcat $CWD/patch-${VERSION}-${RTVERSION}.bz2 | patch -p1
