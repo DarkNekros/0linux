@@ -17,7 +17,7 @@ NAMETGZ=${NAMETGZ:-linux}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -76,6 +76,9 @@ cd ${NAME}
 
 # On nettoie obligatoirement :
 make mrproper
+
+# On comble une vulnérabilité sévère :
+cat $CWD/linux.securite-compat.patch | patch -p1
 
 # On applique le patch RT :
 bzcat $CWD/patch-${VERSION}-${RTVERSION}.bz2 | patch -p1
