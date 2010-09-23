@@ -130,19 +130,6 @@ index 5016f76..6f57325 100644
  {
  	struct pt_regs *regs = current_thread_info()->kregs;
  	unsigned long usp = regs->u_regs[UREG_I6];
-diff --git a/arch/tile/include/asm/compat.h b/arch/tile/include/asm/compat.h
-index 5a34da6..345d81c 100644
---- a/arch/tile/include/asm/compat.h
-+++ b/arch/tile/include/asm/compat.h
-@@ -195,7 +195,7 @@ static inline unsigned long ptr_to_compat_reg(void __user *uptr)
- 	return (long)(int)(long __force)uptr;
- }
- 
--static inline void __user *compat_alloc_user_space(long len)
-+static inline void __user *arch_compat_alloc_user_space(long len)
- {
- 	struct pt_regs *regs = task_pt_regs(current);
- 	return (void __user *)regs->sp - len;
 diff --git a/arch/x86/include/asm/compat.h b/arch/x86/include/asm/compat.h
 index 306160e..1d9cd27 100644
 --- a/arch/x86/include/asm/compat.h
