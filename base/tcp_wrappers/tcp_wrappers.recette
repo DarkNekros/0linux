@@ -83,6 +83,10 @@ sed -i "s/ln -s/ln -sf/" Makefile
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
+
+# On force nos CFLAGS au passage :
+sed -i "s@CFLAGS	= -O2@& ${BUILD32} ${SLKCFLAGS}@" Makefile
+
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
@@ -129,6 +133,10 @@ sed -i "s/ln -s/ln -sf/" Makefile
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
+
+# On force nos CFLAGS au passage :
+sed -i "s@CFLAGS	= -O2@& ${BUILD64} ${SLKCFLAGS}@" Makefile
+
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
