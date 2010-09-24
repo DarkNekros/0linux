@@ -74,15 +74,15 @@ sed -i -e "s,^extern char \*malloc();,/* & */," scaffold.c
 # Le correctif ne tient pas compte de $LIBDIRSUFFIX, attention donc. L'archive a 13 ans...
 cat $CWD/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch | patch -p1
 
-# On force la prise en compte de lib$LIBDIRSUFFIX :
-sed -i "s@/lib@&${LIBDIRSUFFIX}@" Makefile
-
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
+
+# On force la prise en compte de lib$LIBDIRSUFFIX :
+sed -i "s@/lib@&${LIBDIRSUFFIX}@" Makefile
 
 # On force nos CFLAGS et le compilateur au passage :
 sed -i "s@CFLAGS	= -O2@& ${SLKCFLAGS}@" Makefile
@@ -125,15 +125,15 @@ sed -i -e "s,^extern char \*malloc();,/* & */," scaffold.c
 # Le correctif ne tient pas compte de $LIBDIRSUFFIX, attention donc. L'archive a 13 ans...
 cat $CWD/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch | patch -p1
 
-# On force la prise en compte de lib$LIBDIRSUFFIX :
-sed -i "s@/lib@&${LIBDIRSUFFIX}@" Makefile
-
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
+
+# On force la prise en compte de lib$LIBDIRSUFFIX :
+sed -i "s@/lib@&${LIBDIRSUFFIX}@" Makefile
 
 # On force nos CFLAGS et le compilateur au passage :
 sed -i "s@CFLAGS	= -O2@& ${SLKCFLAGS}@" Makefile
