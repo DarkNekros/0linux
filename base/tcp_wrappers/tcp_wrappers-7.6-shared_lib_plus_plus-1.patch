@@ -262,16 +262,16 @@ diff -Naur tcp_wrappers_7.6/Makefile tcp_wrappers_7.6.gimli/Makefile
 +	install -o root -g root -m 0755 tcpdmatch ${DESTDIR}/usr/sbin/
 +	install -o root -g root -m 0755 try-from ${DESTDIR}/usr/sbin/
 +	install -o root -g root -m 0755 safe_finger ${DESTDIR}/usr/sbin/
-+	install -o root -g root -m 0644 tcpd.8 ${DESTDIR}/usr/share/man/man8/
-+	install -o root -g root -m 0644 tcpdchk.8 ${DESTDIR}/usr/share/man/man8/
-+	install -o root -g root -m 0644 try-from.8 ${DESTDIR}/usr/share/man/man8/
-+	install -o root -g root -m 0644 tcpdmatch.8 ${DESTDIR}/usr/share/man/man8/
-+	install -o root -g root -m 0644 safe_finger.8 ${DESTDIR}/usr/share/man/man8/
-+	install -o root -g root -m 0644 hosts_access.5 ${DESTDIR}/usr/share/man/man5/
-+	install -o root -g root -m 0644 hosts_options.5 ${DESTDIR}/usr/share/man/man5/
++	install -o root -g root -m 0644 tcpd.8 ${DESTDIR}/usr/man/man8/
++	install -o root -g root -m 0644 tcpdchk.8 ${DESTDIR}/usr/man/man8/
++	install -o root -g root -m 0644 try-from.8 ${DESTDIR}/usr/man/man8/
++	install -o root -g root -m 0644 tcpdmatch.8 ${DESTDIR}/usr/man/man8/
++	install -o root -g root -m 0644 safe_finger.8 ${DESTDIR}/usr/man/man8/
++	install -o root -g root -m 0644 hosts_access.5 ${DESTDIR}/usr/man/man5/
++	install -o root -g root -m 0644 hosts_options.5 ${DESTDIR}/usr/man/man5/
 +
 +install-dev:
-+	install -o root -g root -m 0644 hosts_access.3 ${DESTDIR}/usr/share/man/man3/
++	install -o root -g root -m 0644 hosts_access.3 ${DESTDIR}/usr/man/man3/
 +	install -o root -g root -m 0644 tcpd.h ${DESTDIR}/usr/include/
 +	install -o root -g root -m 0644 $(LIB) ${DESTDIR}/usr/lib/
 +	ln -sf hosts_access.3 ${DESTDIR}/usr/share/man/man3/hosts_ctl.3

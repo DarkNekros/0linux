@@ -46,9 +46,9 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
 
-# On crée de quoi accueillir le tout (voir plus bas) :
+# On crée de quoi accueillir le tout :
 mkdir -p ${PKG}/usr/{include,lib{,64},sbin}
-mkdir -p ${PKG}/usr/share/man/man{3,5,8}
+mkdir -p ${PKG}/usr/man/man{3,5,8}
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -79,9 +79,6 @@ sed -i "s@/usr/lib@&${LIBDIRSUFFIX}@" Makefile
 
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
-
-# On force les manuels à se placer dans '/usr/man' :
-sed -i 's@/usr/share/man@/usr/man@g' Makefile
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
@@ -133,9 +130,6 @@ sed -i "s@/usr/lib@&${LIBDIRSUFFIX}@" Makefile
 
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
-
-# On force les manuels à se placer dans '/usr/man' :
-sed -i 's@/usr/share/man@/usr/man@g' Makefile
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
