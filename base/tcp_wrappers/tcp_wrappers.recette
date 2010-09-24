@@ -75,7 +75,7 @@ sed -i -e "s,^extern char \*malloc();,/* & */," scaffold.c
 cat $CWD/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch | patch -p1
 
 # On force la prise en compte de lib$LIBDIRSUFFIX :
-sed -i "s@/usr/lib@&${LIBDIRSUFFIX}@" Makefile
+sed -i "s@/lib@&${LIBDIRSUFFIX}@" Makefile
 
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
@@ -126,7 +126,7 @@ sed -i -e "s,^extern char \*malloc();,/* & */," scaffold.c
 cat $CWD/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch | patch -p1
 
 # On force la prise en compte de lib$LIBDIRSUFFIX :
-sed -i "s@/usr/lib@&${LIBDIRSUFFIX}@" Makefile
+sed -i "s@/lib@&${LIBDIRSUFFIX}@" Makefile
 
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
