@@ -1,12 +1,16 @@
 autoconf 2.68
+cairo 1.10.0
 gcc 4.5.1
+gparted 0.6.3
 grep 2.7
+gtk+ 2.22.0
 (iproute2 2.6.35)
 libtool 2.4
 linux 2.6.35.5
 m4 1.4.15
 man-pages 3.27
 make 3.82
+poppler 0.15.0
 python 2.7
 qt 4.7
 xorg-server 1.9.0

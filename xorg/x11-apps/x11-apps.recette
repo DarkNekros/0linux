@@ -8,7 +8,7 @@ CWD=$(pwd)
 VERSION=${VERSION:-7.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-apps}
-BUILD=${BUILD:-7}
+BUILD=${BUILD:-8}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -24,7 +24,7 @@ XLIBS="bdftopcf-1.0.2 iceauth-1.0.3 luit-1.0.5 \
 mkfontdir-1.0.5 mkfontscale-1.0.7 sessreg-1.0.6 \
 setxkbmap-1.2.0 smproxy-1.0.3 twm-1.0.4 x11perf-1.5.1 \
 xauth-1.0.5 xbacklight-1.1.1 xclock-1.0.5 xcmsdb-1.0.3 \
-xcursorgen-1.0.3 xdpyinfo-1.1.0 xdriinfo-1.0.3 \
+xcursorgen-1.0.4 xdpyinfo-1.1.0 xdriinfo-1.0.3 \
 xev-1.0.4 xgamma-1.0.3 xhost-1.0.3 xinput-1.5.2 xinit-1.2.1 \
 xkbcomp-1.1.1 xkbevd-1.1.0 xkbutils-1.0.2 \
 xkill-1.0.2 xlsatoms-1.1.0 xlsclients-1.1.0 xmessage-1.0.3 \
