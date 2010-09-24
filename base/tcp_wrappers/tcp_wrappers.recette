@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-tcp_wrappers}
 VERSION=${VERSION:-7.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-tcp_wrappers}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -75,6 +74,9 @@ sed -i -e "s,^extern char \*malloc();,/* & */," scaffold.c
 # Le correctif ne tient pas compte de $LIBDIRSUFFIX, attention donc. L'archive a 13 ans...
 cat $CWD/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch | patch -p1
 
+# On force la prise en compte de lib$LIBDIRSUFFIX :
+sed -i "s@/usr/lib@&${LIBDIRSUFFIX}@" Makefile
+
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
 
@@ -84,6 +86,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make REAL_DAEMON_DIR=/usr/sbin linux
 fakeroot make install DESTDIR=${PKG}
 
@@ -117,8 +120,8 @@ sed -i -e "s,^extern char \*malloc();,/* & */," scaffold.c
 # Le correctif ne tient pas compte de $LIBDIRSUFFIX, attention donc. L'archive a 13 ans...
 cat $CWD/tcp_wrappers-7.6-shared_lib_plus_plus-1.patch | patch -p1
 
-# On force le chemin des bibliothèques 64 bits :
-sed -i -e "s@/lib/@/lib64/@g" Makefile
+# On force la prise en compte de lib$LIBDIRSUFFIX :
+sed -i "s@/usr/lib@&${LIBDIRSUFFIX}@" Makefile
 
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
@@ -129,6 +132,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make REAL_DAEMON_DIR=/usr/sbin linux
 fakeroot make install DESTDIR=${PKG}
 
@@ -187,7 +191,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
