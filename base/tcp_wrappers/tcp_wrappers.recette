@@ -80,6 +80,9 @@ sed -i "s@/usr/lib@&${LIBDIRSUFFIX}@" Makefile
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
 
+# On force les manuels à se placer dans '/usr/man' :
+sed -i 's@/usr/share/man@/usr/man@g' Makefile
+
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
@@ -92,7 +95,7 @@ CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-make REAL_DAEMON_DIR=/usr/sbin linux
+make REAL_DAEMON_DIR=/usr/sbin STYLE=-DPROCESS_OPTIONS linux
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -131,6 +134,9 @@ sed -i "s@/usr/lib@&${LIBDIRSUFFIX}@" Makefile
 # On force la création de liens symboliques :
 sed -i "s/ln -s/ln -sf/" Makefile
 
+# On force les manuels à se placer dans '/usr/man' :
+sed -i 's@/usr/share/man@/usr/man@g' Makefile
+
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
@@ -143,14 +149,11 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-make REAL_DAEMON_DIR=/usr/sbin linux
+make REAL_DAEMON_DIR=/usr/sbin  STYLE=-DPROCESS_OPTIONS linux
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# Le correctif a installé les manuels dans /usr/share/man. On les rapatrie :
-mv ${PKG}/usr/share/man ${PKG}/usr
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
