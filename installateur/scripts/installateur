@@ -22,18 +22,18 @@ ROOT_DEVICE="`mount | grep "on / " | cut -f 1 -d ' '`"
 echo "$ROOT_DEVICE" > $TMP/partition_racine
 
 # On nettoie tous les points de montage :
-if mount | grep /var/log/mount 1> /dev/null 2> /dev/null ; then
-	umount /var/log/mount
+if mount | grep ${TMPMOUNT} 1> /dev/null 2> /dev/null ; then
+	umount ${TMPMOUNT}
 fi
 
 # S'il reste encore un volume monté, alors quelque chose ne va pas :
-if mount | grep /var/log/mount 1> /dev/null 2> /dev/null ; then
-	echo "Impossible de démonter /var/log/mount. Redémarrez et relancez l'installateur."
+if mount | grep ${TMPMOUNT} 1> /dev/null 2> /dev/null ; then
+	echo "Impossible de démonter ${TMPMOUNT}. Redémarrez et relancez l'installateur."
 	exit 1
 fi
 
 # On détecte si la table de montage est corrompue :
-if [ -d /var/log/mount/lost+found -o -d /var/log/mount/recycled -o -r /var/log/mount/io.sys ]; then
+if [ -d ${TMPMOUNT}/lost+found -o -d ${TMPMOUNT}/recycled -o -r ${TMPMOUNT}/io.sys ]; then
 	echo "Table de montage corrompue. Redémarrez la machine puis relancez l'installateur."
 	exit 1
 fi
@@ -57,7 +57,7 @@ echo ""
 echo -n "Appuyez sur ENTRÉE pour continuer."
 read GNAH1;
 
-# On demande à préparer les disques :affiche l'introduction : 
+# On demande à préparer les disques :
 clear
 echo -e "\033[1;32mPréparation de vos disques durs.\033[0;0m"
 echo ""
@@ -191,7 +191,7 @@ chmod 0755 ${SETUPROOT}
 chmod 1777 ${SETUPROOT}/tmp
 
 # On démonte tout :
-umount -f /var/log/mount 2> /dev/null
+umount -f ${TMPMOUNT} 2> /dev/null
 
 # Une dernière vérification avant les prochains montages :
 if [ -f ${SETUPROOT}/etc/fstab ]; then

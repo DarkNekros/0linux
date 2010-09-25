@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-man-pages}
-VERSION=${VERSION:-3.26}
+VERSION=${VERSION:-3.27}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-man-pages}
 BUILD=${BUILD:-1}
@@ -59,7 +59,7 @@ cp -a man? ${PKG}/usr/man
 
 # On évite d'écraser des manuels existants certainement plus récents :
 for fichier in ${PKG}/usr/man/man*/*.gz ; do
-	if grep -l ${fichier} /var/log/packages/* | grep -v var/log/packages/man-pages; then
+	if grep -l ${fichier} /var/log/paquets/* | grep -v var/log/paquets/man-pages; then
 		rm -f ${fichier}
 	fi
 done
