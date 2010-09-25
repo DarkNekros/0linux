@@ -68,8 +68,11 @@ find . \
 export USE_ARCH=32
 
 # Compilation pour 32 bits (le paramètre -march=i686 bloque la compilation) :
-SLKCFLAGS="${BUILD32} -O2 -march=i686 -pipe"
+SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
+
+sed -i "s@CC=$(CROSS_COMPILE)gcc@& ${BUILD32}@" Makefile
+
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
@@ -112,6 +115,9 @@ export USE_ARCH=64
 # Compilation pour 64 bits :
 SLKCFLAGS="${BUILD64} -O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
+
+sed -i "s@CC=$(CROSS_COMPILE)gcc@& ${BUILD64}@" Makefile
+
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
