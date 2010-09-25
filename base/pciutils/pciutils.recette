@@ -65,7 +65,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # Compilation pour 32 bits (le paramètre -march=i686 bloque la compilation) :
-SLKCFLAGS="-O2 -fPIC -pipe"
+SLKCFLAGS="${BUILD32} -O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
@@ -101,7 +101,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe"
+SLKCFLAGS="${BUILD64} -O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
