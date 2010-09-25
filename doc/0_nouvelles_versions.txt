@@ -2,7 +2,6 @@ autoconf 2.68
 cairo 1.10.0
 gcc 4.5.1
 gparted 0.6.3
-grep 2.7
 gtk+ 2.22.0
 (iproute2 2.6.35)
 libtool 2.4
