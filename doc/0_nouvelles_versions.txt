@@ -3,6 +3,7 @@ cairo 1.10.0
 gcc 4.5.1
 gtk+ 2.22.0
 (iproute2 2.6.35)
+Libtasn1 2.8 
 libtool 2.4
 linux 2.6.35.5
 lvm 2.02.74 
@@ -10,3 +11,4 @@ m4 1.4.15
 make 3.82
 python 2.7
 qt 4.7
+xmodmap 1.0.5
