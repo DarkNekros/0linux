@@ -71,7 +71,7 @@ export USE_ARCH=32
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 
-sed -i "s@CC=$(CROSS_COMPILE)gcc@& ${BUILD32}@" Makefile
+sed -i "s@CC=$\(CROSS_COMPILE\)gcc@& ${BUILD32}@" Makefile
 
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
@@ -116,7 +116,7 @@ export USE_ARCH=64
 SLKCFLAGS="${BUILD64} -O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 
-sed -i "s@CC=$(CROSS_COMPILE)gcc@& ${BUILD64}@" Makefile
+sed -i "s@CC=$\(CROSS_COMPILE\)gcc@& ${BUILD64}@" Makefile
 
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
