@@ -64,6 +64,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On positionne USE_ARCH :
+export USE_ARCH=32
+
 # Compilation pour 32 bits (le paramètre -march=i686 bloque la compilation) :
 SLKCFLAGS="${BUILD32} -O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
@@ -88,6 +91,9 @@ fakeroot make install install-lib \
 	SHARED=yes \
 	DESTDIR=${PKG}
 
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
 rm -rf ${NAME}
@@ -99,6 +105,9 @@ cd ${NAME}
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=64
 
 # Compilation pour 64 bits :
 SLKCFLAGS="${BUILD64} -O2 -fPIC -pipe"
@@ -123,6 +132,9 @@ fakeroot make install install-lib \
 	MANDIR=/usr/man \
 	SHARED=yes \
 	DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
 
 # On supprime le fichier des ID PCI s'il est présent dans l'archive :
 rm -f ${PKG}/usr/share/pci.ids*
