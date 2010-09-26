@@ -1,15 +1,20 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
+# Ce paquet ne compile pas en 4.6.2 si aucun 'qt' n'est présent sur le système !
+# J'ai dû copier les bibliothèques libQt* de /tmp/(sources de qt)/lib dans /usr/lib
+# lors du plantage 32 bits et ces mêmes bibliothèques dans /usr/lib64 lors du
+# plantage 64 bits... Puis recompiler.
+
 set -e
 umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-qt-everywhere-opensource-src}
-VERSION=${VERSION:-4.7.0}
+VERSION=${VERSION:-4.6.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qt}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -79,7 +84,6 @@ echo "o
 yes" | CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure -prefix /usr \
 	-libdir /usr/lib${LIBDIRSUFFIX} \
 	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
@@ -95,7 +99,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	-fast
 
 make
-fakeroot make install INSTALL_ROOT=${PKG}
+make install INSTALL_ROOT=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -143,7 +147,6 @@ echo "o
 yes" | CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure -prefix /usr \
 	-libdir /usr/lib${LIBDIRSUFFIX} \
 	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
@@ -159,7 +162,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	-fast
 
 make
-fakeroot make install INSTALL_ROOT=${PKG}
+make install INSTALL_ROOT=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH

@@ -10,3 +10,4 @@ m4 1.4.15
 make 3.82
 python 2.7
 qt 4.7
+xmodmap 1.0.5
