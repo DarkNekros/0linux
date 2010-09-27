@@ -82,7 +82,7 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 
 # On force la prise en compte de lib$LIBDIRSUFFIX :
-sed -i "s@/lib/@lib${LIBDIRSUFFIX}/@g" Makefile
+sed -i "s@/lib/@/lib${LIBDIRSUFFIX}/@g" Makefile
 
 # On force nos CFLAGS et le compilateur au passage :
 sed -i "s@CFLAGS	= -O2@& ${SLKCFLAGS}@" Makefile
