@@ -1,7 +1,5 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
-# Dépendances : libacl, libglib2, libusb, usbutils, pciutils, gperf.
-# À lancer en root (utilisation de 'mknod') !
 
 set -e
 umask 022
@@ -11,7 +9,7 @@ NAMESRC=${NAMESRC:-udev}
 VERSION=${VERSION:-162}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-udev}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -51,7 +49,7 @@ NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+fakeroot tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
 
 # On vérifie les permissions des sources :
@@ -81,14 +79,14 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
-make
+fakeroot make
 fakeroot make install DESTDIR=${PKG}
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+fakeroot tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
 
 # On re-vérifie les permissions des sources :
@@ -118,7 +116,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-make
+fakeroot make
 fakeroot make install DESTDIR=${PKG}
 
 # scsi_id et vol_id sont nécessaires dans /sbin :
@@ -146,7 +144,7 @@ find ${PKG}/etc -type d -exec chmod 755 {} \;
 chmod 755 ${PKG}/etc/rc.d/rc.udev.new
 
 # On ajoute les périphériques supplémentaires non pris en charge par udev :
-tar xf $CWD/udev-fixed-devices.tar.gz -C ${PKG}
+fakeroot tar xf $CWD/udev-fixed-devices.tar.gz -C ${PKG}
 
 # On ajoute le script de Slackware 'nethelper.sh' :
 cp -a $CWD/config/scripts/nethelper.sh ${PKG}/lib/udev

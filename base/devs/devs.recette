@@ -1,6 +1,5 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
-# *** À EXÉCUTER EN ROOT ! ***
 
 set -e
 umask 022
@@ -9,7 +8,7 @@ NAMESRC=${NAMESRC:-makedev}
 VERSION=${VERSION:-2.3.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-devs}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -43,7 +42,7 @@ mkdir -p ${PKG}
 mkdir -p ${PKG}
 cd ${PKG}
 echo "Extraction en cours..."
-tar xpf $CWD/_devs.tar.gz
+fakeroot tar xpf $CWD/_devs.tar.gz
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
