@@ -17,7 +17,7 @@ NAMETGZ=${NAMETGZ:-linux}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-6}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -223,7 +223,7 @@ EOF
 # On installe le doinst.sh des sources :
 cat > ${PKGSOURCE}/install/doinst.sh << EOF
 #!/bin/env bash
-chroot . make -C /usr/src/linux-${VERSION}-${RTVERSION} clean oldconfig prepare
+chroot . make -C /usr/src/linux-${VERSION}-${RTVERSION} clean oldconfig prepare scripts
 rm -f usr/src/linux-${VERSION}-${RTVERSION}/.version
 
 EOF
