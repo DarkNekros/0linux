@@ -17,7 +17,7 @@ NAMESRC=${NAMESRC:-jdk}
 VERSION=${VERSION:-6u21}
 EXT=${EXT:-bin}
 NAMETGZ=${NAMETGZ:-jdk}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -29,8 +29,8 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET32=${WGET32:-http://download.java.net/dlj/binaries/jdk-${VERSION}-dlj-linux-i586.$EXT}
-WGET=${WGET:-http://download.java.net/dlj/binaries/jdk-${VERSION}-dlj-linux-amd64.$EXT}
+WGET32=${WGET32:-http://download.java.net/dlj/binaries/jdk-${VERSION}-linux-i586.$EXT}
+WGET=${WGET:-http://download.java.net/dlj/binaries/jdk-${VERSION}-linux-amd64.$EXT}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Environnements de développement et machines virtuelles pour Java"
 ########################################
