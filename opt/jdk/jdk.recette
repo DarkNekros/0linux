@@ -29,8 +29,8 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET32=${WGET32:-http://download.java.net/dlj/binaries/jdk-${VERSION}-linux-i586.$EXT}
-WGET=${WGET:-http://download.java.net/dlj/binaries/jdk-${VERSION}-linux-amd64.$EXT}
+WGET32=${WGET32:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u21-linux-i586.bin?BundledLineItemUUID=viqJ_hCwkOsAAAErDw8AHFMg&OrderID=B5SJ_hCwdrsAAAErBA8AHFMg&ProductID=LxaJ_hCy4mIAAAEpXLwzBGsB&FileName=/${NAMESRC}-${VERSION}-linux-i586.$EXT}
+WGET=${WGET:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u21-linux-x64.bin?BundledLineItemUUID=qu.J_hCw1I0AAAErGqYAHFMg&OrderID=LMGJ_hCwO9kAAAErAKYAHFMg&ProductID=xKiJ_hCySHIAAAEpT7wzBGsB&FileName=/${NAMESRC}-${VERSION}-linux-amd64.$EXT}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Environnements de développement et machines virtuelles pour Java"
 ########################################
@@ -65,7 +65,7 @@ chmod +x $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT
 rm -rf jdk1*
 echo "Extraction en cours..."
 yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT --accept-license
-mv jdk1.6.0_21 jdk
+mv jdk1.6.0_* jdk
 
 # On vérifie les permissions des sources :
 find jdk \
@@ -87,7 +87,7 @@ chmod +x $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT
 rm -rf jdk1*
 echo "Extraction en cours..."
 yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT --accept-license
-mv jdk1.6.0_21 jdk
+mv jdk1.6.0_* jdk
 
 # On vérifie les permissions des sources :
 find jdk \
