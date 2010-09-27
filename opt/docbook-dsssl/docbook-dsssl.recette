@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-docbook-dsssl}
 VERSION=${VERSION:-1.79}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-docbook-dsssl}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -23,7 +23,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://downloads.sourceforge.net/project/docbook/docbook-dsssl/1.79/docbook-dsssl-1.79.tar.bz2?use_mirror=freefr}
 WGETDOC=${WGETDOC:-http://downloads.sourceforge.net/project/docbook/docbook-dsssl-doc/1.79/docbook-dsssl-doc-1.79.tar.bz2?use_mirror=freefr}
-DOC="BUGS ChangeLog RELEASE-NOTES.* README VERSION WhatsNew doc/"
+DOC="BUGS ChangeLog RELEASE-NOTES.* README WhatsNew doc/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Feuilles de style DSSSL pour docbook"
 ########################################
@@ -139,9 +139,9 @@ config() {
 # On installe les catalogues (on n'oublie SURTOUT PAS d'indiquer la racine, auquel
 # cas on casse tout le système de documentation des autres paquets. On doit donc
 # chrooter ) :
-chroot . install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/catalog
-chroot . install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/common/catalog
-chroot . install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/dsssl-docbook-stylesheets.cat
+chroot . install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/catalog >/dev/null 2>&1
+chroot . install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/common/catalog >/dev/null 2>&1
+chroot . install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/dsssl-docbook-stylesheets.cat >/dev/null 2>&1
 
 EOF
 

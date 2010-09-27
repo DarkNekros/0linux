@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-openjade}
 VERSION=${VERSION:-1.3.3pre1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openjade}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://downloads.sourceforge.net/project/openjade/openjade/1.3.3/openjade-1.3.3-pre1.tar.gz?use_mirror=freefr}
-DOC="ChangeLog COPYING FILES NEWS README VERSION"
+DOC="ChangeLog COPYING FILES NEWS README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques et outils de transformation XML"
 ########################################
@@ -70,6 +70,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -85,8 +86,8 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--build=${TARGET32}
 
 make
-make install DESTDIR=${PKG}
-make install-man DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-man DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -119,6 +120,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -134,8 +136,8 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--build=${TARGET64}
 
 make
-make install DESTDIR=${PKG}
-make install-man DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-man DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -198,12 +200,11 @@ config() {
 	fi
 }
 
-
 # On installe les catalogues (on n'oublie SURTOUT PAS d'indiquer la racine, auquel
 # cas on casse tout le système de documentation des autres paquets. On doit donc
 # chrooter ) :
-chroot . install-catalog --add /etc/sgml/openjade-1.3.3-pre1.cat /usr/share/sgml/openjade-1.3.3pre1/catalog
-chroot . install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/openjade-1.3.3-pre1.cat
+chroot . install-catalog --add /etc/sgml/openjade-1.3.3-pre1.cat /usr/share/sgml/openjade-1.3.3pre1/catalog >/dev/null 2>&1
+chroot . install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/openjade-1.3.3-pre1.cat >/dev/null 2>&1
 
 EOF
 
