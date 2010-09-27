@@ -68,7 +68,7 @@ cat $CWD/iproute2.libdir.patch | patch -p1
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 
-sed -i -e "s@CCOPTS =*$@& ${SLKCFLAGS}@" Makefile
+sed -i -e "s@CCOPTS =.*$@& ${SLKCFLAGS}@" Makefile
 
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
