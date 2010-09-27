@@ -154,7 +154,7 @@ diff -Naur tcp_wrappers_7.6/Makefile tcp_wrappers_7.6.gimli/Makefile
 +SHLIB	= shared/libwrap.so.$(SOMAJOR).$(SOMINOR)
 +SHLIBSOMAJ= shared/libwrap.so.$(SOMAJOR)
 +SHLIBSO	= shared/libwrap.so
-+SHLIBFLAGS = -Lshared -lwrap
++SHLIBFLAGS = -Lshared
  
 -CFLAGS	= -O -DFACILITY=$(FACILITY) $(ACCESS) $(PARANOID) $(NETGROUP) \
 +shared/%.o: %.c
