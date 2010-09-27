@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-module-init-tools}
 VERSION=${VERSION:-3.12}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-module-init-tools}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -18,6 +18,8 @@ TARGET32=${TARGET32:-i686-0-linux-gnu}
 TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
+PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
+PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.kernel.org/pub/linux/utils/kernel/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS CODING COPYING ChangeLog FAQ INSTALL NEWS README TODO doc/*"
@@ -61,15 +63,10 @@ find . \
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 
-# On procède aux tests puis on nettoie :
-CC="gcc ${BUILD64}" ./configure
-
-make check
-./tests/runtests
-make clean
-
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--bindir=/sbin \
@@ -77,10 +74,11 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-zlib-dynamic
+	--enable-zlib-dynamic \
+	--build=${TARGET64}
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On lie 'lsmod' à /bin :
 mkdir -p ${PKG}/bin
