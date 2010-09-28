@@ -71,7 +71,7 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 sed -i "s,^CFLAGS=,CFLAGS=$SLKCFLAGS ," Makefile
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On ajoute quelques thèmes indépendants :

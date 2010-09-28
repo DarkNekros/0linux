@@ -74,7 +74,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" NM=nm \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -108,7 +108,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" NM=nm \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

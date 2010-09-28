@@ -88,7 +88,7 @@ for archive in ${XLIBS}; do
 		--with-xkb-config-root=/etc/X11/xkb \
 		--build=${TARGET32}
 	
-	make
+	make -j3 || make -j3 || make
 	fakeroot make install DESTDIR=${PKG}
 	
 	cd $TMP
@@ -121,7 +121,7 @@ for archive in ${XLIBS}; do
 		--with-xkb-config-root=/etc/X11/xkb \
 		--build=${TARGET64}
 	
-	make
+	make -j3 || make -j3 || make
 	fakeroot make install DESTDIR=${PKG}
 	
 	cd $CWD

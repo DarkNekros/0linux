@@ -75,7 +75,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--infodir=/usr/info \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On renomme le binaire 32 bits pour l'envelopper :
@@ -111,7 +111,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--infodir=/usr/info \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On renomme le binaire 64 bits pour l'envelopper :
@@ -251,7 +251,7 @@ CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" \
 	--infodir=/usr/info \
 	--build=$TARGET
 
-make
+make -j3 || make
 make install DESTDIR=$PKG
 
 # On compresse les manuels :

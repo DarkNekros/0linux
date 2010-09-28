@@ -81,7 +81,7 @@ LIBS=-lm LD="ld ${LD_BUILD32}" \
 	--build=${TARGET32}
 
 sed -i "33i\#include <string.h>" examples/cpp/encode/file/main.cpp
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -123,7 +123,7 @@ LIBS=-lm LD="ld ${LD_BUILD64}" \
 	--build=${TARGET64}
 
 sed -i "33i\#include <string.h>" examples/cpp/encode/file/main.cpp
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

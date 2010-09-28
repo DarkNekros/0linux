@@ -77,7 +77,7 @@ for archive in ${XUTILS}; do
 		--infodir=/usr/info \
 		--build=${TARGET32}
 	
-	make
+	make -j3 || make
 	fakeroot make install DESTDIR=${PKG}
 	
 	# On déplace /usr/share/pkgconfig sous /usr/lib${LIBDIRSUFFIX} le
@@ -116,7 +116,7 @@ for archive in ${XUTILS}; do
 		--infodir=/usr/info \
 		--build=${TARGET64}
 	
-	make
+	make -j3 || make
 	fakeroot make install DESTDIR=${PKG}
 	
 	# On déplace /usr/share/pkgconfig sous /usr/lib${LIBDIRSUFFIX} le

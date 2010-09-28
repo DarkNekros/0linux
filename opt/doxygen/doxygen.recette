@@ -73,7 +73,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--enable-langs \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DOCDIR=${PKG}/usr/doc/${NAMETGZ}-${VERSION} INSTALL=${PKG}/usr
 
 # On neutralise USE_ARCH :

@@ -71,7 +71,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}/${VERSION} \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On compresse les manuels :

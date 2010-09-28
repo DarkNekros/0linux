@@ -75,7 +75,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--cache-file=config.cache \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On renomme le binaire 32 bits :
@@ -111,7 +111,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--cache-file=config.cache \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On renomme le binaire 64 bits :

@@ -83,7 +83,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--with-openssl=/usr \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -124,7 +124,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--with-openssl=/usr \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

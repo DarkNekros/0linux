@@ -79,7 +79,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -120,7 +120,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

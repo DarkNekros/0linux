@@ -69,7 +69,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 make TEXMF=${PKG}/usr/share/texmf install-tex
 

@@ -69,7 +69,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-make
+make -j3 || make
 
 fakeroot make install MAN_INSTALL_DIR=${PKG}/usr/man DOC_INSTALL_DIR=${PKG}/usr/doc/${NAMETGZ}-${VERSION} \
 libdir=${PKG}/usr/lib${LIBDIRSUFFIX} prefix=${PKG}/usr
@@ -98,7 +98,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-make
+make -j3 || make
 
 fakeroot make install MAN_INSTALL_DIR=${PKG}/usr/man DOC_INSTALL_DIR=${PKG}/usr/doc/${NAMETGZ}-${VERSION} \
 libdir=${PKG}/usr/lib${LIBDIRSUFFIX} prefix=${PKG}/usr

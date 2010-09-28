@@ -74,7 +74,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--build=${TARGET32}
 
 make libfl.a
-make
+make -j3 || make
 make install-libLIBRARIES DESTDIR=${PKG}
 make install DESTDIR=${PKG}
 
@@ -105,7 +105,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--infodir=/usr/info \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On crée le prédécesseur 'lex' via un script mimant son

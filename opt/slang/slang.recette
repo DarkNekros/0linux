@@ -81,7 +81,7 @@ LDFLAGS=-lncurses \
 	--with-readline=gnu \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make elf
 make install-elf DESTDIR=${PKG}
 
@@ -124,7 +124,7 @@ LDFLAGS=-lncurses \
 	--with-readline=gnu \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make elf
 make install-elf DESTDIR=${PKG}
 

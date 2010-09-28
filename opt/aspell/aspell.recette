@@ -106,7 +106,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -147,7 +147,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -209,7 +209,7 @@ for dictarchive in ${NAMESRCEN}-${VERSIONEN}.tar.bz2 ${NAMESRCFR}-${VERSIONFR}.t
 	PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	./configure
-	make
+	make -j3 || make
 	fakeroot make install DESTDIR=${PKG}
 	
 	if [ "${dictarchive}" = "${NAMESRCEN}-${VERSIONEN}.tar.bz2" ]; then

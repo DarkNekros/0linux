@@ -69,7 +69,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On compresse les manuels :

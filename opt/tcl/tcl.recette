@@ -75,7 +75,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-man-symlinks \
 	--enable-man-compression=gzip
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 fakeroot make install-private-headers DESTDIR=${PKG}
 
@@ -119,7 +119,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-man-symlinks \
 	--enable-man-compression=gzip
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 fakeroot make install-private-headers DESTDIR=${PKG}
 

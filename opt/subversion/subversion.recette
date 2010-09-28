@@ -87,7 +87,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-swig \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -135,7 +135,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 
 sed -i 's@/usr/lib/@/usr/lib64/@g' Makefile
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 fakeroot make install-docs DESTDIR=${PKG}
 

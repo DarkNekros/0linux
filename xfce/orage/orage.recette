@@ -80,7 +80,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX}/orage \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

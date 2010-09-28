@@ -80,7 +80,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}"
 # On corrige les appels aux compilateurs pour forcer le 32 bits :
 sed -i -e "s@= gcc@& -m32@g" -e "s@= g++@& -m32@g" $(find . -name "Makefile" -print)
 
-make
+make -j3 || make
 fakeroot make install INSTALL_ROOT=${PKG} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -115,7 +115,7 @@ python configure.py  --confirm-license \
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}"
 
-make
+make -j3 || make
 fakeroot make install INSTALL_ROOT=${PKG} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

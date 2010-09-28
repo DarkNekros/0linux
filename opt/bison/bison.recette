@@ -73,7 +73,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 # On force le support de l'internationalisation :
 echo '#define YYENABLE_NLS 1' >> lib/config.h
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On re-déballe et on se re-place dans les sources :
@@ -104,7 +104,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 # On force le support de l'internationalisation :
 echo '#define YYENABLE_NLS 1' >> lib/config.h
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On compresse les manuels :

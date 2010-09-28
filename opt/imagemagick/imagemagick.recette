@@ -84,7 +84,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-dejavu-font-dir=/usr/share/fonts/TTF \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 fakeroot make install DOCUMENTATION_PATH=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -136,7 +136,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-dejavu-font-dir=/usr/share/fonts/TTF \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 fakeroot make install DOCUMENTATION_PATH=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

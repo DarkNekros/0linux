@@ -86,7 +86,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 
 # 'make install' à la main ! :
 install -m 0755 {interface,paranoia}/libcdda_*.so.0* ${PKG}/usr/lib${LIBDIRSUFFIX}/
@@ -138,7 +138,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 
 # 'make install' à la main ! :
 install -m 0755 {interface,paranoia}/libcdda_*.so.0* ${PKG}/usr/lib${LIBDIRSUFFIX}/

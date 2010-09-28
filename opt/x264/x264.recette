@@ -81,7 +81,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--host=${TARGET32} \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 fakeroot make install bindir=/usr/bin \
 	libdir=/usr/lib${LIBDIRSUFFIX} \
 	includedir=/usr/include \
@@ -123,7 +123,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-shared \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 fakeroot make install bindir=/usr/bin \
 	libdir=/usr/lib${LIBDIRSUFFIX} \
 	includedir=/usr/include \

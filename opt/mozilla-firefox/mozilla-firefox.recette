@@ -120,7 +120,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET32} \
 	--host=${TARGET32} 
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -235,7 +235,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64} \
 	--host=${TARGET64} 
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

@@ -72,7 +72,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 make install-private-headers DESTDIR=${PKG}
 
@@ -110,7 +110,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 
 sed -i 's@/lib/@/lib64/@' Makefile
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 make install-private-headers DESTDIR=${PKG}
 

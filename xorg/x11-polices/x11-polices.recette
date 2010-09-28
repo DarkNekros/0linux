@@ -97,7 +97,7 @@ for archive in ${XFONTS}; do
 		--infodir=/usr/info \
 		--build=${TARGET64}
 	
-	make
+	make -j3 || make
 	fakeroot make install DESTDIR=${PKG}
 	
 	# On déplace les polices où il faut selon la configuration de 'xorg-server' :

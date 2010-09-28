@@ -128,7 +128,7 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--host=${TARGET64} \
 	--target=${TARGET64}
 
-make
+make -j3 || make
 make info
 fakeroot make install DESTDIR=${PKG}
 fakeroot make -i install-info DESTDIR=${PKG}

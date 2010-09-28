@@ -80,8 +80,8 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--with-installbuilddir=/usr/lib${LIBDIRSUFFIX}/apr-1 \
 	--build=${TARGET32}
 
-make
-make install DESTDIR=${PKG}
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -121,9 +121,9 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--with-installbuilddir=/usr/lib${LIBDIRSUFFIX}/apr-1 \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make dox
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH

@@ -83,7 +83,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--enable-xkbcomp-symlink \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

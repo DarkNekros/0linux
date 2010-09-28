@@ -88,7 +88,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--enable-default-search-path=/usr/share/sgml \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

@@ -96,7 +96,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 # On corrige l'emplacement de la doc codé en dur :
 sed -i "s?share/doc/linuxdoc-tools?doc/$NAMETGZ-$VERSION?g" Makefile
 
-make
+make -j3 || make
 make install LINUXDOCDOC=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -142,7 +142,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 # On corrige l'emplacement de la doc codé en dur :
 sed -i "s?share/doc/linuxdoc-tools?doc/$NAMETGZ-$VERSION?g" Makefile
 
-make
+make -j3 || make
 make install LINUXDOCDOC=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

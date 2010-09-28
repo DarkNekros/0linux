@@ -99,7 +99,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make so
 fakeroot make install DESTDIR=${PKG}
 fakeroot make soinstall DESTDIR=${PKG}
@@ -139,7 +139,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make so
 fakeroot make install DESTDIR=${PKG}
 fakeroot make soinstall DESTDIR=${PKG}

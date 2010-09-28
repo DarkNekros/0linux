@@ -73,7 +73,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--infodir=/usr/info \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" libpopt.la
 sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" .libs/libpopt.lai
 make install usrlibdir=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
@@ -105,7 +105,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--infodir=/usr/info \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" libpopt.la
 sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" .libs/libpopt.lai
 make install usrlibdir=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}

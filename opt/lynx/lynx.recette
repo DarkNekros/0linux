@@ -82,7 +82,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--enable-nls \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 make install-help DESTDIR=${PKG}
 make install-doc DESTDIR=${PKG}

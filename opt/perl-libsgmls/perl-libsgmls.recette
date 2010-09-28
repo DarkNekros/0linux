@@ -77,7 +77,7 @@ perl Makefile.PL
 # On modifie l'emplacement de la doc :
 sed -i 's?/share/man?/man/?g' Makefile
 
-make
+make -j3 || make
 make test
 fakeroot make install DESTDIR=${PKG}
 
@@ -117,7 +117,7 @@ perl Makefile.PL
 # On modifie l'emplacement de la doc :
 sed -i 's?/share/man?/man/?g' Makefile
 
-make
+make -j3 || make
 make test
 fakeroot make install DESTDIR=${PKG}
 

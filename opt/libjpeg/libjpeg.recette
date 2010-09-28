@@ -81,7 +81,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--enable-shared \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make install libdir=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -120,7 +120,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--enable-shared \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install libdir=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

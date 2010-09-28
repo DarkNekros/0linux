@@ -73,7 +73,7 @@ M4="/usr/bin/m4" ./configure \
 	--enable-shared \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On renomme le binaire 32 bits et l'entête 32 bits :
@@ -106,7 +106,7 @@ M4="/usr/bin/m4" ./configure \
 	--enable-shared \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 make install DESTDIR=${PKG}
 
 # On renomme le binaire 64 bits et l'entête 64 bits :

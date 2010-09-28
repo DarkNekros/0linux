@@ -98,8 +98,8 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	-nomake examples \
 	-fast
 
-make
-make install INSTALL_ROOT=${PKG}
+make -j3 || make
+fakeroot make install INSTALL_ROOT=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -161,8 +161,8 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	-nomake examples \
 	-fast
 
-make
-make install INSTALL_ROOT=${PKG}
+make -j3 || make
+fakeroot make install INSTALL_ROOT=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -179,7 +179,7 @@ mv ${PKG}/usr/include/Qt/qconfig{,-64}.h
 mv ${PKG}/usr/include/QtCore/qconfig{,-64}.h
 
 # On lie de faux binaires au programme enveloppe :
-ln -sf multiarch_wrapper ${PKG}/usr/bin/qmake
+ln -sf multiarch_wrapper ${PKG}/usr/bin/qmake -j3 || make
 ln -sf multiarch_wrapper ${PKG}/usr/bin/uic
 ln -sf multiarch_wrapper ${PKG}/usr/bin/uic3
 ln -sf multiarch_wrapper ${PKG}/usr/bin/moc
