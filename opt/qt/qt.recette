@@ -179,7 +179,7 @@ mv ${PKG}/usr/include/Qt/qconfig{,-64}.h
 mv ${PKG}/usr/include/QtCore/qconfig{,-64}.h
 
 # On lie de faux binaires au programme enveloppe :
-ln -sf multiarch_wrapper ${PKG}/usr/bin/qmake -j3 || make
+ln -sf multiarch_wrapper ${PKG}/usr/bin/qmake
 ln -sf multiarch_wrapper ${PKG}/usr/bin/uic
 ln -sf multiarch_wrapper ${PKG}/usr/bin/uic3
 ln -sf multiarch_wrapper ${PKG}/usr/bin/moc

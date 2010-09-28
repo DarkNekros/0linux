@@ -131,7 +131,7 @@ mv ${PKG}/usr/bin/ccmakedep{,-64}
 
 # On lie d efaux binaires au programme enveloppe :
 ln -sf multiarch_wrapper ${PKG}/usr/bin/xmkmf
-ln -sf multiarch_wrapper ${PKG}/usr/bin/imake -j3 || make
+ln -sf multiarch_wrapper ${PKG}/usr/bin/imake
 ln -sf multiarch_wrapper ${PKG}/usr/bin/ccmakedep
 
 # On compresse les manuels :

@@ -91,7 +91,7 @@ XSERVERLIBS_LIBS+="-L/usr/lib${LIBDIRSUFFIX} -lXfont -lXau -lpixman-1 -ldbus-1 -
 	--with-gnu-ld \
 	--build=${TARGET64}
 
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" make -j3 || make
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" make -j3 || LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
