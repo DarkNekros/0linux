@@ -22,8 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.sudo.ws/$NAMESRC/dist/$NAMESRC-$VERSION.$EXT}
-DOC="ChangeLog HISTORY INSTALL* LICENSE PORTING README* TROUBLESHOOTING \
-	UPGRADE WHATSNEW"
+DOC="ChangeLog HISTORY INSTALL* LICENSE PORTING README* TROUBLESHOOTING UPGRADE"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outil de gestion de privilèges utilisateurs"
 ########################################
