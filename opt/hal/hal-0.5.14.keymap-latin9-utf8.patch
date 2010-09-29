@@ -1,0 +1,60 @@
+--- hal-0.5.14.orig/fdi/policy/10osvendor/10-keymap.fdi	2008-08-10 15:50:10.000000000 +0200
++++ hal-0.5.14/fdi/policy/10osvendor/10-keymap.fdi	2009-12-02 13:46:42.000000000 +0100
+@@ -1,23 +1,45 @@
+-<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->
++<?xml version="1.0" encoding="UTF-8"?> <!-- -*- SGML -*- -->
+ <deviceinfo version="0.2">
+   <device>
+     <match key="info.capabilities" contains="input.keymap">
+       <append key="info.callouts.add" type="strlist">hal-setup-keymap</append>
+     </match>
++    
++    <!-- IMPORTANT ! SI VOUS DÉSIREZ CHANGER LA DISPOSITION, LISEZ LA NOTE EN
++    BAS DE PAGE !-->
+ 
+     <match key="info.capabilities" contains="input.keys">
+-      <merge key="input.xkb.rules" type="string">base</merge>
+-
+-      <!-- If we're using Linux, we use evdev by default (falling back to
+-           keyboard otherwise). -->
+-      <merge key="input.xkb.model" type="string">keyboard</merge>
+-      <match key="/org/freedesktop/Hal/devices/computer:system.kernel.name"
+-             string="Linux">
+-        <merge key="input.xkb.model" type="string">evdev</merge>
+-      </match>
++      <!-- On restaure la triplette « Ctrl+Alt+Suppr. » pour redémarrer X : -->
++      <merge key="input.xkb.options" type="string">terminate:ctrl_alt_bksp</merge>
+ 
+-      <merge key="input.xkb.layout" type="string">us</merge>
+-      <merge key="input.xkb.variant" type="string" />
++      <!-- C'est ici qu'on décide de la disposition de clavier. La « latin-9 »
++      étendue est la disposition par défaut dans frenchslack : -->
++      <merge key="input.xkb.rules" type="string">base</merge>
++      <merge key="input.xkb.model" type="string">evdev</merge>
++      <merge key="input.xkb.layout" type="string">fr</merge>
++      <merge key="input.xkb.variant" type="string">oss</merge>
++    
+     </match>
+   </device>
+ </deviceinfo>
++
++<!-- JE SUIS UNE NOTE IMPORTANTE. MERCI DE ME LIRE !
++
++Si vous désirez changer de disposition ou de type de clavier, il vous faut
++*COPIER* ce fichier dans /etc/hal/fdi/policy/ et l'éditer. Il vous faudra
++ensuite quitter X, redémarrer HAL puis relancer X.
++
++De nombreux outils graphiques existent pour configurer le clavier plus
++facilement (y compris les environnements de bureau tels que KDE ou XFCE).
++
++Si vous préférez l'ancienne méthode de configuration (sans HAL), ajoutez
++alors ceci au fichier /etc/X11/xorg.conf à la section « ServerFlags » :
++
++    Option   "AllowEmptyInput"     "false"
++    Option   "AutoAddDevices"      "false"
++    Option   "AutoEnableDevices"   "false"
++
++Vous pourrez ensuite éditer la section « Keyboard » de ce même fichier ; elle
++sera prise en compte au redémarrage de X. 
++
++-->
