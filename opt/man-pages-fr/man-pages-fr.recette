@@ -29,7 +29,7 @@ fi
 
 # On télécharge les sources :
 if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
-	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
+	wget --no-check-certificate -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
 	mv ${NAMESRC}-${VERSION}.$EXT.part ${NAMESRC}-${VERSION}.$EXT
 fi
 
