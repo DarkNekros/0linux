@@ -8,7 +8,7 @@ CWD=$(pwd)
 NAMESRC=${NAMESRC:-man-pages-fr}
 VERSION=${VERSION:-3.26.1}
 EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-man-pages}
+NAMETGZ=${NAMETGZ:-man-pages-fr}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -59,7 +59,7 @@ cp -ra man? ${PKG}/usr/man/fr
 
 # On évite d'écraser des manuels existants certainement plus récents :
 for fichier in ${PKG}/usr/man/fr/man*/*.gz ; do
-	if grep -l ${fichier} /var/log/paquets/* | grep -v var/log/paquets/man-pages; then
+	if grep -l ${fichier} /var/log/paquets/* | grep -v var/log/paquets/man-pages-fr; then
 		rm -f ${fichier}
 	fi
 done
