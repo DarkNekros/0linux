@@ -36,7 +36,7 @@ SUBSYSTEMS=="scsi", KERNEL=="s[gt][0-9]*", ATTRS{type}=="5", GROUP="cdrom", MODE
 KERNEL=="card[0-9]*",GROUP:="video"
 
 # Permissions pour ALSA :
-SUBSYSTEM=="sound", GROUP="audio"
+SUBSYSTEM=="sound", GROUP="audio", MODE=”0660″
 
 # Permissions pour l'horloge temps réel :
 KERNEL=="rtc|rtc0", MODE="0644"
