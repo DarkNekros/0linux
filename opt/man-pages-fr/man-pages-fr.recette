@@ -15,7 +15,7 @@ TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
 ARCH=${ARCH:-noarch}
 
-WGET=${WGET:-http://www.kernel.org/pub/linux/docs/man-pages/$NAMESRC-3.26-1.$EXT}
+WGET=${WGET:-https://alioth.debian.org/frs/download.php/3350/$NAMESRC-3.26-1.$EXT}
 DOC="README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Manuels du système Linux"
