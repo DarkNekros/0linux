@@ -11,7 +11,6 @@ EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-flac}
 BUILD=${BUILD:-1}
 
-
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
 ARCH=${ARCH:-x86_64}
@@ -70,6 +69,7 @@ CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LIBS=-lm LD="ld ${LD_BUILD32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -82,7 +82,7 @@ LIBS=-lm LD="ld ${LD_BUILD32}" \
 
 sed -i "33i\#include <string.h>" examples/cpp/encode/file/main.cpp
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -112,6 +112,7 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LIBS=-lm LD="ld ${LD_BUILD64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -124,7 +125,7 @@ LIBS=-lm LD="ld ${LD_BUILD64}" \
 
 sed -i "33i\#include <string.h>" examples/cpp/encode/file/main.cpp
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -183,7 +184,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
