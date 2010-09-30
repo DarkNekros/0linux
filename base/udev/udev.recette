@@ -256,8 +256,7 @@ EOF
 		su -c "${PACKAGING}"
 	fi
 	
-	# On sort maintenant de la session 'fakeroot' :
-	exit
+# On sort maintenant de la session 'fakeroot' :
 )
 
 exit 0
