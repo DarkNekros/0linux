@@ -190,8 +190,11 @@ config() {
 	fi
 }
 
+# On nettoie les éventuels fichiers réguliers existants :
+rm -f lib/udev/devices/{console,null,ppp,urandom,zero}
+rm -f dev/{console,null}
+
 # On crée les nœuds périphériques importants dans '/lib/udev' :
-rm -f lib/udev/devices/{console,null,zero}
 mknod -m 600 ${PKG}/lib/udev/devices/console c 5 1 2>/dev/null || true
 mknod -m 666 ${PKG}/lib/udev/devices/null c 1 3 2>/dev/null || true
 mknod -m 660 ${PKG}/lib/udev/devices/ppp c 0 108 2>/dev/null || true
