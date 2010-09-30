@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/env bash
 PIDFILE=/var/run/dbus/dbus.pid
 
 start() {
 	rm -f $(dirname $PIDFILE)/*
 	if ! ps axc | grep -w dbus-daemon ; then
 		if [ -x /usr/bin/dbus-uuidgen -a -x /usr/bin/dbus-daemon ] ; then
-			echo "Démarrage du système de messages D-BUS: /usr/bin/dbus-uuidgen --ensure ; /usr/bin/dbus-daemon --system"
+			echo "Démarrage du système de messages D-BUS..."
 			/usr/bin/dbus-uuidgen --ensure
 			/usr/bin/dbus-daemon --system 1> /dev/null
 		fi
@@ -34,7 +34,7 @@ reload() {
 
 status() {
 	if ps axc | grep -wq dbus-daemon 2>/dev/null ; then
-		echo "dbus-daemon est en exécution."
+		echo "'dbus-daemon' est en exécution."
 	else
 		echo "dbus est arrêté."
 	fi
