@@ -19,7 +19,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-http://www.mpfr.org/mpfr-current/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.mpfr.org/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS BUGS COPYING* FAQ.html INSTALL NEWS README TODO VERSION"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèque « Multiple-Precision Floating-point Reliable »"
