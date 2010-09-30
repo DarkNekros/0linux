@@ -40,9 +40,11 @@ if [ -x /etc/rc.d/rc.inet2 ]; then
 fi
 
 # Montage du reste des systèmes de fichiers :
+echo "Montage des système de fichiers..."
 mount -a -v 2> /dev/null | grep -v "already mounted"
 
 # Nettoyage du système après le montage de systèmes de fichiers, superflu compris :
+echo "Nettoyage du système..."
 rm -f /var/lock/* /tmp/.X*lock /tmp/core /core 2> /dev/null
 
 # Nettoyage des connecteurs réseau :
@@ -106,6 +108,11 @@ if [ -x /etc/rc.d/rc.messagebus ]; then
 	. /etc/rc.d/rc.messagebus start
 fi
 
+# Lancement de wicd :
+if [ -x /etc/rc.d/rc.wicd ]; then
+	. /etc/rc.d/rc.wicd start
+fi
+
 # Lancement de dcron :
 echo "Lancement de dcron..."
 if [ -x /usr/sbin/crond ]; then
@@ -119,6 +126,7 @@ fi
 
 # Lancement du script « local » personnel :
 if [ -x /etc/rc.d/rc.local ]; then
+	echo "Lancement du script de démarrage local :"
 	. /etc/rc.d/rc.local
 fi
 
