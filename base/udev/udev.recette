@@ -151,46 +151,53 @@ fakeroot tar xf $CWD/udev-fixed-devices.tar.gz -C ${PKG}
 cp -a $CWD/config/scripts/nethelper.sh ${PKG}/lib/udev
 chmod 755 ${PKG}/lib/udev/nethelper.sh
 
-# On crée les nœuds périphériques importants dans '/lib/udev' :
-fakeroot mknod -m 600 ${PKG}/lib/udev/devices/console c 5 1
-fakeroot mknod -m 666 ${PKG}/lib/udev/devices/null c 1 3
-fakeroot mknod -m 666 ${PKG}/lib/udev/devices/zero c 1 5
+# On a besoin de rester dans la même session 'fakeroot' afin de garder
+# intacts les nœuds périphériques (sinon ils redeviennent de simples
+# fichiers réguliers vides dès qu'on sort de la session). On va donc créer 
+# le paquet via 'fakeroot' :
 
-# Dans '/dev' :
-fakeroot mknod -m 600 ${PKG}/dev/console c 5 1
-fakeroot mknod -m 666 ${PKG}/dev/null c 1 3
+(
+	fakeroot
+	
+	# On crée les nœuds périphériques importants dans '/lib/udev' :
+	fakeroot mknod -m 600 ${PKG}/lib/udev/devices/console c 5 1
+	fakeroot mknod -m 666 ${PKG}/lib/udev/devices/null c 1 3
+	fakeroot mknod -m 666 ${PKG}/lib/udev/devices/zero c 1 5
 
-# On compresse les manuels :
-if [ -d ${PKG}/usr/man ]; then
-	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
-	for manpage in $(find ${PKG}/usr/man -type l) ; do
-		ln -s $(readlink $manpage).gz ${manpage}.gz
-		rm -f ${manpage}
-	done
-fi
+	# Dans '/dev' :
+	fakeroot mknod -m 600 ${PKG}/dev/console c 5 1
+	fakeroot mknod -m 666 ${PKG}/dev/null c 1 3
 
-# On compresse les pages info :
-if [ -d ${PKG}/usr/info ]; then
-	rm -f ${PKG}/usr/info/dir
-	gzip -9 ${PKG}/usr/info/*.info*
-fi
+	# On compresse les manuels :
+	if [ -d ${PKG}/usr/man ]; then
+		find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+		for manpage in $(find ${PKG}/usr/man -type l) ; do
+			ln -s $(readlink $manpage).gz ${manpage}.gz
+			rm -f ${manpage}
+		done
+	fi
 
-# Installation de la documentation :
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+	# On compresse les pages info :
+	if [ -d ${PKG}/usr/info ]; then
+		rm -f ${PKG}/usr/info/dir
+		gzip -9 ${PKG}/usr/info/*.info*
+	fi
 
-# On installe le slack-desc :
-mkdir -p ${PKG}/install
-echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+	# Installation de la documentation :
+	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+	cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
-# On installe le doinst.sh :
-cat > ${PKG}/install/doinst.sh << "EOF"
+	# On installe le slack-desc :
+	mkdir -p ${PKG}/install
+	echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+	# On installe le doinst.sh :
+	cat > ${PKG}/install/doinst.sh << "EOF"
 #!/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
-
-config() {
+	config() {
 	NEW="$1"
 	OLD="$(dirname $NEW)/$(basename $NEW .new)"
 	
@@ -200,8 +207,7 @@ config() {
 		mv $NEW $OLD
 	fi
 }
-
-# Le script de Slackware, permettant de créer des fichiers en .conf sous
+	# Le script de Slackware, permettant de créer des fichiers en .conf sous
 # /etc/modprobe.d (y compris les fichiers .bak, .orig et .new) :
 for modfile in $(ls etc/modprobe.d/ | grep -v "\.\(conf\|bak\|orig\|new\)"); do
 	if [ -e etc/modprobe.d/$modfile -a ! -e etc/modprobe.d/$modfile.conf ]; then
@@ -219,35 +225,39 @@ config etc/rc.d/rc.udev.new
 
 EOF
 
-# On "strippe" tout ce qu'on trouve :
-find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
-find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
-find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+	# On "strippe" tout ce qu'on trouve :
+	find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+	find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+	find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
 
-# On vérifie enfin les droits de la doc, souvent problématiques :
-find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
-find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+	# On vérifie enfin les droits de la doc, souvent problématiques :
+	find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+	find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-# On génère le fichier des dépendances :
-. /sbin/0ldd.sh
+	# On génère le fichier des dépendances :
+	. /sbin/0ldd.sh
 
-# Empaquetage !
-cd ${PKG}
-mkdir -p $OUT
-PACKAGING="
-	chown root:root . -R
-	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
-	rm -rf ${PKG}
-	if [ ! \"X${NAME}\" = \"X\" ]; then
-		if [ -d $TMP/${NAME} ]; then
-			rm -rf $TMP/${NAME}
-		fi
-	fi"
+	# Empaquetage !
+	cd ${PKG}
+	mkdir -p $OUT
+	PACKAGING="
+		chown root:root . -R
+		/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+		rm -rf ${PKG}
+		if [ ! \"X${NAME}\" = \"X\" ]; then
+			if [ -d $TMP/${NAME} ]; then
+				rm -rf $TMP/${NAME}
+			fi
+		fi"
 
-if [ "$(which fakeroot 2> /dev/null)" ]; then
-	echo "${PACKAGING}" | fakeroot
-else
-	su -c "${PACKAGING}"
-fi
+	if [ "$(which fakeroot 2> /dev/null)" ]; then
+		echo "${PACKAGING}" | fakeroot
+	else
+		su -c "${PACKAGING}"
+	fi
+	
+	# On sort maintenant de la session 'fakeroot' :
+	exit
+)
 
 exit 0
