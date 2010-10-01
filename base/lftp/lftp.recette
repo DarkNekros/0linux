@@ -125,6 +125,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On veille à ne rien écraser :
+mv ${PKG}/etc/lftp.conf{,.new}
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -166,17 +169,7 @@ config() {
 	fi
 }
 
-if [ -x usr/bin/update-desktop-database ]; then
-	chroot . /usr/bin/update-desktop-database &> /dev/null
-fi
-
-if [ -x /usr/bin/update-mime-database ]; then
-  /usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
-fi
-
-if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
-fi
+config etc/lftp.conf.new
 
 EOF
 
