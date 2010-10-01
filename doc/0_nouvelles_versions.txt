@@ -1,6 +1,7 @@
 autoconf 2.68
 cairo 1.10.0
 gcc 4.5.1
+gnutls 2.10.2
 gtk+ 2.22.0
 (iproute2 2.6.35)
 libtool 2.4
