@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-spack}
-VERSION=${VERSION:-2.5}
+VERSION=${VERSION:-2.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-spack}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}

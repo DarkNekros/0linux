@@ -2,8 +2,8 @@ autoconf 2.68
 cairo 1.10.0
 gcc 4.5.1
 gnutls 2.10.2
+gparted 0.6.4
 gtk+ 2.22.0
-(iproute2 2.6.35)
 libtool 2.4
 linux 2.6.35.5
 lvm 2.02.74 
@@ -11,3 +11,6 @@ m4 1.4.15
 make 3.82
 python 2.7
 qt 4.7
+subversion 1.6.13 
+xf86-video-intel 2.13.0
+xorg-server 1.9.0.901
