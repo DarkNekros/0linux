@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-subversion}
-VERSION=${VERSION:-1.6.12}
+VERSION=${VERSION:-1.6.13}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-subversion}
 BUILD=${BUILD:-1}

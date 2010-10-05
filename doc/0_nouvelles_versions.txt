@@ -9,6 +9,5 @@ m4 1.4.15
 make 3.82
 python 2.7
 qt 4.7
-subversion 1.6.13 
 xf86-video-intel 2.13.0
 xorg-server 1.9.0.901
