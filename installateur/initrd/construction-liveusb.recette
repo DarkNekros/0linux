@@ -33,14 +33,14 @@ mkdir -p ${LIVEOS}
 
 # On installe les paquets pour le LiveOS :
 for paq in base-systeme* etc* eglibc* sgml*; do
-	spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq}
+	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq}
 done
 
-spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/*.cpio
-spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
+spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/*.cpio
+spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
 
 for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* libidn* libpng* libssh2* popt*; do
-	spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio
+	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio
 done
 
 # On allège :
@@ -70,7 +70,7 @@ fi
 cd ${LIVEOS}
 
 # On désinstalle 'linux-source', inutile ici :
-chroot . /sbin/spkman -r --quiet /var/log/paquets/linux-source-*.cpio
+chroot . /sbin/spkrm --quiet /var/log/paquets/linux-source-*.cpio
 
 # On met à jour les liens des bibliothèques :
 chroot . /sbin/ldconfig
