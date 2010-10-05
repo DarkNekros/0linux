@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-LVM2}
-VERSION=${VERSION:-2.02.73}
+VERSION=${VERSION:-2.02.74}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-lvm2}
 BUILD=${BUILD:-1}
@@ -91,7 +91,7 @@ LDCONFIG_PATH="-L/usr/lib${LIBDIRSUFFIX}" \
 	--with-device-mode=0664 \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -149,7 +149,7 @@ LDCONFIG_PATH="-L/usr/lib${LIBDIRSUFFIX}" \
 	--with-device-mode=0664 \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
