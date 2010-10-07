@@ -127,8 +127,8 @@ find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || tru
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
 
-# On génère le fichier des dépendances :
-. /sbin/0ldd.sh
+
+
 
 # Empaquetage !
 cd ${PKG}

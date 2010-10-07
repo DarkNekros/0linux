@@ -77,8 +77,8 @@ config etc/rc.d/rc.sysvinit.new
 
 EOF
 
-# On génère le fichier des dépendances :
-. /sbin/0ldd.sh
+
+
 
 # Empaquetage !
 cd ${PKG}
