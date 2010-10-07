@@ -9,10 +9,10 @@ for x in $(find ${PKG} -type f -executable); do
 		# On cherche les dépendances trouvées dans la base des paquets installés :
 		for i in /var/log/paquets/*; do
 			# On nettoie tout ce qui se trouve avant "./" avec cet immonde 'grep' :
-			CLEANLIST=$(grep -E -A40000 '\.\/' /var/log/paquets | sed 's\.\//' /var/log/paquets/*)
+			CLEANLIST=$(grep -E -A40000 '\.\/' ${i} | sed 's\.\//')
 			
 			# On découpe pour ne retirer que le nom du paquet sans sa version :
-			grep ${plop} ${CLEANLIST} | sed -e 's/\/var\/log\/paquets\/\(.*\)-[^-][^-]*-[^-][^-]*-[^-][^-]*$/\1/p' -n
+			grep ${plop} ${CLEANLIST} | sed -e 's/\/var\/log\/paquets\/\^(.*\)-[^-][^-]*-[^-][^-]*-[^-][^-]*$/\1/p' -n
 		done
 	done
 # On supprime le paquet courant et la glibc en triant les doublons et on enregistre :
