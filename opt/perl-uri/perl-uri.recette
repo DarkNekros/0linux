@@ -71,7 +71,6 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 perl Makefile.PL
 make -j3 || make
-make test
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -101,7 +100,6 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 perl Makefile.PL
 make -j3 || make
-make test
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
