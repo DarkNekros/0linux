@@ -117,7 +117,10 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-PYTHON_PREFIX=python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | sed 's#/site-packages##' make
+PYTHON_PREFIX=$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
+	sed 's#/site-packages##') make -j3 || \
+	PYTHON_PREFIX=$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
+	sed 's#/site-packages##') make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
