@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-GConf}
 VERSION=${VERSION:-2.28.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gconf}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -158,6 +157,17 @@ cat > ${PKG}/install/doinst.sh << "EOF"
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
+
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
 
 config etc/gconf/2/path.new
 

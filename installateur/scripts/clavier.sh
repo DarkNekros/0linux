@@ -1,5 +1,10 @@
 #!/bin/env bash
 
+# On crée les répertoires temporaires s'ils n'existent pas :
+TMP=${TMP:-/var/log/setup/tmp}
+TMPMOUNT=${TMPMOUNT:-/var/log/mount}
+mkdir -p ${TMP} ${TMPMOUNT}
+
 unset CHOIXCLAVIER TESTCLAVIER
 rm -f $TMP/choix_clavier
 
