@@ -88,44 +88,43 @@ UTILLINUXNG=util-linux-ng-2.18
 if [ ! "$DOWNLOAD" = "" ]; then
 
 	# URL des archives a telecharger, sources et correctifs :
-	URLS="
-	http://www.kernel.org/pub/linux/kernel/v2.6/$LINUX.tar.bz2
-	ftp://ftp.astron.com/pub/file/$FILE.tar.gz
-	http://patches.cross-lfs.org/dev/file-5.03-cross_compile-1.patch
-	http://ftp.gnu.org/gnu/ncurses/$NCURSES.tar.gz
-	http://ftp.gnu.org/gnu/gmp/$GMP.tar.bz2
-	http://www.mpfr.org/$MPFR/$MPFR.tar.xz
-	ftp://ftp.gnu.org/gnu/findutils/$FINDUTILS.tar.gz
-	ftp://ftp.gnu.org/gnu/binutils/$BINUTILS.tar.bz2
-	http://ftp.gnu.org/gnu/gcc/$GCC/$GCC.tar.bz2
-	http://patches.cross-lfs.org/dev/eglibc-2.12-20100725-r11059-make382-1.patch
-	ftp://ftp.cs.unipr.it/pub/ppl/releases/$(echo $PPL | cut -d'-' -f2)/$PPL.tar.bz2
-	ftp://gcc.gnu.org/pub/gcc/infrastructure/$CLOOGPPL.tar.gz
-	http://prdownloads.sourceforge.net/tcl/$TCL-src.tar.gz
-	http://prdownloads.sourceforge.net/expect/$EXPECT.tar.bz2
-	ftp://ftp.gnu.org/gnu/dejagnu/$DEJAGNU.tar.gz
-	ftp://ftp.gnu.org/gnu/bison/$BISON.tar.bz2
-	http://ftp.gnu.org/gnu/bash/$BASH4.tar.gz
-	http://patches.cross-lfs.org/dev/bash-4.1-branch_update-1.patch
-	http://prdownloads.sourceforge.net/libpng/$ZLIB.tar.bz2
-	http://www.bzip.org/$(echo $BZIP2 | cut -d'-' -f2)/$BZIP2.tar.gz
-	ftp://ftp.gnu.org/gnu/coreutils/$COREUTILS.tar.xz
-	ftp://ftp.gnu.org/gnu/diffutils/$DIFFUTILS.tar.xz
-	http://prdownloads.sourceforge.net/flex/$FLEX.tar.bz2
-	http://patches.cross-lfs.org/dev/flex-2.5.35-gcc44-1.patch
-	http://ftp.gnu.org/gnu/gawk/$GAWK.tar.bz2
-	http://ftp.gnu.org/gnu/gettext/$GETTEXT.tar.gz
-	http://ftp.gnu.org/gnu/grep/$GREP.tar.gz
-	http://ftp.gnu.org/gnu/gzip/$GZIP.tar.xz
-	http://ftp.gnu.org/gnu/m4/$M4.tar.xz
-	http://ftp.gnu.org/gnu/make/$MAKE.tar.bz2
-	http://ftp.gnu.org/gnu/patch/$PATCH.tar.xz
-	http://ftp.gnu.org/gnu/sed/$SED.tar.bz2
-	http://ftp.gnu.org/gnu/tar/$TAR.tar.bz2
-	http://www.linuxfromscratch.org/patches/lfs/development/tar-1.23-overflow_fix-1.patch
-	ftp://ftp.gnu.org/gnu/texinfo/$TEXINFO.tar.gz
-	http://tukaani.org/xz/$XZ.tar.xz
-	http://www.kernel.org/pub/linux/utils/util-linux-ng/v2.18/$UTILLINUXNG.tar.bz2
+	URLS="http://www.kernel.org/pub/linux/kernel/v2.6/$LINUX.tar.bz2 \
+		ftp://ftp.astron.com/pub/file/$FILE.tar.gz \
+		http://patches.cross-lfs.org/dev/file-5.03-cross_compile-1.patch \
+		http://ftp.gnu.org/gnu/ncurses/$NCURSES.tar.gz \
+		http://ftp.gnu.org/gnu/gmp/$GMP.tar.bz2 \
+		http://www.mpfr.org/$MPFR/$MPFR.tar.xz \
+		ftp://ftp.gnu.org/gnu/findutils/$FINDUTILS.tar.gz \
+		ftp://ftp.gnu.org/gnu/binutils/$BINUTILS.tar.bz2 \
+		http://ftp.gnu.org/gnu/gcc/$GCC/$GCC.tar.bz2 \
+		http://patches.cross-lfs.org/dev/eglibc-2.12-20100725-r11059-make382-1.patch \
+		ftp://ftp.cs.unipr.it/pub/ppl/releases/$(echo $PPL | cut -d'-' -f2)/$PPL.tar.bz2 \
+		ftp://gcc.gnu.org/pub/gcc/infrastructure/$CLOOGPPL.tar.gz \
+		http://prdownloads.sourceforge.net/tcl/$TCL-src.tar.gz \
+		http://prdownloads.sourceforge.net/expect/$EXPECT.tar.bz2 \
+		ftp://ftp.gnu.org/gnu/dejagnu/$DEJAGNU.tar.gz \
+		ftp://ftp.gnu.org/gnu/bison/$BISON.tar.bz2 \
+		http://ftp.gnu.org/gnu/bash/$BASH4.tar.gz \
+		http://patches.cross-lfs.org/dev/bash-4.1-branch_update-1.patch \
+		http://prdownloads.sourceforge.net/libpng/$ZLIB.tar.bz2 \
+		http://www.bzip.org/$(echo $BZIP2 | cut -d'-' -f2)/$BZIP2.tar.gz \
+		ftp://ftp.gnu.org/gnu/coreutils/$COREUTILS.tar.xz \
+		ftp://ftp.gnu.org/gnu/diffutils/$DIFFUTILS.tar.xz \
+		http://prdownloads.sourceforge.net/flex/$FLEX.tar.bz2 \
+		http://patches.cross-lfs.org/dev/flex-2.5.35-gcc44-1.patch \
+		http://ftp.gnu.org/gnu/gawk/$GAWK.tar.bz2 \
+		http://ftp.gnu.org/gnu/gettext/$GETTEXT.tar.gz \
+		http://ftp.gnu.org/gnu/grep/$GREP.tar.gz \
+		http://ftp.gnu.org/gnu/gzip/$GZIP.tar.xz \
+		http://ftp.gnu.org/gnu/m4/$M4.tar.xz \
+		http://ftp.gnu.org/gnu/make/$MAKE.tar.bz2 \
+		http://ftp.gnu.org/gnu/patch/$PATCH.tar.xz \
+		http://ftp.gnu.org/gnu/sed/$SED.tar.bz2 \
+		http://ftp.gnu.org/gnu/tar/$TAR.tar.bz2 \
+		http://www.linuxfromscratch.org/patches/lfs/development/tar-1.23-overflow_fix-1.patch \
+		ftp://ftp.gnu.org/gnu/texinfo/$TEXINFO.tar.gz \
+		http://tukaani.org/xz/$XZ.tar.xz \
+		http://www.kernel.org/pub/linux/utils/util-linux-ng/v2.18/$UTILLINUXNG.tar.bz2 \
 	"
 	
 	for archive in ${URLS}; do
