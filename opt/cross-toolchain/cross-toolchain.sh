@@ -31,7 +31,7 @@ CLFS=${CLFS:-/home/appzer0/cross-toolchain2011}
 exec 2>&1 | tee ${CLFS}.log
 
 # L'hote *dinstinct* de l'hote reel :
-CLFS_HOST=${CLFS_HOST:-$(echo ${MACHTYPE} | sed "s/$(echo ${MACHTYPE} | cut d'-' -f2)/cross/")}
+CLFS_HOST=${CLFS_HOST:-$(echo ${MACHTYPE} | sed "s/$(echo ${MACHTYPE} | cut -d'-' -f2)/cross/")}
 
 # Le systeme cible 32 bits :
 CLFS_TARGET32=${CLFS_TARGET32:-i686-0-linux-gnu}
