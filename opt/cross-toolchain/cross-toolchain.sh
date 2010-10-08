@@ -262,7 +262,7 @@ cat $SOURCES/gcc-4.5.1-specs-1.patch | patch -p1
 echo -en '#undef STANDARD_INCLUDE_DIR\n#define STANDARD_INCLUDE_DIR "/tools/include/"\n\n' >> gcc/config/linux.h
 echo -en '\n#undef STANDARD_STARTFILE_PREFIX_1\n#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"\n' >> gcc/config/linux.h
 echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFIX_2 ""\n' >> gcc/config/linux.h
-sed -i -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include at g" gcc/Makefile.in
+sed -i -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" gcc/Makefile.in
 touch /tools/include/limits.h
 mkdir -p $SOURCES/gcc-build
 cd $SOURCES/gcc-build
