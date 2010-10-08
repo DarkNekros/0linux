@@ -149,7 +149,7 @@ fi
 # linux-headers
 cd $SOURCES
 rm -rf $LINUX
-tar xf $SOURCES/../linux/$LINUX.tar.*
+tar xf $SOURCES/$LINUX.tar.*
 cd $LINUX
 install -dv /tools/include
 make mrproper
@@ -160,7 +160,7 @@ cp -rv dest/include/* /tools/include
 # file
 cd $SOURCES
 rm -rf $FILE
-tar xf $SOURCES/../file/$FILE.tar.*
+tar xf $SOURCES/$FILE.tar.*
 cd $SOURCES/$FILE
 cat $SOURCES/file-5.03-cross_compile-1.patch | patch -p1
 ./configure --prefix=/cross-tools
@@ -170,7 +170,7 @@ make install
 # ncurses
 cd $SOURCES
 rm -rf $NCURSES
-tar xf $SOURCES/../ncurses/$NCURSES.tar.*
+tar xf $SOURCES/$NCURSES.tar.*
 cd $SOURCES/$NCURSES
 ./configure --prefix=/cross-tools \
 	--without-debug --without-shared
@@ -181,7 +181,7 @@ install -m755 progs/tic /cross-tools/bin
 # gmp
 cd $SOURCES
 rm -rf $GMP
-tar xf $SOURCES/../gmp/$GMP.tar.*
+tar xf $SOURCES/$GMP.tar.*
 cd $SOURCES/$GMP
 CPPFLAGS=-fexceptions ./configure \
 	--prefix=/cross-tools --enable-cxx
@@ -191,7 +191,7 @@ make install
 # mpfr
 cd $SOURCES
 rm -rf $MPFR
-tar xf $SOURCES/../mpfr/$MPFR.tar.*
+tar xf $SOURCES/$MPFR.tar.*
 cd $SOURCES/$MPFR
 LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
 	./configure --prefix=/cross-tools \
@@ -202,7 +202,7 @@ make install
 # ppl
 cd $SOURCES
 rm -rf $PPL
-tar xf $SOURCES/../ppl/$PPL.tar.*
+tar xf $SOURCES/$PPL.tar.*
 cd $SOURCES/$PPL
 LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
 	./configure --prefix=/cross-tools --enable-shared \
@@ -215,7 +215,7 @@ make install
 # cloog-ppl
 cd $SOURCES
 rm -rf $CLOOGPPL
-tar xf $SOURCES/../cloog-ppl/$CLOOGPPL.tar.*
+tar xf $SOURCES/$CLOOGPPL.tar.*
 cd $SOURCES/$CLOOGPPL
 cp configure{,.orig}
 sed "/LD_LIBRARY_PATH=/d" configure.orig > configure
@@ -229,7 +229,7 @@ make install
 cd $SOURCES
 rm -rf $BINUTILS
 rm -rf binutils-build
-tar xf $SOURCES/../binutils/$BINUTILS.tar.*
+tar xf $SOURCES/$BINUTILS.tar.*
 rm -rf $SOURCES/binutils-build
 cd $SOURCES/$BINUTILS
 mkdir -p $SOURCES/binutils-build
@@ -247,7 +247,7 @@ cp -v $SOURCES/$BINUTILS/include/libiberty.h /tools/include
 cd $SOURCES
 rm -rf $GCC
 rm -rf gcc-build
-tar $SOURCES/../gcc/xf $GCC.tar.*
+tar xf $SOURCES/$GCC.tar.*
 cd $SOURCES/$GCC
 cat $SOURCES/gcc-4.5.1-specs-1.patch | patch -p1
 echo -en '#undef STANDARD_INCLUDE_DIR\n#define STANDARD_INCLUDE_DIR "/tools/include/"\n\n' >> gcc/config/linux.h
@@ -274,7 +274,7 @@ make install-gcc install-target-libgcc
 cd $SOURCES
 rm -rf ${EGLIBC}
 rm -rf eglibc-build
-tar xf $SOURCES/../eglibc/${EGLIBC}.tar.*
+tar xf $SOURCES/${EGLIBC}.tar.*
 cd $SOURCES/${EGLIBC}/libc
 cat $SOURCES/eglibc-2.12-20100725-r11059-make382-1.patch | patch -p1
 sed -i 's/$libc_cv_gnu89_inline = yes/"$libc_cv_gnu89_inline" != no/' configure.in
@@ -305,7 +305,7 @@ make install
 cd $SOURCES
 rm -rf ${EGLIBC}
 rm -rf eglibc-build
-tar xf $SOURCES/../eglibc/${EGLIBC}.tar.*
+tar xf $SOURCES/${EGLIBC}.tar.*
 cd $SOURCES/${EGLIBC}/libc
 cat $SOURCES/eglibc-2.12-20100725-r11059-make382-1.patch | patch -p1
 sed -i 's/$libc_cv_gnu89_inline = yes/"$libc_cv_gnu89_inline" != no/' configure.in
@@ -336,7 +336,7 @@ make install
 cd $SOURCES
 rm -rf $GCC
 rm -rf gcc-build
-tar xf $SOURCES/../gcc/$GCC.tar.*
+tar xf $SOURCES/$GCC.tar.*
 cd $SOURCES/$GCC
 cat $SOURCES/gcc-4.5.1-specs-1.patch | patch -p1
 echo -en '#undef STANDARD_INCLUDE_DIR\n#define STANDARD_INCLUDE_DIR "/tools/include/"\n\n' >> gcc/config/linux.h
@@ -370,7 +370,7 @@ export STRIP="${CLFS_TARGET}-strip"
 # gmp
 cd $SOURCES
 rm -rf $GMP
-tar xvf $SOURCES/../gmp/$GMP.tar.*
+tar xvf $SOURCES/$GMP.tar.*
 cd $SOURCES/$GMP
 HOST_CC=gcc CPPFLAGS=-fexceptions CC="${CC} ${BUILD64}" \
 	CXX="${CXX} ${BUILD64}" ./configure --prefix=/tools \
@@ -382,7 +382,7 @@ make install
 # mpfr
 cd $SOURCES
 rm -rf $MPFR
-tar xf $SOURCES/../mpfr/$MPFR.tar.*
+tar xf $SOURCES/$MPFR.tar.*
 cd $SOURCES/$MPFR
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET} \
@@ -393,7 +393,7 @@ make install
 # ppl
 cd $SOURCES
 rm -rf $PPL
-tar xf $SOURCES/../ppl/$PPL.tar.*
+tar xf $SOURCES/$PPL.tar.*
 cd $SOURCES/$PPL
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET} \
@@ -406,7 +406,7 @@ make install
 # cloog-ppl
 cd $SOURCES
 rm -rf $CLOOGPPL
-tar xf $SOURCES/../cloog-ppl/$CLOOGPPL.tar.*
+tar xf $SOURCES/$CLOOGPPL.tar.*
 cd $SOURCES/$CLOOGPPL
 cp configure{,.orig}
 sed "/LD_LIBRARY_PATH=/d" configure.orig > configure
@@ -420,7 +420,7 @@ make install
 # zlib
 cd $SOURCES
 rm -rf $ZLIB
-tar xf $SOURCES/../zlib/$ZLIB.tar.*
+tar xf $SOURCES/$ZLIB.tar.*
 cd $SOURCES/$ZLIB
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--shared --libdir=/tools/lib64
@@ -431,10 +431,9 @@ make install
 cd $SOURCES
 rm -rf $BINUTILS
 rm -rf binutils-build
-tar xf $SOURCES/../binutils/$BINUTILS.tar.*
+tar xf $SOURCES/$BINUTILS.tar.*
 rm -rf $SOURCES/binutils-build
 cd $SOURCES/$BINUTILS
-cat $SOURCES/binutils-2.19.51-genscripts_multilib-1.patch | patch -p1
 mkdir -p $SOURCES/binutils-build
 cd $SOURCES/binutils-build
 CC="${CC} ${BUILD64}" $SOURCES/$BINUTILS/configure \
@@ -449,7 +448,7 @@ make install
 cd $SOURCES
 rm -rf $GCC
 rm -rf gcc-build
-tar xf $SOURCES/../gcc/$GCC.tar.*
+tar xf $SOURCES/$GCC.tar.*
 cd $SOURCES/$GCC
 cat $SOURCES/gcc-4.5.1-specs-1.patch | patch -p1
 echo -en '#undef STANDARD_INCLUDE_DIR\n#define STANDARD_INCLUDE_DIR "/tools/include/"\n\n' >> gcc/config/linux.h
@@ -475,7 +474,7 @@ make install
 # ncurses
 cd $SOURCES
 rm -rf $NCURSES
-tar xf $SOURCES/../ncurses/$NCURSES.tar.*
+tar xf $SOURCES/$NCURSES.tar.*
 cd $SOURCES/$NCURSES
 CC="${CC} ${BUILD64}" CXX="${CXX} ${BUILD64}" \
 	./configure --prefix=/tools --with-shared \
@@ -488,7 +487,7 @@ make install
 
 # bash
 cd $SOURCES
-cp -a $SOURCES/../bash/$BASH4.tar.* .
+cp -a $SOURCES/bash/$BASH4.tar.* .
 rm -rf $BASH4
 tar xf $SOURCES/$BASH4.tar.*
 cd $SOURCES/$BASH4
@@ -519,7 +518,7 @@ ln -sfv bash /tools/bin/sh
 # bison
 cd $SOURCES
 rm -rf $BISON
-tar xf $SOURCES/../bison/$BISON.tar.*
+tar xf $SOURCES/$BISON.tar.*
 cd $SOURCES/$BISON
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET}
@@ -529,7 +528,7 @@ make install
 # bzip2
 cd $SOURCES
 rm -rf $BZIP2
-tar xf $SOURCES/../bzip2/$BZIP2.tar.*
+tar xf $SOURCES/$BZIP2.tar.*
 cd $SOURCES/$BZIP2
 cp -v Makefile{,.orig}
 sed -e 's@^\(all:.*\) test@\1@g' -e 's@/lib\(/\| \|$\)@/lib64\1@g' Makefile.orig > Makefile
@@ -540,7 +539,7 @@ make PREFIX=/tools install
 # coreutils
 cd $SOURCES
 rm -rf $COREUTILS
-tar xf $SOURCES/../coreutils/$COREUTILS.tar.*
+tar xf $SOURCES/$COREUTILS.tar.*
 cd $SOURCES/$COREUTILS
 # Quelques tests ne comprennent pas la compilation croisee
 cat > config.cache << EOF
@@ -558,7 +557,7 @@ make install
 #diffutils
 cd $SOURCES
 rm -rf $DIFFUTILS
-tar xf $SOURCES/../diffutils/$DIFFUTILS.tar.*
+tar xf $SOURCES/$DIFFUTILS.tar.*
 cd $SOURCES/$DIFFUTILS
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET}
@@ -568,7 +567,7 @@ make install
 #find
 cd $SOURCES
 rm -rf $FINDUTILS
-tar xf $SOURCES/../findutils/$FINDUTILS.tar.*
+tar xf $SOURCES/$FINDUTILS.tar.*
 cd $SOURCES/$FINDUTILS
 echo "gl_cv_func_wcwidth_works=yes" > config.cache
 echo "ac_cv_func_fnmatch_gnu=yes" >> config.cache
@@ -581,7 +580,7 @@ make install
 # file
 cd $SOURCES
 rm -rf $FILE
-tar xf $SOURCES/../tar/$FILE.tar.*
+tar xf $SOURCES/$FILE.tar.*
 cd $SOURCES/$FILE
 cat $SOURCES/file-5.03-cross_compile-1.patch | patch -p1
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
@@ -593,7 +592,7 @@ make install
 # flex
 cd $SOURCES
 rm -rf $FLEX
-tar xf $SOURCES/../flex/$FLEX.tar.*
+tar xf $SOURCES/$FLEX.tar.*
 cd $SOURCES/$FLEX
 cat $SOURCES/flex-2.5.35-gcc44-1.patch | patch -p1
 cp -v Makefile.in{,.orig}
@@ -611,7 +610,7 @@ make install
 # gawk
 cd $SOURCES
 rm -rf $GAWK
-tar xf $SOURCES/../gawk/$GAWK.tar.*
+tar xf $SOURCES/$GAWK.tar.*
 cd $SOURCES/$GAWK
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET} \
@@ -622,7 +621,7 @@ make install
 # gettext
 cd $SOURCES
 rm -rf $GETTEXT
-tar xf $SOURCES/../gettext/$GETTEXT.tar.*
+tar xf $SOURCES/$GETTEXT.tar.*
 cd $SOURCES/$GETTEXT
 cd gettext-tools
 echo "gl_cv_func_wcwidth_works=yes" > config.cache
@@ -637,7 +636,7 @@ cp -v src/msgfmt /tools/bin
 # grep
 cd $SOURCES
 rm -rf $GREP
-tar xf $SOURCES/../grep/$GREP.tar.*
+tar xf $SOURCES/$GREP.tar.*
 cd $SOURCES/$GREP
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET} \
@@ -648,7 +647,7 @@ make install
 # gzip
 cd $SOURCES
 rm -rf $GZIP
-tar xf $SOURCES/../gzip/$GZIP.tar.*
+tar xf $SOURCES/$GZIP.tar.*
 cd $SOURCES/$GZIP
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET}
@@ -659,7 +658,7 @@ make install
 # m4
 cd $SOURCES
 rm -rf $M4
-tar xf $SOURCES/../m4/$M4.tar.*
+tar xf $SOURCES/$M4.tar.*
 cd $SOURCES/$M4
 cat > config.cache << EOF
 gl_cv_func_btowc_eof=yes
@@ -679,7 +678,7 @@ make install
 # make
 cd $SOURCES
 rm -rf $MAKE
-tar xf $SOURCES/../make/$MAKE.tar.*
+tar xf $SOURCES/$MAKE.tar.*
 cd $SOURCES/$MAKE
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET}
@@ -689,7 +688,7 @@ make install
 # patch
 cd $SOURCES
 rm -rf $PATCH
-tar xf $SOURCES/../patch/$PATCH.tar.*
+tar xf $SOURCES/$PATCH.tar.*
 cd $SOURCES/$PATCH
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET}
@@ -699,7 +698,7 @@ make install
 # sed
 cd $SOURCES
 rm -rf $ED
-tar xf $SOURCES/../sed/$SED.tar.*
+tar xf $SOURCES/$SED.tar.*
 cd $SOURCES/$SED
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET}
@@ -709,7 +708,7 @@ make install
 # tar
 cd $SOURCES
 rm -rf $TAR
-tar xf $SOURCES/../tar/$TAR.tar.*
+tar xf $SOURCES/$TAR.tar.*
 cd $SOURCES/$TAR
 cat $SOURCES/tar-1.23-overflow_fix-1.patch | patch -p1
 cat > config.cache << EOF
@@ -732,7 +731,7 @@ make install
 # texinfo
 cd $SOURCES
 rm -rf $TEXINFO
-tar xf $SOURCES/../texinfo/$TEXINFO.tar.*
+tar xf $SOURCES/$TEXINFO.tar.*
 cd $SOURCES/texinfo-4.13
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET}
@@ -744,7 +743,7 @@ make install
 # xz
 cd $SOURCES
 rm -rf $XZ
-tar xf $SOURCES/../xz/$XZ.tar.*
+tar xf $SOURCES/$XZ.tar.*
 cd $SOURCES/$XZ
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} \
@@ -755,7 +754,7 @@ make install
 # util-linux-ng
 cd $SOURCES
 rm -rf $UTILLINUXNG
-tar xf $SOURCES/../util-linux-ng/$UTILLINUXNG.tar.*
+tar xf $SOURCES/$UTILLINUXNG.tar.*
 cd $SOURCES/$UTILLINUXNG
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET} \
