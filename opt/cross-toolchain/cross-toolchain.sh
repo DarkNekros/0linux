@@ -203,7 +203,7 @@ make install
 cd $SOURCES
 rm -rf $MPC
 tar xf $SOURCES/$MPC.tar.*
-cd $SOURCES/$MPFR
+cd $SOURCES/$MPC
 LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
 ./configure --prefix=/cross-tools \
 	--with-gmp=/cross-tools \
@@ -403,10 +403,14 @@ make
 make install
 
 # mpc
+cd $SOURCES
+rm -rf $MPC
+tar xf $SOURCES/$MPC.tar.*
+cd $SOURCES/$MPC
 CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET} \
 	--libdir=/tools/lib64
-mek
+make
 make install
 
 # ppl
