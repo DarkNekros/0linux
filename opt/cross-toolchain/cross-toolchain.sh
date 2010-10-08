@@ -27,9 +27,6 @@ export PATH
 # La partition separee ou le repertoire ou on va placer les fichiers compiles :
 CLFS=${CLFS:-/home/appzer0/cross-toolchain2011}
 
-# On se garde un journal :
-exec 2>&1 | tee ${CLFS}.log
-
 # L'hote *dinstinct* de l'hote reel :
 CLFS_HOST=$(echo ${MACHTYPE} | sed "s/$(echo ${MACHTYPE} | cut -d'-' -f2)/cross/")
 
