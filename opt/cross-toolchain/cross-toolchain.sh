@@ -108,7 +108,7 @@ if [ ! "$DOWNLOAD" = "" ]; then
 	http://ftp.gnu.org/gnu/bash/$BASH4.tar.gz
 	http://patches.cross-lfs.org/dev/bash-4.1-branch_update-1.patch
 	http://prdownloads.sourceforge.net/libpng/$ZLIB.tar.bz2
-	http://www.bzip.org/$(echo $BZIP2 | cut d'-' -f2)/$BZIP2.tar.gz
+	http://www.bzip.org/$(echo $BZIP2 | cut -d'-' -f2)/$BZIP2.tar.gz
 	ftp://ftp.gnu.org/gnu/coreutils/$COREUTILS.tar.xz
 	ftp://ftp.gnu.org/gnu/diffutils/$DIFFUTILS.tar.xz
 	http://prdownloads.sourceforge.net/flex/$FLEX.tar.bz2
