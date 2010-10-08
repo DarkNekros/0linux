@@ -136,11 +136,14 @@ if [ ! "$DOWNLOAD" = "" ]; then
 		cd -
 	done
 	
-	# On synchronise avec le SVN de eglibc :
-	svn co svn://svn.eglibc.org/trunk $EGLIBC
-	find . -type d -name ".svn" -delete
-	tar cfvJ $EGLIBC.tar.xz $EGLIBC
-fi
+	cd $SOURCES
+	if  [ ! -f $EGLIBC.tar.xz ]; then
+		# On synchronise avec le SVN de eglibc :
+		svn co svn://svn.eglibc.org/trunk $EGLIBC
+		find . -type d -name ".svn" | xargs rm -rf {}\;
+		tar cfvJ $EGLIBC.tar.xz $EGLIBC
+	fi
+	cd -
 
 # linux-headers
 cd $SOURCES
