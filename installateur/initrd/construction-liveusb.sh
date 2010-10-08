@@ -41,6 +41,7 @@ for paq in base-systeme* etc* eglibc* sgml*; do
 done
 
 spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/make-*.cpio
+spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/readline-*.cpio
 spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/*.cpio
 spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
 
