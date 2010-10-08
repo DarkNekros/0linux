@@ -56,7 +56,7 @@ FINDUTILS=findutils-4.4.2
 BINUTILS=binutils-2.20.1
 GCC=gcc-4.5.1
 EGLIBC=eglibc-2.12_10102010
-PPL=ppl-0.11
+PPL=ppl-0.11.1pre1
 CLOOGPPL=cloog-ppl-0.15.9
 TCL=tcl8.5.9
 EXPECT=expect-5.44.1.15
@@ -95,7 +95,7 @@ if [ ! "$DOWNLOAD" = "" ]; then
 		ftp://ftp.gnu.org/gnu/binutils/$BINUTILS.tar.bz2 \
 		http://ftp.gnu.org/gnu/gcc/$GCC/$GCC.tar.bz2 \
 		http://patches.cross-lfs.org/dev/eglibc-2.12-20100725-r11059-make382-1.patch \
-		ftp://ftp.cs.unipr.it/pub/ppl/releases/$(echo $PPL | cut -d'-' -f2)/$PPL.tar.bz2 \
+		http://www.cs.unipr.it/ppl/Download/ftp/snapshots/$PPL.tar.bz2 \
 		ftp://gcc.gnu.org/pub/gcc/infrastructure/$CLOOGPPL.tar.gz \
 		http://prdownloads.sourceforge.net/tcl/$TCL-src.tar.gz \
 		http://prdownloads.sourceforge.net/expect/$EXPECT.tar.bz2 \
