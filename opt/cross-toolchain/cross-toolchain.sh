@@ -140,7 +140,7 @@ if [ ! "$DOWNLOAD" = "" ]; then
 	if  [ ! -f $EGLIBC.tar.xz ]; then
 		# On synchronise avec le SVN de eglibc :
 		svn co svn://svn.eglibc.org/trunk $EGLIBC
-		find . -type d -name ".svn" | xargs rm -rf {}\;
+		find . -type d -name ".svn" -exec rm -rf {}\;
 		tar cfvJ $EGLIBC.tar.xz $EGLIBC
 	fi
 	cd -
