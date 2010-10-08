@@ -12,6 +12,7 @@ make 3.82
 mesa 7.9
 python 2.7
 qt 4.7
+sqlite 3.7.3 
 udev 163 
 x11-polices 7.6 (polices à mettre à jour)
 xdpyinfo 1.2.0 (x11-apps)

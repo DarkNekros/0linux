@@ -11,7 +11,6 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-eglibc}
 BUILD=${BUILD:-1}
 
-
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
 ARCH=${ARCH:-x86_64}
@@ -36,8 +35,9 @@ fi
 if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
 	echo "Synchronisation SVN..."
 	svn co svn://svn.eglibc.org/trunk ${NAMESRC}-${VERSION}
+	find . -type d -name ".svn" -delete
 	echo "Création de l'archive source en cours..."
-	tar cfJ	${NAMESRC}-${VERSION}.$EXT ${NAMESRC}-${VERSION}
+	tar cfJ ${NAMESRC}-${VERSION}.$EXT ${NAMESRC}-${VERSION}
 fi
 
 # On les vérifie :
@@ -130,7 +130,7 @@ $TMP/${NAME}/libc/configure \
 	--build=${TARGET32}
 
 make
-make install install_root=${PKG}
+fakeroot make install install_root=${PKG}
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -174,8 +174,8 @@ $TMP/${NAME}/libc/configure \
 	--build=${TARGET64}
 
 make
-make install install_root=${PKG}
-make localedata/install-locales install_root=${PKG}
+fakeroot make install install_root=${PKG}
+fakeroot make localedata/install-locales install_root=${PKG}
 
 # On place la configuration de nscd :
 cat $TMP/${NAME}/libc/nscd/nscd.conf > ${PKG}/etc/nscd.conf.new
@@ -267,7 +267,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
