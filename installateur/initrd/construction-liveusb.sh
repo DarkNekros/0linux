@@ -39,7 +39,8 @@ done
 spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/*.cpio
 spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
 
-for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* libidn* libpng* libssh2* popt*; do
+for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
+	libidn* libpng* libssh2* popt* python-2* perl-5* ruby*; do
 	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio
 done
 
