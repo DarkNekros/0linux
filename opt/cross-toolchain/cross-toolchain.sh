@@ -125,7 +125,7 @@ if [ ! "$DOWNLOAD" = "" ]; then
 	http://www.linuxfromscratch.org/patches/lfs/development/tar-1.23-overflow_fix-1.patch
 	ftp://ftp.gnu.org/gnu/texinfo/texinfo-4.13a.tar.gz
 	http://tukaani.org/xz/$XZ.tar.xz
-	http://www.kernel.org/pub/linux/utils/util-linux-ng/v2.18/$UTILINUXNG.tar.bz2"
+	http://www.kernel.org/pub/linux/utils/util-linux-ng/v2.18/$UTILLINUXNG.tar.bz2"
 	
 	for archive in ${URLS}; do
 		# On telecharge les sources :
