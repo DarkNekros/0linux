@@ -262,8 +262,7 @@ cat $SOURCES/gcc-4.5.1-specs-1.patch | patch -p1
 echo -en '#undef STANDARD_INCLUDE_DIR\n#define STANDARD_INCLUDE_DIR "/tools/include/"\n\n' >> gcc/config/linux.h
 echo -en '\n#undef STANDARD_STARTFILE_PREFIX_1\n#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"\n' >> gcc/config/linux.h
 echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFIX_2 ""\n' >> gcc/config/linux.h
-cp -v gcc/Makefile.in{,.orig}
-sed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include@g" gcc/Makefile.in.orig > gcc/Makefile.in
+ed -e "s@\(^CROSS_SYSTEM_HEADER_DIR =\).*@\1 /tools/include at g" gcc/Makefile.in
 touch /tools/include/limits.h
 mkdir -p $SOURCES/gcc-build
 cd $SOURCES/gcc-build
@@ -272,7 +271,7 @@ AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
 	--build=${CLFS_HOST} --host=${CLFS_HOST} --target=${CLFS_TARGET} \
 	--with-sysroot=${CLFS} --with-local-prefix=/tools --disable-nls \
 	--disable-shared --with-mpfr=/cross-tools --with-gmp=/cross-tools \
-	--with-ppl=/cross-tools --with-cloog=/cross-tools \
+	--with-ppl=/cross-tools --with-cloog=/cross-tools --with-mpc=/cross-tools \
 	--without-headers --with-newlib --disable-decimal-float \
 	--disable-libgomp --disable-libmudflap --disable-libssp \
 	--disable-threads --enable-languages=c
