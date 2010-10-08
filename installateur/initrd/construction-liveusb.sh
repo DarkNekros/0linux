@@ -40,9 +40,10 @@ for paq in base-systeme* etc* eglibc* sgml*; do
 	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq}
 done
 
-spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/make-*.cpio
-spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/readline-*.cpio
-spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/*.cpio
+for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*"); do
+	spkadd --quiet --root=${LIVEOS} ${paq}
+done
+
 spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
 
 for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
@@ -75,9 +76,6 @@ fi
 
 # On va chrooter dans le système autonome :
 cd ${LIVEOS}
-
-# On désinstalle 'linux-source', inutile ici :
-chroot . /sbin/spkrm --quiet /var/log/paquets/linux-source-*.cpio
 
 # On met à jour les liens des bibliothèques :
 chroot . /sbin/ldconfig
