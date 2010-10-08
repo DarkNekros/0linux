@@ -1,12 +1,15 @@
 #!/bin/env bash
+
 # Construction de la chaine d'outils croisee multilib i686/x86_64.
 
 # 1. Choisissez un repertoire et affectez-le a $CLFS, voir plus bas.
 
-# 2. Il faut avoir cree les liens /tools et /cross-tools (à la racine, donc
-# en root), pointant vers les bons repertoires.
+# 2. Il faut avoir cree les repertoires $CLFS/{cross-tools,tools,sources}.
 
-# 3. Executer avec la variable DOWNLOAD positionnee pour telecharger les sources :
+# 3. Il faut avoir cree les liens '/cross-tools' et '/tools' (à la racine,
+# donc en root), pointant vers les bons repertoires.
+
+# 4. Executer avec la variable DOWNLOAD positionnee pour telecharger les sources :
 #	$ DOWNLOAD=oui ./cross-toolchain.sh
 
 # N.B. : A VOS RISQUES ET PERILS. EVITEZ DE LANCER CECI EN ROOT.
@@ -23,7 +26,6 @@ export PATH
 
 # La partition separee ou le repertoire ou on va placer les fichiers compiles :
 CLFS=${CLFS:-/home/appzer0/cross-toolchain2011}
-mkdir -p ${CLFS}
 
 # On se garde un journal :
 exec 2>&1 | tee ${CLFS}.log
@@ -46,7 +48,6 @@ BUILD64=${BUILD64:--m64}
 
 # Emplacement des archives sources et des correctifs :
 SOURCES=${SOURCES:-${CLFS}/sources}
-mkdir -p ${SOURCES}
 
 # Nom et versions des archives :
 LINUX=linux-2.6.35.7
