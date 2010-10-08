@@ -56,6 +56,7 @@ FINDUTILS=findutils-4.4.2
 BINUTILS=binutils-2.20.1
 GCC=gcc-4.5.1
 EGLIBC=eglibc-2.12_10102010
+MPC=mpc-0.8.2
 PPL=ppl-0.10.2
 CLOOGPPL=cloog-ppl-0.15.9
 TCL=tcl8.5.9
@@ -95,6 +96,7 @@ if [ ! "$DOWNLOAD" = "" ]; then
 		ftp://ftp.gnu.org/gnu/binutils/$BINUTILS.tar.bz2 \
 		http://ftp.gnu.org/gnu/gcc/$GCC/$GCC.tar.bz2 \
 		http://patches.cross-lfs.org/dev/eglibc-2.12-20100725-r11059-make382-1.patch \
+		http://www.multiprecision.org/mpc/download/$MPC.tar.gz \
 		ftp://ftp.cs.unipr.it/pub/ppl/releases/$(echo $PPL | cut -d'-' -f2)/$PPL.tar.bz2 \
 		ftp://gcc.gnu.org/pub/gcc/infrastructure/$CLOOGPPL.tar.gz \
 		http://prdownloads.sourceforge.net/tcl/$TCL-src.tar.gz \
@@ -193,6 +195,14 @@ cd $SOURCES/$MPFR
 LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
 	./configure --prefix=/cross-tools \
 	--enable-shared --with-gmp=/cross-tools
+make
+make install
+
+# mpc
+LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+./configure --prefix=/cross-tools \
+	--with-gmp=/cross-tools \
+	--with-mpfr=/cross-tools
 make
 make install
 
@@ -386,6 +396,13 @@ CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
 	--build=${CLFS_HOST} --host=${CLFS_TARGET} \
 	--libdir=/tools/lib64 --enable-shared
 make
+make install
+
+# mpc
+CC="${CC} ${BUILD64}" ./configure --prefix=/tools \
+	--build=${CLFS_HOST} --host=${CLFS_TARGET} \
+	--libdir=/tools/lib64
+mek
 make install
 
 # ppl
