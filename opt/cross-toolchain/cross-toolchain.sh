@@ -113,7 +113,7 @@ if [ ! "$DOWNLOAD" = "" ]; then
 	ftp://ftp.gnu.org/gnu/diffutils/$DIFFUTILS.tar.xz
 	http://prdownloads.sourceforge.net/flex/$FLEX.tar.bz2
 	http://patches.cross-lfs.org/dev/flex-2.5.35-gcc44-1.patch
-	http://ftp.gnu.org/gnu/gawk/$GAWK.tar.xz
+	http://ftp.gnu.org/gnu/gawk/$GAWK.tar.bz2
 	http://ftp.gnu.org/gnu/gettext/$GETTEXT.tar.gz
 	http://ftp.gnu.org/gnu/grep/$GREP.tar.gz
 	http://ftp.gnu.org/gnu/gzip/$GZIP.tar.xz
