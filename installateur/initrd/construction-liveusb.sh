@@ -1,10 +1,14 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
+
 # *** À LANCER EN ROOT ! ***
 # Lancer comme suit :  './construction-liveusb.recette PÉRIPHÉRIQUE_USB', par ex. :
 # 	# ./construction-liveusb.recette /dev/sdc
-# *** ATTENTION : Bien vérifier qu'on désigne la clé USB et PAS un disque dur 
-# système et/ou données !!! ***
+
+# ATTENTION : Bien vérifier qu'on désigne la clé USB et PAS un disque dur 
+# système et/ou données !!! Ne spécifiez pas une partition (se terminant par un
+# chiffre comme '/dev/sdc1') mais bien le PÉRIPHÉRIQUE ('/dev/sdc', '/dev/sdd', etc.)!
+
 # ATTENTION : relisez les avertissements 2 fois, vous êtes prévenu(e) !
 
 # Un périphérique en argument est obligatoire. 
