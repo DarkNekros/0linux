@@ -54,7 +54,7 @@ LINUX=linux-2.6.35.7
 FILE=file-5.03
 NCURSES=ncurses-5.7
 GMP=gmp-5.0.1
-MPFR=mpfr-3.0.1
+MPFR=mpfr-3.0.0
 FINDUTILS=findutils-4.4.2
 BINUTILS=binutils-2.20.1
 GCC=gcc-4.5.1
@@ -130,7 +130,9 @@ if [ ! "$DOWNLOAD" = "" ]; then
 	for archive in ${URLS}; do
 		# On telecharge les sources :
 		cd $SOURCES
-		wget -vc ${archive}
+		if [ ! -f $(basename ${archive}) ]; then
+			wget -vc ${archive}
+		fi
 		cd -
 	done
 	
