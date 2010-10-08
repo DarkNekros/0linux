@@ -144,6 +144,8 @@ if [ ! "$DOWNLOAD" = "" ]; then
 	fi
 	cd -
 
+fi
+
 # linux-headers
 cd $SOURCES
 rm -rf $LINUX
