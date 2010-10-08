@@ -200,6 +200,10 @@ make
 make install
 
 # mpc
+cd $SOURCES
+rm -rf $MPC
+tar xf $SOURCES/$MPC.tar.*
+cd $SOURCES/$MPFR
 LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
 ./configure --prefix=/cross-tools \
 	--with-gmp=/cross-tools \
