@@ -84,7 +84,7 @@ TEXINFO=texinfo-4.13a
 XZ=xz-4.999.9beta
 UTILLINUXNG=util-linux-ng-2.18
 
-# Si $DOWNLOAD n'est pas vide, alors on veut telecharger les sources : :
+# Si $DOWNLOAD n'est pas vide, alors on veut telecharger les sources :
 if [ ! "$DOWNLOAD" = "" ]; then
 
 	# URL des archives a telecharger, sources et correctifs :
@@ -130,14 +130,14 @@ if [ ! "$DOWNLOAD" = "" ]; then
 	for archive in ${URLS}; do
 		# On telecharge les sources :
 		cd $SOURCES
-		if [ ! -f $(basename ${archive}) ]; then
+		if [ ! -r $(basename ${archive}) ]; then
 			wget -vc ${archive}
 		fi
 		cd -
 	done
 	
 	cd $SOURCES
-	if  [ ! -f $EGLIBC.tar.xz ]; then
+	if [ ! -r $EGLIBC.tar.xz ]; then
 		# On synchronise avec le SVN de eglibc :
 		svn co svn://svn.eglibc.org/trunk $EGLIBC
 		find . -type d -name ".svn" -exec rm -rf {}\;
