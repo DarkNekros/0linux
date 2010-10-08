@@ -95,6 +95,7 @@ if [ ! "$DOWNLOAD" = "" ]; then
 		ftp://ftp.gnu.org/gnu/findutils/$FINDUTILS.tar.gz \
 		ftp://ftp.gnu.org/gnu/binutils/$BINUTILS.tar.bz2 \
 		http://ftp.gnu.org/gnu/gcc/$GCC/$GCC.tar.bz2 \
+		http://patches.cross-lfs.org/dev/gcc-4.5.1-specs-1.patch \
 		http://patches.cross-lfs.org/dev/eglibc-2.12-20100725-r11059-make382-1.patch \
 		http://www.multiprecision.org/mpc/download/$MPC.tar.gz \
 		ftp://ftp.cs.unipr.it/pub/ppl/releases/$(echo $PPL | cut -d'-' -f2)/$PPL.tar.bz2 \
