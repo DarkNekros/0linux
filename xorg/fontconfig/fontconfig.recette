@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-fontconfig}
 VERSION=${VERSION:-2.8.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-fontconfig}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -61,7 +60,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige les chemins des polices, 'fontconfig' a tendance à vouloir
-# indexer des horreurs automatiquement et à s eplaindre sur le terminal :
+# indexer des horreurs automatiquement et à se plaindre sur le terminal :
 cat $CWD/fontconfig.chemins-polices.patch | patch -p1
 
 # On positionne USE_ARCH :
@@ -73,6 +72,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -86,7 +86,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--build=${TARGET32}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -116,6 +116,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -129,15 +130,10 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--build=${TARGET64}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On installe le script d'indexation de Slackware :
-mkdir -p ${PKG}/var/log/setup
-cp -a $CWD/setup.05.fontconfig ${PKG}/var/log/setup
-chmod 755 ${PKG}/var/log/setup/setup.05.fontconfig
 
 # On paramètre de la même façon que Slackware en créant les liens dans
 # /etc/fonts/conf.d :
@@ -217,7 +213,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
