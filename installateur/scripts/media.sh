@@ -15,29 +15,29 @@ while [ 0 ]; do
 	echo "périphérique USB ! :)"
 	echo ""
 	echo "* Installer depuis un média amovible (disque/clé/carte) :"
-	echo "usb     : vous installez depuis une clé USB/une carte mémoire"
+	echo "1 : USB - vous installez depuis une clé USB/une carte mémoire"
 	echo ""
 	echo -n "Votre choix : "
 	read MEDIA;
 	case "$MEDIA" in
-	"dvd")
-		#. dvd.sh
-		break
-	;;
-	"usb")
+	"1")
 		. usb.sh
 		break
 	;;
-	"distant")
+	"2")
+		#. dvd.sh
+		break
+	;;
+	"3")
 		#. rsync.sh
 		break
 	;;
-	"local")
+	"4")
 		#. hdd.sh
 		break
 	;;
 	*)
-		echo "Veuillez entrer un média ou un emplacement valide."
+		echo "Veuillez entrer un numéro valide (entre 1 et 4)."
 		sleep 2
 		unset MEDIA
 		continue

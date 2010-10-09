@@ -44,13 +44,13 @@ echo -e "\033[1;32mIntroduction à l'installation\033[0;0m"
 echo ""
 echo "Bonjour ! Bienvenue dans l'installateur."
 echo ""
-echo "Pour commencer, basculez sur la console n°2 avec Alt+F2 et connectez-"
-echo "vous en root. Puis, revenez sur cette console avec Alt+F1. La console"
+echo "Pour commencer, basculez sur la console n°2 avec ALT+F2 et connectez-"
+echo "vous-y en root. Puis, revenez sur cette console avec ALT+F1. La console"
 echo "n°2 vous servira à lancer les outils vous permettant de renseigner"
-echo "l'installateur sur votre système (oui, il est un peu feignant)."
+echo "l'installateur sur votre système (oui, il est un peu fainéant)."
 echo ""
-echo "Vous pouvez quitter cet installateur à tout moment avec la combinaison"
-echo "de touches Ctrl+C."
+echo "Sachez que vous pouvez quitter cet installateur à tout moment avec"
+echo " la combinaison de touches CTRL+C."
 echo ""
 echo "Consultez l'aide dans le menu qui va suivre pour en savoir plus."
 echo ""
@@ -80,16 +80,16 @@ while [ 0 ]; do
 	clear
 	echo -e "\033[1;32mInstallation de votre système Linux.\033[0;0m"
 	echo ""
-	echo "Entrez ci-après la rubrique souhaitée et appuyez sur ENTRÉE."
+	echo "Entrez ci-après le code de la rubrique souhaitée et appuyez sur ENTRÉE."
 	echo ""
-	echo "aide       : lire l'aide de l'installateur"
-	echo "clavier    : redéfinir la disposition des touches du clavier"
-	echo "swap       : définir votre partition d'échange « swap »"
-	echo "partitions : définir les partition sur lesquelles installer 0"
-	echo "média      : spécifier le média d'installation"
-	echo "installer  : lancer l'installation des paquets logiciels"
-	echo "configurer : configurer votre nouveau système Linux"
-	echo "quitter    : quitter l'installateur"
+	echo "1 : AIDE - lire l'aide de l'installateur"
+	echo "2 : CLAVIER - redéfinir la disposition des touches du clavier"
+	echo "3 : SWAP - définir votre partition d'échange « swap »"
+	echo "4 : PARTITIONS - définir les partitions sur lesquelles installer 0"
+	echo "5 : MÉDIA - spécifier le média d'installation"
+	echo "6 : INSTALLER - lancer l'installation des paquets logiciels"
+	echo "7 : CONFIGURER - configurer votre nouveau système Linux"
+	echo "8 : QUITTER - quitter l'installateur"
 	echo ""
 	echo -n "Votre choix : "
 	read CHOIXMENUPRINCIPAL;
@@ -97,33 +97,33 @@ while [ 0 ]; do
 		exit 0
 	fi
 	case "$CHOIXMENUPRINCIPAL" in
-	"aide")
+	"1")
 		less /aide.txt
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;
-	"clavier")
+	"2")
 		. clavier.sh
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;
-	"swap")
+	"3")
 		. swap.sh
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;
-	"partitions")
+	"4")
 		. partitions.sh
 		. partitions_fat.sh
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;
-	"média")
+	"5")
 		. media.sh
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;
-	"installer")
+	"6")
 		if [ ! -r $TMP/choix_media -o ! -r $TMP/choix_partitions ]; then
 			clear
 			echo -e "\033[1;32mLe système n'est pas préparé.\033[0;0m"
@@ -143,13 +143,18 @@ while [ 0 ]; do
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;
-	"configurer")
+	"7")
 		. configurer.sh
 		unset CHOIXMENUPRINCIPAL
 		break
 	;;
-	"quitter")
+	"8")
 		exit 0
+	;;
+	*)
+		echo "Veuillez entrer un numéro valide (entre 1 et 8)."
+		sleep 2
+		continue
 	esac
 done
 
@@ -209,7 +214,7 @@ fi
 clear
 echo -e "\033[1;32mL'installation de votre système Linux est terminée.\033[0;0m"
 echo ""
-echo "Vous pouvez maintenant appuyer sur 'CTRL+ALT+SUPPR' ou bien taper"
+echo "Vous pouvez maintenant appuyer sur CTRL+ALT+SUPPR ou bien taper"
 echo "'shutdown -r now' pour redémarrer la machine."
 echo "Si un média d'installation est encore présent, retirez-le."
 echo "À bientôt !"

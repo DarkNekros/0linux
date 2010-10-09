@@ -45,16 +45,16 @@ while [ listeswap = "" ]; do
 	fi
 done
 
-# Si l'on trouve une ou plusieurs swaps :
+# Si l'on trouve une swap :
 while [ 0 ]; do
 	if [ -r $TMP/ignorer_swap ]; then
 		break
 	fi
 	clear
-	echo -e "\033[1;32mUne ou plusieurs partitions d'échange ont été détectées.\033[0;0m"
+	echo -e "\033[1;32mUne partition d'échange a été détectée.\033[0;0m"
 	echo ""
-	echo "Dans la console n°2, utilisez les outils suivants pour déterminer vos"
-	echo "partitions d'échange « swap » existantes :"
+	echo "Dans la console n°2, utilisez au choix les outils suivants pour"
+	echo "déterminer vos partitions d'échange « swap » existantes :"
 	echo ""
 	echo "	# cfdisk"
 	echo "	# fdisk -l"
@@ -88,7 +88,7 @@ while [ 0 ]; do
 		fi
 	else
 		# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-		if [ "$(echo ${SWAPSELECT} | grep '/dev/')" = "" ]; then
+		if [ "$(echo ${SWAPSELECT} | sed -e 's/\(\/dev\/\).*$/\1/')" = "" ]; then
 			echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 			sleep 2
 			unset SWAPSELECT

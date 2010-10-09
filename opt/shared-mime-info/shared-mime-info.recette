@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-shared-mime-info}
-VERSION=${VERSION:-0.71}
+VERSION=${VERSION:-0.80}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-shared-mime-info}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -122,14 +122,6 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On copie le script pour l'installateur comme Slackware pour le moment :
-mkdir -p ${PKG}/var/log/setup
-cat << EOF > ${PKG}/var/log/setup/setup.07.update-mime-database
-#BLURB="Mise à jour de la base de données des types MIME."
-chroot . /usr/bin/update-mime-database /usr/share/mime 1> /dev/null 2> /dev/null
-
-EOF
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

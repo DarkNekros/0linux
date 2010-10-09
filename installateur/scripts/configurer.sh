@@ -20,6 +20,7 @@ read YOP;
 echo "Ajout de « loadkeys ${DISPOCLAVIER} » dans votre fichier"
 echo "'/etc/rc.d/rc.keymap' pour le chargement de la disposition"
 echo "du clavier..."
+sleep 2
 
 if [ -r $TMP/choix_clavier ]; then
 	DISPOCLAVIER="`cat $TMP/choix_clavier`"
@@ -32,8 +33,6 @@ if [ -r $TMP/choix_clavier ]; then
 	echo "" >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	chmod 755 ${SETUPROOT}/etc/rc.d/rc.keymap
 fi
-
-sleep 1
 
 if [ -d ${SETUPROOT}/var/log/setup ]; then
 	

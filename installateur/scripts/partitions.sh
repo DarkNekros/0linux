@@ -3,7 +3,7 @@
 # On nettoie avant toute chose :
 rm -f $TMP/choix_partitions
 unset KHGFKJ ROOTSELECT DOFORMAT VERIF FSFORMAT AJOUTLINUX OKPARTS
-unset MOUNTPOINT LINUXADD formatok BLAH
+unset MOUNTPOINT LINUXADD FORMATOK BLAH CONFIRM
 
 # On tente de détecter une ou plusieurs partitions Linux, swap exceptée.
 # On retire l'astérisque "*" des partitions amorçables pour avoir 6 champs partout :
@@ -21,7 +21,8 @@ crunch() {
 # taille_partition(périphérique) :
 taille_partition() {
 	Taille=$(fdisk -l | grep $1 | crunch | tr -d "*" | tr -d "+" | cut -f4 -d' ')
-	echo "$Taille blocs"
+	TailleGo=$(echo "$Taille / 1000000" | bc)
+	echo "$TailleGo Go"
 }
 
 # formater(type,périphérique,vérifier)
@@ -98,10 +99,9 @@ else
 	echo -e "\033[1;32mAucune partition Linux n'a été détectée.\033[0;0m"
 	echo ""
 	echo "Il ne semble pas y avoir de partition de type Linux sur cette"
-	echo "machine. Il vous faut au moins une partition de ce type pour installer"
-	echo "Linux. Pour ce faire, vous devez créer ces partitions en utilisant "
-	echo "'cfdisk', 'fdisk' ou 'parted'. Pour en savoir plus, lisez"
-	echo "l'aide de l'installateur."
+	echo "machine. Il vous faut créer au moins une partition de ce type pour"
+	echo "installer Linux. Pour ce faire, utilisez 'cfdisk', 'fdisk' ou 'parted'."
+	echo "Pour en savoir plus, lisez l'aide de l'installateur."
 	echo ""
 	echo -n "Appuyez sur ENTRÉE pour continuer."
 	read KJGFKJ;
@@ -112,8 +112,8 @@ while [ "$(cat $TMP/liste_partitions)" = "" ]; do
 	clear
 	echo -e "\033[1;32mPréparer la partition racine pour Linux.\033[0;0m"
 	echo ""
-	echo "Dans la console n°2, utilisez les outils suivants pour déterminer vos"
-	echo "partitions Linux existantes :"
+	echo "Dans la console n°2, utilisez au choix les outils suivants pour"
+	echo " déterminer vos partitions Linux existantes :"
 	echo ""
 	echo "		# cfdisk"
 	echo "		# fdisk -l"
@@ -129,7 +129,7 @@ while [ "$(cat $TMP/liste_partitions)" = "" ]; do
 		continue
 	else
 		# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-		if [ "$(echo ${ROOTSELECT} | grep '/dev/')" = "" ]; then
+		if [ "$(echo ${ROOTSELECT} | sed -e 's/\(\/dev\/\).*$/\1/')" = "" ]; then
 			echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 			sleep 2
 			continue
@@ -142,7 +142,7 @@ while [ "$(cat $TMP/liste_partitions)" = "" ]; do
 done
 	
 # Boucle d'affichage du formatage :
-while [ 0 ]; do
+while [ ! "${ROOTFORMATOK}" = "ok" ]; do
 	clear
 	echo -e "\033[1;32mFormatage de la partition ${ROOTSELECT}.\033[0;0m"
 	echo ""
@@ -150,69 +150,69 @@ while [ 0 ]; do
 	echo "maintenant. N.B.: Ceci effacera toutes les données s'y trouvant !"
 	echo "La vérification des secteurs défectueux est généralement inutile,"
 	echo "les disques durs intégrant déjà nativement ce type de vérification."
-	echo "Entrez la méthode de formatage souhaitée parmi la liste suivante :"
+	echo "Entrez le code de la méthode de formatage souhaitée parmi la liste suivante :"
 	echo ""
-	echo "formater : formater sans vérification des secteurs défectueux"
-	echo "vérifier : formater avec vérification des secteurs défectueux"
-	echo "non      : ne rien faire, la partition est déjà formatée correctement"
+	echo "1 : FORMATER - formater sans vérification des secteurs défectueux"
+	echo "2 : VÉRIFIER - formater avec vérification des secteurs défectueux"
+	echo "3 : NON ! - ne rien faire, la partition est déjà formatée correctement"
 	echo ""
 	echo -n "Votre choix : "
 	read DOFORMAT;
-	if [ "$DOFORMAT" = "" ]; then
-		echo "Veuillez entrer une méthode de formatage valide."
+	if [ "$DOFORMAT" = "3" ]; then
+		break
+	elif [ "$DOFORMAT" = "2" ]; then
+		VERIF="oui"
+	elif [ "$DOFORMAT" = "1" ]; then
+		VERIF="non"
+	else
+		echo "Veuillez entrer un numéro valide (entre 1 et 3)."
 		sleep 2
 		continue
-	else
-		if [ "$DOFORMAT" = "non" ]; then
-			break
-		elif [ "$DOFORMAT" = "vérifier" ]; then
-			VERIF="oui"
-		elif [ "$DOFORMAT" = "formater" ]; then
-			VERIF="non"
-		else
-			echo "Veuillez entrer une méthode de formatage valide."
-			sleep 2
-			continue
-		fi
-		
-		# Boucle d'affichage du choix du système de fichiers :
-		while [ 0 ]; do
-			clear
-			echo -e "\033[1;32mChoix du système de fichiers pour ${ROOTSELECT}.\033[0;0m"
-			echo ""
-			echo "La partition ${ROOTSELECT} va être formatée."
-			echo "Entrez le système de fichiers souhaité parmi la liste ci-dessous."
-			echo ""
-			echo "ext2     : système de fichiers traditionnel sous Linux"
-			echo "ext3     : version journalisée répandue et plus récente de Ext2"
-			echo "ext4     : le très récent successeur de Ext3"
-			echo "jfs      : système de fichiers journalisé d'IBM"
-			echo "reiserfs : système journalisé performant"
-			echo "xfs      : système de SGI performant sur les gros fichiers"
-			echo ""
-			echo -n "Votre choix : "
-			read FSFORMAT;
-			if [ "$FSFORMAT" = "" ]; then
-				echo "Veuillez entrer un système de fichiers valide."
-				sleep 2
-				unset FSFORMAT
-				continue
-			else
-				# Si l'utilisateur écrit n'importe quoi :
-				if [ "$(echo ${FSFORMAT} | grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs')" = "" ]; then
-					echo "Veuillez entrer un système de fichiers valide."
-					sleep 2
-					unset FSFORMAT
-					continue
-				# Sinon, on formate :
-				else
-					echo "Formatage en cours de ${ROOTSELECT} en ${FSFORMAT}..."
-					formater ${FSFORMAT} ${ROOTSELECT} ${VERIF}
-					break
-				fi
-			fi
-		done
 	fi
+	
+	# Boucle d'affichage du choix du système de fichiers :
+	while [ 0 ]; do
+		clear
+		echo -e "\033[1;32mChoix du système de fichiers pour ${ROOTSELECT}.\033[0;0m"
+		echo ""
+		echo "La partition ${ROOTSELECT} va être formatée."
+		echo "Entrez le système de fichiers souhaité parmi la liste ci-dessous."
+		echo ""
+		echo "ext2     : système de fichiers traditionnel sous Linux"
+		echo "ext32    : version journalisée répandue de Ext2"
+		echo "ext43    : récent successeur de Ext3"
+		echo "jfs4     : système de fichiers journalisé d'IBM"
+		echo "reiserfs : système journalisé performant"
+		echo "xfs      : système de SGI performant sur les gros fichiers"
+		echo ""
+		echo -n "Votre choix : "
+		read FSFORMAT;
+		# Si l'utilisateur écrit n'importe quoi :
+		if [ "$(echo ${FSFORMAT} | grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs')" = "" ]; then
+			echo "Veuillez entrer un système de fichiers valide."
+			sleep 2
+			unset FSFORMAT
+			continue
+		# Sinon, on formate :
+		else
+			echo "La partition ${ROOTSELECT} s'apprête à être formatée en ${FSFORMAT}."
+			echo "N.B.: Ceci effacera toutes les données s'y trouvant !"
+			echo ""
+			echo "Confirmez-vous ?" 
+			echo ""
+			echo -n "Votre choix (oui/non) : "
+			read CONFIRM;
+			# On a confirmation : 
+			if [ "${CONFIRM}" = "oui" ]; then
+				echo "Formatage en cours de ${ROOTSELECT} en ${FSFORMAT}..."
+				formater ${FSFORMAT} ${ROOTSELECT} ${VERIF}
+				ROOTFORMATOK="ok"
+				break
+			else
+				break
+			fi
+		fi
+	done
 done
 
 # On synchronise avant toute chose :
@@ -229,7 +229,7 @@ mount ${ROOTSELECT} ${SETUPROOT} -t ${FSRACINE} 1> /dev/null 2> /dev/null
 echo "${ROOTSELECT}     /     ${FSRACINE}     defaults     1     1" > $TMP/choix_partitions
 
 # Si plusieurs partitions Linux sont détectées :
-if [ $(listelinux | wc -l) -gt "1" ]; then
+if [ "$(listelinux | wc -l)" -gt "1" ]; then
 
 	# Boucle d'affichage du choix pour des montages supplémentaires :
 	while [ ! "${OKPARTS}" = "ok" ]; do
@@ -257,11 +257,12 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 				echo ""
 				echo "Entrez la partition Linux supplémentaire que vous souhaitez"
 				echo "monter dans votre système (exemples : /dev/sda1 ; /dev/hda3 ;"
-				echo "etc) parmi la liste ci-dessous et/ou entrez le mot-clé « continuer »"
+				echo "etc) parmi la liste ci-dessous ou entrez le mot-clé « continuer »"
 				echo "pour terminer maintenant cette étape."
 				echo ""
 				# On liste les partitions Linux utilisées ou pas :
 				afficherlinux
+				echo ""
 				echo "continuer : terminer l'ajout de partitions Linux"
 				echo ""
 				echo -n "Votre choix : "
@@ -269,14 +270,9 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 				if [ "$LINUXADD" = "continuer" ]; then
 					OKPARTS = "ok"
 					break
-				elif [ "$LINUXADD" = "" ]; then
-					echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
-					sleep 2
-					unset LINUXADD
-					continue
 				else
 					# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-					if [ "$(echo ${LINUXADD} | grep '/dev/')" = "" ]; then
+					if [ "$(echo ${LINUXADD} | sed -e 's/\(\/dev\/\).*$/\1/')" = "" ]; then
 						echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 						sleep 2
 						unset LINUXADD
@@ -289,7 +285,7 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 							echo ""
 							echo "Bien, il vous faut maintenant indiquer l'emplacement"
 							echo "de votre choix pour monter et accéder à cette partition."
-							echo "Exemples : /home ; /usr/local ; /sauvegarde ;  /mes_documents"
+							echo "Exemples : /home ; /usr/local ; /sauvegarde ; /mes_documents"
 							echo "Dans quel répertoire désirez-vous monter ${LINUXADD} ?"
 							echo ""
 							echo -n "Votre choix : "
@@ -309,72 +305,58 @@ if [ $(listelinux | wc -l) -gt "1" ]; then
 								echo ""
 								echo "Voulez-vous formater cette partition ?"
 								echo "N.B.: Ceci effacera toutes les données s'y trouvant !"
-								echo "Entrez la méthode de formatage souhaitée parmi la liste suivante :"
+								echo "Entrez le code de la méthode de formatage souhaitée parmi la liste suivante :"
 								echo ""
-								echo "formater : formater sans vérification des secteurs défectueux"
-								echo "vérifier : formater avec vérification des secteurs défectueux"
-								echo "non      : ne rien faire, la partition est déjà formatée"
+								echo "1 : FORMATER - formater sans vérification des secteurs défectueux"
+								echo "2 : VÉRIFIER - formater avec vérification des secteurs défectueux"
+								echo "3 : NON ! - ne rien faire, la partition est déjà formatée correctement"
 								echo ""
 								echo -n "Votre choix : "
 								read DOFORMAT;
-								if [ "$DOFORMAT" = "" ]; then
-									echo "Veuillez entrer une méthode de formatage valide."
-									sleep 2
-									unet DOFORMAT
-									continue
+								if [ "$DOFORMAT" = "3" ]; then
+									FORMATOK="ok"
+									break
+								elif [ "$DOFORMAT" = "2" ]; then
+									VERIF="oui"
+								elif [ "$DOFORMAT" = "1" ]; then
+									VERIF="non"
 								else
-									if [ "$DOFORMAT" = "non" ]; then
+									echo "Veuillez entrer un numéro valide (entre 1 et 3)."
+									sleep 2
+									unset DOFORMAT
+									continue
+								fi
+								# Boucle d'affichage du choix du système de fichiers :
+								while [ 0 ]; do
+									clear
+									echo -e "\033[1;32mChoix du système de fichiers pour ${LINUXADD}.\033[0;0m"
+									echo ""
+									echo "La partition ${LINUXADD} va être formatée."
+									echo "Entrez le système de fichiers souhaité parmi la liste ci-dessous."
+									echo ""
+									echo "ext2     : système de fichiers traditionnel sous Linux"
+									echo "ext32    : version journalisée répandue de Ext2"
+									echo "ext43    : récent successeur de Ext3"
+									echo "jfs4     : système de fichiers journalisé d'IBM"
+									echo "reiserfs : système journalisé performant"
+									echo "xfs      : système de SGI performant sur les gros fichiers"
+									echo ""
+									echo -n "Votre choix : "
+									read FSFORMAT;
+									# Si l'utilisateur écrit n'importe quoi :
+									if [ "$(echo ${FSFORMAT} | grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs')" = "" ]; then
+										echo "Veuillez entrer un système de fichiers valide."
+										sleep 2
+										unset FSFORMAT
+										continue
+									# Sinon, on formate :
+									else
+										echo "Formatage en cours de ${LINUXADD} en ${FSFORMAT}..."
+										formater ${FSFORMAT} ${ROOTSELECT} ${VERIF}
 										FORMATOK="ok"
 										break
-									elif [ "$DOFORMAT" = "vérifier" ]; then
-										VERIF="oui"
-									elif [ "$DOFORMAT" = "formater" ]; then
-										VERIF="non"
-									else
-										echo "Veuillez entrer une méthode de formatage valide."
-										sleep 2
-										unset DOFORMAT
-										continue
 									fi
-								# Boucle d'affichage du choix du système de fichiers :
-									while [ 0 ]; do
-										clear
-										echo -e "\033[1;32mChoix du système de fichiers pour ${LINUXADD}.\033[0;0m"
-										echo ""
-										echo "La partition ${LINUXADD} va être formatée."
-										echo "Entrez le système de fichiers souhaité parmi la liste ci-dessous."
-										echo ""
-										echo "ext2     : système de fichiers traditionnel sous Linux"
-										echo "ext3     : version journalisée répandue et plus récente de Ext2"
-										echo "ext4     : le très récent successeur de Ext3"
-										echo "jfs      : système de fichiers journalisé d'IBM"
-										echo "reiserfs : système journalisé performant"
-										echo "xfs      : système de SGI performant sur les gros fichiers"
-										echo ""
-										echo -n "Votre choix : "
-										read FSFORMAT;
-										if [ "$FSFORMAT" = "" ]; then
-											echo "Veuillez entrer un système de fichiers valide."
-											sleep 2
-											unset FSFORMAT
-											continue
-										else
-											# Si l'utilisateur écrit n'importe quoi :
-											if [ "$(echo ${FSFORMAT} | grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs')" = "" ]; then
-												echo "Veuillez entrer un système de fichiers valide."
-												sleep 2
-												unset FSFORMAT
-												continue
-											# Sinon, on formate :
-											else
-												echo "Formatage en cours de ${LINUXADD} en ${FSFORMAT}..."
-												formater ${FSFORMAT} ${ROOTSELECT} ${VERIF}
-												FORMATOK="ok"
-												break
-											fi
-										fi
-									done
-								fi
+								done
 							done
 						done
 						# On synchronise avant toute chose :

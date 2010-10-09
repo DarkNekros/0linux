@@ -20,7 +20,8 @@ crunch() {
 # taille_partition(périphérique) :
 taille_partition() {
 	Taille=$(fdisk -l | grep $1 | crunch | tr -d "*" | tr -d "+" | cut -f4 -d' ')
-	echo "$Taille blocs"
+	TailleGo=$(echo "$Taille / 1000000" | bc)
+	echo "$TailleGo Go"
 }
 
 # Afficher si les partitions FAT/NTFS sont configurées ou pas :
@@ -72,7 +73,7 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 				echo -e "\033[1;32mAjouter une partition FAT/NTFS à monter.\033[0;0m"
 				echo ""
 				echo "Entrez la partition FAT/NTFS que vous souhaitez"
-				echo "monter dans votre système parmi la liste ci-dessous et/ou entrez"
+				echo "monter dans votre système parmi la liste ci-dessous ou entrez"
 				echo "le mot-clé « continuer » pour terminer cette étape."
 				echo ""
 				# On liste les partitions FAT utilisées ou pas :
@@ -84,14 +85,9 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 				if [ "$FATADD" = "continuer" ]; then
 					OKPARTS = "ok"
 					break
-				elif [ "$FATADD" = "" ]; then
-					echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
-					sleep 2
-					unset FATADD
-					continue
 				else
 					# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-					if [ "$(echo ${FATADD} | grep '/dev/')" = "" ]; then
+					if [ "$(echo ${FATADD} | sed -e 's/\(\/dev\/\).*$/\1/')" = "" ]; then
 						echo "Veuillez entrer une partition de la forme « /dev/xxxx »."
 						sleep 2
 						unset FATADD
@@ -111,14 +107,14 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 							read MOUNTPOINT;
 							# Si le point de montage est incorrect :
 							if [ "${MOUNTPOINT}" = "" -o "$(echo ${MOUNTPOINT} | cut -b1)" = " " -o ! "$(echo ${MOUNTPOINT} | cut -b1)" = "/"]; then
-								cho "Veuillez entrer un système de fichiers de la forme « /quelquepart» ou"
+								echo "Veuillez entrer un système de fichiers de la forme « /quelquepart» ou"
 								echo "« /quelque/part»."
 								sleep 2
 								unset MOUNTPOINT
 								break
 							fi
 							# Si la partition choisie est une NTFS, on doit s'occuper du masque des permissions :
-							if listefat | grep -w ${FATADD} | grep NTFS 1> /dev/null 2> /dev/null; then
+							if [ ! "$(listefat | grep -w ${FATADD} | grep NTFS 1> /dev/null 2> /dev/null)" = "" ]; then
 								FSTYPE=ntfs
 								# Boucle d'affichage du choix des permissions par défaut :
 								while [ 0 ]; do
@@ -129,7 +125,7 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 									echo "devez definir ses permissions en lecture et en écriture. Les niveaux"
 									echo "de sécurité de ces permissions vont du tout-restrictif (aucun droit)"
 									echo "au tout-permissif (accès en lecture/écriture/exécution pour tous)."
-									echo "Une valeur raisonnable serait « 022 » ; beaucoup utilisent « 000 »."
+									echo "Une valeur raisonnable serait « 022 » mais beaucoup utilisent « 000 »."
 									echo "Quel masque de permissions voulez-vous utiliser pour ${FATADD} ?"
 									echo ""
 									echo "077 : aucun accès, seul root a tous les droits"
@@ -139,14 +135,14 @@ if [ $(listefat | wc -l) -gt "1" ]; then
 									echo ""
 									echo -n "Votre choix : "
 									read SECU;
-									if [ "$SECU" = "" -o "$(echo ${SECU} | grep -E '077|222|022|000')" = "" ]; then
+									if [ "$(echo ${SECU} | grep -E '077|222|022|000')" = "" ]; then
 										echo "Veuillez entrer un masque de permissions valide."
 										sleep 2
 										unset SECU
 										continue
 									else
 										# Le pilote du noyau ne gère pas le masque :
-										if [ "$SECU" = "umask=222" ]; then
+										if [ "$SECU" = "222" ]; then
 											FSTYPE="ntfs"
 											SECU="defaults"
 										# Seul le programme en espace utilisateur 'ntfs-3g' le gère :

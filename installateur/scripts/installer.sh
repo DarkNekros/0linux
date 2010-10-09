@@ -9,13 +9,18 @@ echo ""
 echo -n "Appuyez sur ENTRÉE pour continuer."
 read BLURB;
 
-# Boucle d'installation des paquets :
-for paq in base-systeme* etc* eglibc* sgml*; do
-	spkman -i --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq} 2> /dev/null
+# On installe d'abord les paquets vitaux :
+for paq in base-systeme-* etc-* eglibc-* sgml-common-* ; do
+	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq} 2> /dev/null
 done
 
-for paquet in ${TMPMOUNT}/0/paquets/*/*.* ; do
-	spkman -i --quiet --root=${SETUPROOT} ${paquet} 2> /dev/null
+# On installe tout le reste sauf linux-source-* :
+for paquet in $(find ${TMPMOUNT}/0/paquets -type f \( -name "*.cpio" -a \! -name "linux-source-*" \) | sort) ; do
+	spkadd --quiet --root=${SETUPROOT} ${paquet} 2> /dev/null
 done
+
+# Les sources de Linux en dernier (appel à 'make' en post-installation, donc
+# de nombreuses dépendances) :
+spkadd --quiet --root=${SETUPROOT} ${TMPMOUNT}/0/paquets/base/linux-source-* 2> /dev/null
 
 # C'est fini !
