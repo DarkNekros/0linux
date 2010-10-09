@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-gpm}
 VERSION=${VERSION:-1.20.6}
 EXT=${EXT:-tar.lzma}
 NAMETGZ=${NAMETGZ:-gpm}
-BUILD=${BUILD:-3}
-
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -66,6 +65,8 @@ SLKCFLAGS="-O2 -march=i686 -fPIC -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-lm -L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -74,8 +75,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--infodir=/usr/info \
 	--build=${TARGET32}
 
-LDFLAGS="-lm" make
-make install DESTDIR=${PKG}
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
 
 # On lie la bibliothèque 32 bits :
 ln -sf libgpm.so.2 $PKG/usr/lib${LIBDIRSUFFIX}/libgpm.so
@@ -100,6 +101,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-lm -L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -108,8 +111,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--infodir=/usr/info \
 	--build=${TARGET64}
 
-LDFLAGS="-lm" make
-make install DESTDIR=${PKG}
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
 
 # On lie la bibliothèque 64 bits :
 ln -sf libgpm.so.2 ${PKG}/usr/lib${LIBDIRSUFFIX}/libgpm.so
@@ -117,17 +120,11 @@ ln -sf libgpm.so.2 ${PKG}/usr/lib${LIBDIRSUFFIX}/libgpm.so
 # On copie les fichiers de configuration :
 cp -a conf/*.conf ${PKG}/etc
 
-# On installe les scripts de configuration de Slackware :
-mkdir -p $PKG/var/log/setup $PKG/etc/rc.d
-cp -a $CWD/mouseconfig ${PKG}/usr/sbin
-cp -a $CWD/setup.mouse ${PKG}/var/log/setup
-chmod 755 ${PKG}/var/log/setup/setup.mouse
-chmod 755 ${PKG}/usr/bin/* ${PKG}/usr/sbin/*
-
 # On crée le fichier de service :
+mkdir -p ${PKG}/etc/rc.d
 cat > ${PKG}/etc/rc.d/rc.gpm << "EOF"
 #!/bin/env bash
-# Contrôle du serveur de pointage GPM 
+# Contrôle du serveur de pointage GPM.
 
 if [ "$1" = "stop" ]; then
 	echo "Arrêt de gpm..."
