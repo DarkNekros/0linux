@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-kbd}
 VERSION=${VERSION:-1.15.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-kbd}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -57,7 +57,7 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On ajoute les polices supplémentaires de Slackware :
+# On ajoute des polices supplémentaires :
 mkdir -p ${PKG}/lib/kbd/consolefonts
 
 for police in $CWD/polices/*.gz; do
@@ -100,6 +100,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 --prefix=/usr \
 	--mandir=/usr/man \
@@ -109,13 +111,10 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--enable-nls \
 	--build=${TARGET64}
 
-CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-make
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
 
-make install DESTDIR=${PKG}
-
-# On reste compatible Slackware en créant un lien vers /lib/kbd :
+# On reste compatible en créant un lien vers /lib/kbd :
 mkdir -p ${PKG}/usr/share
 ln -sf ../../lib/kbd ${PKG}/usr/share/kbd
 
@@ -135,14 +134,7 @@ cp -a $CWD/fr-dvorak-bepo*.map ${PKG}/lib/kbd/keymaps/i386/dvorak
 chmod 644 ${PKG}/lib/kbd/keymaps/i386/dvorak/fr-dvorak-bepo*.map
 gzip -9 ${PKG}/lib/kbd/keymaps/i386/dvorak/fr-dvorak-bepo*.map
 
-# On installe les scripts de l'installateur de Slackware :
-mkdir -p ${PKG}/var/log/setup
-cp -a $CWD/setup.setconsolefont ${PKG}/var/log/setup
-chmod 755 ${PKG}/var/log/setup/setup.setconsolefont
-cp -a $CWD/setconsolefont ${PKG}/usr/bin
-chmod 755 ${PKG}/usr/bin/setconsolefont
-
-# On place le script de chargement de la police console, qu'on rend exécutable :
+# On place le fichier service de chargement de la police console :
 mkdir -p ${PKG}/etc/rc.d
 cp -a $CWD/rc.font.new ${PKG}/etc/rc.d
 chmod 755 ${PKG}/etc/rc.d/rc.font.new
