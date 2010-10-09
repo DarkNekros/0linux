@@ -7,8 +7,7 @@ CWD=$(pwd)
 
 VERSION=${VERSION:-0.1}
 NAMETGZ=${NAMETGZ:-network-scripts}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -30,28 +29,26 @@ mkdir -p ${PKG}
 # On crée les différents répertoires pour les scripts :
 mkdir -p ${PKG}/etc/rc.d
 mkdir -p ${PKG}/sbin
-mkdir -p ${PKG}/var/log/setup
 mkdir -p ${PKG}/usr/man/man{5,8}
 
+# Ce paquet doit faire l'objet d'une profonde refonte afin de sortir
+# les morceaux de Slackware...
+
 for script in rc.inet1.conf rc.inet1 rc.inet2 rc.ip_forward; do
-	cp -a $CWD/scripts/$script ${PKG}/etc/rc.d/${script}.new
+	cp -a $CWD/scripts/${script} ${PKG}/etc/rc.d/${script}.new
 done
 
 chmod 755 ${PKG}/etc/rc.d/rc.inet{1,2}.new
 chmod 600 ${PKG}/etc/rc.d/rc.inet1.conf.new
 
 for script in HOSTNAME host.conf hosts.allow hosts.deny hosts.equiv hosts networks protocols resolv.conf; do
-	cp -a $CWD/scripts/$script ${PKG}/etc/${script}.new
+	cp -a $CWD/scripts/${script} ${PKG}/etc/${script}.new
 	chmod 644 ${PKG}/etc/${script}.new
 done
 
 # On place le script de configuration réseau 'netconfig' :
 cp -a $CWD/scripts/netconfig ${PKG}/sbin/netconfig
 chmod 755 ${PKG}/sbin/netconfig
-
-# On place le script pour l'installateur :
-cp -a $CWD/scripts/setup.netconfig ${PKG}/var/log/setup
-chmod 755 ${PKG}/var/log/setup/setup.netconfig
 
 # On ajoute les manuels (non traduits...) :
 cp -a $CWD/manpages/rc.inet1.conf.5 ${PKG}/usr/man/man5
@@ -131,7 +128,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}"
 
