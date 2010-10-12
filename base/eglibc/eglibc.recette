@@ -232,34 +232,22 @@ cat > ${PKGLIBS}/install/doinst.sh << "EOF"
 if [ -x /sbin/ldconfig -a -d lib64/nouvelle_eglibc ]; then
 	
 	# On crée des copies des nouvelles bibliothèques :
-	(
-		cd lib64/nouvelle_eglibc
-		
-		for file in * ; do
-			if [ ! -r ../${file}.nouvelle ]; then
-				cp -a $file ../${file}.nouvelle
-			fi
-		done
-	)
+	for file in lib64/nouvelle_eglibc/* ; do
+		cp -a ${file} /lib64/${file}.nouvelle
+	done
 	
-	# Puis on passe à ces nouvelles bibliothèques :
+	# Puis on passe au système ces nouvelles bibliothèques :
 	/sbin/ldconfig -l lib64/*.nouvelle 2> /dev/null
 	
 	# Puis on renomme le tout, maintenant qu'elles sont prises en compte :
-	(
-		cd lib64
-		for file in *.nouvelle ; do
-			rm -f `basename $file .nouvelle`
-			cp -a $file `basename $file .nouvelle`
-			/sbin/ldconfig -l `basename $file .nouvelle`
-			rm -f $file
-		done
-	)
-
+	for file in lib64/*.nouvelle ; do
+		cp -a ${file} $(echo ${file} | sed 's@.nouvelle@@')
+		/sbin/ldconfig -r .
+	done
 fi
 
 # On n'a plus qu'à supprimer le répertoire des nouvelles bibliothèques :
-rm -rf lib64/nouvelle_eglibc
+rm -rf /lib64/nouvelle_eglibc
 
 EOF
 
