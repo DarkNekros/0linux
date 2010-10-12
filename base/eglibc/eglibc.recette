@@ -233,7 +233,7 @@ if [ -x /sbin/ldconfig -a -d lib64/nouvelle_eglibc ]; then
 	
 	# On crée des copies des nouvelles bibliothèques :
 	for file in lib64/nouvelle_eglibc/* ; do
-		cp -a ${file} /lib64/${file}.nouvelle
+		cp -a ${file} /lib64/$(basename ${file}).nouvelle
 	done
 	
 	# Puis on passe au système ces nouvelles bibliothèques :
