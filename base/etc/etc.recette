@@ -39,8 +39,8 @@ for configuration in *.new termcap-Linux termcap-BSD; do
 done
 
 # On place les fichiers de langues pour le shell :
-mv ${PKG}/etc/lang.sh ${PKG}/etc/profile.d
-chmod 755 ${PKG}/etc/profile.d/lang.sh
+mv ${PKG}/etc/lang.sh.new ${PKG}/etc/profile.d
+chmod 755 ${PKG}/etc/profile.d/lang.sh.new
 
 # On place les fichiers journaux :
 touch ${PKG}/var/log/{wtmp,lastlog}.new
