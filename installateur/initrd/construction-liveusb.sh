@@ -63,7 +63,7 @@ install -m 755 $CWD/{HOSTNAME,profile} ${LIVEOS}/etc
 install -m 755 $CWD/rc.* ${LIVEOS}/etc/rc.d
 
 # On copie l'installateur et l'aide :
-install -m 755 $CWD/../scripts/{installateur,*.sh} ${LIVEOS}/sbin
+install -m 755 $CWD/../scripts/{liloconfig,installateur,*.sh} ${LIVEOS}/sbin
 install -m 644 $CWD/../scripts/aide.txt ${LIVEOS}
 
 # On crée le lien pour 'init' :
@@ -74,25 +74,22 @@ if [ -r ${LIVEOS}/bin/bash4.new ]; then
 	mv ${LIVEOS}/bin/bash{4.new,}
 fi
 
-# On va chrooter dans le système autonome :
-cd ${LIVEOS}
-
 # On met à jour les liens des bibliothèques :
-chroot . /sbin/ldconfig
+chroot ${LIVEOS} /sbin/ldconfig
  
 # On met à jour les dépendances des modules du noyau :
-chroot . /usr/sbin/depmod -a
+chroot ${LIVEOS} /usr/sbin/depmod -a
 
 # On évite que se lance 'sshd' (+ effet d'escalier à l'affichage) :
-chroot . /bin/chmod -x /etc/rc.d/rc.sshd
+chmod -x ${LIVEOS}/etc/rc.d/rc.sshd
 
 # On copie le nouveau noyau dans /tmp sans sa version :
 rm -f /tmp/noyau
 cp ${LIVEOS}/boot/noyau-2* /tmp/noyau
 
 # On positionne le fuseau à Paris car on est franco-français et chauvin :
-echo "localtime" > /etc/hardwareclock
-chroot . ln -sf ../usr/share/zoneinfo/Europe/Paris /etc/localtime
+echo "localtime" > ${LIVEOS}/etc/hardwareclock
+ln -sf ../usr/share/zoneinfo/Europe/Paris ${LIVEOS}/etc/localtime
 
 # On crée l'initrd :
 rm -f ${INITRDGZ}
@@ -108,6 +105,7 @@ for f in $(find /mnt/tmp -name "ldlinux.sys" -print); do
 	chattr -i ${f}
 	rm -f ${f}
 done
+
 rm -rf /mnt/tmp/boot/extlinux
 mkdir -p /mnt/tmp/0/paquets
 mkdir -p /mnt/tmp/boot/extlinux

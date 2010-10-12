@@ -5,7 +5,7 @@ set -e
 umask 022
 CWD=$(pwd)
 
-VERSION=${VERSION:-0.3}
+VERSION=${VERSION:-0.5}
 NAMETGZ=${NAMETGZ:-etc}
 BUILD=${BUILD:-1}
 
@@ -39,8 +39,8 @@ for configuration in *.new termcap-Linux termcap-BSD; do
 done
 
 # On place les fichiers de langues pour le shell :
-mv ${PKG}/etc/lang.* ${PKG}/etc/profile.d
-chmod 755 ${PKG}/etc/profile.d/lang.*
+mv ${PKG}/etc/lang.sh ${PKG}/etc/profile.d
+chmod 755 ${PKG}/etc/profile.d/lang.sh
 
 # On place les fichiers journaux :
 touch ${PKG}/var/log/{wtmp,lastlog}.new
@@ -54,9 +54,9 @@ chmod 664 ${PKG}/var/run/utmp.new
 cp -a $CWD/xsession ${PKG}/etc/skel/.xsession
 chmod 755 ${PKG}/etc/skel/.xsession
 
-# On copie le script 'localeconfig' :
-cp -a $CWD/localeconfig ${PKG}/sbin
-chmod 755 ${PKG}/sbin/localeconfig
+# On copie le script '0locale' :
+cp -a $CWD/0locale ${PKG}/sbin
+chmod 755 ${PKG}/sbin/0locale
 
 # On restreint les permissions sur *shadow :
 chmod 640 ${PKG}/etc/{,g}shadow.new
@@ -98,7 +98,6 @@ config etc/shells.new
 config etc/services.new
 config etc/issue.net.new
 config etc/nsswitch.conf.new
-config etc/profile.d/lang.csh.new
 config etc/profile.d/lang.sh.new
 config var/log/lastlog.new
 config var/log/wtmp.new

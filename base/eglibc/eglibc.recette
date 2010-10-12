@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-eglibc}
 VERSION=${VERSION:-2.11_20100103}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-eglibc}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -136,7 +136,7 @@ $TMP/${NAME}/libc/configure \
 	--infodir=/usr/info \
 	--disable-profile \
 	--enable-add-ons \
-	--enable-kernel=2.6.32 \
+	--enable-kernel=2.6.33 \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX}/eglibc \
 	--build=${TARGET32}
 
@@ -181,7 +181,7 @@ $TMP/${NAME}/libc/configure \
 	--infodir=/usr/info \
 	--disable-profile \
 	--enable-add-ons \
-	--enable-kernel=2.6.32 \
+	--enable-kernel=2.6.33 \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX}/eglibc \
 	--build=${TARGET64}
 
@@ -192,13 +192,9 @@ fakeroot make localedata/install-locales install_root=${PKG}
 # On place la configuration de nscd :
 cat $TMP/${NAME}/libc/nscd/nscd.conf > ${PKG}/etc/nscd.conf.new
 
-# On installe les scripts pour le fuseau horaire :
-cp -a $CWD/timezone-scripts/timeconfig ${PKG}/usr/sbin
-chmod 755 ${PKG}/usr/sbin/timeconfig
-
-# On n'oublie pas les liens symboliques pour les fuseaux horaires :
-ln -sf ../../sbin/timeconfig ${PKG}/usr/share/zoneinfo/timeconfig
-ln -sf ../../../etc/localtime ${PKG}/usr/share/zoneinfo/localtime
+# On installe le script pour le fuseau horaire :
+cp -a $CWD/0horloge ${PKG}/usr/sbin
+chmod 755 ${PKG}/usr/sbin/0horloge
 
 # On nettoie :
 rm -f ${PKG}/etc/ld.so.cache

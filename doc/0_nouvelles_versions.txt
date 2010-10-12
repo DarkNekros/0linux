@@ -1,20 +1,22 @@
-autoconf 2.68
+(autoconf 2.68)
 cairo 1.10.0
 doxygen 1.7.2 
 font-util 1.1.2
 freetype 2.4.3
-gcc 4.5.1
+(gcc 4.5.1)
 gtk+ 2.22.0
-libtool 2.4
+(libtool 2.4)
 linux 2.6.35.7
 luit 1.1.0 (x11-apps)
-m4 1.4.15
-make 3.82
+(m4 1.4.15)
+(make 3.82)
 mesa 7.9
+poppler 0.14.4
 python 2.7
-orc 0.4.10 (compiler d'abord schroedinger !)
+orbit2 2.14.19
+orc 0 .4.10 (compiler d'abord schroedinger !)
 qt 4.7
-schroedinger 1.0.10
+schroedinger 1.0.1
 sqlite 3.7.3 
 udev 163 
 x11-polices 7.6 (polices à mettre à jour)

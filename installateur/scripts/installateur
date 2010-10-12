@@ -18,7 +18,7 @@ crunch() {
 rm -f $TMP/*
 
 # On détecte la partition racine :
-ROOT_DEVICE="`mount | grep "on / " | cut -f 1 -d ' '`"
+ROOT_DEVICE=$(mount | grep "on / " | cut -f 1 -d ' ')
 echo "$ROOT_DEVICE" > $TMP/partition_racine
 
 # On nettoie tous les points de montage :
@@ -93,9 +93,6 @@ while [ 0 ]; do
 	echo ""
 	echo -n "Votre choix : "
 	read CHOIXMENUPRINCIPAL;
-	if [ "$CHOIXMENUPRINCIPAL"  = "" ]; then
-		exit 0
-	fi
 	case "$CHOIXMENUPRINCIPAL" in
 	"1")
 		less /aide.txt

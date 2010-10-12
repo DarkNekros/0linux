@@ -6,23 +6,8 @@ if [ ! "${SETUPROOT}" = "/" ]; then
 	mount --bind /sys ${SETUPROOT}/sys 1> /dev/null 2> /dev/null
 fi
 
-# Message d'introduction :
-clear
-echo -e "\033[1;32mConfiguration du système.\033[0;0m"
-echo ""
-echo "L'installation des paquets est terminée. Passons à la configuration"
-echo "de votre nouveau système Linux."
-echo ""
-echo -n "Appuyez sur ENTRÉE pour continuer."
-read YOP;
-
-# On définit le clavier à charger à chaque démarrage :
-echo "Ajout de « loadkeys ${DISPOCLAVIER} » dans votre fichier"
-echo "'/etc/rc.d/rc.keymap' pour le chargement de la disposition"
-echo "du clavier..."
-sleep 2
-
 if [ -r $TMP/choix_clavier ]; then
+	# On définit le clavier à charger à chaque démarrage :
 	DISPOCLAVIER="`cat $TMP/choix_clavier`"
 	echo "#!/bin/env bash" > ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "# Chargement de la disposition des touches du clavier." >> ${SETUPROOT}/etc/rc.d/rc.keymap
@@ -34,21 +19,13 @@ if [ -r $TMP/choix_clavier ]; then
 	chmod 755 ${SETUPROOT}/etc/rc.d/rc.keymap
 fi
 
-if [ -d ${SETUPROOT}/var/log/setup ]; then
-	
-	for postconfig in ${SETUPROOT}/var/log/setup/setup.* ; do
-		postconfigscript=$(basename ${postconfig})
-		
-		# On appelle chaque script nommé '/var/log/setup/setup.*'. En arguments :
-		# D'abord la cible, $SETUPROOT, puis le périphérique actuel de la racine
-		# stockée dans '$TMP/partition_racine'.
-		if [ -x ${SETUPROOT}/var/log/setup/${postconfigscript} ]; then
-			. ${SETUPROOT}/var/log/setup/${postconfigscript} ${SETUPROOT} $(cat $TMP/partition_racine)
-		fi
-	
-	done
-
-fi
+# On lance un à un les scripts de configuration pour finaliser l'installation :
+chroot ${SETUPROOT} 0horloge 
+chroot ${SETUPROOT} 0locale
+. liloconfig ${SETUPROOT}
+# netconfig
+# setconsolefont?
+# xwmconfig?
 
 # On définit un mot de passe pour root :
 . motdepasseroot.sh
