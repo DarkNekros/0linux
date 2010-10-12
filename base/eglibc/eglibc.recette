@@ -48,6 +48,11 @@ rm -f $CWD/tz*.tar.gz
 wget 'ftp://elsie.nci.nih.gov/pub/tzcode*.tar.gz'
 wget 'ftp://elsie.nci.nih.gov/pub/tzdata*.tar.gz'
 
+# On crée les répertoires d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+PKGLIBS=$TMP/build/${NAMETGZ}-bibliotheques
+mkdir -p ${PKG} ${PKGLIBS}
+
 # On nettoie par le vide pour que rien ne traîne :
 if [ -d ${PKG} ]; then
 	rm -rf ${PKG}
@@ -60,11 +65,6 @@ fi
 if [ -d $TMP/${NAMESRC}-build ]; then
   rm -rf $TMP/${NAMESRC}-build
 fi
-
-# On crée les répertoires d'accueil :
-PKG=$TMP/build/${NAMETGZ}
-PKGLIBS=$TMP/build/${NAMETGZ}-bibliotheques
-mkdir -p ${PKG} ${PKGLIBS}
 
 # Fonctions pour appliquer les correctifs et les fuseaux horaires :
 correctifs() {
