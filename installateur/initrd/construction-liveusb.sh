@@ -83,6 +83,9 @@ chroot ${LIVEOS} /usr/sbin/depmod -a
 # On évite que se lance 'sshd' (+ effet d'escalier à l'affichage) :
 chmod -x ${LIVEOS}/etc/rc.d/rc.sshd
 
+# On évite aussi que se lance 'rc0firewall' :
+chmod -x ${LIVEOS}/etc/rc.d/rc.firewall
+
 # On copie le nouveau noyau dans /tmp sans sa version :
 rm -f /tmp/noyau
 cp ${LIVEOS}/boot/noyau-2* /tmp/noyau
