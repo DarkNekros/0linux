@@ -236,14 +236,18 @@ if [ -x /sbin/ldconfig -a -d lib64/nouvelle_eglibc ]; then
 		cp -a ${file} lib64/$(basename ${file}).nouvelle
 	done
 	
-	# Puis on passe au système ces nouvelles bibliothèques :
+	# Puis on prend en compte ces nouvelles bibliothèques :
 	/sbin/ldconfig -l lib64/*.nouvelle 2> /dev/null
 	
-	# Puis on renomme le tout, maintenant qu'elles sont prises en compte :
+	# Puis on supprime les anciennes bibliothèques et on renomme les nouvelles
+	# maintenant qu'elles sont prises en compte :
 	for file in lib64/*.nouvelle ; do
+		rm -f ${file} $(echo ${file} | sed 's@.nouvelle@@')
 		cp -a ${file} $(echo ${file} | sed 's@.nouvelle@@')
+		
 		# Et on lie encore à ces nouvelles bibliothèques renommées :
 		/sbin/ldconfig -l $(echo ${file} | sed 's@.nouvelle@@')
+		
 		# On peut supprimer les '*.nouvelle' :
 		rm -f ${file}
 	done

@@ -1,11 +1,13 @@
 (autoconf 2.68)
 cairo 1.10.0
+curl 7.21.2 
 doxygen 1.7.2 
 font-util 1.1.2
 freetype 2.4.3
 (gcc 4.5.1)
 gtk+ 2.22.0
 (libtool 2.4)
+jdk 6u22 
 linux 2.6.35.7
 luit 1.1.0 (x11-apps)
 (m4 1.4.15)
