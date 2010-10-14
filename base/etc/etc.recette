@@ -81,7 +81,6 @@ config() {
 config etc/mtab.new
 config etc/motd.new
 config etc/group.new
-config etc/csh.login.new
 config etc/ld.so.conf.new
 config etc/profile.new
 config etc/hosts.new
