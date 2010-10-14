@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-qt-everywhere-opensource-src}
-VERSION=${VERSION:-4.7}
+VERSION=${VERSION:-4.7.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qt}
 BUILD=${BUILD:-1}
