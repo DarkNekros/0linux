@@ -1,6 +1,5 @@
 (autoconf 2.68)
 cairo 1.10.0
-doxygen 1.7.2 
 font-util 1.2.0
 freetype 2.4.3
 (gcc 4.5.1)
