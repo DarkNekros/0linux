@@ -11,7 +11,6 @@ EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-file}
 BUILD=${BUILD:-1}
 
-
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
 ARCH=${ARCH:-x86_64}
@@ -72,6 +71,8 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -82,7 +83,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--enable-fsect-man5
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -110,6 +111,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -120,7 +123,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--enable-fsect-man5
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On conserve le comportement de Slackware, à savoir de multiples fichiers
 # texte permettant d'ajouter de la « magie » plus
@@ -181,7 +184,6 @@ cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then

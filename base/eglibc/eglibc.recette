@@ -51,8 +51,7 @@ wget 'ftp://elsie.nci.nih.gov/pub/tzdata*.tar.gz'
 
 # On crée les répertoires d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-PKGLIBS=$TMP/build/${NAMETGZ}-bibliotheques
-mkdir -p ${PKG} ${PKGLIBS}
+mkdir -p ${PKG}/var/{db,run}/nscd
 
 # On nettoie par le vide pour que rien ne traîne :
 if [ -d ${PKG} ]; then
@@ -86,17 +85,6 @@ correctifs() {
 		cp -a *.c *.h ..
 	)
 }
-
-# On crée la structure de répertoires :
-mkdir -p ${PKG}/var/db/nscd
-mkdir -p ${PKG}/var/run/nscd
-
-# Et la structure pour le paquet vital 'eglibc-bibliotheques' :
-mkdir -p ${PKGLIBS}/lib64/{,nouvelle_}eglibc
-mkdir -p ${PKGLIBS}/lib/eglibc
-mkdir -p ${PKGLIBS}/usr/lib{,64}/eglibc
-mkdir -p ${PKGLIBS}/usr/bin
-mkdir -p ${PKGLIBS}/sbin
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -230,7 +218,7 @@ echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 cat > ${PKG}/install/doinst.sh << "EOF"
 #!/bin/env bash
 if [ -e sbin/init ]; then
-	chroot . /sbin/init u
+	chroot . /sbin/init u >/dev/null
 fi
 
 if [ -x sbin/ldconfig ]; then
