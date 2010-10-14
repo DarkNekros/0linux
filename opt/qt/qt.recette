@@ -86,12 +86,28 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	-plugindir /usr/lib${LIBDIRSUFFIX}/plugins \
 	-datadir /usr/lib${LIBDIRSUFFIX} \
 	-translationdir /usr/share/qt/translations \
+	-fast-prefix /usr \
+	-gtkstyle \
+	-largefile \
+	-no-phonon \
+	-no-phonon-backend \
+	-no-rpath \
+	-nomake demos \
+	-nomake examples \
 	-no-separate-debug-info \
 	-optimized-qmake \
 	-release \
-	-nomake demos \
-	-nomake examples \
-	-fast
+	-system-sqlite \
+	-xmlpatterns \
+	-scripttools \
+	-system-zlib \
+	-system-libtiff \
+	-system-libpng \
+	-system-libmng \
+	-system-libjpeg \
+	-openssl-linked \
+	-silent \
+	-reduce-relocations
 
 make -j3 || make
 fakeroot make install INSTALL_ROOT=${PKG}
@@ -149,12 +165,28 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	-plugindir /usr/lib${LIBDIRSUFFIX}/plugins \
 	-datadir /usr/lib${LIBDIRSUFFIX} \
 	-translationdir /usr/share/qt/translations \
+	-fast-prefix /usr \
+	-gtkstyle \
+	-largefile \
+	-no-phonon \
+	-no-phonon-backend \
+	-no-rpath \
+	-nomake demos \
+	-nomake examples \
 	-no-separate-debug-info \
 	-optimized-qmake \
 	-release \
-	-nomake demos \
-	-nomake examples \
-	-fast
+	-system-sqlite \
+	-xmlpatterns \
+	-scripttools \
+	-system-zlib \
+	-system-libtiff \
+	-system-libpng \
+	-system-libmng \
+	-system-libjpeg \
+	-openssl-linked \
+	-silent \
+	-reduce-relocations
 
 make -j3 || make
 fakeroot make install INSTALL_ROOT=${PKG}
