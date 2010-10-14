@@ -14,10 +14,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-jdk}
-VERSION=${VERSION:-6u21}
+VERSION=${VERSION:-6u22}
 EXT=${EXT:-bin}
 NAMETGZ=${NAMETGZ:-jdk}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -29,8 +29,8 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET32=${WGET32:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u21-linux-i586.bin?BundledLineItemUUID=viqJ_hCwkOsAAAErDw8AHFMg&OrderID=B5SJ_hCwdrsAAAErBA8AHFMg&ProductID=LxaJ_hCy4mIAAAEpXLwzBGsB&FileName=/${NAMESRC}-${VERSION}-linux-i586.$EXT}
-WGET=${WGET:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u21-linux-x64.bin?BundledLineItemUUID=qu.J_hCw1I0AAAErGqYAHFMg&OrderID=LMGJ_hCwO9kAAAErAKYAHFMg&ProductID=xKiJ_hCySHIAAAEpT7wzBGsB&FileName=/${NAMESRC}-${VERSION}-linux-amd64.$EXT}
+WGET32=${WGET32:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/${NAMESRC}-${VERSION}-i586.bin?BundledLineItemUUID=viqJ_hCwkOsAAAErDw8AHFMg&OrderID=B5SJ_hCwdrsAAAErBA8AHFMg&ProductID=LxaJ_hCy4mIAAAEpXLwzBGsB&FileName=/${NAMESRC}-${VERSION}-linux-i586.$EXT}
+WGET=${WGET:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/${NAMESRC}-${VERSION}-linux-x64.bin?BundledLineItemUUID=qu.J_hCw1I0AAAErGqYAHFMg&OrderID=LMGJ_hCwO9kAAAErAKYAHFMg&ProductID=xKiJ_hCySHIAAAEpT7wzBGsB&FileName=/${NAMESRC}-${VERSION}-linux-amd64.$EXT}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Environnements de développement et machines virtuelles pour Java"
 ########################################
