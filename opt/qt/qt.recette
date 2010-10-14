@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-qt-everywhere-opensource-src}
 VERSION=${VERSION:-4.7}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qt}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
