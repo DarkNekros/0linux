@@ -86,7 +86,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	-plugindir /usr/lib${LIBDIRSUFFIX}/plugins \
 	-datadir /usr/lib${LIBDIRSUFFIX} \
 	-translationdir /usr/share/qt/translations \
-	-fast-prefix /usr \
+	-fast \
 	-gtkstyle \
 	-largefile \
 	-no-phonon \
@@ -165,7 +165,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	-plugindir /usr/lib${LIBDIRSUFFIX}/plugins \
 	-datadir /usr/lib${LIBDIRSUFFIX} \
 	-translationdir /usr/share/qt/translations \
-	-fast-prefix /usr \
+	-fast \
 	-gtkstyle \
 	-largefile \
 	-no-phonon \
