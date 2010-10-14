@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-curl}
-VERSION=${VERSION:-7.21.1}
+VERSION=${VERSION:-7.21.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-curl}
 BUILD=${BUILD:-1}
