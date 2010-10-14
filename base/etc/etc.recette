@@ -139,9 +139,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
@@ -152,11 +149,7 @@ PACKAGING="
 	chown root:shadow ${PKG}/etc/{,g}shadow.new
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
-	if [ ! \"X${NAME}\" = \"X\" ]; then
-		if [ -d $TMP/${NAME} ]; then
-			rm -rf $TMP/${NAME}
-		fi
-	fi"
+	"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot
