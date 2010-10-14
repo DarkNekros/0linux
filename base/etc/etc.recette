@@ -32,7 +32,7 @@ mkdir -p ${PKG}/sbin
 mkdir -p ${PKG}/var/{log,run}
 mkdir -p ${PKG}/etc/{profile.d,skel}
 mkdir -p ${PKG}/tmp
-chmod 1777 /tmp
+chmod 1777 ${PKG}/tmp
 
 # On copie tous les fichiers de configuration et on trie :
 for configuration in *.new termcap-Linux termcap-BSD; do
