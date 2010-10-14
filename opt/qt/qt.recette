@@ -75,14 +75,20 @@ LIBDIRSUFFIX=""
 # On force les drapeaux d'optimisation 32 bits pour 'qmake' :
 sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& -march=i686 -pipe@" mkspecs/common/g++.conf
 
+# On force un rpath standard plutôt que le sien :
+sed -i "/^QMAKE_RPATH/s| -Wl,-rpath,||g" mkspecs/common/g++.conf
+
+# Idem pour LDFLAGS et puis c'est marre :
+sed -i "/^QMAKE_LFLAGS\s/s|+=|+= $LDFLAGS|g" mkspecs/common/g++.conf
+
 echo "o
 yes" | CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure -prefix /usr \
 	-libdir /usr/lib${LIBDIRSUFFIX} \
 	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
-	-L/usr/lib${LIBDIRSUFFIX} \
 	-plugindir /usr/lib${LIBDIRSUFFIX}/plugins \
 	-datadir /usr/lib${LIBDIRSUFFIX} \
 	-translationdir /usr/share/qt/translations \
@@ -106,8 +112,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	-system-libmng \
 	-system-libjpeg \
 	-openssl-linked \
-	-silent \
-	-reduce-relocations
+	-silent
 
 make -j3 || make
 fakeroot make install INSTALL_ROOT=${PKG}
@@ -154,14 +159,20 @@ LIBDIRSUFFIX="64"
 # On force les drapeaux d'optimisation 64 bits pour 'qmake' :
 sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& -fPIC -pipe@" mkspecs/common/g++.conf
 
+# On force un rpath standard plutôt que le sien :
+sed -i "/^QMAKE_RPATH/s| -Wl,-rpath,||g" mkspecs/common/g++.conf
+
+# Idem pour LDFLAGS et puis c'est marre :
+sed -i "/^QMAKE_LFLAGS\s/s|+=|+= $LDFLAGS|g" mkspecs/common/g++.conf
+
 echo "o
 yes" | CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure -prefix /usr \
 	-libdir /usr/lib${LIBDIRSUFFIX} \
 	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
-	-L/usr/lib${LIBDIRSUFFIX} \
 	-plugindir /usr/lib${LIBDIRSUFFIX}/plugins \
 	-datadir /usr/lib${LIBDIRSUFFIX} \
 	-translationdir /usr/share/qt/translations \
