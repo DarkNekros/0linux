@@ -67,8 +67,11 @@ done
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
+# On positionne QT4DIR dans le répertoire des sources et on neutralise QMAKESPEC :
+unset QMAKESPEC
+export QT4DIR=$TMP/${NAME}
+
 # Compilation pour 32 bits :
-export QMAKESPEC=linux-g++-32
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 
@@ -79,13 +82,12 @@ sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& -march=i686 -pipe@" mkspecs/common/g++.c
 sed -i "/^QMAKE_RPATH/s| -Wl,-rpath,||g" mkspecs/common/g++.conf
 
 # Idem pour LDFLAGS et puis c'est marre :
-sed -i "/^QMAKE_LFLAGS\s/s|+=|+= $LDFLAGS|g" mkspecs/common/g++.conf
+sed -i "/^QMAKE_LFLAGS\s/s|+=|+= -L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} |g" mkspecs/common/g++.conf
 
 echo "o
 yes" | CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure -prefix /usr \
 	-libdir /usr/lib${LIBDIRSUFFIX} \
 	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
@@ -151,8 +153,11 @@ done
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
+# On positionne QT4DIR dans le répertoire des sources et on neutralise QMAKESPEC :
+unset QMAKESPEC
+export QT4DIR=$TMP/${NAME}
+
 # Compilation pour 64 bits :
-export QMAKESPEC=linux-g++-64
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 
@@ -163,13 +168,12 @@ sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& -fPIC -pipe@" mkspecs/common/g++.conf
 sed -i "/^QMAKE_RPATH/s| -Wl,-rpath,||g" mkspecs/common/g++.conf
 
 # Idem pour LDFLAGS et puis c'est marre :
-sed -i "/^QMAKE_LFLAGS\s/s|+=|+= $LDFLAGS|g" mkspecs/common/g++.conf
+sed -i "/^QMAKE_LFLAGS\s/s|+=|+= LDFLAGS=-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} |g" mkspecs/common/g++.conf
 
 echo "o
 yes" | CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure -prefix /usr \
 	-libdir /usr/lib${LIBDIRSUFFIX} \
 	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
