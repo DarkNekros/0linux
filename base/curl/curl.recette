@@ -68,6 +68,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -78,7 +79,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -109,6 +110,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -119,7 +121,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -201,9 +203,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
