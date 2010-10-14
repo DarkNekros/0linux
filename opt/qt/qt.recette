@@ -1,17 +1,12 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-# Ce paquet ne compile pas en 4.6.2 si aucun 'qt' n'est présent sur le système !
-# J'ai dû copier les bibliothèques libQt* de /tmp/(sources de qt)/lib dans /usr/lib
-# lors du plantage 32 bits et ces mêmes bibliothèques dans /usr/lib64 lors du
-# plantage 64 bits... Puis recompiler.
-
 set -e
 umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-qt-everywhere-opensource-src}
-VERSION=${VERSION:-4.6.2}
+VERSION=${VERSION:-4.7}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qt}
 BUILD=${BUILD:-2}
@@ -140,7 +135,7 @@ export QMAKESPEC=linux-g++-64
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 
-# On force les drapeaux d'optimisation 32 bits pour 'qmake' :
+# On force les drapeaux d'optimisation 64 bits pour 'qmake' :
 sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& -fPIC -pipe@" mkspecs/common/g++.conf
 
 echo "o
@@ -254,9 +249,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
