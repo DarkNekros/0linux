@@ -15,11 +15,7 @@ python 2.7
 orbit2 2.14.19
 orc 0 .4.10 (compiler d'abord schroedinger !)
 qt 4.7
-<<<<<<< HEAD
-=======
-schroedinger 1.0.1
 sqlite 3.7.3 
->>>>>>> parent of 0b0f631... sqlite 3.7.3
 x11-polices 7.6 (polices à mettre à jour)
 xdpyinfo 1.2.0 (x11-apps)
 xf86-video-intel 2.13.0 (x11-pilotes)
