@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-sqlite-amalgamation}
-VERSION=${VERSION:-3.7.3}
+VERSION=${VERSION:-3.7.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sqlite}
 BUILD=${BUILD:-1}
@@ -165,6 +165,9 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+
+
 
 # Empaquetage !
 cd ${PKG}
