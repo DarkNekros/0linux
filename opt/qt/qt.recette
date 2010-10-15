@@ -1,15 +1,20 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
+# Ce paquet ne compile pas en 4.6.2 si aucun 'qt' n'est présent sur le système !
+# J'ai dû copier les bibliothèques libQt* de /tmp/(sources de qt)/lib dans /usr/lib
+# lors du plantage 32 bits et ces mêmes bibliothèques dans /usr/lib64 lors du
+# plantage 64 bits... Puis recompiler.
+
 set -e
 umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-qt-everywhere-opensource-src}
-VERSION=${VERSION:-4.7.0}
+VERSION=${VERSION:-4.6.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qt}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -67,22 +72,13 @@ done
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
-# On positionne QT4DIR dans le répertoire des sources + QMAKESPEC :
-export QMAKESPEC="linux-g++-32"
-export QT4DIR=$TMP/${NAME}
-
 # Compilation pour 32 bits :
+export QMAKESPEC=linux-g++-32
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 
 # On force les drapeaux d'optimisation 32 bits pour 'qmake' :
 sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& -march=i686 -pipe@" mkspecs/common/g++.conf
-
-# On force un rpath standard plutôt que le sien :
-sed -i "/^QMAKE_RPATH/s| -Wl,-rpath,||g" mkspecs/common/g++.conf
-
-# Idem pour LDFLAGS et puis c'est marre :
-sed -i "/^QMAKE_LFLAGS\s/s|+=|+= -L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} |g" mkspecs/common/g++.conf
 
 echo "o
 yes" | CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
@@ -91,30 +87,16 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 ./configure -prefix /usr \
 	-libdir /usr/lib${LIBDIRSUFFIX} \
 	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
+	-L/usr/lib${LIBDIRSUFFIX} \
 	-plugindir /usr/lib${LIBDIRSUFFIX}/plugins \
 	-datadir /usr/lib${LIBDIRSUFFIX} \
 	-translationdir /usr/share/qt/translations \
-	-fast \
-	-gtkstyle \
-	-largefile \
-	-no-phonon \
-	-no-phonon-backend \
-	-no-rpath \
-	-nomake demos \
-	-nomake examples \
 	-no-separate-debug-info \
 	-optimized-qmake \
 	-release \
-	-system-sqlite \
-	-xmlpatterns \
-	-scripttools \
-	-system-zlib \
-	-system-libtiff \
-	-system-libpng \
-	-system-libmng \
-	-system-libjpeg \
-	-openssl-linked \
-	-silent
+	-nomake demos \
+	-nomake examples \
+	-fast
 
 make -j3 || make
 fakeroot make install INSTALL_ROOT=${PKG}
@@ -153,22 +135,13 @@ done
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-# On positionne QT4DIR dans le répertoire des sources + QMAKESPEC :
-export QMAKESPEC="linux-g++-32"
-export QT4DIR=$TMP/${NAME}
-
 # Compilation pour 64 bits :
+export QMAKESPEC=linux-g++-64
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 
-# On force les drapeaux d'optimisation 64 bits pour 'qmake' :
+# On force les drapeaux d'optimisation 32 bits pour 'qmake' :
 sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& -fPIC -pipe@" mkspecs/common/g++.conf
-
-# On force un rpath standard plutôt que le sien :
-sed -i "/^QMAKE_RPATH/s| -Wl,-rpath,||g" mkspecs/common/g++.conf
-
-# Idem pour LDFLAGS et puis c'est marre :
-sed -i "/^QMAKE_LFLAGS\s/s|+=|+= LDFLAGS=-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} |g" mkspecs/common/g++.conf
 
 echo "o
 yes" | CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
@@ -177,31 +150,16 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 ./configure -prefix /usr \
 	-libdir /usr/lib${LIBDIRSUFFIX} \
 	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
+	-L/usr/lib${LIBDIRSUFFIX} \
 	-plugindir /usr/lib${LIBDIRSUFFIX}/plugins \
 	-datadir /usr/lib${LIBDIRSUFFIX} \
 	-translationdir /usr/share/qt/translations \
-	-fast \
-	-gtkstyle \
-	-largefile \
-	-no-phonon \
-	-no-phonon-backend \
-	-no-rpath \
-	-nomake demos \
-	-nomake examples \
 	-no-separate-debug-info \
 	-optimized-qmake \
 	-release \
-	-system-sqlite \
-	-xmlpatterns \
-	-scripttools \
-	-system-zlib \
-	-system-libtiff \
-	-system-libpng \
-	-system-libmng \
-	-system-libjpeg \
-	-openssl-linked \
-	-silent \
-	-reduce-relocations
+	-nomake demos \
+	-nomake examples \
+	-fast
 
 make -j3 || make
 fakeroot make install INSTALL_ROOT=${PKG}
@@ -296,6 +254,9 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+
+
 
 # Empaquetage !
 cd ${PKG}
