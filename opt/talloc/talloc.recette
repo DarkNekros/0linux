@@ -5,11 +5,11 @@ set -e
 umask 022
 CWD=$(pwd)
 
-NAMESRC=${NAMESRC:-}
-VERSION=${VERSION:-}
-EXT=${EXT:-tar.}
-NAMETGZ=${NAMETGZ:-}
-BUILD=${BUILD:-}
+NAMESRC=${NAMESRC:-talloc}
+VERSION=${VERSION:-2.0.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-talloc}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -21,10 +21,10 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+WGET=${WGET:-http://samba.org/ftp/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DOC="NEWS"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC=""
+SLACKDESC="Outils d'allocation mémoire"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -77,6 +77,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-talloc-compat1 \
+	--enable-largefile \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -84,6 +86,9 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On corrige une permission :
+chmod 644 ${PKG}/usr/lib${LIBDIRSUFFIX}/libtalloc.a
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -115,6 +120,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-talloc-compat1 \
+	--enable-largefile \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -122,6 +129,9 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On corrige une permission :
+chmod 644 ${PKG}/usr/lib${LIBDIRSUFFIX}/libtalloc.a
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -163,18 +173,6 @@ config() {
 		mv $NEW $OLD
 	fi
 }
-
-if [ -x usr/bin/update-desktop-database ]; then
-	chroot . /usr/bin/update-desktop-database &> /dev/null
-fi
-
-if [ -x /usr/bin/update-mime-database ]; then
-  /usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
-fi
-
-if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
-fi
 
 EOF
 
