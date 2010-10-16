@@ -6,7 +6,7 @@
 # 	# ./construction-liveusb.recette /dev/sdc
 
 # ATTENTION : Bien vérifier qu'on désigne la clé USB et PAS un disque dur 
-# système et/ou données !!! Ne spécifiez pas une partition (se terminant par un
+# système et/ou données !!! Ne spécifiez PAS une partition (se terminant par un
 # chiffre comme '/dev/sdc1') mais bien le PÉRIPHÉRIQUE ('/dev/sdc', '/dev/sdd', etc.)!
 
 # ATTENTION : relisez les avertissements 2 fois, vous êtes prévenu(e) !

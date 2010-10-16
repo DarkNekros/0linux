@@ -1,5 +1,6 @@
 (autoconf 2.68)
 cairo 1.10.0
+(coreutils 8.6)
 font-util 1.2.0
 freetype 2.4.3
 (gcc 4.5.1)
@@ -13,10 +14,10 @@ mesa 7.9
 poppler 0.14.4
 python 2.7
 orbit2 2.14.19
-orc 0 .4.10 (compiler d'abord schroedinger !)
+orc 0.4.11
 qt 4.7
-sqlite 3.7.3 
 x11-polices 7.6 (polices à mettre à jour)
 xdpyinfo 1.2.0 (x11-apps)
 xf86-video-intel 2.13.0 (x11-pilotes)
-xorg-server 1.9.0.901
+xorg-server 1.9.0.902
+xterm 264

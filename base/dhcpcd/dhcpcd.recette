@@ -78,7 +78,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--dbdir=/var/lib/dhcpcd \
-	--libexecdir=/usr/lib64/dhcpcd \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/dhcpcd \
 	--with-hooks="50-ntp.conf" \
 	--build=${TARGET64}
 
