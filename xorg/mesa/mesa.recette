@@ -121,7 +121,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-xcb \
 	--build=${TARGET32}
 
-make -j3 linux-x86-32 || make linux-x86-32
+make -j3 default || make default
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -181,7 +181,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-xcb \
 	--build=${TARGET64}
 
-make -j3 linux-x86-64 || make linux-x86-64
+make -j3 default || make default
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
