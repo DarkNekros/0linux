@@ -120,7 +120,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-motif \
 	--build=${TARGET32}
 
-make -j3 linux-x86-32 || make default
+make -j3 linux-x86-32 || make linux-x86-32
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -179,17 +179,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-motif \
 	--build=${TARGET64}
 
-make -j3 linux-x86-64 || make default
+make -j3 linux-x86-64 || make linux-x86-64
 fakeroot make install DESTDIR=${PKG}
-
-# On compile 'glxgears' et 'glxinfo' :
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-make CC="gcc ${BUILD64}" -C progs/xdemos glxinfo glxgears
-
-# On les place et on rend le tout exécutable :
-mkdir -p ${PKG}/usr/bin
-cp -a progs/xdemos/{glxinfo,glxgears} ${PKG}/usr/bin
-chmod 755 ${PKG}/usr/bin/{glxinfo,glxgears}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
