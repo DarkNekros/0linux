@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT}
-WGETDEMOS=${WGETDEMOS:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/MesaDemos-$VERSION.$EXT}
+#WGETDEMOS=${WGETDEMOS:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/MesaDemos-$VERSION.$EXT}
 WGETGLUT=${WGETGLUT:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/MesaGLUT-$VERSION.$EXT}
 DOC="docs/*"
 ########## |-----handy-ruler------------------------------------------------------|
@@ -44,14 +44,14 @@ fi
 # On les vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
-# On télécharge l'archive des démo :
-if [ ! -r MesaDemos-${VERSION}.$EXT ]; then
-	wget -vc $WGETDEMOS -O MesaDemos-${VERSION}.$EXT.part
-	mv MesaDemos-${VERSION}.$EXT.part MesaDemos-${VERSION}.$EXT
-fi
-
-# On la vérifie :
-tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
+## On télécharge l'archive des démo :
+#if [ ! -r MesaDemos-${VERSION}.$EXT ]; then
+#	wget -vc $WGETDEMOS -O MesaDemos-${VERSION}.$EXT.part
+#	mv MesaDemos-${VERSION}.$EXT.part MesaDemos-${VERSION}.$EXT
+#fi
+#
+## On la vérifie :
+#tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On télécharge l'archive « GLUT » :
 if [ ! -r MesaGLUT-${VERSION}.$EXT ]; then
@@ -72,7 +72,7 @@ cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-tar xf $CWD/MesaDemos-${VERSION}.$EXT
+#tar xf $CWD/MesaDemos-${VERSION}.$EXT
 tar xf $CWD/MesaGLUT-${VERSION}.$EXT
 cd ${NAME}
 
