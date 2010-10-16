@@ -131,7 +131,7 @@ cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-tar xf $CWD/MesaDemos-${VERSION}.$EXT
+#tar xf $CWD/MesaDemos-${VERSION}.$EXT
 tar xf $CWD/MesaGLUT-${VERSION}.$EXT
 cd ${NAME}
 
