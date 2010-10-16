@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-MesaLib}
-VERSION=${VERSION:-7.8.2}
+VERSION=${VERSION:-7.9}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mesa}
 BUILD=${BUILD:-1}
@@ -120,7 +120,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-motif \
 	--build=${TARGET32}
 
-make default
+make -j3 default || make default
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -179,7 +179,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-motif \
 	--build=${TARGET64}
 
-make default
+make -j3 default || make default
 fakeroot make install DESTDIR=${PKG}
 
 # On compile 'glxgears' et 'glxinfo' :
@@ -234,9 +234,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
