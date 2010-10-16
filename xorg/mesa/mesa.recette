@@ -120,7 +120,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-motif \
 	--build=${TARGET32}
 
-make -j3 default || make default
+make -j3 linux-x86-32 || make default
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -179,7 +179,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-motif \
 	--build=${TARGET64}
 
-make -j3 default || make default
+make -j3 linux-x86-64 || make default
 fakeroot make install DESTDIR=${PKG}
 
 # On compile 'glxgears' et 'glxinfo' :
