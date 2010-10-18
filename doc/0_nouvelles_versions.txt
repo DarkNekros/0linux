@@ -1,6 +1,7 @@
 (autoconf 2.68)
 cairo 1.10.0
 (coreutils 8.6)
+ffmpeg 0.6.1 
 (gcc 4.5.1)
 gtk+ 2.22.0
 (libtool 2.4)
