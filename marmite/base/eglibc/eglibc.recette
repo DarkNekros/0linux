@@ -71,9 +71,6 @@ correctifs() {
 	# Ajout de la locale ru_RU.CP1251, toujours absente :
 	cat $CWD/glibc.ru_RU.CP1251.diff | patch -p1
 	
-	# Correction de la compilation avec make 3.82 :
-	cat $CWD/eglibc.make-3.82.patch | patch -p1
-	
 	# Mise à jour des fuseaux horaires :
 	(
 		cd timezone
