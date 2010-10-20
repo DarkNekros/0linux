@@ -1,6 +1,5 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
-# Dépendances : readline 6.1 minimum !
 
 set -e
 umask 022
@@ -10,8 +9,7 @@ NAMESRC=${NAMESRC:-bash}
 VERSION=${VERSION:-4.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-bash}
-BUILD=${BUILD:-4}
-
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -27,7 +25,7 @@ DOC="ABOUT-NLS AUTHORS CHANGES COMPAT COPYING INSTALL MANIFEST* NEWS \
 # On compte les correctifs :
 CORRECTIFS=`find $CWD/patches -type f | wc -l 2> /dev/null`
 if [ "$CORRECTIFS" = "" ]; then
-	$CORRECTIFS = 0
+	$CORRECTIFS=0
 fi
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Interpréteur (shell) compatible sh"
@@ -86,8 +84,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--without-bash-malloc \
 	--build=${TARGET64}
 
-make
-make install DESTDIR=${PKG}
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
 
 # Ajustements :
 mv ${PKG}/bin/bash ${PKG}/bin/bash4.new
@@ -164,15 +162,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}.${CORRECTIFS}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
