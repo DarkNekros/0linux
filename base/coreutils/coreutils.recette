@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-coreutils}
-VERSION=${VERSION:-8.4}
+VERSION=${VERSION:-8.6}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-coreutils}
-BUILD=${BUILD:-4}
-
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -58,15 +57,16 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On corrige uname et son option -p renvoyant 'unknown' ainsi que l'internationalisation :
+# On corrige uname et son option -p renvoyant 'unknown' :
 cat $CWD/coreutils-8.1-uname-1.patch | patch -p1
-cat $CWD/coreutils-8.1-i18n-1.patch | patch -p1
 
 # Compilation pour 64 bits ; 'hostname, ''kill' et 'uptime' sont inclus dans d'autres paquets :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure --prefix=/usr \
 	--sysconfdir=/etc \
 	--mandir=/usr/man \
@@ -74,8 +74,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--enable-no-install-program=hostname,kill,uptime \
 	--build=${TARGET64}
 
-make
-make install DESTDIR=${PKG}
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
 
 # On ajoute le script de colorisation de Slackware pour la console :
 mkdir -p ${PKG}/etc
@@ -159,15 +159,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then

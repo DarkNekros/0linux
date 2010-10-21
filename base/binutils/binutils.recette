@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-binutils}
-VERSION=${VERSION:-2.20}
+VERSION=${VERSION:-2.20.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-binutils}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -53,9 +52,6 @@ echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
 
-# On applique les mises à jour des mainteneurs :
-cat $CWD/binutils-2.20-branch_update-1.patch | patch -p1
-
 # On force 'binutils' à chercher dans /lib et /lib64 pour le multilib :
 cat $CWD/binutils-2.20-genscripts_multilib-1.patch | patch -p1
 
@@ -86,8 +82,8 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--build=${TARGET64}
 
 make configure-host
-make tooldir=/usr
-make install tooldir=/usr DESTDIR=${PKG}
+fakeroot make tooldir=/usr
+fakeroot make install tooldir=/usr DESTDIR=${PKG}
 
 # Oubli du "make install" :
 cp -a $TMP/${NAME}/include/libiberty.h ${PKG}/usr/include/libiberty.h
@@ -98,7 +94,7 @@ ln -sf strings ${PKG}/usr/bin/strings-GNU
 ln -sf strings.1 ${PKG}/usr/man/man1/strings-GNU.1
 
 # 'binutils' s'entête à placer /usr/share/man et /usr/share/info en doublon :
-rm -rf $PKG/usr/share/{info,man}
+rm -rf ${PKG}/usr/share/{info,man}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -142,19 +138,17 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
-	if [ -d $TMP/${NAME} ]; then
-		rm -rf $TMP/${NAME}
+	if [ ! \"X${NAME}\" = \"X\" ]; then
+		if [ -d $TMP/${NAME} ]; then
+			rm -rf $TMP/${NAME}
+		fi
 	fi
 	if [ -d $TMP/${NAMESRC}-build ]; then
 		rm -rf $TMP/${NAMESRC}-build

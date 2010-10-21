@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-eglibc}
-VERSION=${VERSION:-2.11_20100103}
+VERSION=${VERSION:-2.11_20102010}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-eglibc}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -113,7 +113,7 @@ mkdir -p $TMP/${NAMESRC}-build
 cd $TMP/${NAMESRC}-build
 
 # Compilation pour 32 bits :
-SLKCFLAGS="-g -O3 -march=i686 -mtune=generic -pipe"
+SLKCFLAGS="-g -O3 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
@@ -158,7 +158,7 @@ mkdir -p $TMP/${NAMESRC}-build
 cd $TMP/${NAMESRC}-build
 
 # Compilation pour 64 bits :
-SLKCFLAGS="-g -O3 -fPIC -mtune=generic -pipe"
+SLKCFLAGS="-g -O3 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
