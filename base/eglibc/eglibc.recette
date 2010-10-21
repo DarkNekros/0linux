@@ -1,5 +1,7 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
+# L'archive nécessaire, tirée du dépôt SVN, se trouve sur le serveur
+# FTP de 0, dans le répertoire 'archives_sources'.
 
 set -e
 umask 022
