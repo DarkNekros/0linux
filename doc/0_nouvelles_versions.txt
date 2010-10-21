@@ -1,4 +1,5 @@
 (autoconf 2.68)
+(binutils 2.20.1)
 cairo 1.10.0
 (coreutils 8.6)
 ffmpeg 0.6.1 

@@ -1,0 +1,274 @@
+#!/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+set -e
+umask 022
+CWD=$(pwd)
+
+NAMESRC=${NAMESRC:-eglibc}
+VERSION=${VERSION:-2.11_20102010}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-eglibc}
+BUILD=${BUILD:-1}
+
+TMP=${TMP:-/tmp}
+OUT=${OUT:-/usr/local/paquets}
+ARCH=${ARCH:-x86_64}
+TARGET32=${TARGET32:-i686-0-linux-gnu}
+TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
+BUILD32=${BUILD32:--m32}
+BUILD64=${BUILD64:--m64}
+
+DOC="BUGS CANCEL* ChangeLog* CONFORMANCE COPYING COPYING.LIB EGLIBC* FAQ* \
+	 INSTALL LICENSES NAMESPACE NEWS NOTES PROJECTS README*"
+########## |-----handy-ruler------------------------------------------------------|
+SLACKDESC="Bibliothèques système vitales et internationalisation"
+SLACKDESCLIBS="Jeu minimal de bibliothèques système vitales"
+########################################
+
+SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
+	echo "La description est trop longue (80 caractères max.) !"
+	exit 1
+fi
+
+# On télécharge les sources :
+if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
+	echo "Synchronisation SVN..."
+	svn co svn://svn.eglibc.org/trunk ${NAMESRC}-${VERSION}
+	rm -rf $(find . -type d -name ".svn")
+	echo "Création de l'archive source en cours..."
+	tar cfJ ${NAMESRC}-${VERSION}.$EXT ${NAMESRC}-${VERSION}
+fi
+
+# On les vérifie :
+tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
+
+# On télécharge les données sur les fuseaux horaires :
+rm -f $CWD/tz*.tar.gz
+wget 'ftp://elsie.nci.nih.gov/pub/tzcode*.tar.gz'
+wget 'ftp://elsie.nci.nih.gov/pub/tzdata*.tar.gz'
+
+# On crée les répertoires d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}/var/{db,run}/nscd
+
+# On nettoie par le vide pour que rien ne traîne :
+if [ -d ${PKG} ]; then
+	rm -rf ${PKG}
+fi
+
+if [ -d $TMP/${NAMESRC}-${VERSION} ]; then
+	rm -rf $TMP/${NAMESRC}-${VERSION}
+fi
+
+if [ -d $TMP/${NAMESRC}-build ]; then
+  rm -rf $TMP/${NAMESRC}-build
+fi
+
+# Fonctions pour appliquer les correctifs et les fuseaux horaires :
+correctifs() {
+	# Ajout de la locale ru_RU.CP1251, toujours absente :
+	cat $CWD/glibc.ru_RU.CP1251.diff | patch -p1
+	
+	# Mise à jour des fuseaux horaires :
+	(
+		cd timezone
+		tar xf $CWD/tzdata*.tar.gz
+		mv yearistype.sh yearistype
+		chmod 644 *
+		chmod 755 yearistype
+		mkdir tzcode
+		cd tzcode
+		tar xf $CWD/tzcode*.tar.gz
+		chmod 644 *
+		cp -a *.c *.h ..
+	)
+}
+
+# On déballe et on se place dans les sources :
+NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On applique tous les correctifs ; on quitte si quelque chose ne va pas :
+cd $TMP/${NAME}/libc
+correctifs
+if [ ! $? = 0 ]; then
+	echo "Erreur lors de l'application d'un correctif. Arrêt."
+	exit 1
+fi
+
+# On crée un répertoire séparé pour la compilation :
+rm -rf $TMP/${NAMESRC}-build
+mkdir -p $TMP/${NAMESRC}-build
+cd $TMP/${NAMESRC}-build
+
+# Compilation pour 32 bits :
+SLKCFLAGS="-g -O3 -march=i686 -pipe"
+LIBDIRSUFFIX=""
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+$TMP/${NAME}/libc/configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--disable-profile \
+	--enable-add-ons \
+	--enable-kernel=2.6.33 \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/eglibc \
+	--build=${TARGET32}
+
+make -j3 || make
+fakeroot make install install_root=${PKG}
+
+# On re-déballe et on se re-place dans les sources :
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On re-vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On réapplique tous les correctifs ; on quitte si quelque chose ne va pas :
+cd $TMP/${NAME}/libc
+correctifs
+if [ ! $? = 0 ]; then
+	echo "Erreur lors de l'appplication d'un correctif. Arrêt."
+	exit 1
+fi
+
+# On recrée un répertoire séparé pour la compilation :
+rm -rf $TMP/${NAMESRC}-build
+mkdir -p $TMP/${NAMESRC}-build
+cd $TMP/${NAMESRC}-build
+
+# Compilation pour 64 bits :
+SLKCFLAGS="-g -O3 -fPIC -pipe"
+LIBDIRSUFFIX="64"
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+$TMP/${NAME}/libc/configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--disable-profile \
+	--enable-add-ons \
+	--enable-kernel=2.6.33 \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/eglibc \
+	--build=${TARGET64}
+
+make -j3 || make
+fakeroot make install install_root=${PKG}
+fakeroot make localedata/install-locales install_root=${PKG}
+
+# On place la configuration de nscd :
+cat $TMP/${NAME}/libc/nscd/nscd.conf > ${PKG}/etc/nscd.conf.new
+
+# On installe le script pour le fuseau horaire :
+cp -a $CWD/0horloge ${PKG}/usr/sbin
+chmod 755 ${PKG}/usr/sbin/0horloge
+
+# On nettoie :
+rm -f ${PKG}/etc/ld.so.cache
+find ${PKG} -name "*.orig" -delete
+
+# On compresse les manuels :
+if [ -d ${PKG}/usr/man ]; then
+	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+	for manpage in $(find ${PKG}/usr/man -type l) ; do
+		ln -s $(readlink $manpage).gz ${manpage}.gz
+		rm -f ${manpage}
+	done
+fi
+
+# On compresse les pages info :
+if [ -d ${PKG}/usr/info ]; then
+	rm -f ${PKG}/usr/info/dir
+	gzip -9 ${PKG}/usr/info/*.info*
+fi
+
+# Installation de la documentation :
+cd $TMP/${NAME}/libc
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cd -
+
+# On installe le slack-desc :
+mkdir -p ${PKG}/install
+echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+# On installe le doinst.sh :
+cat > ${PKG}/install/doinst.sh << "EOF"
+#!/bin/env bash
+if [ -e sbin/init ]; then
+	chroot . /sbin/init u >/dev/null
+fi
+
+if [ -x sbin/ldconfig ]; then
+	sbin/ldconfig -r .
+fi
+
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
+
+config etc/nscd.conf.new
+
+EOF
+
+# On "strippe" tout ce qu'on trouve :
+find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
+# On vérifie enfin les droits de la doc, souvent problématiques :
+find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# Empaquetage !
+cd ${PKG}
+mkdir -p $OUT
+PACKAGING="
+	chown root:root . -R
+	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	rm -rf ${PKG}
+	if [ ! \"X${NAME}\" = \"X\" ]; then
+		if [ -d $TMP/${NAME} ]; then
+			rm -rf $TMP/${NAME}
+		fi
+	fi
+	rm -rf $TMP/${NAMESRC}-build"
+	
+
+if [ "$(which fakeroot 2> /dev/null)" ]; then
+	echo "${PACKAGING}" | fakeroot
+else
+	su -c "${PACKAGING}"
+fi
+
+exit 0
+
