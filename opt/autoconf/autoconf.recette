@@ -68,7 +68,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--prefix=/usr \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--build=${BUILD64}
+	--build=${TARGET64}
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
