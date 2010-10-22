@@ -7,7 +7,7 @@ CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-libtool}
 VERSION=${VERSION:-2.4}
-EXT=${EXT:-tar.lzma}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-libtool}
 BUILD=${BUILD:-1}
 
