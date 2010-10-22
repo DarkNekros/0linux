@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-docbook-utils}
 VERSION=${VERSION:-0.6.14}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-docbook-utils}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -59,6 +59,10 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On adapte 'jw' à 'grep' 2.7 :
+sed -i 's@\[:space:\]@\[\[:space:\]\]@g' bin/jw.in
+
+# On corrige un chemin erroné :
 sed -i 's:/html::' doc/HTML/Makefile.in
 
 # On positionne USE_ARCH :
@@ -142,9 +146,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
