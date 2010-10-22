@@ -8,7 +8,7 @@ CWD=$(pwd)
 VERSION=${VERSION:-7.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-apps}
-BUILD=${BUILD:-12}
+BUILD=${BUILD:-16}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
