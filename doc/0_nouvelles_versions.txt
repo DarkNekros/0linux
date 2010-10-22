@@ -1,7 +1,5 @@
 (autoconf 2.68)
 cairo 1.10.0
-ffmpeg 0.6.1 
-git 1.7.3.2 
 gtk+ 2.22.0
 (libtool 2.4)
 linux 2.6.36
