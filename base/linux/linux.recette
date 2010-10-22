@@ -78,7 +78,7 @@ cd ${NAME}
 make mrproper
 
 # On comble des vulnérabilités :
-for patch in $CWD/*.diff.gz; do
+for patch in $CWD/*.diff.gz $CWD/linux.faille_rds.patch; do
 	zcat ${PATCH} | patch -p1
 done
 
