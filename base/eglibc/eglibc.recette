@@ -219,10 +219,6 @@ echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
 #!/bin/env bash
-if [ -e sbin/init ]; then
-	chroot . /sbin/init u >/dev/null
-fi
-
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
