@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-gcc}
 VERSION=${VERSION:-4.5.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gcc}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
