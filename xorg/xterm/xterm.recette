@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-xterm}
-VERSION=${VERSION:-264}
+VERSION=${VERSION:-265}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-xterm}
 BUILD=${BUILD:-1}
