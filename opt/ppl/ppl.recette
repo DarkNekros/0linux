@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-ppl}
 VERSION=${VERSION:-0.10.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ppl}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -60,10 +59,10 @@ find . \
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
-CC="gcc -isystem /usr/include ${BUILD32}" \
-CXX="g++ -isystem /usr/include ${BUILD32}" \
-LDFLAGS="-Wl,-rpath-link,/lib ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="-fexceptions ${SLKCFLAGS}" \
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 M4="/usr/bin/m4" ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -74,7 +73,7 @@ M4="/usr/bin/m4" ./configure \
 	--build=${TARGET32}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On renomme le binaire 32 bits et l'entête 32 bits :
 mv ${PKG}/usr/bin/ppl-config{,-32}
@@ -97,6 +96,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 M4="/usr/bin/m4" ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -107,7 +108,7 @@ M4="/usr/bin/m4" ./configure \
 	--build=${TARGET64}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On renomme le binaire 64 bits et l'entête 64 bits :
 mv ${PKG}/usr/bin/ppl-config{,-64}
@@ -170,15 +171,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
