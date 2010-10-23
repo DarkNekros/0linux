@@ -99,6 +99,9 @@ sed -i 's/^T_CFLAGS =$/& -fomit-frame-pointer/' gcc/Makefile.in
 # On se débarrasse du script fixincludes :
 sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 
+# On corrige la détection de 'ppl' :
+sed -i "/ppl_minor_version=/s#10#11#" configure
+
 # On crée un répertoire séparé pour la compilation :
 mkdir -p $TMP/${NAMETGZ}-build
 cd $TMP/${NAMETGZ}-build
@@ -108,6 +111,7 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 $TMP/${NAME}/configure --prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
@@ -116,14 +120,15 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--enable-shared \
 	--enable-threads=posix \
 	--enable-__cxa_atexit \
-	--enable-c99 \
-	--enable-long-long \
 	--enable-libssp \
 	--with-gnu-ld \
 	--with-system-zlib \
 	--enable-clocale=gnu \
 	--enable-multilib \
-	--enable-languages=c,c++,fortran,java,objc \
+	--enable-languages=c,c++,fortran,java,lto,objc \
+	--enable-lto \
+	--with-cloog \
+	--with-ppl \
 	--build=${TARGET64} \
 	--host=${TARGET64} \
 	--target=${TARGET64}
