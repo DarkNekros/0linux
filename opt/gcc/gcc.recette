@@ -7,6 +7,7 @@ CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-gcc}
 VERSION=${VERSION:-4.5.1}
+ECJVERSION=${ECJVERSION:-4.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gcc}
 BUILD=${BUILD:-2}
@@ -22,7 +23,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}
-WGET_ECJ=${WGET_ECJ:-ftp://sourceware.org/pub/java/ecj-4.3.jar}
+WGET_ECJ=${WGET_ECJ:-ftp://sourceware.org/pub/java/ecj-${ECJVERSION}.jar}
 PKG_DOC="COPYING* ChangeLog ChangeLog.tree-ssa INSTALL LAST_UPDATED MAINTAINERS NEWS README*"
 GCC_DOC="gcc/ABOUT* gcc/ChangeLog.tree-ssa gcc/COPYING* gcc/LANGUAGES gcc/ONEWS gcc/README.Portability"
 LIBJAVA_DOC="libjava/COPYING* libjava/ChangeLog libjava/HACKING libjava/LIBGCJ_LICENSE libjava/NEWS libjava/README libjava/THANKS"
@@ -47,9 +48,9 @@ fi
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On télécharge l'archive Java ECJ :
-if [ ! -r ecj-4.3.jar ]; then
-	wget -vc $WGET_ECJ -O ecj-4.3.jar.part
-	mv ecj-4.3.jar.part ecj-4.3.jar
+if [ ! -r ecj-${ECJVERSION}.jar ]; then
+	wget -vc $WGET_ECJ -O ecj-${ECJVERSION}.jar.part
+	mv ecj-${ECJVERSION}.jar.part ecj-${ECJVERSION}.jar
 fi
 
 # On crée le répertoire d'accueil :
@@ -88,7 +89,7 @@ cp -a ${LIBOBJC_DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libobjc
 cp -a libstdc++-v3/{ChangeLog,README} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libstdc++-v3
 
 # Copie de l'archive Java dans les sources :
-cp $CWD/ecj-4.3.jar ecj.jar
+cp $CWD/ecj-${ECJVERSION}.jar ecj.jar
 
 # On se passe de 'libiberty' (présente dans 'binutils') :
 sed -i 's/install_to_$(INSTALL_DEST) //' libiberty/Makefile.in
