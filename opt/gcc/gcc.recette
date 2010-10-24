@@ -160,13 +160,6 @@ $TMP/${NAME}/configure --prefix=/usr \
 
 make -j3 bootstrap || make bootstrap
 
-(
-	cd $TMP/${NAME}/gcc
-	GNATLIBCFLAGS="$SLKCFLAGS" make -j3 gnatlib || GNATLIBCFLAGS="$SLKCFLAGS" make gnatlib
-	CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" make -j3 gnattools || \
-		CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" make gnattools
-)
-
 make info
 fakeroot make install DESTDIR=${PKG}
 fakeroot make -i install-info DESTDIR=${PKG}
