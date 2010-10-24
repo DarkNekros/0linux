@@ -71,23 +71,6 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On installe la documentation :
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc/{fortran,java,objc}
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/{libffi,libjava,libmudflap,libgomp,libobjc,libstdc++-v3}
-
-cp -a ${PKG_DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${GCC_DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc
-cp -a gcc/fortran/ChangeLog* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc/fortran
-cp -a gcc/java/ChangeLog* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc/java
-cp -a gcc/objc/{ChangeLog,README} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc/objc
-cp -a libgfortran/ChangeLog ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libgfortran
-cp -a libffi/{ChangeLog*,LICENSE,README} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libffi
-cp -a ${LIBJAVA_DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libjava
-cp -a libmudflap/ChangeLog ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libmudflap
-cp -a libgomp/ChangeLog ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libgomp
-cp -a ${LIBOBJC_DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libobjc
-cp -a libstdc++-v3/{ChangeLog,README} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libstdc++-v3
-
 # Copie de l'archive Java dans les sources :
 cp $CWD/ecj-${ECJVERSION}.jar ecj.jar
 
@@ -126,7 +109,7 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--with-system-zlib \
 	--enable-clocale=gnu \
 	--enable-multilib \
-	--enable-languages=c,c++,fortran,java,lto,objc \
+	--enable-languages=ada,c,c++,fortran,java,lto,objc \
 	--enable-lto \
 	--with-cloog \
 	--with-ppl \
@@ -135,9 +118,20 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--target=${TARGET64}
 
 make -j3 || make
+
+(
+	cd gcc
+	GNATLIBCFLAGS="$SLKCFLAGS" make -j3 gnatlib || GNATLIBCFLAGS="$SLKCFLAGS" make gnatlib
+	CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" make -j3 gnattools || \
+		CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" make gnattools
+)
+
 make info
 fakeroot make install DESTDIR=${PKG}
 fakeroot make -i install-info DESTDIR=${PKG}
+
+# Ces fichiers causent des erreurs avec 'ldconfig' :
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/*gdb.py
 
 # On s'assure que le très important fichier « specs » soit présent :
 if [ ! -r ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/${TARGET64}/${VERSION}/specs ]; then
@@ -168,6 +162,24 @@ if [ -d ${PKG}/usr/info ]; then
 	rm -f ${PKG}/usr/info/dir
 	gzip -9 ${PKG}/usr/info/*.info*
 fi
+
+# On installe la documentation :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc/{fortran,java,objc}
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/{libada,libffi,libjava,libmudflap,libgomp,libobjc,libstdc++-v3}
+
+cp -a ${PKG_DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${GCC_DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc
+cp -a gcc/fortran/ChangeLog* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc/fortran
+cp -a gcc/java/ChangeLog* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc/java
+cp -a gcc/objc/{ChangeLog,README} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/gcc/objc
+cp -a libada/ChangeLog ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libada
+cp -a libgfortran/ChangeLog ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libgfortran
+cp -a libffi/{ChangeLog*,LICENSE,README} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libffi
+cp -a ${LIBJAVA_DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libjava
+cp -a libmudflap/ChangeLog ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libmudflap
+cp -a libgomp/ChangeLog ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libgomp
+cp -a ${LIBOBJC_DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libobjc
+cp -a libstdc++-v3/{ChangeLog,README} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/libstdc++-v3
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
