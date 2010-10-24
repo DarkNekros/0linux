@@ -1,6 +1,14 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
+# L'archive de GNAT se trouve sur le serveur FTP de 0, dans 
+# le répertoire 'archives_sources', à moins que  vous ne désiriez télécharger
+# l'archive sur le site officiel (111 Mo à 25 ko/s maxi, bon courage).
+
+# Positionner la variable BUILDGNAT pour télécharger/compiler GNAT avant de
+# compiler GCC :
+# 	BUILDGNAT=oui ./gcc.recette
+
 set -e
 umask 022
 CWD=$(pwd)
@@ -24,6 +32,8 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}
 WGET_ECJ=${WGET_ECJ:-ftp://sourceware.org/pub/java/ecj-${ECJVERSION}.jar}
+WGET_GNAT=${WGET_GNAT:-http://libre2.adacore.com/ac_download/?ac_download&file=MD5%3Ab254f484866ed9a571618d26613e6a88}
+GNATFILE=${GNATFILE:-gnat-gpl-2010-x86_64-pc-linux-gnu-bin.tar.gz}
 PKG_DOC="COPYING* ChangeLog ChangeLog.tree-ssa INSTALL LAST_UPDATED MAINTAINERS NEWS README*"
 GCC_DOC="gcc/ABOUT* gcc/ChangeLog.tree-ssa gcc/COPYING* gcc/LANGUAGES gcc/ONEWS gcc/README.Portability"
 LIBJAVA_DOC="libjava/COPYING* libjava/ChangeLog libjava/HACKING libjava/LIBGCJ_LICENSE libjava/NEWS libjava/README libjava/THANKS"
@@ -56,6 +66,37 @@ fi
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
+
+# Si BUILDGNAT ets positionnée :
+if [ ! "$BUILDGNAT" = "" ]; then
+	# On télécharge l'archive GNAT si vraiment on ne l'a pas déjà... :
+	if [ ! -r $CWD/${GNATFILE} ]; then
+		wget -vc $WGET_ECJ -O ${GNATFILE}.part
+		mv ${GNATFILE}{.part,}
+	fi
+	
+	# On déballe GNAT et on se place dans les sources :
+	NAMEGNAT=$(tar ft ${GNATFILE} | head -n 1 | awk -F/ '{ print $1 }')
+	cd $TMP
+	rm -rf ${NAMEGNAT}
+	echo "Extraction en cours..."
+	tar xf $CWD/${GNATFILE}
+	cd ${NAMEGNAT}
+	
+	# On vérifie les permissions des sources :
+	find . \
+		\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+		\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+	# On compile et on installe dans un répertoire temporaire :
+	fakeroot make ins-all prefix=$TMP/gnattmp
+
+	# On ajoute GNAT en début de chemin du PATH :
+	OLDPATH=$PATH
+	export PATH=$TMP/gnattmp/bin:$OLDPATH
+	
+	cd -
+fi
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -115,8 +156,6 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--host=${TARGET64} \
 	--target=${TARGET64}
 
-make -j3 || make
-
 (
 	cd gcc
 	GNATLIBCFLAGS="$SLKCFLAGS" make -j3 gnatlib || GNATLIBCFLAGS="$SLKCFLAGS" make gnatlib
@@ -124,6 +163,7 @@ make -j3 || make
 		CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" make gnattools
 )
 
+make -j3 bootstrap || make bootstrap
 make info
 fakeroot make install DESTDIR=${PKG}
 fakeroot make -i install-info DESTDIR=${PKG}
@@ -213,6 +253,10 @@ PACKAGING="
 			rm -rf $TMP/${NAME}
 		fi
 		rm -rf $TMP/${NAMETGZ}-build
+	fi
+	if [ ! \"$BUILDGNAT\" = \"\" ]; then
+		rm -rf $TMP/${NAMEGNAT}
+		export PATH=$OLDPATH
 	fi"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
