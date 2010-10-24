@@ -94,8 +94,6 @@ cd $TMP/${NAMETGZ}-build
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 $TMP/${NAME}/configure --prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
