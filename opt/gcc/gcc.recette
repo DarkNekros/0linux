@@ -153,9 +153,7 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--enable-lto \
 	--with-cloog \
 	--with-ppl \
-	--build=${TARGET64} \
-	--host=${TARGET64} \
-	--target=${TARGET64}
+	--build=${TARGET64}
 
 (
 	cd gcc
