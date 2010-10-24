@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-mpfr}
 VERSION=${VERSION:-3.0.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-mpfr}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -20,6 +20,7 @@ BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
 WGET=${WGET:-http://www.mpfr.org/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}
+WGETPATCH=${WGETPATCH:-http://mpfr.loria.fr/$NAMESRC-$VERSION/allpatches}
 DOC="AUTHORS BUGS COPYING* FAQ.html INSTALL NEWS README TODO VERSION"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèque « Multiple-Precision Floating-point Reliable »"
@@ -40,6 +41,10 @@ fi
 # On les vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
+# On télécharge le correctif cumulé des développeurs :
+wget -vc $WGETPATCH -O allpatches.part
+mv allpatches{.part,}
+
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
@@ -56,6 +61,9 @@ cd ${NAME}
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On applique le correctif des développeurs :
+cat $CWD/allpatches | patch -p1
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
@@ -86,6 +94,9 @@ cd ${NAME}
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On applique le correctif des développeurs :
+cat $CWD/allpatches | patch -p1
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
