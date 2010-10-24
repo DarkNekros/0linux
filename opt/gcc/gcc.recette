@@ -156,7 +156,7 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--build=${TARGET64}
 
 (
-	cd gcc
+	cd $TMP/${NAME}/gcc
 	GNATLIBCFLAGS="$SLKCFLAGS" make -j3 gnatlib || GNATLIBCFLAGS="$SLKCFLAGS" make gnatlib
 	CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" make -j3 gnattools || \
 		CFLAGS="$SLKCFLAGS" CXXFLAGS="$SLKCFLAGS" make gnattools
