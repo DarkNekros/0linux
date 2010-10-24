@@ -127,6 +127,9 @@ sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 # On corrige la détection de 'ppl' :
 sed -i "/ppl_minor_version=/s#10#11#" configure
 
+# On corrige un fichiercausant une erreur de compilation pour ada :
+cat $CWD/gcc.adafix.patch | patch -p1 || exit 1
+
 # On crée un répertoire séparé pour la compilation :
 mkdir -p $TMP/${NAMETGZ}-build
 cd $TMP/${NAMETGZ}-build
