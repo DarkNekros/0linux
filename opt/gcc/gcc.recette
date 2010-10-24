@@ -149,6 +149,7 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--enable-clocale=gnu \
 	--enable-multilib \
 	--enable-languages=ada,c,c++,fortran,java,lto,objc \
+	--enable-libada \
 	--enable-lto \
 	--with-cloog \
 	--with-ppl \
@@ -170,6 +171,9 @@ fakeroot make -i install-info DESTDIR=${PKG}
 
 # Ces fichiers causent des erreurs avec 'ldconfig' :
 rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/*gdb.py
+
+# Cet entête a besoin d'un lien dans /usr/include pour certains paquets :
+ln -sf ../../usr/lib${LIBDIRSUFFIX}/gcc/${TARGET64}/${VERSION}/include/ffitarget.h ${PKG}/usr/include
 
 # On s'assure que le très important fichier « specs » soit présent :
 if [ ! -r ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/${TARGET64}/${VERSION}/specs ]; then
