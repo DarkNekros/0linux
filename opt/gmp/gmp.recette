@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-gmp}
 VERSION=${VERSION:-5.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gmp}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -75,7 +75,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET32}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On renomme l'entête 32 bits :
 mv ${PKG}/usr/include/gmp{,-32}.h
@@ -110,7 +110,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On renomme l'entête 64 bits :
 mv ${PKG}/usr/include/gmp{,-64}.h
