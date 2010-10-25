@@ -183,7 +183,7 @@ fakeroot make install DESTDIR=${PKG}
 fakeroot make -i install-info DESTDIR=${PKG}
 
 # Ces fichiers causent des erreurs avec 'ldconfig' :
-rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/*gdb.py
+rm -f ${PKG}/usr/lib{,64}/*gdb.py
 
 # Cet entête a besoin d'un lien dans /usr/include pour certains paquets :
 ln -sf ../../usr/lib${LIBDIRSUFFIX}/gcc/${TARGET64}/${VERSION}/include/ffitarget.h ${PKG}/usr/include
