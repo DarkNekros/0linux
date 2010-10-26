@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-binutils}
 VERSION=${VERSION:-2.20.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-binutils}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -81,8 +81,8 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--enable-64-bit-bfd \
 	--build=${TARGET64}
 
-make configure-host
-fakeroot make tooldir=/usr
+make -j3 configure-host || make configure-host
+fakeroot make -j3 tooldir=/usr || fakeroot make tooldir=/usr
 fakeroot make install tooldir=/usr DESTDIR=${PKG}
 
 # Oubli du "make install" :
