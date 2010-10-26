@@ -1,7 +1,5 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
-# Dépendances : xtrans, libXau, libXdmcp, XCB, libX11, libICE, libXext, libSM, 
-# libXt, libXmu, libXpm, libXfixes, libXrender, libfontenc, libXi, libXv.
 
 set -e
 umask 022
@@ -10,7 +8,7 @@ CWD=$(pwd)
 VERSION=${VERSION:-7.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-libs}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -22,7 +20,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-XLIBS="libFS-1.0.2 libWindowsWM-1.0.1 libXaw-1.0.7 \
+XLIBS="libFS-1.0.2 libWindowsWM-1.0.1 libXaw-1.0.8 \
 libXScrnSaver-1.2.0 libXTrap-1.0.0 libXcomposite-0.4.2 libXcursor-1.1.10 \
 libXdamage-1.1.3 libXevie-1.0.2 libXfont-1.4.2 libXfontcache-1.0.5 \
 libXft-2.1.14 libXinerama-1.1 libXprintAppUtil-1.0.1 libXrandr-1.3.0 libXres-1.0.4 \
@@ -177,9 +175,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}

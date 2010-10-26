@@ -1,6 +1,7 @@
 cairo 1.10.0
 gtk+ 2.22.0
 linux 2.6.36
+lvm 2.02.75 
 poppler 0.14.4
 python 2.7
 orbit2 2.14.19
@@ -8,4 +9,6 @@ qt 4.7
 spack 2.8
 tar 1.24
 udev 164
+x11-libs (libXaw 1.0.8)
 xorg-server 1.9.1
+xterm 266
