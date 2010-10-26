@@ -6,7 +6,5 @@ poppler 0.14.4
 python 2.7
 orbit2 2.14.19
 qt 4.7
-spack 2.8
 tar 1.24
 xorg-server 1.9.1
-xterm 266

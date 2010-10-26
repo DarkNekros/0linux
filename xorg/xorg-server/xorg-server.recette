@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-xorg-server}
-VERSION=${VERSION:-1.9.0.902}
+VERSION=${VERSION:-1.9.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
 BUILD=${BUILD:-1}
@@ -72,7 +72,7 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-XSERVERLIBS_LIBS+="-L/usr/lib${LIBDIRSUFFIX} -lXfont -lXau -lpixman-1 -ldbus-1 -lpthread -lrt -lXdmcp -ldl" \
+# XSERVERLIBS_LIBS+="-L/usr/lib${LIBDIRSUFFIX} -lXfont -lXau -lpixman-1 -ldbus-1 -lpthread -lrt -lXdmcp -ldl"
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -91,7 +91,7 @@ XSERVERLIBS_LIBS+="-L/usr/lib${LIBDIRSUFFIX} -lXfont -lXau -lpixman-1 -ldbus-1 -
 	--with-gnu-ld \
 	--build=${TARGET64}
 
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" make -j3 || LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" make
+make -j3 make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
