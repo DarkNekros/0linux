@@ -17,7 +17,7 @@ NAMETGZ=${NAMETGZ:-linux}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
-BUILD=${BUILD:-7}
+BUILD=${BUILD:-8}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
