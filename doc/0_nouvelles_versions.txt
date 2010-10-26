@@ -8,7 +8,5 @@ orbit2 2.14.19
 qt 4.7
 spack 2.8
 tar 1.24
-udev 164
-x11-libs (libXaw 1.0.8)
 xorg-server 1.9.1
 xterm 266
