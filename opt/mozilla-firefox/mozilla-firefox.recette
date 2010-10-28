@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-3.6.11}
+VERSION=${VERSION:-3.6.12}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
 BUILD=${BUILD:-1}
@@ -121,7 +121,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--host=${TARGET32} 
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -236,7 +236,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 	--host=${TARGET64} 
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
