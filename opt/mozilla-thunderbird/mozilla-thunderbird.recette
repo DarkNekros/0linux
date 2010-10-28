@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-3.1.5}
+VERSION=${VERSION:-3.1.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
 BUILD=${BUILD:-1}
