@@ -63,7 +63,7 @@ find . \
 sed -i 's@ACTION=="add", ENV{STARTUP}!="1", NAME="", GOTO="dm_end"@#&@' udev/10-dm.rules.in
 
 # On corrige les drapeaux de compilation statique :
-sed -i 's@-static@& -Wl,--no-export-dynamic@g' $(find . -type f -name "Makefile*")
+sed -i 's@$(CC) $(CFLAGS) $(LDFLAGS) -static@& -Wl,--no-export-dynamic@g' $(find . -type f -name "Makefile*")
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
@@ -123,7 +123,7 @@ find . \
 sed -i 's@ACTION=="add", ENV{STARTUP}!="1", NAME="", GOTO="dm_end"@#&@' udev/10-dm.rules.in
 
 # On corrige les drapeaux de compilation statique :
-sed -i 's@-static@& -Wl,--no-export-dynamic@g' $(find . -type f -name "Makefile*")
+sed -i 's@$(CC) $(CFLAGS) $(LDFLAGS) -static@& -Wl,--no-export-dynamic@g' $(find . -type f -name "Makefile*")
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
