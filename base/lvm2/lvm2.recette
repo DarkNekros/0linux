@@ -62,8 +62,8 @@ find . \
 # On retire une règle udev invalide :
 sed -i 's@ACTION=="add", ENV{STARTUP}!="1", NAME="", GOTO="dm_end"@#&@' udev/10-dm.rules.in
 
-# On corrige les drapeaux pour la compilation statique :
-cat $CWD/lvm2.staticflags.patch | patch -p1
+# On corrige les drapeaux de compilation statique :
+sed -i 's@-static@& -Wl,--no-export-dynamic@g' $(find . -type f -name "Makefile*")
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
@@ -122,8 +122,8 @@ find . \
 # On retire une règle udev invalide :
 sed -i 's@ACTION=="add", ENV{STARTUP}!="1", NAME="", GOTO="dm_end"@#&@' udev/10-dm.rules.in
 
-# On corrige les drapeaux pour la compilation statique :
-cat $CWD/lvm2.staticflags.patch | patch -p1
+# On corrige les drapeaux de compilation statique :
+sed -i 's@-static@& -Wl,--no-export-dynamic@g' $(find . -type f -name "Makefile*")
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
