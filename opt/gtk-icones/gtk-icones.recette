@@ -13,7 +13,7 @@ TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
 ARCH=${ARCH:-noarch}
 
-WGET=( "http://art.gnome.org/download/themes/icon/1002/ICON-BlankOn.tar.gz" \
+WGET="http://art.gnome.org/download/themes/icon/1002/ICON-BlankOn.tar.gz" \
 "http://art.gnome.org/download/themes/icon/1049/ICON-DroplineEtiquette.tar.bz2 "\
 "http://art.gnome.org/download/themes/icon/1100/ICON-DroplineNeu.tar.bz2" \
 "http://art.gnome.org/download/themes/icon/1112/ICON-DroplineNuovo.tar.bz2" \
@@ -37,7 +37,7 @@ WGET=( "http://art.gnome.org/download/themes/icon/1002/ICON-BlankOn.tar.gz" \
 "http://art.gnome.org/download/themes/icon/1053/ICON-Suede2.tar.bz2" \
 "http://art.gnome.org/download/themes/icon/1261/ICON-TangoMateria.tar.gz" \
 "http://art.gnome.org/download/themes/icon/1168/ICON-Yasis.tar.bz2" \
-"http://art.gnome.org/download/themes/icon/1128/ICON-YattaBlues.tar.gz" )
+"http://art.gnome.org/download/themes/icon/1128/ICON-YattaBlues.tar.gz"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Ensemble d'icônes pour GTK+"
 ########################################
@@ -49,7 +49,7 @@ if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
 fi
 
 # On télécharge les sources :
-for archive in ${WGET[$*]}; do
+for archive in ${WGET}; do
 	if [ ! -r $(basename ${archive}) ]; then
 		wget -vc ${archive} -O $(basename ${archive}).part
 		mv $(basename ${archive}){.part,}
