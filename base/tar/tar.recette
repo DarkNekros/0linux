@@ -57,10 +57,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On applique les correctifs Slackware pour rendre 'tar' silencieux et ajouter la
-# prise en charge du '.txz' :
+# On rendr 'tar' silencieux et on ajoute la prise en charge du '.txz' :
 cat $CWD/tar.norecordsizespam.diff | patch -p1
-cat $CWD/tar-1.22-support_txz.diff | patch -p1
+cat $CWD/tar.txz.patch | patch -p1
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
