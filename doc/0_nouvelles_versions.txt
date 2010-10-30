@@ -1,5 +1,4 @@
 cairo 1.10.0
-gparted 0.7.0 
 gtk+ 2.22.0
 linux 2.6.36
 poppler 0.14.4
