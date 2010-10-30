@@ -71,7 +71,6 @@ for srcdir in $(find * -type d -maxdepth 0); do
 	# Puis on ramène les fichiers importants pour les thèmes :
 	find ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/${srcdir} -type f -iname "\(index.theme|icon-theme.cache|iconrc\)" \
 		-exec mv {} ${PKG}/usr/share/icons/${srcdir} \;
-	done
 done
 
 # On nettoie cette poubelle :
