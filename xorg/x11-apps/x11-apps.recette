@@ -24,7 +24,7 @@ XLIBS="bdftopcf-1.0.3 iceauth-1.0.4 luit-1.1.0 \
 mkfontdir-1.0.5 mkfontscale-1.0.8 sessreg-1.0.6 \
 setxkbmap-1.2.0 smproxy-1.0.4 twm-1.0.4 x11perf-1.5.2 \
 xauth-1.0.5 xbacklight-1.1.1 xclock-1.0.5 xcmsdb-1.0.3 \
-xcursorgen-1.0.4 xdpyinfo-1.2.0 xdriinfo-1.0.3 xdm 1.1.10 \
+xcursorgen-1.0.4 xdpyinfo-1.2.0 xdriinfo-1.0.3 xdm-1.1.10 \
 xev-1.1.0 xgamma-1.0.3 xhost-1.0.4 xinit-1.2.1 xinput-1.5.2 \
 xkbcomp-1.2.0 xkbevd-1.1.1 xkbutils-1.0.3 \
 xkill-1.0.2 xlsatoms-1.1.0 xlsclients-1.1.1 xmessage-1.0.3 \
