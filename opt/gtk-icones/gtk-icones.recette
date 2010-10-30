@@ -36,9 +36,9 @@ for archive in ${WGET}; do
 	if [ ! -r $(basename ${archive}) ]; then
 		wget -vc http://art.gnome.org/download/themes/icon/${archive} -O $(basename ${archive}).part
 		mv $(basename ${archive}){.part,}
-		# On les vérifie :
-		tar ft $(basename ${archive}) 1> /dev/null 2> /dev/null
 	fi
+	# On les vérifie :
+	tar ft $(basename ${archive}) 1> /dev/null 2> /dev/null
 done
 
 # On crée le répertoire d'accueil :
