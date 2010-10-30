@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-iptables}
-VERSION=${VERSION:-1.4.9}
+VERSION=${VERSION:-1.4.10}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-iptables}
 BUILD=${BUILD:-1}
@@ -81,7 +81,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
     --sbindir=/sbin \
 	--build=${TARGET64}
 
-make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -145,9 +145,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
