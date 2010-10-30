@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-gparted}
-VERSION=${VERSION:-0.6.4}
+VERSION=${VERSION:-0.7.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gparted}
 BUILD=${BUILD:-1}
@@ -116,9 +116,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}

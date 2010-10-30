@@ -1,7 +1,6 @@
 cairo 1.10.0
 gparted 0.7.0 
 gtk+ 2.22.0
-iptables 1.4.10 
 linux 2.6.36
 poppler 0.14.4
 python 2.7
