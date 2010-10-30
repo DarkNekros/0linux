@@ -48,7 +48,7 @@ mkdir -p ${PKG}/usr/share/icons
 # On déballe les sources :
 echo "Extractions en cours..."
 for tarball in $CWD/*.tar.{gz,bz2}; do
-	tar --atime-preserve=system -xf ${tarball} -C ${PKG}/usr/share/icons 
+	tar -xf ${tarball} -C ${PKG}/usr/share/icons/
 done
 
 # On vérifie les permissions :
