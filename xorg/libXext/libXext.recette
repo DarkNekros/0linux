@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-libXext}
 VERSION=${VERSION:-1.2.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-libXext}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
