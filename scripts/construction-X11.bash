@@ -18,7 +18,7 @@ RECETTES="x11-proto gccmakedep imake x11-utils x11-cf-files \
 
 for recette in ${RECETTES}; do
 	# On se place dans le répertoire de la recette :
-	cd $(find ../$CWD -type d -name "${recette}")
+	cd $(find $CWD/.. -type d -name "${recette}")
 	
 	# On construit le paquet :
 	bash -ex ${recette}.recette 2>&1 | tee /tmp/logs/${recette}.recette.log
