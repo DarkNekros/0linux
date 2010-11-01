@@ -8,7 +8,7 @@ CWD=$(pwd)
 VERSION=${VERSION:-7.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-pilotes}
-BUILD=${BUILD:-7}
+BUILD=${BUILD:-8}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -22,9 +22,9 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 XDRIVERS="xf86-input-acecad-1.4.0 xf86-input-aiptek-1.3.1 \
 xf86-input-evdev-2.5.0 xf86-input-joystick-1.5.0 \
-xf86-input-keyboard-1.4.0 xf86-input-mouse-1.6.0 \
+xf86-input-keyboard-1.5.0 xf86-input-mouse-1.6.0 \
 xf86-input-synaptics-1.3.0 xf86-input-vmmouse-12.6.10 \
-xf86-input-void-1.3.0 xf86-video-apm-1.2.3 \
+xf86-input-void-1.3.1 xf86-video-apm-1.2.3 \
 xf86-video-ark-0.7.3 xf86-video-ast-0.91.10 \
 xf86-video-ati-6.13.2 xf86-video-chips-1.2.3 \
 xf86-video-cirrus-1.3.2 xf86-video-dummy-0.3.4 \
