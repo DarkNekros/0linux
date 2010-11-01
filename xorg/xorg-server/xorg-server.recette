@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-xorg-server}
-VERSION=${VERSION:-1.9.1}
+VERSION=${VERSION:-1.9.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
 BUILD=${BUILD:-1}
@@ -72,7 +72,6 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-# XSERVERLIBS_LIBS+="-L/usr/lib${LIBDIRSUFFIX} -lXfont -lXau -lpixman-1 -ldbus-1 -lpthread -lrt -lXdmcp -ldl"
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
