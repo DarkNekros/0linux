@@ -8,7 +8,7 @@ CWD=$(pwd)
 VERSION=${VERSION:-7.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-polices}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -20,7 +20,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-XFONTS="encodings-1.0.3 \
+XFONTS="encodings-1.0.4 \
 font-adobe-100dpi-1.0.2 font-adobe-75dpi-1.0.2 \
 font-adobe-utopia-100dpi-1.0.3 font-adobe-utopia-75dpi-1.0.3 \
 font-adobe-utopia-type1-1.0.3 font-alias-1.0.2 font-arabic-misc-1.0.2 \
