@@ -8,7 +8,7 @@ CWD=$(pwd)
 VERSION=${VERSION:-7.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-apps}
-BUILD=${BUILD:-17}
+BUILD=${BUILD:-18}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -22,15 +22,15 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 XLIBS="bdftopcf-1.0.3 iceauth-1.0.4 luit-1.1.0 \
 mkfontdir-1.0.5 mkfontscale-1.0.8 sessreg-1.0.6 \
-setxkbmap-1.2.0 smproxy-1.0.4 twm-1.0.4 x11perf-1.5.2 \
+setxkbmap-1.2.0 smproxy-1.0.4 twm-1.0.5 x11perf-1.5.2 \
 xauth-1.0.5 xbacklight-1.1.1 xclock-1.0.5 xcmsdb-1.0.3 \
 xcursorgen-1.0.4 xdpyinfo-1.2.0 xdriinfo-1.0.3 xdm-1.1.10 \
-xev-1.1.0 xgamma-1.0.3 xhost-1.0.4 xinit-1.2.1 xinput-1.5.2 \
+xev-1.1.0 xgamma-1.0.3 xhost-1.0.4 xinit-1.3.0 xinput-1.5.2 \
 xkbcomp-1.2.0 xkbevd-1.1.1 xkbutils-1.0.3 \
 xkill-1.0.2 xlsatoms-1.1.0 xlsclients-1.1.1 xmessage-1.0.3 \
-xmodmap-1.0.5 xpr-1.0.3 xprop-1.1.0 xrandr-1.3.3 \
-xrdb-1.0.6 xrefresh-1.0.3 xset-1.2.0 xsetroot-1.0.3 \
-xvinfo-1.1.0 xwd-1.0.3 xwininfo-1.1.0 xwud-1.0.2"
+xmodmap-1.0.5 xpr-1.0.3 xprop-1.2.0 xrandr-1.3.4 \
+xrdb-1.0.6 xrefresh-1.0.3 xset-1.2.0 xsetroot-1.1.0 \
+xvinfo-1.1.0 xwd-1.0.3 xwininfo-1.1.1 xwud-1.0.2"
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/app/}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Applications natives de X11"
@@ -186,9 +186,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
