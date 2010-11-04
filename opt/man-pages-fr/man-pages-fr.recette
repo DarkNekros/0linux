@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-man-pages-fr}
-VERSION=${VERSION:-3.26.1}
+VERSION=${VERSION:-3.29.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-man-pages-fr}
 BUILD=${BUILD:-1}
@@ -15,7 +15,7 @@ TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
 ARCH=${ARCH:-noarch}
 
-WGET=${WGET:-https://alioth.debian.org/frs/download.php/3350/$NAMESRC-3.26-1.$EXT}
+WGET=${WGET:-https://alioth.debian.org/frs/download.php/3436/$NAMESRC-3.29-1.$EXT} # Version différente !
 DOC="README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Manuels du système Linux"
@@ -95,9 +95,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
