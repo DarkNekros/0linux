@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-dhcp}
-VERSION=${VERSION:-4.2.0}
+VERSION=${VERSION:-4.2.0_P1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-dhcp}
 BUILD=${BUILD:-1}
@@ -19,7 +19,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-ftp://ftp.isc.org/isc/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.isc.org/isc/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT}
 DOC="LICENSE README RELNOTES doc/api+protocol doc/IANA-arp-parameters doc/References.*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Client, serveur et outils DHCP de l'ISC"
@@ -77,6 +77,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+make -j3 || CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 make
 
 fakeroot make install LIBDIR=/usr/lib${LIBDIRSUFFIX} INCDIR=/usr/include DESTDIR=${PKG}
@@ -114,7 +116,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--build=${TARGET64}
 
-CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+make -j3 || CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 make
 
@@ -212,9 +216,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
