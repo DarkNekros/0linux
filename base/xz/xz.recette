@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-xz}
-VERSION=${VERSION:-4.999.9beta}
+VERSION=${VERSION:-5.0.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xz}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -23,7 +22,7 @@ BUILD64=${BUILD64:--m64}
 WGET=${WGET:-http://tukaani.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="ABOUT-NLS AUTHORS COPYING* ChangeLog INSTALL* NEWS PACKAGERS README* THANKS TODO doc/*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Outil de compression basé sur l'agorithme LZMA"
+SLACKDESC="Outil de compression basé sur l'algorithme LZMA"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -63,6 +62,8 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -70,8 +71,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
 
-make
-make install DESTDIR=${PKG}
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
 
 # On déplace ces bibliothèques importantes dans /lib${LIBDIRSUFFIX} et on lie :
 mkdir -p ${PKG}/lib${LIBDIRSUFFIX}
@@ -101,6 +102,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -108,8 +111,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--mandir=/usr/man \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
 
-make
-make install DESTDIR=${PKG}
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
 
 # On déplace ces bibliothèques importantes dans /lib${LIBDIRSUFFIX} et on lie :
 mkdir -p ${PKG}/lib${LIBDIRSUFFIX}
@@ -163,15 +166,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
