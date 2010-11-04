@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-xkeyboard-config}
 VERSION=${VERSION:-2.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xkeyboard-config}
-BUILD=${BUILD:-}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
