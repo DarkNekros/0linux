@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-glib}
-VERSION=${VERSION:-2.24.0}
+VERSION=${VERSION:-2.26.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-glib2}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -20,7 +19,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-http://ftp.gnome.org/pub/GNOME/sources/glib/2.24/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://ftp.gnome.org/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog* COPYING HACKING INSTALL MAINTAINERS NEWS* README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèque de fonctions C pour GTK+"
@@ -66,6 +65,8 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" NM=nm \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -75,7 +76,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" NM=nm \
 	--build=${TARGET32}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -100,6 +101,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" NM=nm \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -109,7 +112,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" NM=nm \
 	--build=${TARGET64}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -173,15 +176,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
