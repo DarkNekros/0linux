@@ -5,10 +5,10 @@ set -e
 umask 022
 CWD=$(pwd)
 
-NAMESRC=${NAMESRC:-gtk+}
+NAMESRC=${NAMESRC:-gdk-pixbuf}
 VERSION=${VERSION:-2.22.0}
 EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gtk+}
+NAMETGZ=${NAMETGZ:-gdk-pixbuf}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -22,9 +22,9 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog* COPYING HACKING INSTALL NEWS* README* docs/faq docs/tutorial"
+DOC="AUTHORS COPYING INSTALL NEWS* README*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Suite d'outils pour la création d'interfaces graphiques"
+SLACKDESC="Bibliothèques pour GTK+"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -87,7 +87,7 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On renomme le binaire 32 bits pour l'envelopper :
-mv ${PKG}/usr/bin/gtk-query-immodules-2.0{,-32}
+mv ${PKG}/usr/bin/gdk-pixbuf-query-loaders{,-32}
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -128,14 +128,11 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On définit /etc/gtk-2.0-64 comme répertoire par défaut :
-ln -sf gtk-2.0-64 ${PKG}/etc/gtk-2.0
-
 # On renomme le binaire 64 bits pour l'envelopper :
-mv ${PKG}/usr/bin/gtk-query-immodules-2.0{,-64}
+mv ${PKG}/usr/bin/gdk-pixbuf-query-loaders{,-64}
 
 # On lie un faux binaire au programme enveloppe :
-ln -sf multiarch_wrapper ${PKG}/usr/bin/gtk-query-immodules-2.0
+ln -sf multiarch_wrapper ${PKG}/usr/bin/gdk-pixbuf-query-loaders
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
