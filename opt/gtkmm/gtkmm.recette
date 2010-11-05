@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-gtkmm}
-VERSION=${VERSION:-2.18.2}
+VERSION=${VERSION:-2.22.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gtkmm}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.18/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Interfaçage C++ pout gtk+"
@@ -165,9 +165,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
