@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-gdk-pixbuf}
 VERSION=${VERSION:-2.22.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gdk-pixbuf}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -186,6 +186,9 @@ fi
 if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
+
+gdk-pixbuf-query-loaders-32 > /etc/gtk-2.0-32/gdk-pixbuf.loaders
+gdk-pixbuf-query-loaders-64 > /etc/gtk-2.0-64/gdk-pixbuf.loaders
 
 EOF
 
