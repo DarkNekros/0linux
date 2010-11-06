@@ -60,8 +60,8 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige une erreur avec 'docbook' dans la doc :
-sed -i 's@mv gtk-faq html@mkdir html && mv *.html html@g' $(find ./docs -type f -name "Makefile*")
-sed -i 's@mv gtk-tut html@mkdir html && mv *.html html@g' $(find ./docs -type f -name "Makefile*")
+sed -i 's@mv gtk-faq html@mkdir html; mv *.html html@g' $(find ./docs -type f -name "Makefile*")
+sed -i 's@mv gtk-tut html@mkdir html; mv *.html html@g' $(find ./docs -type f -name "Makefile*")
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
@@ -112,8 +112,8 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige une erreur avec 'docbook' dans la doc :
-sed -i 's@mv gtk-faq html@mkdir html && mv *.html html@g' $(find ./docs -type f -name "Makefile*")
-sed -i 's@mv gtk-tut html@mkdir html && mv *.html html@g' $(find ./docs -type f -name "Makefile*")
+sed -i 's@mv gtk-faq html@mkdir html; mv *.html html@g' $(find ./docs -type f -name "Makefile*")
+sed -i 's@mv gtk-tut html@mkdir html; mv *.html html@g' $(find ./docs -type f -name "Makefile*")
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
