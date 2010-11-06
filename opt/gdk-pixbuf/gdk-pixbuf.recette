@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-gdk-pixbuf}
 VERSION=${VERSION:-2.22.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gdk-pixbuf}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -86,8 +86,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On renomme le binaire 32 bits pour l'envelopper :
+# On renomme les binaires 32 bits pour les envelopper :
 mv ${PKG}/usr/bin/gdk-pixbuf-query-loaders{,-32}
+mv ${PKG}/usr/bin/gdk-pixbuf-csource{,-32}
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -128,11 +129,13 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On renomme le binaire 64 bits pour l'envelopper :
+# On renomme les binaires 64 bits pour les envelopper :
 mv ${PKG}/usr/bin/gdk-pixbuf-query-loaders{,-64}
+mv ${PKG}/usr/bin/gdk-pixbuf-csource{,-64}
 
-# On lie un faux binaire au programme enveloppe :
+# On lie de faux binaires au programme enveloppe :
 ln -sf multiarch_wrapper ${PKG}/usr/bin/gdk-pixbuf-query-loaders
+ln -sf multiarch_wrapper ${PKG}/usr/bin/gdk-pixbuf-csource
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
