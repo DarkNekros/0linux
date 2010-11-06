@@ -80,11 +80,17 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-xinput=yes \
 	--build=${TARGET32}
 
+# On positionne l'emplacement du fichier de cache pour 'gdk-pixbuf' :
+export GDK_PIXBUF_MODULE_FILE="/etc/gtk-2.0-32/gdk-pixbuf.loaders"
+
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On neutralise la variable pour 'gdk-pixbuf' :
+unset GDK_PIXBUF_MODULE_FILE
 
 # On renomme le binaire 32 bits pour l'envelopper :
 mv ${PKG}/usr/bin/gtk-query-immodules-2.0{,-32}
@@ -122,11 +128,17 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-xinput=yes \
 	--build=${TARGET64}
 
+# On positionne l'emplacement du fichier de cache pour 'gdk-pixbuf' :
+export GDK_PIXBUF_MODULE_FILE="/etc/gtk-2.0-64/gdk-pixbuf.loaders"
+
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On neutralise la variable pour 'gdk-pixbuf' :
+unset GDK_PIXBUF_MODULE_FILE
 
 # On définit /etc/gtk-2.0-64 comme répertoire par défaut :
 ln -sf gtk-2.0-64 ${PKG}/etc/gtk-2.0
