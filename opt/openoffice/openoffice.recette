@@ -50,8 +50,8 @@ NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT -C ${PKG}
-cd ${PKG}
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
 
 # On vérifie les permissions des sources :
 find . \
@@ -77,25 +77,25 @@ mv --target-directory=usr lib64
 
 # On crée des liens symboliques standard vers les binaires :
 for binaire in sbase scalc sdraw simpress smath soffice spadmin swriter unopkg; do
-	ln -sf ../lib64/openoffice.org3/program/${binaire} $PKG/usr/bin/${binaire}
+	ln -sf ../lib64/openoffice.org3/program/${binaire} $TMP/${NAME}/usr/bin/${binaire}
 done 
 
 # On nettoie les RPM, un lien cassé, et les polices DejaVu et Liberation :
 rm -rf desktop-integration *.rpm
-rm -f ${PKG}/usr/share/applications/openoffice.org3-startcenter.desktop
-rm -f ${PKG}/usr/lib64/openoffice.org/basis3.2/share/fonts/truetype/[DL]*.ttf
+rm -f $TMP/${NAME}/usr/share/applications/openoffice.org3-startcenter.desktop
+rm -f $TMP/${NAME}/usr/lib64/openoffice.org/basis3.2/share/fonts/truetype/[DL]*.ttf
 
 # On répare les raccourcis pour XFCE :
 for appli in base calc draw impress math writer; do
-	sed -i 's@Exec=openoffice.org3 -@Exec=s@' ${PKG}/usr/lib64/openoffice.org3/share/xdg/${appli}.desktop
+	sed -i 's@Exec=openoffice.org3 -@Exec=s@' $TMP/${NAME}/usr/lib64/openoffice.org3/share/xdg/${appli}.desktop
 done
 
 # On installes les dictionnaires :
-UNOPKG_BIN=$PKG/opt/openoffice.org3/program/unopkg
-DICT_DIR=$PKG/opt/openoffice.org3/share/extension/install
+find $TMP/${NAME}/usr/lib64/openoffice.org3/share/extension/install -type f -name "*.oxt" \
+	-exec $TMP/${NAME}/usr/lib64/openoffice.org3/program/unopkg add --shared {} "-env:UserInstallation=file:///$TMP" \;
 
-find ${PKG}/usr/lib64/openoffice.org3/share/extension/install -type f -name "*.oxt" \
-	-exec ${PKG}/usr/lib64/openoffice.org3/program/unopkg add --shared {} "-env:UserInstallation=file:///$TMP" \;
+# On copie le tout : 
+cp -ar $TMP/${NAME}/* ${PKG}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
