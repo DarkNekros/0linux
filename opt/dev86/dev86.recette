@@ -9,8 +9,7 @@ NAMESRC=${NAMESRC:-Dev86src}
 VERSION=${VERSION:-0.16.17}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-dev86}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -60,10 +59,10 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On corrige pour la compilation en x86_64 et la suppression de 'elksemu'
-# avec les correctifs de CLFS :
+# On corrige pour la compilation en x86_64, avec make >= 3.82, et la suppression de 'elksemu' :
 cat $CWD/dev86-0.16.17-noelks-1.patch | patch -p1
 cat $CWD/dev86-0.16.17-x86_64-1.patch | patch -p1
+sed -i 's@OBJ=$(LOBJ3)@OBJ=$(LOBJ)@' libc/i386sys/Makefile 
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
@@ -92,10 +91,10 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On corrige pour la compilation en x86_64 et la suppression de 'elksemu'
-# avec les correctifs de CLFS :
+# On corrige pour la compilation en x86_64, avec make >= 3.82, et la suppression de 'elksemu' :
 cat $CWD/dev86-0.16.17-noelks-1.patch | patch -p1
 cat $CWD/dev86-0.16.17-x86_64-1.patch | patch -p1
+sed -i 's@OBJ=$(LOBJ3)@OBJ=$(LOBJ)@' libc/i386sys/Makefile 
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -164,15 +163,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
