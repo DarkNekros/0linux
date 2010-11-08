@@ -78,6 +78,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-system-zlib \
 	--with-system-bz2 \
 	--with-system-jpeg \
+	--enable-application=suite \
 	--enable-system-cairo \
 	--enable-default-toolkit=cairo-gtk2 \
 	--enable-crypto \
@@ -250,6 +251,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-system-zlib \
 	--with-system-bz2 \
 	--with-system-jpeg \
+	--enable-application=suite \
 	--enable-system-cairo \
 	--enable-default-toolkit=cairo-gtk2 \
 	--enable-crypto \
