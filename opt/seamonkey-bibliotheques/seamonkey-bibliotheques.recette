@@ -1,0 +1,474 @@
+#!/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+set -e
+umask 022
+CWD=$(pwd)
+
+NAMESRC=${NAMESRC:-seamonkey}
+VERSION=${VERSION:-2.0.10}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-seamonkey-bibliotheques}
+BUILD=${BUILD:-1}
+
+TMP=${TMP:-/tmp}
+OUT=${OUT:-/usr/local/paquets}
+ARCH=${ARCH:-x86_64}
+TARGET32=${TARGET32:-i686-0-linux-gnu}
+TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
+BUILD32=${BUILD32:--m32}
+BUILD64=${BUILD64:--m64}
+PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
+PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
+
+WGET=${WGET:-http://releases.mozilla.org/pub/mozilla.org/$NAMESRC/releases/$VERSION/source/$NAMESRC-$VERSION.$EXT}
+DOC="LEGAL LICENSE README.txt"
+########## |-----handy-ruler------------------------------------------------------|
+SLACKDESC="Bibliothèques partagées de Seamonkey"
+########################################
+
+SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
+	echo "La description est trop longue (80 caractères max.) !"
+	exit 1
+fi
+
+# On télécharge les sources :
+if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
+	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
+	mv ${NAMESRC}-${VERSION}.$EXT.part ${NAMESRC}-${VERSION}.$EXT
+fi
+
+# On les vérifie :
+tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
+
+# On crée le répertoire d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}/usr/{include,lib{,64}/pkgconfig}
+
+# On déballe et on se place dans les sources :
+NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=32
+
+# Compilation pour 32 bits :
+SLKCFLAGS="-O2 -march=i686 -pipe"
+LIBDIRSUFFIX=""
+
+MOZILLA_OFFICIAL="1" BUILD_OFFICIAL="1" \
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--with-default-mozilla-five-home=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION} \
+	--with-system-zlib \
+	--with-system-bz2 \
+	--with-system-jpeg \
+	--enable-system-cairo \
+	--enable-default-toolkit=cairo-gtk2 \
+	--enable-crypto \
+	--enable-svg \
+	--enable-canvas \
+	--enable-xft \
+	--enable-xinerama \
+	--enable-reorder \
+	--enable-strip \
+	--enable-cpp-rtti \
+	--enable-single-profile \
+	--enable-safe-browsing \
+	--enable-faststart \
+	--enable-startup-notification \
+	--enable-optimize=-O2 \
+	--disable-crashreporter \
+	--disable-ldap \
+	--disable-accessibility \
+	--disable-debug \
+	--disable-tests \
+	--disable-logging \
+	--disable-pedantic \
+	--disable-installer \
+	--disable-mailnews \
+	--disable-composer \
+	--disable-profilesharing \
+	--disable-necko-wifi \
+	--without-system-nspr \
+	--build=${TARGET32} \
+	--host=${TARGET32}
+
+make -j3 || make
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On copie les bibliothèques 32 bits :
+find . -type f -name "libfreebl3.chk" -o -name "libfreebl3.so" -o -name "libmozjs.so" \
+	-o -name "libnspr4.so" -o -name "libnss3.so" -o -name "libnssckbi.so" \
+	-o -name "libnssutil3.so" -o -name "libplc4.so" -o -name "libplds4.so" \
+	-o -name "libsmime3.so" -o -name "libsoftokn3.chk" -o -name "libsoftokn3.so" \
+	-o -name "libssl3.so" -exec cp -a {} ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \;
+
+
+# On crée tous les fichiers pour 'pkg-config' :
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/gtkmozembed.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: Mozilla Gtk Embedding Widget
+Description: Mozilla Embedding Widget for Gtk+
+Version: ${VERSION}
+Requires: seamonkey-xpcom = ${VERSION}
+Libs: -L${libdir} -lgtkembedmoz 
+Cflags: -I${includedir}/gtkembedmoz
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-js.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: JavaScript
+Description: The Mozilla JavaScript Library
+Version: ${VERSION}
+Requires: seamonkey-nspr >= 4.7.1
+Libs: -L${libdir} -lmozjs
+Cflags: -I${includedir}/js -DXP_UNIX -DJS_THREADSAFE
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-nspr.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: NSPR
+Description: The Netscape Portable Runtime
+Version: 4.7.1
+Libs: -L/usr/lib${LIBDIRSUFFIX}/${NAMESRC} -lplds4 -lplc4 -lnspr4 -lpthread -ldl
+Cflags: -I/usr/include/${NAMESRC}/nspr
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-nss.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: NSS
+Description: Mozilla Network Security Services
+Version: ${VERSION}
+Requires: seamonkey-nspr >= 4.7.1
+Libs: -L${libdir} -lnss3 -lsmime3 -lssl3 -lsoftokn3
+Cflags: -I${includedir}/nss
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-plugin.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: Mozilla Plug-In API
+Description: Mozilla Plug-In API
+Version: ${VERSION}
+Requires: seamonkey-nspr >= 4.7.1
+Cflags: -I${includedir}/java -I${includedir}/plugin
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-xpcom.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+idldir=/usr/share/idl/${NAMESRC}
+
+Name: XPCOM
+Description: The Mozilla Cross Platform Component Library
+Version: ${VERSION}
+Requires: seamonkey-nspr >= 4.7.1
+Libs: -L${libdir} -lxpcom
+Cflags: -I${includedir} -I${includedir}/xpcom -I${includedir}/string
+
+EOF
+
+# On crée des liens symboliques génériques :
+ln -sf seamonkey-js.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/js.pc
+ln -sf seamonkey-nspr.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nspr.pc
+ln -sf seamonkey-nss.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nss.pc
+ln -sf seamonkey-plugin.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/plugin.pc
+ln -sf seamonkey-xpcom.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/xpcom.pc
+
+# On re-déballe et on se re-place dans les sources :
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On re-vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=64
+
+# Compilation pour 64 bits :
+SLKCFLAGS="-O2 -fPIC -pipe"
+LIBDIRSUFFIX="64"
+
+MOZILLA_OFFICIAL="1" BUILD_OFFICIAL="1" \
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--with-default-mozilla-five-home=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION} \
+	--with-system-zlib \
+	--with-system-bz2 \
+	--with-system-jpeg \
+	--enable-system-cairo \
+	--enable-default-toolkit=cairo-gtk2 \
+	--enable-crypto \
+	--enable-svg \
+	--enable-canvas \
+	--enable-xft \
+	--enable-xinerama \
+	--enable-reorder \
+	--enable-strip \
+	--enable-cpp-rtti \
+	--enable-single-profile \
+	--enable-safe-browsing \
+	--enable-faststart \
+	--enable-startup-notification \
+	--enable-optimize=-O2 \
+	--disable-crashreporter \
+	--disable-ldap \
+	--disable-accessibility \
+	--disable-debug \
+	--disable-tests \
+	--disable-logging \
+	--disable-pedantic \
+	--disable-installer \
+	--disable-mailnews \
+	--disable-composer \
+	--disable-profilesharing \
+	--disable-necko-wifi \
+	--without-system-nspr \
+	--build=${TARGET64} \
+	--host=${TARGET64}
+
+make -j3 || make
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On copie les bibliothèques 64 bits :
+find . -type f -name "libfreebl3.chk" -o -name "libfreebl3.so" -o -name "libmozjs.so" \
+	-o -name "libnspr4.so" -o -name "libnss3.so" -o -name "libnssckbi.so" \
+	-o -name "libnssutil3.so" -o -name "libplc4.so" -o -name "libplds4.so" \
+	-o -name "libsmime3.so" -o -name "libsoftokn3.chk" -o -name "libsoftokn3.so" \
+	-o -name "libssl3.so" -exec cp -a {} ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \;
+
+# On crée tous les fichiers pour 'pkg-config' :
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/gtkmozembed.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: Mozilla Gtk Embedding Widget
+Description: Mozilla Embedding Widget for Gtk+
+Version: ${VERSION}
+Requires: seamonkey-xpcom = ${VERSION}
+Libs: -L${libdir} -lgtkembedmoz 
+Cflags: -I${includedir}/gtkembedmoz
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-js.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: JavaScript
+Description: The Mozilla JavaScript Library
+Version: ${VERSION}
+Requires: seamonkey-nspr >= 4.7.1
+Libs: -L${libdir} -lmozjs
+Cflags: -I${includedir}/js -DXP_UNIX -DJS_THREADSAFE
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-nspr.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: NSPR
+Description: The Netscape Portable Runtime
+Version: 4.7.1
+Libs: -L/usr/lib${LIBDIRSUFFIX}/${NAMESRC} -lplds4 -lplc4 -lnspr4 -lpthread -ldl
+Cflags: -I/usr/include/${NAMESRC}/nspr
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-nss.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: NSS
+Description: Mozilla Network Security Services
+Version: ${VERSION}
+Requires: seamonkey-nspr >= 4.7.1
+Libs: -L${libdir} -lnss3 -lsmime3 -lssl3 -lsoftokn3
+Cflags: -I${includedir}/nss
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-plugin.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+
+Name: Mozilla Plug-In API
+Description: Mozilla Plug-In API
+Version: ${VERSION}
+Requires: seamonkey-nspr >= 4.7.1
+Cflags: -I${includedir}/java -I${includedir}/plugin
+
+EOF
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/seamonkey-xpcom.pc << EOF
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+includedir=/usr/include/${NAMESRC}
+idldir=/usr/share/idl/${NAMESRC}
+
+Name: XPCOM
+Description: The Mozilla Cross Platform Component Library
+Version: ${VERSION}
+Requires: seamonkey-nspr >= 4.7.1
+Libs: -L${libdir} -lxpcom
+Cflags: -I${includedir} -I${includedir}/xpcom -I${includedir}/string
+
+EOF
+
+# On crée des liens symboliques génériques :
+ln -sf seamonkey-js.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/js.pc
+ln -sf seamonkey-nspr.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nspr.pc
+ln -sf seamonkey-nss.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nss.pc
+ln -sf seamonkey-plugin.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/plugin.pc
+ln -sf seamonkey-xpcom.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/xpcom.pc
+
+# On copie les entêtes :
+for headers in js nspr nspr/obsolete nspr/private nss plugin xpcom ; do
+	mkdir -p $PKG/usr/include/${NAMESRC}/${headers}
+	cp -aL mozilla/dist/include/${headers}/*.h ${PKG}/usr/include/${NAMESRC}/${headers}
+done
+
+cp -aL mozilla/dist/include/js/*.tbl mozilla/dist/include/js/*.msg ${PKG}/usr/include/${NAMESRC}/js
+cp -aL mozilla/dist/include/*.h ${PKG}/usr/include/${NAMESRC}
+cp -aL mozilla/dist/sdk/include/* ${PKG}/usr/include/${NAMESRC}
+
+# On compresse les manuels :
+if [ -d ${PKG}/usr/man ]; then
+	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+	for manpage in $(find ${PKG}/usr/man -type l) ; do
+		ln -s $(readlink $manpage).gz ${manpage}.gz
+		rm -f ${manpage}
+	done
+fi
+
+# On compresse les pages info :
+if [ -d ${PKG}/usr/info ]; then
+	rm -f ${PKG}/usr/info/dir
+	gzip -9 ${PKG}/usr/info/*.info*
+fi
+
+# Installation de la documentation :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+# On installe le slack-desc :
+mkdir -p ${PKG}/install
+echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+# On installe le doinst.sh :
+cat > ${PKG}/install/doinst.sh << "EOF"
+#!/bin/env bash
+if [ -x sbin/ldconfig ]; then
+	sbin/ldconfig -r .
+fi
+
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
+
+EOF
+
+# On "strippe" tout ce qu'on trouve :
+find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
+# On vérifie enfin les droits de la doc, souvent problématiques :
+find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# Empaquetage !
+cd ${PKG}
+mkdir -p $OUT
+PACKAGING="
+	chown root:root . -R
+	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	rm -rf ${PKG}
+	if [ ! \"X${NAME}\" = \"X\" ]; then
+		if [ -d $TMP/${NAME} ]; then
+			rm -rf $TMP/${NAME}
+		fi
+	fi"
+
+if [ "$(which fakeroot 2> /dev/null)" ]; then
+	echo "${PACKAGING}" | fakeroot
+else
+	su -c "${PACKAGING}"
+fi
+
+exit 0
