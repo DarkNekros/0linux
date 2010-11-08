@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-xz}
 VERSION=${VERSION:-5.0.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xz}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -74,17 +74,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
-# On déplace ces bibliothèques importantes dans /lib${LIBDIRSUFFIX} et on lie :
-mkdir -p ${PKG}/lib${LIBDIRSUFFIX}
-mv ${PKG}/usr/lib${LIBDIRSUFFIX}/liblzma.so.* ${PKG}/lib${LIBDIRSUFFIX}
-rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/liblzma.so
-ln -sf ../../lib${LIBDIRSUFFIX}/liblzma.so.? ${PKG}/usr/lib${LIBDIRSUFFIX}/liblzma.so
-
-# Idem pour le binaire 'xz':
-mkdir -p ${PKG}/bin
-mv ${PKG}/usr/bin/xz ${PKG}/bin
-ln -sf ../../bin/xz ${PKG}/usr/bin/xz
-
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
 rm -rf ${NAME}
@@ -113,17 +102,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
-
-# On déplace ces bibliothèques importantes dans /lib${LIBDIRSUFFIX} et on lie :
-mkdir -p ${PKG}/lib${LIBDIRSUFFIX}
-mv ${PKG}/usr/lib${LIBDIRSUFFIX}/liblzma.so.* ${PKG}/lib${LIBDIRSUFFIX}
-rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/liblzma.so
-ln -sf ../../lib${LIBDIRSUFFIX}/liblzma.so.? ${PKG}/usr/lib${LIBDIRSUFFIX}/liblzma.so
-
-# Idem pour le binaire 'xz':
-mkdir -p ${PKG}/bin
-mv ${PKG}/usr/bin/xz ${PKG}/bin
-ln -sf ../../bin/xz ${PKG}/usr/bin/xz
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
