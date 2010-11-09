@@ -77,8 +77,14 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -ldl" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-python \
 	--enable-sqlite3 \
+	--enable-broken-chown \
 	--with-external-db \
+	--without-dmalloc \
+	--without-hackingdocs \
+	--without-lua \
+	--without-selinux \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -117,8 +123,14 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -ldl" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-python \
 	--enable-sqlite3 \
+	--enable-broken-chown \
 	--with-external-db \
+	--without-dmalloc \
+	--without-hackingdocs \
+	--without-lua \
+	--without-selinux \
 	--build=${TARGET64}
 
 make -j3 || make
