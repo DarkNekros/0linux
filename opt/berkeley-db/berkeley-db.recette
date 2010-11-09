@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-db}
-VERSION=${VERSION:-5.1.19}
+VERSION=${VERSION:-4.8.30}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-berkeley-db}
 BUILD=${BUILD:-1}
@@ -78,14 +78,12 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-shared \
-	--enable-pthread_api \
-	--enable-tcl \
-	--with-tcl=/usr/lib${LIBDIRSUFFIX} \
+	--enable-static \
 	--enable-compat185 \
 	--enable-cxx \
 	--build=${TARGET32}
 
-make -j3 || make
+LIBSO_LIBS=-lpthread make -j3 || LIBSO_LIBS=-lpthread make
 fakeroot make install docdir=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -122,14 +120,12 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-shared \
-	--enable-pthread_api \
-	--enable-tcl \
-	--with-tcl=/usr/lib${LIBDIRSUFFIX} \
+	--enable-static \
 	--enable-compat185 \
 	--enable-cxx \
 	--build=${TARGET64}
 
-make -j3 || make
+LIBSO_LIBS=-lpthread make -j3 || LIBSO_LIBS=-lpthread make
 fakeroot make install docdir=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -188,9 +184,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
