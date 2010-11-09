@@ -75,22 +75,22 @@ done
 mv opt lib64
 mv --target-directory=usr lib64
 
+# On copie le tout : 
+cp -ar $TMP/${NAME}/RPMS/* ${PKG}
+
 # On nettoie les RPM, un lien cassé, et les polices DejaVu et Liberation :
-rm -rf desktop-integration *.rpm
-rm -f $TMP/${NAME}/usr/share/applications/openoffice.org3-startcenter.desktop
-rm -f $TMP/${NAME}/usr/lib64/openoffice.org/basis3.2/share/fonts/truetype/[DL]*.ttf
+rm -rf ${PKG}/{desktop-integration,*.rpm}
+rm -f ${PKG}/usr/share/applications/openoffice.org3-startcenter.desktop
+rm -f ${PKG}/usr/lib64/openoffice.org/basis3.2/share/fonts/truetype/[DL]*.ttf
 
 # On répare les raccourcis pour XFCE :
 for appli in base calc draw impress math writer; do
-	sed -i 's@Exec=openoffice.org3 -@Exec=s@' $TMP/${NAME}/usr/lib64/openoffice.org3/share/xdg/${appli}.desktop
+	sed -i 's@Exec=openoffice.org3 -@Exec=s@' ${PKG}/usr/lib64/openoffice.org3/share/xdg/${appli}.desktop
 done
 
 # On installes les dictionnaires :
-find $TMP/${NAME}/usr/lib64/openoffice.org3/share/extension/install -type f -name "*.oxt" \
-	-exec $TMP/${NAME}/usr/lib64/openoffice.org3/program/unopkg add --shared {} "-env:UserInstallation=file:///$TMP" \;
-
-# On copie le tout : 
-cp -ar $TMP/${NAME}/* ${PKG}
+find ${PKG}/usr/lib64/openoffice.org3/share/extension/install -type f -name "*.oxt" \
+	-exec ${PKG}/usr/lib64/openoffice.org3/program/unopkg add --shared {} "-env:UserInstallation=file:///$TMP" \;
 
 # On crée des liens symboliques standard vers les binaires :
 for binaire in sbase scalc sdraw simpress smath soffice spadmin swriter unopkg; do
