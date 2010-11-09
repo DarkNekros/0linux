@@ -113,8 +113,8 @@ if [ -d ${PKG}/usr/info ]; then
 fi
 
 # Installation de la documentation :
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${PKG}/usr/lib64/openoffice.org3/{*LICENSE*,README*,licenses,readmes,licenses} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+mkdir -p ${PKG}/usr/doc
+ln -sf ../../../usr/lib64/openoffice.org3 ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
