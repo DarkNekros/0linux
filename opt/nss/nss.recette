@@ -72,6 +72,7 @@ for rep in mozilla/security/{coreconf,dbm,nss}; do
 	PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	NSPR_INCLUDE_DIR="/usr/include/nspr" \
+	BUILD_OPT=1 NSS_USE_SYSTEM_SQLITE=1 FREEBL_NO_DEPEND=1 \
 	make -C ${rep}
 done
 
@@ -124,6 +125,7 @@ for rep in mozilla/security/{coreconf,dbm,nss}; do
 	PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	NSPR_INCLUDE_DIR="/usr/include/nspr" USE_64=1 \
+	BUILD_OPT=1 NSS_USE_SYSTEM_SQLITE=1 FREEBL_NO_DEPEND=1 \
 	make -C ${rep}
 done
 
