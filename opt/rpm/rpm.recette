@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://rpm.org/releases/rpm-4.8.x//$NAMESRC-$VERSION.$EXT}
-DOC="CHANGES COPYING CREDITS GROUPS INSTALL README TODO doc/manual"
+DOC="CHANGES COPYING CREDITS GROUPS INSTALL README doc/manual"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils pour le format de paquets RPM"
 ########################################
