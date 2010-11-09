@@ -51,7 +51,7 @@ cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
+cd ${NAME}/mozilla/nsprpub
 
 # On vérifie les permissions des sources :
 find . \
@@ -111,7 +111,7 @@ cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
+cd ${NAME}/mozilla/nsprpub
 
 # On re-vérifie les permissions des sources :
 find . \
