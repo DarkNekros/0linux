@@ -75,11 +75,6 @@ done
 mv opt lib64
 mv --target-directory=usr lib64
 
-# On crée des liens symboliques standard vers les binaires :
-for binaire in sbase scalc sdraw simpress smath soffice spadmin swriter unopkg; do
-	ln -sf ../lib64/openoffice.org3/program/${binaire} $TMP/${NAME}/usr/bin/${binaire}
-done 
-
 # On nettoie les RPM, un lien cassé, et les polices DejaVu et Liberation :
 rm -rf desktop-integration *.rpm
 rm -f $TMP/${NAME}/usr/share/applications/openoffice.org3-startcenter.desktop
@@ -96,6 +91,11 @@ find $TMP/${NAME}/usr/lib64/openoffice.org3/share/extension/install -type f -nam
 
 # On copie le tout : 
 cp -ar $TMP/${NAME}/* ${PKG}
+
+# On crée des liens symboliques standard vers les binaires :
+for binaire in sbase scalc sdraw simpress smath soffice spadmin swriter unopkg; do
+	ln -sf ../lib64/openoffice.org3/program/${binaire} ${PKG}/usr/bin/${binaire}
+done 
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
