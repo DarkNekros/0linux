@@ -78,6 +78,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -ldl" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-sqlite3 \
+	--with-external-db \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -117,6 +118,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -ldl" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-sqlite3 \
+	--with-external-db \
 	--build=${TARGET64}
 
 make -j3 || make
