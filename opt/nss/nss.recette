@@ -83,6 +83,9 @@ unset USE_ARCH
 install -m755 mozilla/dist/*.OBJ/lib/lib*3.so ${PKG}/usr/lib${LIBDIRSUFFIX}
 install -m644 mozilla/dist/*.OBJ/lib/*.a ${PKG}/usr/lib${LIBDIRSUFFIX}
 
+# Cette bibliothèque statique ne doit pas écraser celle de 'openssl', on renomme :
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/libssl{,3}.a
+
 # On crée le fichier pour 'pkg-config' :
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nss.pc << EOF
 prefix=/usr
@@ -141,6 +144,9 @@ ln -sf nss3 ${PKG}/usr/include/nss
 for binaire in certutil cmsutil crlutil modutil pk12util signtool signver ssltap; do
 	install -m755 mozilla/dist/*.OBJ/bin/${binaire} ${PKG}/usr/bin
 done
+
+# Cette bibliothèque statique ne doit pas écraser celle de 'openssl', on renomme :
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/libssl{,3}.a
 
 # On crée le fichier pour 'pkg-config' :
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nss.pc << EOF
