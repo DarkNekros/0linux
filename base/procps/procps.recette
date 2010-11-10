@@ -61,7 +61,7 @@ find . \
 cat $CWD/procps-3.2.8-watch_unicode-1.patch | patch -p1
 
 # On corrige l'ordre de compilation pour 'make' 3.82 :
-sed -i 's@-include */module.mk@-include proc/module.mk ps/module.mk@' Makefile
+sed -i 's@-include \*/module.mk@-include proc/module.mk ps/module.mk@' Makefile
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
@@ -89,7 +89,7 @@ find . \
 cat $CWD/procps-3.2.8-watch_unicode-1.patch | patch -p1
 
 # On corrige l'ordre de compilation pour 'make' 3.82 :
-sed -i 's@-include */module.mk@-include proc/module.mk ps/module.mk@' Makefile
+sed -i 's@-include \*/module.mk@-include proc/module.mk ps/module.mk@' Makefile
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
