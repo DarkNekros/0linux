@@ -86,6 +86,11 @@ NM=nm ./configure \
 	--disable-debug \
 	--build=${TARGET32}
 
+# On corrige quelques espaces sur lesquels 'make' 3.82 plante :
+sed -i '939 s/ \{8\}/\t/' docs/gst/Makefile
+sed -i '934 s/ \{8\}/\t/' docs/libs/Makefile
+sed -i '1046 s/ \{8\}/\t/' docs/plugins/Makefile
+
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
@@ -135,6 +140,11 @@ NM=nm ./configure \
 	--disable-failing-tests \
 	--disable-debug \
 	--build=${TARGET64}
+
+# On corrige quelques espaces sur lesquels 'make' 3.82 plante :
+sed -i '939 s/ \{8\}/\t/' docs/gst/Makefile
+sed -i '934 s/ \{8\}/\t/' docs/libs/Makefile
+sed -i '1046 s/ \{8\}/\t/' docs/plugins/Makefile
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}

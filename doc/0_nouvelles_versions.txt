@@ -1,6 +1,7 @@
 dbus-glib 0.90
 linux 2.6.36
+lvm 2.02.76 
 python 2.7
 orbit2 2.14.19
-qt 4.7
+qt 4.7.1
 tar 1.25 
