@@ -36,20 +36,26 @@ rm -rf ${LIVEOS}
 mkdir -p ${LIVEOS}
 
 # On installe les paquets pour le LiveOS :
+echo "Création de la clé USB autonome en cours..."
+echo -n "Installation : base... "
 for paq in base-systeme* etc* eglibc* sgml*; do
 	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq} &>/dev/null 2>&1
 done
+
 
 for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*"); do
 	spkadd --quiet --root=${LIVEOS} ${paq} &>/dev/null 2>&1
 done
 
-spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
+echo -n "xorg... "
+spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio &>/dev/null 2>&1
 
+echo -n "opt... "
 for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
 	libidn* libpng* libssh2* popt* python-2* ruby*; do
 	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio &>/dev/null 2>&1
 done
+echo "Terminé."
 
 # On allège :
 rm -rf ${LIVEOS}/usr/doc/*
@@ -95,15 +101,22 @@ echo "localtime" > ${LIVEOS}/etc/hardwareclock
 ln -sf ../usr/share/zoneinfo/Europe/Paris ${LIVEOS}/etc/localtime
 
 # On crée l'initrd :
+echo -n "Création de l'initrd en cours... "
 rm -f ${INITRDGZ}
 cd ${LIVEOS}
 find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
+echo "Terminé."
 
 # On monte la clé, sans la presser :
+echo "La clé utilisée sera ${USBDEV}1."
+echo "Appuyez sur ENTRÉE pour confirmer la création de la clé"
+echo "ou bien appuyez sur CTRL+C pour annuler maintenant."
+read PLOP;
 mount ${USBDEV}1 /mnt/tmp || true
 sleep 4
 
 # On nettoie la clé et on dévérouille 'ldlinux.sys' :
+echo -n "Nettoyage... "
 for f in $(find /mnt/tmp -name "ldlinux.sys" -print); do
 	chattr -i ${f}
 	rm -f ${f}
@@ -112,7 +125,9 @@ done
 rm -rf /mnt/tmp/boot/extlinux
 mkdir -p /mnt/tmp/0/paquets
 mkdir -p /mnt/tmp/boot/extlinux
+echo "Terminé."
 
+echo -n "Copie des fichiers en cours... "
 # On copie toutes les sources de extlinux/ :
 cp -ar ${SOURCES}/installateur/extlinux/* /mnt/tmp/boot/extlinux/
 
@@ -137,5 +152,6 @@ extlinux --install /mnt/tmp/boot/extlinux
 
 # On démonte la clé :
 umount /mnt/tmp
+echo "Terminé. Clé USB autonome créée."
 
 exit 0
