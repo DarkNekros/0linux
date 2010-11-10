@@ -37,18 +37,18 @@ mkdir -p ${LIVEOS}
 
 # On installe les paquets pour le LiveOS :
 for paq in base-systeme* etc* eglibc* sgml*; do
-	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq}
+	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq} &>/dev/null 2>&1
 done
 
 for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*"); do
-	spkadd --quiet --root=${LIVEOS} ${paq}
+	spkadd --quiet --root=${LIVEOS} ${paq} &>/dev/null 2>&1
 done
 
 spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio
 
 for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
 	libidn* libpng* libssh2* popt* python-2* ruby*; do
-	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio
+	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio &>/dev/null 2>&1
 done
 
 # On allège :
