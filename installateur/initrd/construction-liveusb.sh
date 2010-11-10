@@ -96,6 +96,7 @@ ln -sf ../usr/share/zoneinfo/Europe/Paris ${LIVEOS}/etc/localtime
 
 # On crée l'initrd :
 rm -f ${INITRDGZ}
+cd ${LIVEOS}
 find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
 
 # On monte la clé, sans la presser :
