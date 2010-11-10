@@ -66,37 +66,29 @@ export USE_ARCH=32
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
+
+mkdir build && cd build
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./autogen.sh \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--without-mozjs \
-	--build=${TARGET32}
+cmake -DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
+	-DLIBEXEC_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX}/libproxy \
+	-DCMAKE_SKIP_RPATH=ON \
+	-DCMAKE_BUILD_TYPE=None \
+	-DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
+	-DCMAKE_C_FLAGS="${CFLAGS}" \
+	-DWITH_GNOME=ON \
+	-DWITH_MOZJS=OFF \
+	-WITH_NM=OFF \
+	..
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On déplace les bibliothèques de /usr/local vers /usr/lib${LIBDIRSUFFIX} :
-cp -ra ${PKG}/usr/local/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}
-cp -ra ${PKG}/usr/local/libexec/* ${PKG}/usr/lib${LIBDIRSUFFIX}
-
-# On copie et on corrige le fichier .pc pour 'pkgconfig' :
-cp -a libproxy/libproxy-1.0.pc.in ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libproxy-1.0.pc
-
-sed -i -e "s:@prefix@:/usr:" \
-	-e "s:@libdir@:/usr/lib${LIBDIRSUFFIX}:" \
-	-e "s:@includedir@:/usr/include:" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libproxy-1.0.pc
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -116,46 +108,29 @@ export USE_ARCH=64
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
+
+mkdir build && cd build
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./autogen.sh \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--without-mozjs \
-	--build=${TARGET64}
+cmake -DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
+	-DLIBEXEC_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX}/libproxy \
+	-DCMAKE_SKIP_RPATH=ON \
+	-DCMAKE_BUILD_TYPE=None \
+	-DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
+	-DCMAKE_C_FLAGS="${CFLAGS}" \
+	-DWITH_GNOME=ON \
+	-DWITH_MOZJS=OFF \
+	-WITH_NM=OFF \
+	..
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On déplace les bibliothèques de /usr/local vers /usr/lib${LIBDIRSUFFIX} :
-cp -ra ${PKG}/usr/local/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}
-cp -ra ${PKG}/usr/local/libexec/* ${PKG}/usr/lib${LIBDIRSUFFIX}
-
-# On déplace égalament le binaire :
-cp -a ${PKG}/usr/local/bin/* ${PKG}/usr/bin
-
-# ... et les en-têtes :
-cp -a ${PKG}/usr/local/include/* ${PKG}/usr/include
-
-# On peut supprimer /usr/local :
-rm -rf ${PKG}/usr/local
-
-# On copie et on corrige le fichier .pc pour 'pkgconfig' :
-cp -a libproxy/libproxy-1.0.pc.in ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libproxy-1.0.pc
-
-sed -i -e "s:@prefix@:/usr:" \
-	-e "s:@libdir@:/usr/lib${LIBDIRSUFFIX}:" \
-	-e "s:@includedir@:/usr/include:" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libproxy-1.0.pc
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
