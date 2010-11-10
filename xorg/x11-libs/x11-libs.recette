@@ -39,7 +39,7 @@ fi
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}
+mkdir -p ${PKG}/usr/bin
 
 # On télécharge les sources :
 for archive in ${XLIBS}; do
@@ -137,7 +137,9 @@ mv ${PKG}/usr/share/doc ${PKG}/usr
 rm -rf ${PKG}/usr/share
 
 # On lie un faux binaire au programme enveloppe :
-ln -sf multiarch_wrapper ${PKG}/usr/bin/xft-config
+if [ -r ${PKG}/usr/bin/xft-config-32 ]; then
+		ln -sf multiarch_wrapper ${PKG}/usr/bin/xft-config
+fi
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
