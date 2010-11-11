@@ -60,9 +60,9 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige pour la compilation en x86_64, avec make >= 3.82, et la suppression de 'elksemu' :
-cat $CWD/dev86-0.16.17-noelks-1.patch | patch -p1
-cat $CWD/dev86-0.16.17-x86_64-1.patch | patch -p1
-sed -i 's@OBJ=$(LOBJ3)@OBJ=$(LOBJ)@' libc/i386sys/Makefile 
+for correctif in $CWD/*.patch; do
+	cat ${correctif} | patch -p1
+done
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
@@ -91,10 +91,11 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+
 # On corrige pour la compilation en x86_64, avec make >= 3.82, et la suppression de 'elksemu' :
-cat $CWD/dev86-0.16.17-noelks-1.patch | patch -p1
-cat $CWD/dev86-0.16.17-x86_64-1.patch | patch -p1
-sed -i 's@OBJ=$(LOBJ3)@OBJ=$(LOBJ)@' libc/i386sys/Makefile 
+for correctif in $CWD/*.patch; do
+	cat ${correctif} | patch -p1
+done
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
