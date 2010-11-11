@@ -9,13 +9,11 @@ while [ 0 ]; do
 	clear
 	echo -e "\033[1;32mChoix du média d'installation.\033[0;0m"
 	echo ""
-	echo "Veuillez entrez ci-dessous le média d'installation dont vous"
+	echo "Veuillez entrez ci-dessous le code du média d'installation dont vous"
 	echo "disposez pour installer votre système Linux."
-	echo "Note : la seule méthode à ce jour est l'installation via un"
-	echo "périphérique USB ! :)"
 	echo ""
-	echo "* Installer depuis un média amovible (disque/clé/carte) :"
-	echo "1 : USB - vous installez depuis une clé USB/une carte mémoire"
+	echo "1 : USB - vous installez depuis une clé USB ou une carte mémoire"
+	echo "2 : DISQUE - vous installez depuis un disque optique"
 	echo ""
 	echo -n "Votre choix : "
 	read MEDIA;
@@ -25,19 +23,19 @@ while [ 0 ]; do
 		break
 	;;
 	"2")
-		#. dvd.sh
+		. disque.sh
 		break
 	;;
 	"3")
 		#. rsync.sh
-		break
+		continue
 	;;
 	"4")
 		#. hdd.sh
-		break
+		continue
 	;;
 	*)
-		echo "Veuillez entrer un numéro valide (entre 1 et 4)."
+		echo "Veuillez entrer un numéro valide (entre 1 et 2)."
 		sleep 2
 		unset MEDIA
 		continue

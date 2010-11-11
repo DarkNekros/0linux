@@ -110,6 +110,7 @@ while [ 0 ]; do
 			echo "fichier '/etc/fstab' de la façon suivante :"
 			echo ""
 			cat $TMP/choix_swap
+			echo ""
 			echo -n "Appuyez sur ENTRÉE pour continuer."
 			read BLAH;
 			break

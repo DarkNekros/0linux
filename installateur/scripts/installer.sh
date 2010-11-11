@@ -1,4 +1,5 @@
 #!/bin/env bash
+unset BLURB
 
 clear
 echo -e "\033[1;32mInstallation des paquets.\033[0;0m"
@@ -11,16 +12,19 @@ read BLURB;
 
 # On installe d'abord les paquets vitaux :
 for paq in base-systeme-* etc-* eglibc-* sgml-common-* ; do
-	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq} 2> /dev/null
+	spkadd --about ${TMPMOUNT}/0/paquets/base/${paq}
+	spkadd --root=${SETUPROOT} ${TMPMOUNT}/0/paquets/base/${paq} &>/dev/null 2>&1
 done
 
 # On installe tout le reste sauf linux-source-* :
 for paquet in $(find ${TMPMOUNT}/0/paquets -type f \( -name "*.cpio" -a \! -name "linux-source-*" \) | sort) ; do
-	spkadd --quiet --root=${SETUPROOT} ${paquet} 2> /dev/null
+	spkadd --about ${paquet}
+	spkadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
 done
 
 # Les sources de Linux en dernier (appel à 'make' en post-installation, donc
 # de nombreuses dépendances) :
-spkadd --quiet --root=${SETUPROOT} ${TMPMOUNT}/0/paquets/base/linux-source-* 2> /dev/null
+spkadd --about ${TMPMOUNT}/0/paquets/base/linux-source-*
+spkadd --root=${SETUPROOT} ${TMPMOUNT}/0/paquets/base/linux-source-* &>/dev/null 2>&1
 
 # C'est fini !

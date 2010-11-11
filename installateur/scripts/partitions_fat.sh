@@ -48,7 +48,7 @@ afficherfat() {
 }
 
 # Si des partitions FAT/NTFS sont détectées :
-if [ $(listefat | wc -l) -gt "1" ]; then
+if [ $(listefat | wc -l) -gt 0 ]; then
 
 	# Boucle d'affichage du choix des montages supplémentaires :
 	while [ ! "${OKPARTS}" = "ok" ]; do
