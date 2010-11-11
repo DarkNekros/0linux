@@ -1,5 +1,5 @@
---- libc/i386sys/Makefile
-+++ libc/i386sys/Makefile
+--- dev86-0.16.17/libc/i386sys/Makefile
++++ dev86-0.16.17/libc/i386sys/Makefile
 @@ -12,7 +12,7 @@
  DOBJ=opendir.o closedir.o readdir.o
  
