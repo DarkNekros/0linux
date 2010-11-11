@@ -92,7 +92,7 @@ ln -sf ../../bin/tftp ${PKG}/usr/bin/tftp
 ln -sf ../../bin/traceroute ${PKG}/usr/bin/traceroute
 
 # Ces binaires doivent être setuid root :
-fakeroot chmod 4711 /bin/{rcp,rlogin,rsh,ping,ping6,traceroute}
+fakeroot chmod 4711 ${PKG}/bin/{rcp,rlogin,rsh,ping,ping6,traceroute}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -134,9 +134,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
