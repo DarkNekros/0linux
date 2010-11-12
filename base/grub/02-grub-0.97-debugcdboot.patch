@@ -1,6 +1,6 @@
-diff -Naurd a/stage2/bios.c b/stage2/bios.c
---- a/stage2/bios.c	2004-09-27 20:14:16.000000000 +0200
-+++ b/stage2/bios.c	2004-09-27 20:29:08.000000000 +0200
+diff -Naurd stage2/bios.c b/stage2/bios.c
+--- stage2/bios.c	2004-09-27 20:14:16.000000000 +0200
++++ stage2/bios.c	2004-09-27 20:29:08.000000000 +0200
 @@ -38,6 +38,8 @@
  				unsigned long *heads,
  				unsigned long *sectors);
