@@ -61,7 +61,7 @@ find . \
 
 # On corrige via la collection prise chez Frugalware, merci à eux :
 for correctif in $CWD/*.patch; do
-	cat ${correctif} | patch -p1
+	cat ${correctif} | patch -p0
 done
 
 # On positionne USE_ARCH :
