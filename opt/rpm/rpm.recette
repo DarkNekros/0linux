@@ -80,7 +80,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -ldl" \
 	--enable-python \
 	--enable-sqlite3 \
 	--enable-broken-chown \
-	--with-external-db \
 	--without-dmalloc \
 	--without-hackingdocs \
 	--without-lua \
@@ -126,7 +125,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -ldl" \
 	--enable-python \
 	--enable-sqlite3 \
 	--enable-broken-chown \
-	--with-external-db \
 	--without-dmalloc \
 	--without-hackingdocs \
 	--without-lua \
