@@ -84,6 +84,9 @@ ln -sf ../doc ${PKG}/usr/share/doc
 ln -sf ../info ${PKG}/usr/share/info
 ln -sf ../man ${PKG}/usr/share/man
 
+# Un fichier vide pratique :
+touch ${PKG}/etc/ld.so.conf
+
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
