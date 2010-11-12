@@ -22,7 +22,7 @@ fi
 # On lance un à un les scripts de configuration pour finaliser l'installation :
 chroot ${SETUPROOT} 0horloge 
 chroot ${SETUPROOT} 0locale
-. liloconfig ${SETUPROOT}
+. bootconfig.sh ${SETUPROOT}
 # netconfig
 # setconsolefont?
 # xwmconfig?

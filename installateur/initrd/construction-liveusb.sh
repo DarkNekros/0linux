@@ -69,7 +69,7 @@ install -m 755 $CWD/{HOSTNAME,profile} ${LIVEOS}/etc
 install -m 755 $CWD/rc.* ${LIVEOS}/etc/rc.d
 
 # On copie l'installateur et l'aide :
-install -m 755 $CWD/../scripts/{liloconfig,installateur,*.sh} ${LIVEOS}/sbin
+install -m 755 $CWD/../scripts/{installateur,*.sh} ${LIVEOS}/sbin
 install -m 644 $CWD/../scripts/aide.txt ${LIVEOS}
 
 # On crée le lien pour 'init' :

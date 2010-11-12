@@ -5,7 +5,7 @@ set -e
 umask 022
 CWD=$(pwd)
 
-VERSION=${VERSION:-0.6}
+VERSION=${VERSION:-0.7}
 NAMETGZ=${NAMETGZ:-base-systeme}
 BUILD=${BUILD:-1}
 
@@ -37,12 +37,8 @@ mkdir -p ${PKG}/usr/share/{games,wallpapers}
 mkdir -p ${PKG}/var/{cache,empty,local,lock,mail,opt,run,spool,tmp}
 mkdir -p ${PKG}/var/log/{packages,removed_packages,removed_scripts,setup,scripts}
 
-# On place le courriel de bienvenue pour root :
-cat $CWD/root.new > ${PKG}/var/mail/root.new
-
 # On spécifie certaines permissions :
 chmod 0710 ${PKG}/root
-chmod 0610 ${PKG}/var/mail/root.new
 chmod 1777 ${PKG}/tmp
 chmod 1777 ${PKG}/usr/local/paquets
 
@@ -91,22 +87,6 @@ ln -sf ../man ${PKG}/usr/share/man
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
-
-# On installe le doinst.sh :
-cat > ${PKG}/install/doinst.sh << "EOF"
-#!/bin/env bash
-# Le petit courriel de bienvenue pour root :
-if [ ! -f var/mail/root ]; then
-	mv var/mail/root.new var/mail/root
-else
-	cat var/mail/root.new >> var/mail/root
-	rm -f var/mail/root.new
-fi
-
-EOF
-
-
-
 
 # Empaquetage !
 cd $PKG
