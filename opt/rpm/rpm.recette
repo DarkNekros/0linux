@@ -21,6 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
+WGETDB=${WGETDB:-http://download.oracle.com/berkeley-db/db-4.7.25.tar.gz}
 WGET=${WGET:-http://rpm.org/releases/rpm-4.8.x//$NAMESRC-$VERSION.$EXT}
 DOC="CHANGES COPYING CREDITS GROUPS INSTALL README doc/manual"
 ########## |-----handy-ruler------------------------------------------------------|
@@ -42,6 +43,15 @@ fi
 # On les vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
+# On télécharge 'berkeley-db' 4.7.25, juste pour 'rpm' :
+if [ ! -r db-4.7.25.tar.gz ]; then
+	wget -vc $WGETDB -O db-4.7.25.tar.gz.part
+	mv db-4.7.25.tar.gz.part db-4.7.25.tar.gz
+fi
+
+# On les vérifie :
+tar ft db-4.7.25.tar.gz 1> /dev/null 2> /dev/null
+
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
@@ -53,6 +63,8 @@ rm -rf ${NAME}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
+tar xf $CWD/db-4.7.25.tar.gz
+ln -sf db-4.7.25 db
 
 # On vérifie les permissions des sources :
 find . \
