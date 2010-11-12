@@ -44,7 +44,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}
+mkdir -p ${PKG}/boot/grub
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -90,6 +90,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On place le fichier de configuration sans en écraser un plus ancien :
+cp -a $CWD/menu.lst ${PKG}/boot/grub/menu.lst.new
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -130,6 +133,8 @@ config() {
 		mv $NEW $OLD
 	fi
 }
+
+config boot/grub/menu.lst.new
 
 EOF
 
