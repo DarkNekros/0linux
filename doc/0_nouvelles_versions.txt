@@ -2,6 +2,7 @@ dbus-glib 0.90
 linux 2.6.36
 lvm 2.02.76 
 poppler 0.14.5
+poppler-data 0.4.4
 python 2.7
 orbit2 2.14.19
 qt 4.7.1
