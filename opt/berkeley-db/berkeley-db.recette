@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-db}
-VERSION=${VERSION:-4.8.30}
+VERSION=${VERSION:-5.1.19}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-berkeley-db}
 BUILD=${BUILD:-1}
