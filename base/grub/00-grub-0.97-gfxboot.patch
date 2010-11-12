@@ -1,5 +1,5 @@
---- docs/grub.texi
-+++ docs/grub.texi
+--- grub-0.97/docs/grub.texi
++++ grub-0.97/docs/grub.texi
 @@ -2118,6 +2118,7 @@
  * default::                     Set the default entry
  * fallback::                    Set the fallback entry
@@ -24,8 +24,8 @@
  @node hiddenmenu
  @subsection hiddenmenu
  
---- grub/asmstub.c
-+++ grub/asmstub.c
+--- grub-0.97/grub/asmstub.c
++++ grub-0.97/grub/asmstub.c
 @@ -498,6 +498,32 @@
    return 0;
  }
@@ -59,8 +59,8 @@
  /* low-level timing info */
  int
  getrtsecs (void)
---- stage2/asm.S
-+++ stage2/asm.S
+--- grub-0.97/stage2/asm.S
++++ grub-0.97/stage2/asm.S
 @@ -1614,6 +1614,286 @@
  	popl	%ebp
  	ret
@@ -348,8 +348,8 @@
  		
  /*
   * gateA20(int linear)
---- stage2/builtins.c
-+++ stage2/builtins.c
+--- grub-0.97/stage2/builtins.c
++++ grub-0.97/stage2/builtins.c
 @@ -63,6 +63,8 @@
  int fallback_entries[MAX_FALLBACK_ENTRIES];
  /* The number of current entry.  */
@@ -394,8 +394,8 @@
    &builtin_halt,
    &builtin_help,
    &builtin_hiddenmenu,
---- stage2/shared.h
-+++ stage2/shared.h
+--- grub-0.97/stage2/shared.h
++++ grub-0.97/stage2/shared.h
 @@ -374,6 +374,22 @@
  #endif /* WITHOUT_LIBC_STUBS */
  
@@ -458,8 +458,8 @@
  /* The constants for password types.  */
  typedef enum
  {
---- stage2/stage2.c
-+++ stage2/stage2.c
+--- grub-0.97/stage2/stage2.c
++++ grub-0.97/stage2/stage2.c
 @@ -22,6 +22,8 @@
  
  grub_jmp_buf restart_env;

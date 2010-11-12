@@ -1,6 +1,6 @@
-diff -Naurd stage2/bios.c stage2/bios.c
---- stage2/bios.c	2004-09-27 20:14:16.000000000 +0200
-+++ stage2/bios.c	2004-09-27 20:29:08.000000000 +0200
+diff -Naurd grub-0.97/stage2/bios.c grub-0.97/stage2/bios.c
+--- grub-0.97/stage2/bios.c	2004-09-27 20:14:16.000000000 +0200
++++ grub-0.97/stage2/bios.c	2004-09-27 20:29:08.000000000 +0200
 @@ -38,6 +38,8 @@
  				unsigned long *heads,
  				unsigned long *sectors);
@@ -29,9 +29,9 @@ diff -Naurd stage2/bios.c stage2/bios.c
    if (! err && cdrp.drive_no == drive)
      {
        if ((cdrp.media_type & 0x0F) == 0)
-diff -Naurd stage2/builtins.c stage2/builtins.c
---- stage2/builtins.c	2004-09-27 20:13:52.000000000 +0200
-+++ stage2/builtins.c	2004-09-27 22:23:21.205015073 +0200
+diff -Naurd grub-0.97/stage2/builtins.c grub-0.97/stage2/builtins.c
+--- grub-0.97/stage2/builtins.c	2004-09-27 20:13:52.000000000 +0200
++++ grub-0.97/stage2/builtins.c	2004-09-27 22:23:21.205015073 +0200
 @@ -75,6 +75,9 @@
  int grub_timeout = -1;
  /* Whether to show the menu or not.  */

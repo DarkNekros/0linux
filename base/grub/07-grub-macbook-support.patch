@@ -1,6 +1,6 @@
 From http://bugs.debian.org/cgi-bin/bugreport.cgi?msg=5;filename=intelmac_grub.diff;att=1;bug=369655
 
---- grub-0.97.orig/stage2/asm.S	2004-06-19 18:55:22.000000000 +0200
+--- grub-0.97/stage2/asm.S	2004-06-19 18:55:22.000000000 +0200
 +++ grub-0.97/stage2/asm.S	2006-04-21 11:10:52.000000000 +0200
 @@ -1651,7 +1651,29 @@
  	jnz	3f
