@@ -59,11 +59,39 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On supprime la compilation de 'elksemu' :
+cat $CWD/${NAMETGZ}-${VERSION}-noelks-1.patch | patch -p1
 
-# On corrige pour la compilation en x86_64, avec make >= 3.82, et la suppression de 'elksemu' :
-for correctif in $CWD/*.patch; do
-	cat ${correctif} | patch -p1
-done
+# On positionne USE_ARCH :
+export USE_ARCH=32
+
+# Compilation pour 32 bits :
+LIBDIRSUFFIX=""
+
+echo "6" | echo "quit" | make CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}"
+
+make install install-man DIST=${PKG} MANDIR=/usr/man \
+	LIBDIR=/usr/lib${LIBDIRSUFFIX}/bcc \
+	INCLDIR=/usr/lib${LIBDIRSUFFIX}/bcc LOCALPREFIX=/usr
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On re-déballe et on se re-place dans les sources :
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On re-vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On supprime la compilation de 'elksemu' et on corrige pour x86_64 :
+cat $CWD/${NAMETGZ}-${VERSION}-noelks-1.patch | patch -p1
+cat $CWD/${NAMETGZ}-${VERSION}-x86_64-1.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
