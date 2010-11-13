@@ -68,7 +68,7 @@ mv desktop-integration/openoffice.org3.2-freedesktop-menus-3.2-9502.noarch.rpm .
 
 # On extrait chaque RPM :
 for RPMPACK in *.rpm; do
-	rpm2cpio < ${RPMPACK} | cpio -imdv
+	rpmunpack ${RPMPACK}
 done
 
 # On renomme le répertoire principal et on le déplace dans /usr :
