@@ -34,25 +34,13 @@ if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
 	exit 1
 fi
 
-# On télécharge les sources :
-if [ ! -r ${NAMESRC}-${VERSION}.tar.gz ]; then
-	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
-	mv ${NAMESRC}-${VERSION}.$EXT.part ${NAMESRC}-${VERSION}.$EXT
-	rpm2targz $CWD/${NAMESRC}-${VERSION}.$EXT
-fi
-
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/usr/{man/man8,sbin}
 
-# On déballe et on se place dans les sources :
-cd $TMP
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.tar.gz
-
 # On installe le binaire et le manuel :
-install -m755 usr/sbin/gfxboot ${PKG}/usr/sbin
-install -m644 usr/share/man/man8/gfxboot.8.gz ${PKG}/usr/man/man8
+install -m755 $CWD/gfxboot ${PKG}/usr/sbin
+install -m644 $CWD/gfxboot.8.gz ${PKG}/usr/man/man8
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
