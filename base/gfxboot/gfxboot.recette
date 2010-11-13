@@ -45,7 +45,8 @@ mkdir -p ${PKG}/usr/{man/man8,sbin}
 # On déballe et on se place dans les sources :
 cd $TMP
 echo "Extraction en cours..."
-rpmunpack $CWD/${NAMESRC}-${VERSION}.$EXT
+rpm2targz $CWD/${NAMESRC}-${VERSION}.$EXT
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 
 # On installe le binaire et le manuel :
 install -m755 usr/sbin/gfxboot ${PKG}/usr/sbin
