@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README"
+DOC="AUTHORS BENCHMARKS BUGS ChangeLog COPYING* CONTRIBUTORS INSTALL NEWS README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils et bibliothèques de cryptographie"
 ########################################
