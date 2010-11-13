@@ -1,5 +1,7 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
+# L'archive en .tar.gz se trouve sur le serveur FTP de 0, dans le répertoire
+# 'archives_sources'
 
 set -e
 umask 022
@@ -33,9 +35,10 @@ if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
 fi
 
 # On télécharge les sources :
-if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
+if [ ! -r ${NAMESRC}-${VERSION}.tar.gz ]; then
 	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
 	mv ${NAMESRC}-${VERSION}.$EXT.part ${NAMESRC}-${VERSION}.$EXT
+	rpm2targz $CWD/${NAMESRC}-${VERSION}.$EXT
 fi
 
 # On crée le répertoire d'accueil :
@@ -45,8 +48,7 @@ mkdir -p ${PKG}/usr/{man/man8,sbin}
 # On déballe et on se place dans les sources :
 cd $TMP
 echo "Extraction en cours..."
-rpm2targz $CWD/${NAMESRC}-${VERSION}.$EXT
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+tar xf $CWD/${NAMESRC}-${VERSION}.tar.gz
 
 # On installe le binaire et le manuel :
 install -m755 usr/sbin/gfxboot ${PKG}/usr/sbin
