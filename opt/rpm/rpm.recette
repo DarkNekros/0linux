@@ -90,6 +90,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-build-pic \
 	--enable-build-pie \
+	--with-beecrypt=/usr
+	--with-db=no \
 	--with-popt=/usr \
 	--build=${TARGET32}
 
@@ -131,6 +133,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-build-pic \
 	--enable-build-pie \
+	--with-beecrypt=/usr
+	--with-db=no \
 	--with-popt=/usr \
 	--build=${TARGET64}
 
