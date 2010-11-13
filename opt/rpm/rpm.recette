@@ -6,8 +6,8 @@ umask 022
 CWD=$(pwd)
 
 NAMESRC=${NAMESRC:-rpm}
-VERSION=${VERSION:-4.8.1}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-5.3.5}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-rpm}
 BUILD=${BUILD:-1}
 
@@ -21,8 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGETDB=${WGETDB:-http://download.oracle.com/berkeley-db/db-4.7.25.tar.gz}
-WGET=${WGET:-http://rpm.org/releases/rpm-4.8.x//$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://rpm5.org/files/$NAMESRC/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DOC="CHANGES COPYING CREDITS GROUPS INSTALL README doc/manual"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils pour le format de paquets RPM"
@@ -75,27 +74,23 @@ find . \
 export USE_ARCH=32
 
 # Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe -I/usr/include/nspr -I/usr/include/nss"
+SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -ldl" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	--localstatedir=/var \
+	--localstatedir=/var/lib \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-python \
-	--enable-sqlite3 \
-	--enable-broken-chown \
-	--without-dmalloc \
-	--without-hackingdocs \
-	--without-lua \
-	--without-selinux \
+	--enable-build-pic \
+	--enable-build-pie \
+	--with-popt=/usr \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -120,27 +115,23 @@ find . \
 export USE_ARCH=64
 
 # Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe -I/usr/include/nspr -I/usr/include/nss"
+SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -ldl" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	--localstatedir=/var \
+	--localstatedir=/var/lib \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-python \
-	--enable-sqlite3 \
-	--enable-broken-chown \
-	--without-dmalloc \
-	--without-hackingdocs \
-	--without-lua \
-	--without-selinux \
+	--enable-build-pic \
+	--enable-build-pie \
+	--with-popt=/usr \
 	--build=${TARGET64}
 
 make -j3 || make
