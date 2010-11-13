@@ -22,7 +22,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://gentoo.osuosl.org/distfiles/$NAMESRC-$VERSION.$EXT}
-DOC="CHANGES COPYING CREDITS GROUPS INSTALL README doc/manual"
+DOC="*README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de conversion RPM vers .tar.gz"
 ########################################
