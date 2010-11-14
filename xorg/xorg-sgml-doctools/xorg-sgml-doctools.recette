@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/doc/$NAMESRC-$VERSION.$EXT}
 DOC="ChangeLog COPYING INSTALL README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Documents et ressources pour la documentation de X11"
