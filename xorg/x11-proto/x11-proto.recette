@@ -5,10 +5,10 @@ set -e
 umask 022
 CWD=$(pwd)
 
-VERSION=${VERSION:-7.5}
+VERSION=${VERSION:-7.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-proto}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -22,7 +22,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 PROTOS="applewmproto-1.4.1 bigreqsproto-1.1.1 compositeproto-0.4.2 damageproto-1.2.1 \
 dmxproto-2.3 dri2proto-2.3 evieext-1.1.0 fixesproto-4.1.2 fontcacheproto-0.1.3 \
-fontsproto-2.1.1 glproto-1.4.12 inputproto-2.0 kbproto-1.0.5 printproto-1.0.4 \
+fontsproto-2.1.1 glproto-1.4.12 inputproto-2.0.1 kbproto-1.0.5 printproto-1.0.4 \
 randrproto-1.3.2 recordproto-1.14.1 renderproto-0.11.1 resourceproto-1.1.0 \
 scrnsaverproto-1.2.1 trapproto-3.4.3 videoproto-2.3.1 windowswmproto-1.0.4 \
 xcmiscproto-1.2.1 xextproto-7.1.2 xf86bigfontproto-1.2.0 xf86dgaproto-2.1 \

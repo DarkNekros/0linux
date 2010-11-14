@@ -1,3 +1,4 @@
+coreutils 8.7 
 dbus-glib 0.90
 linux 2.6.36
 lvm 2.02.76 
