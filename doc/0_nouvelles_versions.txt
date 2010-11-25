@@ -1,8 +1,10 @@
 coreutils 8.7 
 dbus-glib 0.90
-gtk+ 2.22.1 
-linux 2.6.36
-lvm 2.02.76 
+gtk+ 2.22.1
+lftp 4.1.0 
+linux 2.6.36.1
+lvm 2.02.77
+ImageMagick 6.6.5-9 
 man-pages 3.31 
 poppler 0.14.5
 poppler-data 0.4.4
@@ -10,5 +12,6 @@ python 2.7
 openssl 1.0.0b 
 orbit2 2.14.19
 qt 4.7.1
+subversion 1.6.15 
 tar 1.25 
 xfsprogs 3.1.4 

@@ -5,7 +5,7 @@ set -e
 umask 022
 CWD=$(pwd)
 
-VERSION=${VERSION:-0.7}
+VERSION=${VERSION:-0.8}
 NAMETGZ=${NAMETGZ:-base-systeme}
 BUILD=${BUILD:-1}
 
@@ -83,9 +83,6 @@ ln -sf games ${PKG}/usr/share/jeux
 ln -sf ../doc ${PKG}/usr/share/doc
 ln -sf ../info ${PKG}/usr/share/info
 ln -sf ../man ${PKG}/usr/share/man
-
-# Un fichier vide pratique :
-touch ${PKG}/etc/ld.so.conf
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
