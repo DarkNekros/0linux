@@ -2,13 +2,6 @@
 #
 # /etc/rc.d/rc.M : ce fichier est exécuté lors du passage en mode multi-
 # utilisateur par 'init' (donc dans les niveaux d'exécution 2 à 6).
-# Très lourdement inspiré de Slackware.
-
-echo "Passage en mode multi-utilisateur..."
-
-if [ -x /sbin/ldconfig ]; then
-	ldconfig &
-fi
 
 # L'écran se vide au bout de 15 minutes et entre en veille au bout d'une heure :
 setterm -blank 15 -powersave powerdown -powerdown 60
@@ -21,8 +14,8 @@ else
 	hostname pingouin
 fi
 
-# Sauvegarde du contenu de 'dmesg' :
-dmesg -s 65536 > /var/log/dmesg
+# On sauvegarde le contenu de 'dmesg' dans un fichier :
+dmesg -s 262144 > /var/log/dmesg
 
 # Lancement de syslog :
 if [ -x /etc/rc.d/rc.syslog -a -x /usr/sbin/syslogd -a -d /var/log ]; then
@@ -41,30 +34,18 @@ fi
 
 # Montage du reste des systèmes de fichiers :
 echo "Montage des système de fichiers..."
-mount -a -v 2> /dev/null | grep -v "already mounted"
+mount -F -a 2> /dev/null | grep -v "already mounted"
 
 # Nettoyage du système après le montage de systèmes de fichiers, superflu compris :
-echo "Nettoyage du système..."
-rm -f /var/lock/* /tmp/.X*lock /tmp/core /core 2> /dev/null
-
-# Nettoyage des connecteurs réseau :
-if [ -r /tmp/hunt -o -r /tmp/hunt.stats ]; then
-	rm -f /tmp/hunt*
-fi
+rm -f /var/lock/* /tmp/.X*lock /tmp/core /core /tmp/hunt* 2> /dev/null
 
 # Correction des permissions au cas où :
-chmod 755 / 2> /dev/null
+chmod 755 / 2>/dev/null
 chmod 1777 /tmp /var/tmp
 
 # Lancement des scripts System V s'il en existe pour ce niveau d'exécution :
 if [ -x /etc/rc.d/rc.sysvinit ]; then
 	. /etc/rc.d/rc.sysvinit
-fi
-
-# Mise à jour de l'indexation des polices :
-if [ -x /usr/bin/fc-cache ]; then
-	echo "Mise à jour de l'indexation des polices..."
-	/usr/bin/fc-cache -f
 fi
 
 # Lancement des programmes pour GTK+ et Pango dans les 2 architectures :
@@ -80,27 +61,6 @@ if [ -d /etc/pango ]; then
 	echo "Mise à jour des modules Pango..."
 	pango-querymodules-32 > /etc/pango-32/pango.modules
 	pango-querymodules-64 > /etc/pango-64/pango.modules
-fi
-
-# Mise à jour du cache des icônes :
-if find /usr/share/icons 2> /dev/null | grep -q icon-theme.cache ; then
-	echo "Mise à jour du cache des icônes..."
-	for theme_dir in /usr/share/icons/* ; do
-		if [ -r ${theme_dir}/icon-theme.cache ]; then
-			/usr/bin/gtk-update-icon-cache -t -f ${theme_dir} 1> /dev/null 2> /dev/null
-		fi
-	done
-	
-	# On supprime donc ce gros fichier :
-	if [ -r /usr/share/icons/icon-theme.cache ]; then
-		rm -f /usr/share/icons/icon-theme.cache
-	fi
-fi
-
-# Mise à jour de la base de données de types MIME :
-if [ -x /usr/bin/update-mime-database -a -d /usr/share/mime ]; then
-	echo "Mise à jour de la base de données de types MIME..."
-	/usr/bin/update-mime-database /usr/share/mime 1> /dev/null 2> /dev/null
 fi
 
 # Lancement de D-Bus :

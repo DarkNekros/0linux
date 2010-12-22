@@ -5,7 +5,7 @@ set -e
 umask 022
 CWD=$(pwd)
 
-VERSION=${VERSION:-0.9}
+VERSION=${VERSION:-0.91}
 NAMETGZ=${NAMETGZ:-sysvinit-scripts}
 BUILD=${BUILD:-1}
 
@@ -40,10 +40,6 @@ done
 # Installation du fichier 'inittab' :
 cp -a $CWD/scripts/inittab ${PKG}/etc/inittab.new
 chmod 644 ${PKG}/etc/inittab.new
-
-# On installe le script de Slackware 'rescan-scsi-bus.sh' :
-cp -a $CWD/scripts/rescan-scsi-bus.sh ${PKG}/sbin/rescan-scsi-bus
-chmod 755 ${PKG}/sbin/rescan-scsi-bus
 
 # On lie le script du niveau 0 à celui du niveau 6 :
 ln -sf rc.6 ${PKG}/etc/rc.d/rc.0

@@ -18,10 +18,10 @@ fi
 
 case "$0" in
 	*0)
-		command="halt"
+		commande="halt"
 		;;
 	*6)
-		command=reboot
+		commande="reboot"
 		;;
 	*)
 		echo "$0 : Appelez-moi \"rc.0\" ou \"rc.6\", je vous prie !"
@@ -74,7 +74,7 @@ dd if=/dev/urandom of=/etc/random-seed count=1 bs=$(cat /proc/sys/kernel/random/
 chmod 600 /etc/random-seed
 
 # On enregistre l'action ('halt' ou 'reboot') dans 'wtmp' :
-$command -w
+$commande -w
 
 # On nettoie /var/lock/subsys :
 if [ -d /var/lock/subsys ]; then
@@ -88,10 +88,10 @@ fi
 /bin/sync
 
 # On démonte ce qui reste :
-umount -v -a -t no,proc,sysfs
+umount -a -t no,proc,sysfs
 
 # On éteind ou redémarre la machine :
-if [ "$command" = "reboot" ]; then
+if [ "$commande" = "reboot" ]; then
 	echo "Redémarrage."
 	/sbin/reboot
 else

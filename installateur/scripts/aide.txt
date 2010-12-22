@@ -57,7 +57,7 @@ aisé de gérer un système partitionné de la facon suivante  :
 
 	+ 5 giga-octets minimum pour la racine du système (« / ») 
 	+ l'espace dédié aux utilisateurs sur '/home' 
-	+ 1 partition « swap » (un peu plus que votre quantité de memoire RAM)
+	+ 1 partition « swap » (un peu plus que votre quantité de mémoire RAM)
 
 Faire une partition séparée pour /home est optionnel mais recommandé, celle-ci
 contenant entre autres les paramètres et préférences des utilisateurs.
@@ -77,12 +77,14 @@ que l'installateur reconnaisse vos partitions comme exploitables.
 	   type des partitions puis finissez par la commande 'w' pour écrire la 
 	   nouvelle table de partitions avant de quitter.
 
-Par defaut, 'fdisk' et 'cfdisk' sélectionneront le premier lecteur de
+Par défaut, 'fdisk' et 'cfdisk' sélectionneront le premier lecteur de
 disque dur de votre machine. Sur les machines équipées en IDE, le disque
 sera /dev/hda. Pour celles équipées en SATA ou SCSI, ce sera /dev/sda. 
 Pour partitionner des disque durs supplémentaires, vous devrez les indiquer. 
 
-Exemples :
+Pour consulter la liste des disques détectés, tapez : 
+
+	# fdisk -l
 
 Pour partitionner le second disque dur IDE avec 'cfdisk', tapez :
 

@@ -2,7 +2,6 @@
 #
 # /etc/rc.d/rc.K : ce fichier est exécuté lors du passage en mode mono-
 # utilisateur par init(8) (donc dans le niveau d'exécution 1).
-# Très lourdement inspiré de Slackware.
 
 # On spécifie le PATH :
 PATH=/sbin:/bin:/usr/bin:/usr/sbin
@@ -19,7 +18,7 @@ fi
 
 # Lancement des scripts locaux d'arrêt :
 if [ -x /etc/rc.d/rc.local_shutdown ]; then
-	/etc/rc.d/rc.local_shutdown
+	. /etc/rc.d/rc.local_shutdown
 fi
 
 # Démontage des systèmes de fichiers distants :

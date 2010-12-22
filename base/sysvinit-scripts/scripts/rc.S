@@ -8,19 +8,19 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 export PATH
 
 # On monte /proc :
-mount -v proc /proc -n -t proc
+mount -F proc /proc -n -t proc
 
 # On monte sysfs:
 if grep -wq sysfs /proc/filesystems ; then
 	if ! grep -wq sysfs /proc/mounts ; then
-		mount -v sysfs /sys -n -t sysfs
+		mount -F sysfs /sys -n -t sysfs
 	fi
 fi
 
 # On lance udev :
 if grep -wq sysfs /proc/mounts && grep -wq tmpfs /proc/filesystems ; then
 	if [ -x /etc/rc.d/rc.udev ]; then
-		sh /etc/rc.d/rc.udev start
+		. /etc/rc.d/rc.udev start
 	fi
 fi
 
@@ -46,8 +46,6 @@ LECTURESEULE=oui
 if touch /fichier_test 2>/dev/null; then
 	rm -f /fichier_test
 	LECTURESEULE=non
-else
-	echo "Évaluation du système de fichiers racine : OK, lecture seule."
 fi
 
 # On voit si une vérification forcée n'a pas eu lieu la dernière fois :
@@ -75,7 +73,7 @@ if [ ! $LECTURESEULE = non ]; then
 			echo ""
 			echo "Une fois que vous aurez quitté cet environnement de secours,"
 			echo "le système redémarrera."
-			echo
+			echo ""
 			
 			# On active une invite de secours :
 			PS1="(Mode maintenance) \#"; export PS1
@@ -86,20 +84,20 @@ if [ ! $LECTURESEULE = non ]; then
 		else
 			echo "IMPORTANT : Le système de fichiers racine a été modifié."
 			echo "Le système va donc redémarrer maintenant."
-			echo
+			echo ""
 		fi
 		
 		# On démonte tout et on redémarre :
-		echo "Démontage des systèmes de fichiers."
+		echo "Démontage des systèmes de fichiers..."
 		umount -a -r
-		mount -n -o remount,ro /
+		mount -F -n -o remount,ro /
 		echo "Redémarrage du système."
 		reboot -f
 	fi
 
 	# On remonte le système de fichiers racine en lecture-écriture :
 	echo "Remontage du système de fichiers racine en mode lecture-écriture."
-	mount -w -v -n -o remount /
+	mount -F -w -n -o remount /
 
 	# Traitement des erreurs de montage :
 	if [ $? -gt 0 ] ; then
@@ -107,8 +105,7 @@ if [ ! $LECTURESEULE = non ]; then
 		echo "racine en lecture-écriture. Nous avons là un sérieux probléme."
 		echo
 		echo "Veuillez appuyer sur ENTRÉE pour continuer puis redémarrez après avoir"
-		echo "examiné sérieusement votre machine et votre configuration."
-		
+		echo "examiné sérieusement votre machine et sa configuration."
 		read blabla;
 	fi
 	
@@ -127,7 +124,6 @@ else
 	echo "à la section concernée dans votre fichier '/etc/lilo.conf' puis tapez"
 	echo "'lilo' pour le réinstaller correctement."
 	echo -n "Appuyez sur ENTRÉE pour continuer."
-	
 	read blabla;
 fi
 
@@ -140,7 +136,7 @@ fi
 rm -f /etc/mtab*
 
 # On remonte la partition racine pour générer un nouveau fichier /etc/mtab :
-mount -w -o remount /
+mount -F -w -o remount /
 
 # On relie les paramètres de montage de la racine pour que 'mount' les affiche 
 # correctement et pour se débarrasser d'un petit bogue dans /etc/mtab :
@@ -149,11 +145,11 @@ grep ' / ' /proc/mounts | grep -v "^rootfs" > /etc/mtab
 # On corrige /etc/mtab concernant les systèmes de fichiers sys and proc au cas où
 # ils ne seraient pas inscrits sur un système en lecture seule :
 if [ -d /proc/sys ]; then
-	mount -f proc /proc -t proc
+	mount -F -f proc /proc -t proc
 fi
 
 if [ -d /sys/bus ]; then
-	mount -f sysfs /sys -t sysfs
+	mount -F -f sysfs /sys -t sysfs
 fi
 
 # On charge les modules trouvés dans le fichier /etc/rc.d/rc.modules.local en priorité, 
@@ -182,9 +178,9 @@ fsck $FORCEFSCK -C -R -A -a
 if grep -wq usbfs /proc/filesystems; then
 	if ! grep -wq usbfs /proc/mounts ; then
 		if ! grep -wq usbfs /etc/fstab; then
-			mount -v usbfs /proc/bus/usb -t usbfs
+			mount -F usbfs /proc/bus/usb -t usbfs
 		else
-			mount -v /proc/bus/usb
+			mount -F /proc/bus/usb
 		fi
 	fi
 fi
@@ -198,22 +194,9 @@ mount -a -v -t nonfs,nosmbfs,nocifs,noproc,nosysfs,nodevpts
 # On réactive la partition d'échange au cas où :
 swapon -a
 
-# Un peu de nettoyage à la Slackware, y compris le superflu :
-rm -f /var/run/* \
-	/var/run/*/* \
-	/var/run/*/*/* \
-	/etc/nologin \
-	/etc/dhcpc/*.pid \
-	/etc/forcefsck \
-	/etc/fastboot \
-	/var/state/saslauthd/saslauthd.pid \
-	/tmp/.Xauth* 1> /dev/null 2> /dev/null
-
-rm -rf /var/log/setup/tmp/* \
-	/tmp/kde-[a-zA-Z]* \
-	/tmp/ksocket-[a-zA-Z]* \
-	/tmp/hsperfdata_[a-zA-Z]* \
-	/tmp/plugtmp* 1> /dev/null 2> /dev/null
+# Un peu de nettoyage :
+find /var/run -type f -delete
+rm -f /etc/nologin /etc/forcefsck /etc/fastboot /tmp/.Xauth* 1>/dev/null 2>/dev/null
 
 # On crée /tmp/{.ICE-unix,.X11-unix} s'il sont absents :
 if [ ! -e /tmp/.ICE-unix ]; then
@@ -238,7 +221,6 @@ fi
 
 # Si random-seed est présent, on « crée du hasard » :
 if [ -f /etc/random-seed ]; then
-	echo "Utilisation de /etc/random-seed pour initialiser /dev/urandom..."
 	cat /etc/random-seed > /dev/urandom
 fi
 
