@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-gdk-pixbuf}
 VERSION=${VERSION:-2.22.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gdk-pixbuf}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets}
@@ -127,6 +127,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On crée des fichiers de cache vides pour éviter les messages d'avertissement :
+touch ${PKG}/usr/lib{,64}/${NAMESRC}-2.0/2.10.0/loaders.cache
+
 # On renomme les binaires 64 bits pour les envelopper :
 mv ${PKG}/usr/bin/gdk-pixbuf-query-loaders{,-64}
 mv ${PKG}/usr/bin/gdk-pixbuf-csource{,-64}
@@ -177,19 +180,20 @@ config() {
 }
 
 if [ -x usr/bin/update-desktop-database ]; then
-	chroot . /usr/bin/update-desktop-database &> /dev/null
+	chroot . /usr/bin/update-desktop-database &>/dev/null
 fi
 
-if [ -x /usr/bin/update-mime-database ]; then
-  /usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+if [ -x usr/bin/update-mime-database ]; then
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
 fi
 
 if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
+	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
 
 gdk-pixbuf-query-loaders-32 > /etc/gtk-2.0-32/gdk-pixbuf.loaders
 gdk-pixbuf-query-loaders-64 > /etc/gtk-2.0-64/gdk-pixbuf.loaders
+gdk-pixbuf-query-loaders --update-cache
 
 EOF
 
