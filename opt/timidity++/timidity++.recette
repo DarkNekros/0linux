@@ -201,11 +201,11 @@ if [ -x usr/bin/update-desktop-database ]; then
 fi
 
 if [ -x /usr/bin/update-mime-database ]; then
-  /usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+  chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
 fi
 
 if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
+	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
 
 config etc/timidity/eawpats.cfg.new
