@@ -27,27 +27,21 @@ read CHOIXLOCALE;
 case "$CHOIXLOCALE" in
 "1")
 	LOCALE="en_US.UTF-8"
-	break
 ;;
 "2")
 	LOCALE="fr_BE.UTF-8"
-	break
 ;;
 "3")
 	LOCALE="fr_CA.UTF-8"
-	break
 ;;
 "4")
 	LOCALE="fr_CH.UTF-8"
-	break
 ;;
 "5")
 	LOCALE="fr_FR.UTF-8"
-	break
 ;;
 "6")
 	LOCALE="fr_LU.UTF-8"
-	break
 ;;
 *)
 	echo "Veuillez entrer un numéro valide (entre 1 et 6)."
