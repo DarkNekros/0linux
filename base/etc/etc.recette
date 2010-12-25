@@ -5,12 +5,23 @@ set -e
 umask 022
 CWD=$(pwd)
 
+# On définit la catégorie du paquet :
+for categ in base extra opt xfce xorg; do
+if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+PKGCAT="$categ"
+fi
+done
+
+gnagnagna
+gnognogno
+
+
 VERSION=${VERSION:-0.7}
 NAMETGZ=${NAMETGZ:-etc}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
-OUT=${OUT:-/usr/local/paquets}
+OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-noarch}
 
 ########## |-----handy-ruler------------------------------------------------------|

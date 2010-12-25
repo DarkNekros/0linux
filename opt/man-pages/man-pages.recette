@@ -5,6 +5,14 @@ set -e
 umask 022
 CWD=$(pwd)
 
+# On définit la catégorie du paquet :
+for categ in base extra opt xfce xorg; do
+if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+PKGCAT="$categ"
+fi
+done
+
+
 NAMESRC=${NAMESRC:-man-pages}
 VERSION=${VERSION:-3.30}
 EXT=${EXT:-tar.bz2}
@@ -12,7 +20,7 @@ NAMETGZ=${NAMETGZ:-man-pages}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
-OUT=${OUT:-/usr/local/paquets}
+OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-noarch}
 
 WGET=${WGET:-http://www.kernel.org/pub/linux/docs/man-pages/$NAMESRC-$VERSION.$EXT}

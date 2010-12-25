@@ -5,6 +5,21 @@ set -e
 umask 022
 CWD=$(pwd)
 
+# On définit la catégorie du paquet :
+for categ in base extra opt xfce xorg; do
+if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+PKGCAT="$categ"
+fi
+done
+
+
+# On définit la catégorie du paquet :
+for categ in base extra opt xfce xorg; do
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
+done
+
 NAMESRC=${NAMESRC:-}
 VERSION=${VERSION:-}
 EXT=${EXT:-tar.}
@@ -12,7 +27,7 @@ NAMETGZ=${NAMETGZ:-}
 BUILD=${BUILD:-}
 
 TMP=${TMP:-/tmp}
-OUT=${OUT:-/usr/local/paquets}
+OUT=${OUT:-/usr/local/paquets/$PKGCAT/$PKGCAT}
 ARCH=${ARCH:-x86_64}
 TARGET32=${TARGET32:-i686-0-linux-gnu}
 TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
@@ -169,7 +184,7 @@ if [ -x usr/bin/update-desktop-database ]; then
 fi
 
 if [ -x /usr/bin/update-mime-database ]; then
-  chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
 fi
 
 if [ -x usr/bin/gtk-update-icon-cache ]; then

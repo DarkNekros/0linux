@@ -5,12 +5,20 @@ set -e
 umask 022
 CWD=$(pwd)
 
+# On définit la catégorie du paquet :
+for categ in base extra opt xfce xorg; do
+if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+PKGCAT="$categ"
+fi
+done
+
+
 VERSION=${VERSION:-0.1}
 NAMETGZ=${NAMETGZ:-gtk-icones}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
-OUT=${OUT:-/usr/local/paquets}
+OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-noarch}
 
 WGET="1002/ICON-BlankOn.tar.gz 1049/ICON-DroplineEtiquette.tar.bz2 1100/ICON-DroplineNeu.tar.bz2 \

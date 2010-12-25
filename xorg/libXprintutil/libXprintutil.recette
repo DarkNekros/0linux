@@ -5,6 +5,14 @@ set -e
 umask 022
 CWD=$(pwd)
 
+# On définit la catégorie du paquet :
+for categ in base extra opt xfce xorg; do
+if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+PKGCAT="$categ"
+fi
+done
+
+
 NAMESRC=${NAMESRC:-libXprintUtil}
 VERSION=${VERSION:-1.0.1}
 EXT=${EXT:-tar.bz2}
@@ -12,7 +20,7 @@ NAMETGZ=${NAMETGZ:-libXprintutil}
 BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
-OUT=${OUT:-/usr/local/paquets}
+OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-x86_64}
 TARGET32=${TARGET32:-i686-0-linux-gnu}
 TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
