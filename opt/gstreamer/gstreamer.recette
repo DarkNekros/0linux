@@ -7,14 +7,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-gstreamer}
-VERSION=${VERSION:-0.10.30}
+VERSION=${VERSION:-0.10.31}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gstreamer}
 BUILD=${BUILD:-1}
@@ -94,11 +93,6 @@ NM=nm ./configure \
 	--disable-debug \
 	--build=${TARGET32}
 
-# On corrige quelques espaces sur lesquels 'make' 3.82 plante :
-sed -i '939 s/ \{8\}/\t/' docs/gst/Makefile
-sed -i '934 s/ \{8\}/\t/' docs/libs/Makefile
-sed -i '1046 s/ \{8\}/\t/' docs/plugins/Makefile
-
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
@@ -148,11 +142,6 @@ NM=nm ./configure \
 	--disable-failing-tests \
 	--disable-debug \
 	--build=${TARGET64}
-
-# On corrige quelques espaces sur lesquels 'make' 3.82 plante :
-sed -i '939 s/ \{8\}/\t/' docs/gst/Makefile
-sed -i '934 s/ \{8\}/\t/' docs/libs/Makefile
-sed -i '1046 s/ \{8\}/\t/' docs/plugins/Makefile
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
@@ -208,9 +197,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
