@@ -12,13 +12,11 @@ PKGCAT="$categ"
 fi
 done
 
-
 NAMESRC=${NAMESRC:-xchat}
-VERSION=${VERSION:-2.8.6}
+VERSION=${VERSION:-2.8.8}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xchat}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -67,13 +65,6 @@ cd ${NAME}
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# On applique ce correctif des développeurs :
-cat $CWD/xchat.xc286-smallfixes.patch | patch -p1
-
-# On permet la compilation avec les GTK+ récents :
-sed -i 's/GtkType/GType/' src/fe-gtk/xtext.{c,h}
-cat $CWD/xchat.recent-gtk.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -163,15 +154,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
