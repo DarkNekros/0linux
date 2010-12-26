@@ -7,11 +7,10 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
-
 
 NAMESRC=${NAMESRC:-lame}
 VERSION=${VERSION:-3.98.4}
@@ -71,8 +70,8 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
-# Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
+# Compilation pour 32 bits, on ajoute "-msse" aux CFLAGS  :
+SLKCFLAGS="-O2 -march=i686 -pipe -msse"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
@@ -111,8 +110,8 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-# Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe"
+# Compilation pour 64 bits, on ajoute "-msse" aux CFLAGS :
+SLKCFLAGS="-O2 -fPIC -pipe -msse"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
@@ -178,9 +177,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
