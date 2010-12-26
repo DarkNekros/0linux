@@ -7,14 +7,6 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
-done
-
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
 	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
 		PKGCAT="$categ"
 	fi

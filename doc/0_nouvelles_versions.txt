@@ -1,5 +1,5 @@
 freetype 2.4.4
-coreutils 8.7 
+coreutils 8.8 
 dbus-glib 0.90
 gstreamer 0.10.31
 gtk+ 2.22.1
