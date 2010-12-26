@@ -12,7 +12,6 @@ PKGCAT="$categ"
 fi
 done
 
-
 NAMESRC=${NAMESRC:-xtrans}
 VERSION=${VERSION:-1.2.6}
 EXT=${EXT:-tar.bz2}
@@ -30,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README"
+DOC="AUTHORS ChangeLog COPYING INSTALL README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèque native de X11"
 ########################################
