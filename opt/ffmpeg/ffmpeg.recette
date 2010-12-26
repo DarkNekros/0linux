@@ -12,7 +12,6 @@ PKGCAT="$categ"
 fi
 done
 
-
 NAMESRC=${NAMESRC:-ffmpeg}
 VERSION=${VERSION:-0.6.1}
 EXT=${EXT:-tar.bz2}
@@ -165,14 +164,10 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--extra-ldflags="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}"
 
 make -j3 || make
-make tools/qt-faststart
 fakeroot make install install-man DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On place le binaire 'qt-faststart' :
-install -m 0755 tools/qt-faststart ${PKG}/usr/bin/qt-faststart
 
 # On renomme le binaire 64 bits pour l'envelopper :
 mv ${PKG}/usr/bin/ffmpeg{,-64}
