@@ -7,11 +7,10 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
-
 
 NAMESRC=${NAMESRC:-OOo}
 VERSION=${VERSION:-3.2.1}
@@ -51,7 +50,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}/usr/bin
+mkdir -p ${PKG}/usr/{bin,lib64}
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -79,12 +78,14 @@ for RPMPACK in *.rpm; do
 	rpmunpack ${RPMPACK}
 done
 
-# On renomme le répertoire principal et on le déplace dans /usr :
+# On copie chaque sous-répertoire principal 'opt', on renomme 'opt' en 'lib64' 
+# puis on déplace le tout sous /usr :
+find . -type d -name "opt" -exec cp -ar {} . \;
 mv opt lib64
-mv --target-directory=usr lib64
+cp -ar lib64 ${PKG}/usr
 
-# On copie le tout : 
-cp -ar $TMP/${NAME}/RPMS/* ${PKG}
+# On copie tout ce qui se trouve sous 'usr/' (Freedesktop & Co.) :
+cp -ar usr/* ${PKG}/usr
 
 # On nettoie les RPM, un lien cassé, et les polices DejaVu et Liberation :
 rm -rf ${PKG}/{desktop-integration,*.rpm}
@@ -151,7 +152,7 @@ if [ -x usr/bin/update-desktop-database ]; then
 fi
 
 if [ -x /usr/bin/update-mime-database ]; then
-  chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
 fi
 
 if [ -x usr/bin/gtk-update-icon-cache ]; then
