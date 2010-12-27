@@ -1,6 +1,8 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
+# *** À LANCER EN ROOT ! ***
+
 set -e
 umask 022
 CWD=$(pwd)
@@ -12,7 +14,7 @@ INITRDGZ=${INITRDGZ:-/tmp/initrd.gz}
 
 # On crée et on vide le répertoire d'accueil :
 rm -rf ${LIVEOS}
-mkdir -p ${LIVEOS}
+mkdir -p ${LIVEOS}/0/paquets
 
 # On installe les paquets pour le LiveOS :
 echo "Création de l'image ISO du DVD autonome en cours..."
@@ -91,21 +93,25 @@ mkdir -p ${LIVEOS}/boot/isolinux
 cp -ar ${SOURCES}/installateur/isolinux/* ${LIVEOS}/boot/isolinux/
 
 # On copie les modules binaires de Syslinux :
-cp -a /usr/share/syslinux/{chain,kbdmap,linux,reboot,vesamenu}.c32 ${LIVEOS}/boot/isolinux/
+cp -a /usr/share/syslinux/{{chain,kbdmap,linux,reboot,vesamenu}.c32,isolinux.bin} ${LIVEOS}/boot/isolinux/
 chmod +x ${LIVEOS}/boot/isolinux/*.c32
 
 # On copie le noyau et l'initrd :
 cp -a ${INITRDGZ} /tmp/noyau ${LIVEOS}/boot/
 
-# On copie les paquets :
+# On copie tous les paquets :
 rsync -auv --delete-after ${PAQUETS}/* ${LIVEOS}/0/paquets
 
 # On s'assure des permissions :
-chown -R root:root /mnt/tmp/* 2> /dev/null || true
+chown -R root:root ${LIVEOS}* 2> /dev/null || true
 
-
-# On installe enfin extlinux :
-extlinux --install /mnt/tmp/boot/extlinux
-
+# On crée enfin l'image ISO :
+mkisofs -o 0linux-2011-DVD.iso \
+	-b isolinux/isolinux.bin \
+	-c isolinux/boot.cat \
+	-boot-load-size 4 \
+	-boot-info-table \
+	-no-emul-boot \
+	${LIVEOS}
 
 exit 0
