@@ -110,7 +110,7 @@ chown -R root:root ${DVDROOT}/* 2> /dev/null || true
 cd ${DVDROOT}
 mkisofs -o /tmp/0linux-2011-DVD.iso \
 	-b boot/isolinux/isolinux.bin \
-	-c isolinux/boot.cat \
+	-c boot/isolinux/boot.cat \
 	-boot-load-size 4 \
 	-boot-info-table \
 	-no-emul-boot \
