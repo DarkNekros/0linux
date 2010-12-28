@@ -11,10 +11,12 @@ SOURCES=${SOURCES:-/marmite/0/sources}
 PAQUETS=${PAQUETS:-/marmite/0/paquets}
 LIVEOS=${LIVEOS:-/marmite/0/liveos}
 INITRDGZ=${INITRDGZ:-/tmp/initrd.gz}
+DVDROOT=${DVDROOT:-/tmp/dvdroot}
 
 # On crée et on vide le répertoire d'accueil :
 rm -rf ${LIVEOS}
-mkdir -p ${LIVEOS}/0/paquets
+mkdir -p ${LIVEOS}
+mkdir -p ${DVDROOT}/{boot/isolinux,0/paquets}
 
 # On installe les paquets pour le LiveOS :
 echo "Création de l'image ISO du DVD autonome en cours..."
@@ -88,30 +90,31 @@ find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
 echo "Terminé."
 
 echo -n "Copie des fichiers en cours... "
-# On copie toutes les sources de isolinux/ :
-mkdir -p ${LIVEOS}/boot/isolinux
-cp -ar ${SOURCES}/installateur/isolinux/* ${LIVEOS}/boot/isolinux/
+# On copie tous les fichiers de isolinux/ :
+cp -ar ${SOURCES}/installateur/isolinux/* ${DVDROOT}/boot/isolinux/
 
 # On copie les modules binaires de Syslinux :
-cp -a /usr/share/syslinux/{{chain,kbdmap,linux,reboot,vesamenu}.c32,isolinux.bin} ${LIVEOS}/boot/isolinux/
-chmod +x ${LIVEOS}/boot/isolinux/*.c32
+cp -a /usr/share/syslinux/{{chain,kbdmap,linux,reboot,vesamenu}.c32,isolinux.bin} ${DVDROOT}/boot/isolinux/
+chmod +x ${DVDROOT}/boot/isolinux/*.c32
 
 # On copie le noyau et l'initrd :
-cp -a ${INITRDGZ} /tmp/noyau ${LIVEOS}/boot/
+cp -a ${INITRDGZ} /tmp/noyau ${DVDROOT}/boot/
 
 # On copie tous les paquets :
-rsync -auv --delete-after ${PAQUETS}/* ${LIVEOS}/0/paquets
+rsync -auv --delete-after ${PAQUETS}/* ${DVDROOT}/0/paquets
 
 # On s'assure des permissions :
-chown -R root:root ${LIVEOS}* 2> /dev/null || true
+chown -R root:root ${DVDROOT}/* 2> /dev/null || true
 
 # On crée enfin l'image ISO :
-mkisofs -o 0linux-2011-DVD.iso \
+mkisofs -o /tmp/0linux-2011-DVD.iso \
 	-b isolinux/isolinux.bin \
 	-c isolinux/boot.cat \
 	-boot-load-size 4 \
 	-boot-info-table \
 	-no-emul-boot \
-	${LIVEOS}
+	${DVDROOT}
+
+echo "L'image '/tmp/0linux-2011-DVD.iso' a été créée ."
 
 exit 0
