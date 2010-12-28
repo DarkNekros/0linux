@@ -107,8 +107,9 @@ rsync -auv --delete-after ${PAQUETS}/* ${DVDROOT}/0/paquets
 chown -R root:root ${DVDROOT}/* 2> /dev/null || true
 
 # On crée enfin l'image ISO :
+cd ${DVDROOT}
 mkisofs -o /tmp/0linux-2011-DVD.iso \
-	-b isolinux/isolinux.bin \
+	-b boot/isolinux/isolinux.bin \
 	-c isolinux/boot.cat \
 	-boot-load-size 4 \
 	-boot-info-table \
