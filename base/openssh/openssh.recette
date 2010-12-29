@@ -7,17 +7,16 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
-
 
 NAMESRC=${NAMESRC:-openssh}
 VERSION=${VERSION:-5.6p1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssh}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -116,8 +115,8 @@ rm -f ${PKG}/etc/ssh/ssh_host_rsa_key{,.pub}
 rm -f ${PKG}/etc/ssh/ssh_host_key{,.pub}
 
 # On installe le fichier de configuration :
-mv ${PKG}/etc/ssh/ssh_config ${PKG}/etc/ssh/ssh_config.new
-mv ${PKG}/etc/ssh/sshd_config ${PKG}/etc/ssh/sshd_config.new
+mv ${PKG}/etc/ssh/ssh_config{,.new}
+mv ${PKG}/etc/ssh/sshd_config{,.new}
 
 # On installe le fichier de service et on le rend exécutable :
 mkdir -p ${PKG}/etc/rc.d
@@ -169,19 +168,6 @@ config etc/ssh/ssh_config.new
 config etc/ssh/sshd_config.new
 config etc/rc.d/rc.sshd.new
 
-# On s'assure que 'sshd' est partout :
-if ! grep -q "^sshd:" etc/passwd ; then
-	echo "sshd:x:33:33:sshd:/:" >> etc/passwd
-fi
-
-if ! grep -q "^sshd:" etc/group ; then
-	echo "sshd::33:sshd" >> etc/group
-fi
-
-if ! grep -q "^sshd:" etc/shadow ; then
-	echo "sshd:*:9797:0:::::" >> etc/shadow
-fi
-
 # On s'assure de la présence de 'btmp' :
 if [ ! -r var/log/btmp ]; then
 	( cd var/log ; umask 077 ; touch btmp )
@@ -197,9 +183,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
