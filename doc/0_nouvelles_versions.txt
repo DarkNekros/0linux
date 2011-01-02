@@ -1,7 +1,7 @@
 freetype 2.4.4
 coreutils 8.8 
 dbus-glib 0.90
-gstreamer 0.10.31
+groff 1.21
 gtk+ 2.22.1
 lftp 4.1.0 
 linux 2.6.36.1

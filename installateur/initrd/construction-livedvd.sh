@@ -12,6 +12,7 @@ PAQUETS=${PAQUETS:-/marmite/0/paquets}
 LIVEOS=${LIVEOS:-/marmite/0/liveos}
 INITRDGZ=${INITRDGZ:-/tmp/initrd.gz}
 DVDROOT=${DVDROOT:-/tmp/dvdroot}
+ISODIR=${ISODIR:-/tmp}
 
 # On crée et on vide le répertoire d'accueil :
 rm -rf ${LIVEOS}
@@ -108,14 +109,19 @@ chown -R root:root ${DVDROOT}/* 2> /dev/null || true
 
 # On crée enfin l'image ISO :
 cd ${DVDROOT}
-mkisofs -o /tmp/0linux-2011-DVD.iso \
+mkisofs -o ${ISODIR}/0linux-2011-DVD.iso \
+	-A "0 linux DVD" \
 	-b boot/isolinux/isolinux.bin \
 	-c boot/isolinux/boot.cat \
+	-d \
+	-N \
+	-V "0linuxDVD" \
 	-boot-load-size 4 \
 	-boot-info-table \
+	-hide-rr-moved \
 	-no-emul-boot \
 	${DVDROOT}
 
-echo "L'image '/tmp/0linux-2011-DVD.iso' a été créée ."
+echo "L'image '${ISODIR}/0linux-2011-DVD.iso' a été créée ."
 
 exit 0
