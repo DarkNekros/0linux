@@ -14,9 +14,10 @@ INITRDGZ=${INITRDGZ:-/tmp/initrd.gz}
 DVDROOT=${DVDROOT:-/tmp/dvdroot}
 ISODIR=${ISODIR:-/tmp}
 
-# On crée et on vide le répertoire d'accueil :
-rm -rf ${LIVEOS}
-mkdir -p ${LIVEOS}
+# On crée et on vide les répertoires d'accueil :
+rm -rf ${LIVEOS} ${DVDROOT}
+rm -f ${LIVEOS}/0linux-2011-DVD.iso
+mkdir -p ${LIVEOS} 
 mkdir -p ${DVDROOT}/{boot/isolinux,0/paquets}
 
 # On installe les paquets pour le LiveOS :
