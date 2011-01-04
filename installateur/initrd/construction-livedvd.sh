@@ -115,6 +115,7 @@ mkisofs -o ${ISODIR}/0linux-2011-DVD.iso \
 	-b boot/isolinux/isolinux.bin \
 	-c boot/isolinux/boot.cat \
 	-d \
+	-l \
 	-N \
 	-V "0linuxDVD" \
 	-boot-load-size 4 \
