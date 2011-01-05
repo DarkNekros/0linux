@@ -135,6 +135,6 @@ mkisofs -o ${ISODIR}/0linux-${VERSION}-DVD.iso \
 	-no-emul-boot \
 	${DVDROOT}
 
-echo "L'image '${ISODIR}/0linux-2011-DVD.iso' a été créée ."
+echo "L'image '${ISODIR}/0linux-${VERSION}-DVD.iso' a été créée ."
 
 exit 0

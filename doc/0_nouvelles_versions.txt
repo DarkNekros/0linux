@@ -1,5 +1,5 @@
 freetype 2.4.4
-coreutils 8.8 
+coreutils 8.9 
 dbus-glib 0.90
 groff 1.21
 gtk+ 2.22.1
