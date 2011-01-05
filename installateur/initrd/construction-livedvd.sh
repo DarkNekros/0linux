@@ -1,7 +1,11 @@
 #!/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-# *** À LANCER EN ROOT ! ***
+# *** À LANCER EN ROOT ! Suivi de la version souhaitée dans le nom de l'ISO. Ex. :
+#
+#	./construction-livedvd.sh alpha4
+#
+# ... créera l'image ISO '/tmp/0linux-alpha4-DVD.iso'.
 
 set -e
 umask 022
@@ -14,9 +18,15 @@ INITRDGZ=${INITRDGZ:-/tmp/initrd.gz}
 DVDROOT=${DVDROOT:-/tmp/dvdroot}
 ISODIR=${ISODIR:-/tmp}
 
+if [ "$1" = " " ]; then
+	VERSION="2011"
+else
+	VERSION="$1"
+fi
+
 # On crée et on vide les répertoires d'accueil :
 rm -rf ${LIVEOS} ${DVDROOT}
-rm -f ${LIVEOS}/0linux-2011-DVD.iso
+rm -f ${ISODIR}/0linux-${VERSION}-DVD.iso
 mkdir -p ${LIVEOS} 
 mkdir -p ${DVDROOT}/{boot/isolinux,0/paquets}
 
@@ -35,7 +45,7 @@ echo -n "xorg... "
 spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio &>/dev/null 2>&1
 
 echo -n "opt... "
-for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
+for paq in bc-* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
 	libidn* libpng* libssh2* popt* python-2* ruby*; do
 	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio &>/dev/null 2>&1
 done
@@ -45,6 +55,7 @@ echo "Terminé."
 rm -rf ${LIVEOS}/usr/doc/*
 rm -rf ${LIVEOS}/usr/share/gtk-doc/*
 rm -f ${LIVEOS}/lib/*.{a,la,so.*,so}
+rm -f ${LIVEOS}/{,usr/}lib64/*.{a,la}
 rm -rf ${LIVEOS}/usr/lib/*
 
 # On copie nos fichiers spéciaux pour le Live :
@@ -110,7 +121,7 @@ chown -R root:root ${DVDROOT}/* 2> /dev/null || true
 
 # On crée enfin l'image ISO :
 cd ${DVDROOT}
-mkisofs -o ${ISODIR}/0linux-2011-DVD.iso \
+mkisofs -o ${ISODIR}/0linux-${VERSION}-DVD.iso \
 	-A "0 linux DVD" \
 	-b boot/isolinux/isolinux.bin \
 	-c boot/isolinux/boot.cat \

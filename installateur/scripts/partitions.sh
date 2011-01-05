@@ -92,7 +92,7 @@ afficherlinux() {
 }
 
 # On détecte les partitions Linux, si aucune on prévient l'utilisateur :
-if [ "$(listelinux 1> /dev/null 2> /dev/null)" = "" ]; then
+if [ "$(listelinux 2> /dev/null)" = "" ]; then
 	clear
 	echo -e "\033[1;32mAucune partition Linux n'a été détectée.\033[0;0m"
 	echo ""
@@ -179,9 +179,9 @@ else
 			echo "Entrez le système de fichiers souhaité parmi la liste ci-dessous."
 			echo ""
 			echo "ext2     : système de fichiers traditionnel sous Linux"
-			echo "ext32    : version journalisée répandue de Ext2"
-			echo "ext43    : récent successeur de Ext3"
-			echo "jfs4     : système de fichiers journalisé d'IBM"
+			echo "ext3     : version journalisée répandue de Ext2"
+			echo "ext4     : récent successeur de Ext3"
+			echo "jfs      : système de fichiers journalisé d'IBM"
 			echo "reiserfs : système journalisé performant"
 			echo "xfs      : système de SGI performant sur les gros fichiers"
 			echo ""
@@ -335,9 +335,9 @@ else
 										echo "Entrez le système de fichiers souhaité parmi la liste ci-dessous."
 										echo ""
 										echo "ext2     : système de fichiers traditionnel sous Linux"
-										echo "ext32    : version journalisée répandue de Ext2"
-										echo "ext43    : récent successeur de Ext3"
-										echo "jfs4     : système de fichiers journalisé d'IBM"
+										echo "ext3     : version journalisée répandue de Ext2"
+										echo "ext4     : récent successeur de Ext3"
+										echo "jfs      : système de fichiers journalisé d'IBM"
 										echo "reiserfs : système journalisé performant"
 										echo "xfs      : système de SGI performant sur les gros fichiers"
 										echo ""
