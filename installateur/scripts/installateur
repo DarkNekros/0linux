@@ -63,7 +63,7 @@ echo ""
 echo "Vos disques durs doivent être partitionnés pour Linux avant d'installer"
 echo "votre système."
 echo ""
-echo "Pour cela, passez sur la console n°2 et invoquez « cfdisk » pour afficher"
+echo "Pour cela, passez sur la console n°2 et invoquez 'cfdisk' pour afficher"
 echo "et partitionner vos disques durs. Les outils de partitionnement 'fdisk'"
 echo "et 'parted' sont également disponibles."
 echo ""
@@ -109,8 +109,8 @@ while [ 0 ]; do
 		continue
 	;;
 	"4")
-		. partitions.sh
-		. partitions_fat.sh
+		#. partitions.sh
+		#. partitions_fat.sh
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;

@@ -20,7 +20,7 @@ crunch() {
 
 # taille_partition(périphérique) :
 taille_partition() {
-	Taille=$(fdisk -l | grep $1 | crunch | tr -d "*" | tr -d "+" | cut -f4 -d' ')
+	Taille=$(fdisk -l | grep $1 | tr -d "*" | tr -d "+" | crunch | cut -f4 -d' ')
 	TailleGo=$(echo "$Taille / 1000000" | bc)
 	echo "$TailleGo Go"
 }
@@ -30,8 +30,6 @@ taille_partition() {
 #              périphérique : nom du périphérique (/dev/*)
 #              vérifier : vérifier le système de fichiers (oui,non)
 formater() {
-	
-	TAILLEPART=$(taille_partition $1)
 	
 	# On s'assure de démonter le volume :
 	if mount | grep "$2 " 1> /dev/null 2> /dev/null; then
@@ -54,7 +52,7 @@ formater() {
 			mkfs.ext3 $VERIF -j $2 /dev/null 2> /dev/null
 		;;
 		ext4)
-			mkfs.ext4 -f $2 1> /dev/null 2> /dev/null
+			mkfs.ext4 $VERIF $2 1> /dev/null 2> /dev/null
 		;;
 		reiserfs)
 			echo "y" | mkreiserfs $2 1> /dev/null 2> /dev/null
@@ -70,8 +68,7 @@ formater() {
 
 # Afficher si les partitions Linux sont configurées ou pas :
 afficherlinux() {
-	listelinux | while [ 0 ]; do
-		read PARTITION;
+	listelinux | while read PARTITION; do
 		# Pas de partitions Linux ? On quitte :
 		if [ "$PARTITION" = "" ]; then
 			break
@@ -79,14 +76,17 @@ afficherlinux() {
 		NOMPARTITION=$(echo $PARTITION | crunch | cut -d' ' -f1)
 		DESCMONTAGE=""
 		# On scanne le fichier temporaire pour savoir si la partition est déjà utilisée :
-		if grep "${NOMPARTITION} " $TMP/choix_partitions 1> /dev/null; then
+		if grep "${NOMPARTITION} " $TMP/choix_partitions; then
 			# On extrait le point de montage choisi :
 			POINTMONTAGE=$(grep "$NOMPARTITION " $TMP/choix_partitions | crunch | cut -d' ' -f2)
-		fi
-		if [ "${POINTMONTAGE}" = "" ]; then
-			echo "${NOMPARTITION}, partition Linux de $(taille_partition ${NOMPARTITION})"
-		else
-			echo "${NOMPARTITION}, déjà montée sur ${POINTMONTAGE} ($(taille_partition ${NOMPARTITION}))"
+			
+			# Si on trouve un système de fichiers dans le champ 2, la partition n'est pas montée :
+			if [ ! "$(echo ${POINTMONTAGE} | grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs')" = "" ]; then
+				echo "${NOMPARTITION}, partition Linux de $(taille_partition ${NOMPARTITION})"
+			# Si on trouve au contraire un répertoire dans le champ 2, la partition est montée :
+			else
+				echo "${NOMPARTITION}, déjà montée sur ${POINTMONTAGE} ($(taille_partition ${NOMPARTITION}))"
+			fi
 		fi
 	done
 }
