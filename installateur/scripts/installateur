@@ -109,8 +109,8 @@ while [ 0 ]; do
 		continue
 	;;
 	"4")
-		#. partitions.sh
-		#. partitions_fat.sh
+		. partitions.sh
+		. partitions_fat.sh
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;

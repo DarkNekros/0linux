@@ -68,25 +68,14 @@ formater() {
 
 # Afficher si les partitions Linux sont configurées ou pas :
 afficherlinux() {
-	listelinux | while read PARTITION; do
-		# Pas de partitions Linux ? On quitte :
-		if [ "$PARTITION" = "" ]; then
-			break
-		fi
-		NOMPARTITION=$(echo $PARTITION | crunch | cut -d' ' -f1)
-		DESCMONTAGE=""
-		# On scanne le fichier temporaire pour savoir si la partition est déjà utilisée :
+	listelinux | crunch | while read PARTITION; do
+		NOMPARTITION=$(echo $PARTITION | cut -d' ' -f1)
+		# Si on trouve la partition dans le fichier temporaire :
 		if grep "${NOMPARTITION} " $TMP/choix_partitions; then
-			# On extrait le point de montage choisi :
 			POINTMONTAGE=$(grep "$NOMPARTITION " $TMP/choix_partitions | crunch | cut -d' ' -f2)
-			
-			# Si on trouve un système de fichiers dans le champ 2, la partition n'est pas montée :
-			if [ ! "$(echo ${POINTMONTAGE} | grep -E 'ext2|ext3|ext4|jfs|reiserfs|xfs')" = "" ]; then
-				echo "${NOMPARTITION}, partition Linux de $(taille_partition ${NOMPARTITION})"
-			# Si on trouve au contraire un répertoire dans le champ 2, la partition est montée :
-			else
-				echo "${NOMPARTITION}, déjà montée sur ${POINTMONTAGE} ($(taille_partition ${NOMPARTITION}))"
-			fi
+			echo "${NOMPARTITION} ($(taille_partition ${NOMPARTITION})), configurée (${POINTMONTAGE})"
+		else
+			echo "${NOMPARTITION}, partition Linux de $(taille_partition ${NOMPARTITION})"
 		fi
 	done
 }

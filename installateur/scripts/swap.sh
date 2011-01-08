@@ -103,6 +103,7 @@ while [ 0 ]; do
 			swapon ${SWAPSELECT}
 			touch $TMP/choix_swap
 			echo "${SWAPSELECT}     swap         swap       defaults           0     0" > $TMP/choix_swap
+			sleep 1
 			clear
 			echo -e "\033[1;32mPartition d'échange configurée.\033[0;0m"
 			echo ""
