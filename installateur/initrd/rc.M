@@ -135,7 +135,7 @@ echo "--------------------------------------"
 echo ""
 echo "Pour partitionner vos disques durs, 'cfdisk', 'fdisk' et 'parted'"
 echo "sont disponibles."
-echo "Pour débutez l'installation, vous taperez « installateur »."
+echo "Pour débuter l'installation, tapez « installateur »."
 echo ""
 echo "Mais connectez-vous tout d'abord en « root »."
 

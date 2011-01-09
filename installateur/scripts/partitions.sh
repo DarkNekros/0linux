@@ -8,7 +8,7 @@ unset MOUNTPOINT LINUXADD FORMATOK BLAH CONFIRM
 # On tente de détecter une ou plusieurs partitions Linux, swap exceptée.
 # On retire l'astérisque "*" des partitions amorçables pour avoir 6 champs partout :
 listelinux() {
-	LISTELINUX=$(fdisk -l | grep Linux 2> /dev/null | grep -v swap 2> /dev/null | tr -d "*" 2> /dev/null)
+	LISTELINUX=$(fdisk -l | grep Linux | grep -v swap | tr -d "*" | tr -d "+")
 	echo "${LISTELINUX}"
 }
 
@@ -64,20 +64,6 @@ formater() {
 			mkfs.xfs -f $2 1> /dev/null 2> /dev/null
 	esac
 
-}
-
-# Afficher si les partitions Linux sont configurées ou pas :
-afficherlinux() {
-	listelinux | crunch | while read PARTITION; do
-		NOMPARTITION=$(echo $PARTITION | cut -d' ' -f1)
-		# Si on trouve la partition dans le fichier temporaire :
-		if grep "${NOMPARTITION} " $TMP/choix_partitions; then
-			POINTMONTAGE=$(grep "$NOMPARTITION " $TMP/choix_partitions | crunch | cut -d' ' -f2)
-			echo "${NOMPARTITION} ($(taille_partition ${NOMPARTITION})), configurée (${POINTMONTAGE})"
-		else
-			echo "${NOMPARTITION}, partition Linux de $(taille_partition ${NOMPARTITION})"
-		fi
-	done
 }
 
 # On détecte les partitions Linux, si aucune on prévient l'utilisateur :
@@ -244,19 +230,27 @@ else
 					clear
 					echo -e "\033[1;32mAjouter une partition Linux à monter.\033[0;0m"
 					echo ""
+					echo "Dans la console n°2, utilisez au choix les outils suivants pour"
+					echo " déterminer vos partitions Linux existantes :"
+					echo ""
+					echo "		# cfdisk"
+					echo "		# fdisk -l"
+					echo ""
 					echo "Entrez la partition Linux supplémentaire que vous souhaitez"
 					echo "monter dans votre système (exemples : /dev/sda1 ; /dev/hda3 ;"
-					echo "etc) parmi la liste ci-dessous ou entrez le mot-clé « continuer »"
-					echo "pour terminer maintenant cette étape."
+					echo "etc.) ou appuyez sur ENTRÉE si vous avez terminé. Les partitions"
+					echo "actuellement montées sont les suivantes :"
 					echo ""
-					# On liste les partitions Linux utilisées ou pas :
-					afficherlinux
-					echo ""
-					echo "continuer : terminer l'ajout de partitions Linux"
+					# On liste les partitions Linux déjà montées :
+					mount | grep -v -E 'proc|devpts|tmpfs|sysfs' | sed \
+						-e 's@ on@, montée dans@' \
+						-e 's@(rw)@@' \
+						-e 's@type@en@' \
+						-e 's@@@'
 					echo ""
 					echo -n "Votre choix : "
 					read LINUXADD;
-					if [ "$LINUXADD" = "continuer" ]; then
+					if [ "$LINUXADD" = "" ]; then
 						OKPARTS = "ok"
 						break
 					else

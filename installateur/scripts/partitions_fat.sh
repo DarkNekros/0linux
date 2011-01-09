@@ -7,7 +7,7 @@ unset AJOUTFAT FATADD okparts MOUNTPOINT SECU SECUOK FSTYPE BLAH
 # On tente de détecter une ou plusieurs partitions FAT/DOS/Windows, partition étendue exceptée.
 # On retire l'astérisque "*" des partitions amorçables pour avoir 6 champs partout :
 listefat() {
-	LISTEFAT=$(fdisk -l 2> /dev/null | grep "Win9" "NTFS" "W95 F" "FAT" 2> /dev/null | grep -v tendue 2> /dev/null | tr -d "*" 2> /dev/null)
+	LISTEFAT=$(fdisk -l | grep "Win9" "NTFS" "W95 F" "FAT" | grep -v tendue | tr -d "*" | tr -d "+")
 	echo "${LISTEFAT}"
 }
 
@@ -22,29 +22,6 @@ taille_partition() {
 	Taille=$(fdisk -l | grep $1 | crunch | tr -d "*" | tr -d "+" | cut -f4 -d' ')
 	TailleGo=$(echo "$Taille / 1000000" | bc)
 	echo "$TailleGo Go"
-}
-
-# Afficher si les partitions FAT/NTFS sont configurées ou pas :
-afficherfat() {
-	listefat | while [ 0 ]; do
-		read PARTITION;
-		# Pas de partitions ? On quitte :
-		if [ "$PARTITION" = "" ]; then
-			break
-		fi
-		NOMPARTITION=$(echo $PARTITION | crunch | cut -d' ' -f1)
-		DESCMONTAGE=""
-		# On scanne le fichier temporaire pour savoir si la partition est déjà utilisée :
-		if grep "${NOMPARTITION} " $TMP/choix_partitions_fat 1> /dev/null; then
-			# On extrait le point de montage choisi :
-			POINTMONTAGE=$(grep "$NOMPARTITION " $TMP/choix_partitions | crunch | cut -d' ' -f2)
-		fi
-		if [ "${POINTMONTAGE}" = "" ]; then
-			echo "${NOMPARTITION}, partition FAT/NTFS de $(taille_partition ${NOMPARTITION})"
-		else
-			echo "${NOMPARTITION}, déjà montée sur ${POINTMONTAGE} ($(taille_partition ${NOMPARTITION}))"
-		fi
-	done
 }
 
 # Si des partitions FAT/NTFS sont détectées :
@@ -72,17 +49,27 @@ if [ $(listefat | wc -l) -gt 0 ]; then
 				clear
 				echo -e "\033[1;32mAjouter une partition FAT/NTFS à monter.\033[0;0m"
 				echo ""
-				echo "Entrez la partition FAT/NTFS que vous souhaitez"
-				echo "monter dans votre système parmi la liste ci-dessous ou entrez"
-				echo "le mot-clé « continuer » pour terminer cette étape."
+				echo "Dans la console n°2, utilisez au choix les outils suivants pour"
+				echo " déterminer vos partitions FAT/NTFS existantes :"
 				echo ""
-				# On liste les partitions FAT utilisées ou pas :
-				afficherfat
-				echo "continuer : terminer l'ajout de partitions FAT/NTFS"
+				echo "		# cfdisk"
+				echo "		# fdisk -l"
+				echo ""
+				echo "Entrez la partition FAT/NTFS supplémentaire que vous souhaitez"
+				echo "monter dans votre système (exemples : /windows ; /mes_documents ;"
+				echo "etc.) ou appuyez sur ENTRÉE si vous avez terminé. Les partitions"
+				echo "actuellement montées sont les suivantes :"
+				echo ""
+				# On liste les partitions FAT déjà montées :
+				mount | grep -v -E 'proc|devpts|tmpfs|sysfs' | grep -E 'ntfs|vfat' | sed \
+						-e 's@ on@, montée dans@' \
+						-e 's@(rw)@@' \
+						-e 's@type@en@' \
+						-e 's@@@'
 				echo ""
 				echo -n "Votre choix : "
 				read FATADD;
-				if [ "$FATADD" = "continuer" ]; then
+				if [ "$FATADD" = "" ]; then
 					OKPARTS = "ok"
 					break
 				else
@@ -114,15 +101,15 @@ if [ $(listefat | wc -l) -gt 0 ]; then
 								break
 							fi
 							# Si la partition choisie est une NTFS, on doit s'occuper du masque des permissions :
-							if [ ! "$(listefat | grep -w ${FATADD} | grep NTFS 1> /dev/null 2> /dev/null)" = "" ]; then
+							if [ ! "$(listefat | grep ${FATADD} | grep NTFS 1> /dev/null 2> /dev/null)" = "" ]; then
 								FSTYPE=ntfs
 								# Boucle d'affichage du choix des permissions par défaut :
 								while [ 0 ]; do
 									clear
-									echo -e "\033[1;32mPermission de la partitions NTFS ${FATADD}.\033[0;0m"
+									echo -e "\033[1;32mPermissions de la partition NTFS ${FATADD}.\033[0;0m"
 									echo ""
 									echo "Puisque les utilisateurs peuvent accéder à cette partition NTFS, vous"
-									echo "devez definir ses permissions en lecture et en écriture. Les niveaux"
+									echo "devez definir des permissions en lecture et en écriture. Les niveaux"
 									echo "de sécurité de ces permissions vont du tout-restrictif (aucun droit)"
 									echo "au tout-permissif (accès en lecture/écriture/exécution pour tous)."
 									echo "Une valeur raisonnable serait « 022 » mais beaucoup utilisent « 000 »."
