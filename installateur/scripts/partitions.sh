@@ -227,11 +227,12 @@ else
 			elif [ "$AJOUTLINUX" = "oui" ]; then
 				# Boucle d'affichage du menu du choix de la partition à ajouter :
 				while [ 0 ]; do
+					unset FORMATOK
 					clear
 					echo -e "\033[1;32mAjouter une partition Linux à monter.\033[0;0m"
 					echo ""
 					echo "Dans la console n°2, utilisez au choix les outils suivants pour"
-					echo " déterminer vos partitions Linux existantes :"
+					echo "déterminer vos partitions Linux existantes :"
 					echo ""
 					echo "		# cfdisk"
 					echo "		# fdisk -l"
@@ -262,7 +263,7 @@ else
 							continue
 						else
 							# Boucle d'affichage du menu du choix du point de montage :
-							while [ ! "${FORMATOK}" = "ok" ]; do
+							while [ 0 ]; do
 								clear
 								echo -e "\033[1;32mChoix du point de montage pour ${LINUXADD}.\033[0;0m"
 								echo ""
@@ -282,7 +283,7 @@ else
 									break
 								fi
 								# Boucle d'affichage du formatage :
-								while [ 0 ]; do
+								while [ ! "${FORMATOK}" = "ok" ]; do
 									clear
 									echo -e "\033[1;32mFormatage de la partition ${LINUXADD}.\033[0;0m"
 									echo ""

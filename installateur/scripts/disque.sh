@@ -61,7 +61,7 @@ while [ ! -r $TMP/choix_media ]; do
 			echo "		# fdisk -l"
 			echo ""
 			echo "Puis, entrez ci-dessous le périphérique optique concerné."
-			echo "Exemples : /dev/sdc1 ; /dev/sdd1 ; etc."
+			echo "Exemples : /dev/hdc ; /dev/sr0 ; etc."
 			echo ""
 			echo -n "Votre choix : "
 			read DISKSELECT;

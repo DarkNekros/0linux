@@ -13,7 +13,7 @@ while [ 0 ]; do
 	echo "disposez pour installer votre système Linux."
 	echo ""
 	echo "1 : USB - vous installez depuis une clé USB ou une carte mémoire"
-	echo "2 : DISQUE - vous installez depuis un disque optique"
+	echo "2 : DISQUE - vous installez depuis un disque optique (CD ou DVD)"
 	echo ""
 	echo -n "Votre choix : "
 	read MEDIA;

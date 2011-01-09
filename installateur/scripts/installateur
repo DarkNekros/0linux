@@ -6,7 +6,8 @@ TMPMOUNT=${TMPMOUNT:-/var/log/mount}
 mkdir -p ${TMP} ${TMPMOUNT}
 
 # La racine de destination du système à installer:
-export SETUPROOT=${SETUPROOT:-/mnt}
+mkdir -p /setuproot
+export SETUPROOT=${SETUPROOT:-/setuproot}
 
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {

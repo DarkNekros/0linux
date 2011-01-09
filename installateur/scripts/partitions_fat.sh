@@ -62,10 +62,10 @@ if [ $(listefat | wc -l) -gt 0 ]; then
 				echo ""
 				# On liste les partitions FAT déjà montées :
 				mount | grep -v -E 'proc|devpts|tmpfs|sysfs' | grep -E 'ntfs|vfat' | sed \
-						-e 's@ on@, montée dans@' \
-						-e 's@(rw)@@' \
-						-e 's@type@en@' \
-						-e 's@@@'
+					-e 's@ on@, montée dans@' \
+					-e 's@(rw)@@' \
+					-e 's@type@en@' \
+					-e 's@@@'
 				echo ""
 				echo -n "Votre choix : "
 				read FATADD;
