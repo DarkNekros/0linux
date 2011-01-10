@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 # L'archive en .tar.gz se trouve sur le serveur FTP de 0, dans le répertoire
 # 'archives_sources'

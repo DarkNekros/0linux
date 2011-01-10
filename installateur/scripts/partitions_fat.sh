@@ -1,8 +1,8 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # On nettoie avant toute chose :
 rm -f $TMP/choix_partitions_fat
-unset AJOUTFAT FATADD okparts MOUNTPOINT SECU SECUOK FSTYPE BLAH
+unset AJOUTFAT FATADD OKPARTS MOUNTPOINT SECU SECUOK FSTYPE BLAH
 
 # On tente de détecter une ou plusieurs partitions FAT/DOS/Windows, partition étendue exceptée.
 # On retire l'astérisque "*" des partitions amorçables pour avoir 6 champs partout :
@@ -38,8 +38,8 @@ if [ $(listefat | wc -l) -gt 0 ]; then
 		echo "par exemple /windows, pour pouvoir y accéder depuis votre système Linux."
 		echo "Voulez-vous configurer ces partitions pour y accéder automatiquement ?"
 		echo ""
-		echo -n "Votre choix (oui/non): "
 		read AJOUFAT;
+		echo -n "Votre choix (oui/non): "
 		if [ "$AJOUTFAT" = "non" ]; then
 			break
 		elif [ "$AJOUTFAT" = "oui" ]; then

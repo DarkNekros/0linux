@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # On nettoie avant toute chose :
 rm -f $TMP/choix_partitions
@@ -247,12 +247,12 @@ else
 						-e 's@ on@, montée dans@' \
 						-e 's@(rw)@@' \
 						-e 's@type@en@' \
-						-e 's@@@'
+						-e 's@/setuproot@/@'
 					echo ""
 					echo -n "Votre choix : "
 					read LINUXADD;
 					if [ "$LINUXADD" = "" ]; then
-						OKPARTS = "ok"
+						OKPARTS="ok"
 						break
 					else
 						# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
@@ -263,7 +263,7 @@ else
 							continue
 						else
 							# Boucle d'affichage du menu du choix du point de montage :
-							while [ 0 ]; do
+							while [ ! "${FORMATOK}" = "ok" ]; do
 								clear
 								echo -e "\033[1;32mChoix du point de montage pour ${LINUXADD}.\033[0;0m"
 								echo ""

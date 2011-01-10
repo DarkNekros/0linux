@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 set -e
@@ -109,7 +109,7 @@ echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 # On met à jour les index de polices de X :
 chroot . fc-cache -f 2> /dev/null
 

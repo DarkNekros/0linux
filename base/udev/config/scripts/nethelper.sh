@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Ce fichier n'est pas traduit car il est très spécifique et un peu bogué ;)
 
 DEVNAME="$1"

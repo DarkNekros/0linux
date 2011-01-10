@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 # Ce script compile BusyBox dans $TMP/${NAME}
 

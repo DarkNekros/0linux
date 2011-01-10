@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 set -e
@@ -168,7 +168,7 @@ ln -sf tune2fs ${PKG}/sbin/findfs
 # On modifie, comme Slackware, l'invocation de 'e2fsck' afin d'afficher une barre 
 # de progression :
 cat << EOF > ${PKG}/sbin/fsck.ext2
-#!/bin/env bash
+#!/usr/bin/env bash
 exec /sbin/e2fsck -C 0 \$*
 EOF
 
@@ -223,7 +223,7 @@ echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi

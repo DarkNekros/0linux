@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 # Ordre de compilation/installation de X.
 # À LANCER EN ROOT !

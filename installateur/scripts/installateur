@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # On crée les répertoires temporaires s'ils n'existent pas :
 TMP=${TMP:-/var/log/setup/tmp}

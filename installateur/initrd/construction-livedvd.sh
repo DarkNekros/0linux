@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 # *** À LANCER EN ROOT ! Suivi de la version souhaitée dans le nom de l'ISO. Ex. :

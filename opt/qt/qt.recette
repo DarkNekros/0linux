@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 # Ce paquet ne compile pas en 4.6.2 si aucun 'qt' n'est présent sur le système !
@@ -247,7 +247,7 @@ echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi

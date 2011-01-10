@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 BLOCKS="blocs"
 
 NOLINUXPART_TITLE="Aucune partition Linux n'a été détectée."

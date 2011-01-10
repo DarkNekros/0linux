@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 # Ce paquet est particulier, dans la mesure où la machine virtuelle Java 32 bits
@@ -113,7 +113,7 @@ ln -sf ./jdk/jre/lib/${LIB_ARCH}/server/libjvm.so $PKG/usr/lib${LIBDIRSUFFIX}/li
 mkdir -p ${PKG}/etc/profile.d
 
 cat > ${PKG}/etc/profile.d/jdk.sh << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 
 JAVA_HOME32=/usr/lib/jdk
 JAVA_HOME64=/usr/lib64/jdk
@@ -156,7 +156,7 @@ echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi

@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # lancer-taches: Exécute les scripts trouvés dans un répertoire donné.
 
 set +e

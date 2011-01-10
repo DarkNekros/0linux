@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # On nettoie tous les points de montage :
 if mount | grep /var/log/mount 1> /dev/null 2> /dev/null ; then
 	umount /var/log/mount

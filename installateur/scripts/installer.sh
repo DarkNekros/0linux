@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 unset BLURB
 
 # Quelques vérif' avant l'installation des paquets. '/var/log/mount' doit

@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Certains scripts ont besoin de /proc et /sys :
 if [ ! "${SETUPROOT}" = "/" ]; then
 	mkdir -p ${SETUPROOT}/{proc,sys}
@@ -9,7 +9,7 @@ fi
 if [ -r $TMP/choix_clavier ]; then
 	# On définit le clavier à charger à chaque démarrage :
 	DISPOCLAVIER="`cat $TMP/choix_clavier`"
-	echo "#!/bin/env bash" > ${SETUPROOT}/etc/rc.d/rc.keymap
+	echo "#!/usr/bin/env bash" > ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "# Chargement de la disposition des touches du clavier." >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "# Les dispositions se trouvent dans /lib/kbd/keymaps." >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "if [ -x /usr/bin/loadkeys ]; then" >> ${SETUPROOT}/etc/rc.d/rc.keymap

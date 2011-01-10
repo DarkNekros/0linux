@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # On nettoie avant tout :
 rm -f $TMP/choix_media

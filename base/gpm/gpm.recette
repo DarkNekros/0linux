@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 set -e
@@ -130,7 +130,7 @@ cp -a conf/*.conf ${PKG}/etc
 # On crée le fichier de service :
 mkdir -p ${PKG}/etc/rc.d
 cat > ${PKG}/etc/rc.d/rc.gpm << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 # Contrôle du serveur de pointage GPM.
 
 if [ "$1" = "stop" ]; then
@@ -178,7 +178,7 @@ echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi

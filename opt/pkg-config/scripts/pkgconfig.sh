@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 if [ ! "$PKG_CONFIG_PATH32" = "" ]; then
 	PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32}:/usr/local/lib/pkgconfig
 else

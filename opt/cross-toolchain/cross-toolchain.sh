@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # Construction de la chaine d'outils croisee multilib i686/x86_64.
 

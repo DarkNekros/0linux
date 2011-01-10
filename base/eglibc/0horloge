@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 unset CHOIXTZ CHOIXZONE TZSELECTRESULT FAIL TZCODE FUSEAUTAB
 

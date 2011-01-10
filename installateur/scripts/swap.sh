@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # On nettoie avant toute chose :
 rm -f $TMP/choix_swap $TMP/ignorer_swap

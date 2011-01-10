@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Ce fichier est un préprocesseur pour 'less' afin de pouvoir visualiser sans
 # action préalable différents types de contenus (compressés, par exemple).
 # Ce préprocesseur est utilisé lorsque la variable d'environnement suivante est

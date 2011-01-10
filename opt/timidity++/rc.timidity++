@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 #
 # rc.timidity++ : Fichier service pour TiMidity++
 #

@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 # Positionnez la variable $MENUCONFIG à n'importe quelle valeur pour permettre
@@ -197,7 +197,7 @@ echo "${NAMETGZSOURCE}: ${NAMETGZSOURCE} (${SLACKDESCSOURCE})" > ${PKGSOURCE}/in
 
 # On installe le doinst.sh des modules :
 cat > ${PKGMODULES}/install/doinst.sh << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 config() {
 	NEW="$1"
 	OLD="$(dirname $NEW)/$(basename $NEW .new)"
@@ -230,7 +230,7 @@ EOF
 
 # On installe le doinst.sh des sources :
 cat > ${PKGSOURCE}/install/doinst.sh << EOF
-#!/bin/env bash
+#!/usr/bin/env bash
 chroot . make -C /usr/src/linux-${VERSION}-${RTVERSION} clean oldconfig prepare scripts
 rm -f usr/src/linux-${VERSION}-${RTVERSION}/.version
 

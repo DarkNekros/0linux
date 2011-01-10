@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 set -e
@@ -160,7 +160,7 @@ ln -sf multiarch_wrapper ${PKG}/usr/bin/listplugins
 mkdir -p ${PKG}/etc/profile.d
 
 cat > ${PKG}/etc/profile.d/ladspa.sh << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 export LADSPA_PATH=/usr/lib/ladspa:/usr/lib64/ladspa
 
 EOF
@@ -190,7 +190,7 @@ echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
-#!/bin/env bash
+#!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
