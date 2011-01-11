@@ -113,7 +113,7 @@ cp -a $CWD/0-grub-background.png ${PKG}/usr/share/wallpapers
 
 # On va en fait injecter notre fichier 'grub.cfg' dans le fichier
 # 'etc/grub.d/40_custom', le fichier final étant généré par 'grub-mkconfig' :
-cat $CWD/grub.cfg >> ${PKG/}etc/grub.d/40_custom.new
+cat $CWD/grub.cfg >> ${PKG}/etc/grub.d/40_custom.new
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
