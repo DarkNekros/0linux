@@ -23,10 +23,8 @@ GRUB_DISABLE_LINUX_RECOVERY="true"
 
 # Couleurs :
 # Avant-plan/arrière-plan (normaux) puis avant-plan/arrière-plan (sélectionnés) :
-GRUB_COLOR_NORMAL=green/black 
-GRUB_COLOR_HIGHLIGHT=light-green/black
+GRUB_COLOR_NORMAL="green/black "
+GRUB_COLOR_HIGHLIGHT="light-green/black"
 
 # L'image d'arrière-plan :
 GRUB_BACKGROUND="/usr/share/wallpapers/0-grub-background.png"
-
-EOF

@@ -12,7 +12,6 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-
 NAMESRC=${NAMESRC:-grub}
 VERSION=${VERSION:-1.98}
 EXT=${EXT:-tar.gz}
@@ -69,13 +68,14 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On corrige la prise en charge d'une image d'arrière-plan et la détection des voumes LVM :
+# On corrige la prise en charge d'une image d'arrière-plan et la détection des volumes LVM :
 cat $CWD/grub2.background-mkconfig.patch | patch -p1
 cat $CWD/grub2.gfx-insmod.patch | patch -p1
-cat $CWD/grub2.detection-lvm.patch | patch -p1
+cat $CWD/grub2.detection-lvm.patch | patch -p0
+cat $CWD/grub2.menucolors-mkconfig.patch | patch -p1
 
 # On corrige le nom du système, arbitrairement appelé "GNU/Linux" :
-sed -i 's@OS=${GRUB_DISTRIBUTOR} GNU/Linux@OS=${GRUB_DISTRIBUTOR} Linux@' util/grub.d/10_linux.in
+sed -i 's@OS=${GRUB_DISTRIBUTOR} GNU/Linux@OS=${GRUB_DISTRIBUTOR} Linux@g' util/grub.d/10_linux.in
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -105,11 +105,15 @@ unset USE_ARCH
 # On place le fichier des paramètres par défaut :
 cp -a $CWD/grub ${PKG}/etc/default
 
-# On place le fichier de configuration sans en écraser un plus ancien :
-cp -a $CWD/grub.cfg ${PKG}/boot/grub/grub.cfg.new
+# On veille à ne pas écraser un ancien fichier de configuration :
+mv ${PKG}/etc/grub.d/40_custom{,.new}
 
 # On place l'arrière-plan graphique :
 cp -a $CWD/0-grub-background.png ${PKG}/usr/share/wallpapers
+
+# On va en fait injecter notre fichier 'grub.cfg' dans le fichier
+# 'etc/grub.d/40_custom', le fichier final étant généré par 'grub-mkconfig' :
+cat $CWD/grub.cfg >> ${PKG/}etc/grub.d/40_custom.new
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -152,7 +156,7 @@ config() {
 	fi
 }
 
-config boot/grub/grub.cfg.new
+config etc/grub.d/40_custom.new
 
 EOF
 
