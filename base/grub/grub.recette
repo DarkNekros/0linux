@@ -89,6 +89,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
+	--sysconfdir=/etc \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--datadir=/usr/lib${LIBDIRSUFFIX}/grub \
 	--mandir=/usr/man \

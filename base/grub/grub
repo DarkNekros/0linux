@@ -1,4 +1,4 @@
-# /etc/default.grub : fichier des paramètres par défaut de GRUB.
+# /etc/default/grub : fichier des paramètres par défaut de GRUB.
 # Si ce fichier est modifié, 'update-grub' doit être lancé. 
 # Il sert à la génération du fichier 'grub.cfg'.
 
