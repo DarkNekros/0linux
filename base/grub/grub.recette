@@ -30,7 +30,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://alpha.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS BUGS COPYING INSTALL MAINTENANCE NEWS README THANKS TODO"
+DOC="AUTHORS BUGS COPYING INSTALL NEWS README THANKS TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Le chargeur d'amorçage « GRand Unified Bootloader »"
 ########################################
