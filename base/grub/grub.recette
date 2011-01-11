@@ -75,7 +75,7 @@ cat $CWD/grub2.gfx-insmod.patch | patch -p1
 cat $CWD/grub2.detection-lvm.patch | patch -p1
 
 # On corrige le nom du système, arbitrairement appelé "GNU/Linux" :
-sed -i 's@OS=${GRUB_DISTRIBUTOR} GNU/Linux@${GRUB_DISTRIBUTOR} Linux@' util/grub.d/10_linux.in
+sed -i 's@OS=${GRUB_DISTRIBUTOR} GNU/Linux@OS=${GRUB_DISTRIBUTOR} Linux@' util/grub.d/10_linux.in
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
