@@ -202,6 +202,7 @@ else
 
 	# On ajoute le choix de la racine à ajouter à '/etc/fstab' :
 	echo "${ROOTSELECT}     /     ${FSRACINE}     defaults     1     1" > $TMP/choix_partitions
+	echo "${ROOTSELECT}" > $TMP/partition_racine
 
 	# Si plusieurs partitions Linux sont détectées :
 	if [ "$(listelinux | wc -l)" -gt "1" ]; then

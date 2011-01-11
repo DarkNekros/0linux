@@ -7,14 +7,14 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
 
 NAMESRC=${NAMESRC:-grub}
-VERSION=${VERSION:-0.97}
+VERSION=${VERSION:-1.98}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-grub}
 BUILD=${BUILD:-1}
@@ -53,6 +53,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/boot/grub
+mkdir -p ${PKG}/etc/default
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -67,16 +68,19 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On corrige via la collection prise chez Frugalware, merci à eux :
-for correctif in $CWD/*.patch; do
-	cat ${correctif} | patch -p1
-done
+# On corrige la prise en charge d'une image d'arrière-plan et la détection des voumes LVM :
+cat $CWD/grub2.background-mkconfig.patch | patch -p1
+cat $CWD/grub2.gfx-insmod.patch | patch -p1
+cat $CWD/grub2.detection-lvm.patch | patch -p1
+
+# On corrige le nom du système, arbitrairement appelé "GNU/Linux" :
+sed -i 'OS="s@${GRUB_DISTRIBUTOR} GNU/Linux"@${GRUB_DISTRIBUTOR} Linux"@' util/grub.d/10_linux.in
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
 # Compilation pour 64 bits :
-SLKCFLAGS="-O2 -pipe -static"
+SLKCFLAGS="-pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
@@ -84,8 +88,6 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
-	--bindir=/bin \
-	--sbindir=/sbin \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--datadir=/usr/lib${LIBDIRSUFFIX}/grub \
 	--mandir=/usr/man \
@@ -98,8 +100,14 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On place le fichier des paramètres par défaut :
+cp -a $CWD/grub ${PKG}/etc/default
+
 # On place le fichier de configuration sans en écraser un plus ancien :
-cp -a $CWD/menu.lst ${PKG}/boot/grub/menu.lst.new
+cp -a $CWD/grub.cfg ${PKG}/boot/grub/grub.cfg.new
+
+# On place l'arrière-plan graphique :
+cp -a $CWD/0-grub-background.png ${PKG}/usr/share/wallpapers
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -142,7 +150,7 @@ config() {
 	fi
 }
 
-config boot/grub/menu.lst.new
+config boot/grub/grub.cfg.new
 
 EOF
 

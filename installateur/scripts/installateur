@@ -18,10 +18,6 @@ crunch() {
 # On vide $TMP au cas où :
 rm -f $TMP/*
 
-# On détecte la partition racine :
-ROOT_DEVICE=$(mount | grep "on / " | cut -f 1 -d ' ')
-echo "$ROOT_DEVICE" > $TMP/partition_racine
-
 # On nettoie tous les points de montage :
 if mount | grep ${TMPMOUNT} 1> /dev/null 2> /dev/null ; then
 	umount ${TMPMOUNT}

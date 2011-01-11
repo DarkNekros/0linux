@@ -9,6 +9,11 @@ if [ ! -d /var/log/mount}/0/paquets/base ]; then
 	echo "Je vais devoir abandonner..."
 	sleep 3
 	exit 1
+elif [ "${SETUPROOT}" = "" ]; then
+	echo "Erreur fatale : la racine système n'est pas positionnée !"
+	echo "Je vais devoir abandonner..."
+	sleep 3
+	exit 1
 elif [ ! -d ${SETUPROOT} ]; then
 	echo "Erreur fatale : le répertoire accueillant la future racine système,"
 	echo "'${SETUPROOT}', est introuvable !"
