@@ -111,7 +111,7 @@ cp -a $CWD/0-grub-background.png ${PKG}/usr/share/wallpapers
 cat $CWD/grub.cfg >> ${PKG}/etc/grub.d/40_custom.new
 
 # On place le fichier de thème graphique :
-install -m755 $CWD/05_0_theme ${PKG}/etc.grub.d/05_0_theme
+install -m755 $CWD/05_0_theme ${PKG}/etc/grub.d/05_0_theme
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
