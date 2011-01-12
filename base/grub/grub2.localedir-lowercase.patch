@@ -1,0 +1,26 @@
+=== modified file 'util/grub.d/10_kfreebsd.in'
+--- util/grub.d/10_kfreebsd.in	2010-04-13 12:57:56 +0000
++++ util/grub.d/10_kfreebsd.in	2010-04-14 12:59:58 +0000
+@@ -23,7 +23,7 @@
+ . ${libdir}/grub/grub-mkconfig_lib
+ 
+ export TEXTDOMAIN=@PACKAGE@
+-export TEXTDOMAINDIR=@LOCALEDIR@
++export TEXTDOMAINDIR=@localedir@
+ 
+ CLASS="--class os"
+ 
+
+=== modified file 'util/grub.d/10_linux.in'
+--- util/grub.d/10_linux.in	2010-04-13 12:57:56 +0000
++++ util/grub.d/10_linux.in	2010-04-14 12:59:58 +0000
+@@ -23,7 +23,7 @@
+ . ${libdir}/grub/grub-mkconfig_lib
+ 
+ export TEXTDOMAIN=@PACKAGE@
+-export TEXTDOMAINDIR=@LOCALEDIR@
++export TEXTDOMAINDIR=@localedir@
+ 
+ CLASS="--class gnu-linux --class gnu --class os"
+ 
+

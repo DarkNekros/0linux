@@ -1,6 +1,5 @@
 # /etc/default/grub : fichier des paramètres par défaut de GRUB.
-# Si ce fichier est modifié, 'update-grub' doit être lancé. 
-# Il sert à la génération du fichier 'grub.cfg'.
+# Ce fichier sert à la génération du fichier 'grub.cfg'.
 
 # Première entrée du menu par défaut :
 GRUB_DEFAULT=0
@@ -20,11 +19,3 @@ GRUB_GFXMODE=640x480
 
 # On désactive les entrées du mode "recovery" :
 GRUB_DISABLE_LINUX_RECOVERY="true"
-
-# Couleurs :
-# Avant-plan/arrière-plan (normaux) puis avant-plan/arrière-plan (sélectionnés) :
-GRUB_COLOR_NORMAL="green/black "
-GRUB_COLOR_HIGHLIGHT="light-green/black"
-
-# L'image d'arrière-plan :
-GRUB_BACKGROUND="/usr/share/wallpapers/0-grub-background.png"
