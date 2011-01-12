@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-grub}
 VERSION=${VERSION:-1.98}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-grub}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -53,7 +53,6 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/boot/grub
 mkdir -p ${PKG}/etc/default
-mkdir -p ${PKG}/usr/share/wallpapers
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -104,7 +103,7 @@ cp -a $CWD/grub ${PKG}/etc/default
 mv ${PKG}/etc/grub.d/40_custom{,.new}
 
 # On place l'arrière-plan graphique :
-cp -a $CWD/0-grub-background.png ${PKG}/usr/share/wallpapers
+cp -a $CWD/0-grub-background.png ${PKG}/boot/grub
 
 # On va injecter notre fichier 'grub.cfg' dans le fichier
 # 'etc/grub.d/40_custom', le fichier final étant généré par 'grub-mkconfig' :
