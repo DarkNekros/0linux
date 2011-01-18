@@ -35,19 +35,13 @@ MAJ.DROITE enfoncée. Cela peut s'avérer fort utile pour lire les
 messages lors du demarrage, lesquels défilent souvent trop rapidement 
 à l'écran. 
 
-Sur le média d'installation, les consoles sont des consoles de connexion
-(« login »). Les consoles 11 et 12 sont utilisées pour l'affichage des 
-messages du système durant l'installation, tels que l'état d'avancement 
-d'un formatage, les messages du noyau, etc.
-
-
 Déroulement de l'installation
 -----------------------------
 
-1- Partitionnement du disque dur 
+1- Préparer son ou ses disques durs
 
-Vous devez vous assurer que votre disque dur a été préparé pour accueillir 
-un système Linux. L'installateur ne le fera pas pour vous.
+Vous devez vous assurer que vos disques durs ont été préparés pour
+accueillir un système Linux. L'installateur ne le fera pas pour vous !
 
 Il vous faut au minimum une partition de type Linux et optionnellement une 
 partition d'échange (ou partition « swap »). 

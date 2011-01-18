@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
 
-set -e
-
-TMP=/var/log/setup/tmp
+# On nettoie :
 unset CHOIXLOCALE LOCALE
-
-if [ ! -d $TMP ]; then
-	mkdir -p $TMP
-fi
 
 clear
 echo -e "\033[1;32mLocalisation francophone du système.\033[0;0m"
@@ -52,5 +46,6 @@ esac
 # On entre la locale dans le fichier profil :
 echo "export LC_ALL=${LOCALE}" >> /etc/profile.d/lang.sh
 echo "export LANG=${LOCALE}" >> /etc/profile.d/lang.sh
+echo "" >> /etc/profile.d/lang.sh
 
 # C'est fini !

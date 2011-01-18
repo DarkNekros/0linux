@@ -73,10 +73,10 @@ while [ ! -r $TMP/choix_media ]; do
 				continue
 			else
 				echo "Montage en cours du périphérique ${DISKSELECT} dans /var/log/mount..."
-				mount -o ro ${DISKSELECT} ${TMPMOUNT} 1> /dev/null 2> /dev/null
+				mount -o ro ${DISKSELECT} /var/log/mount 1> /dev/null 2> /dev/null
 				# Si le volume contient le répertoire '0/paquets/base', alors on
 				# considère qu'on tient là notre support d'installation :
-				if [ -d ${TMPMOUNT}/0/paquets/base ]; then
+				if [ -d /var/log/mount/0/paquets/base ]; then
 					echo ${DISKSELECT} > $TMP/choix_media
 					echo "Un dépôt de paquets a été trouvé sur ce volume !"
 					sleep 2
@@ -84,9 +84,9 @@ while [ ! -r $TMP/choix_media ]; do
 				# Sinon, on a affaire à une simple partition :
 				else
 					echo "Ce périphérique ne contient pas de dépôt des paquets : j'ai recherché"
-					echo "le répertoire ${TMPMOUNT}/0/paquets/base, en vain. Démontage..."
+					echo "le répertoire /var/log/mount/0/paquets/base, en vain. Démontage..."
 					sleep 2
-					umount ${TMPMOUNT} 1> /dev/null 2> /dev/null
+					umount /var/log/mount 1> /dev/null 2> /dev/null
 					continue
 				fi
 			fi

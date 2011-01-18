@@ -1,10 +1,13 @@
+Binutils 2.21
 freetype 2.4.4
 coreutils 8.9 
 dbus-glib 0.90
+GnuTLS 2.10.4
 groff 1.21
 gtk+ 2.22.1
 lftp 4.1.0 
-linux 2.6.36.1
+Libtasn1 2.9
+linux 2.6.37
 lvm 2.02.77
 ImageMagick 6.6.5-9 
 man-pages 3.32 

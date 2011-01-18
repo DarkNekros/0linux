@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 
+# Ce script utilise $SETUPROOT. Si la variable n'existe pas, il s'installe sur la racine.
+
+# On nettoie :
 unset CHOIXTZ CHOIXZONE TZSELECTRESULT FAIL TZCODE FUSEAUTAB
 
-while [ ! "${TZOK}" = "OK" ]; do
+while [ 0 ]; do
+	if [ "${TZOK}" = "OK" ]; then
+		break
+	fi
 	clear
 	echo -e "\033[1;32mDéfinition du fuseau horaire.\033[0;0m"
 	echo ""
 	echo "Entrez ci-après le code de la rubrique souhaitée parmi la liste suivante."
 	echo ""
-	echo "La liste francophone contient les pays membres de la Francophonie ainsi"
-	echo "que les pays dont la communauté francophone est connue. Si votre emplacement"
+	echo "La liste francophone tente de contenir les pays membres de la Francophonie"
+	echo "et les pays dont la communauté francophone est connue. Si votre emplacement"
 	echo "n'y figure pas, il vous fauda entrer manuellement l'emplacement du fichier"
 	echo "du fuseau horaire via l'utilisation de 'tzselect' (en anglais)."
 	echo ""
@@ -55,33 +61,34 @@ while [ ! "${TZOK}" = "OK" ]; do
 		echo ""
 		echo "Entrez ci-après le code de la zone où vous vous trouvez ou tapez 0 pour annuler."
 		echo ""
-		echo -e "\033[0;32mAfrique                  Amérique              Europe         Océan Atlantique\033[0;0m"
-		echo -e "1  Bénin                 27 Dominique          48 Albanie     73 Cap-Vert"
-		echo -e "2  Burkina Faso          28 Guadeloupe         49 Andorre"
-		echo -e "3  Burundi               29 Guyane française   50 Autriche    \033[0;32mOcéan Indien\033[0;0m"
-		echo -e "4  Cameroun              30 Haïti              51 Belgique    74 Comores"
-		echo -e "5  Centrafrique          31 Martinique         52 Bulgarie    75 Madagascar"
-		echo -e "6  Congo-Brazzaville     32 Maine              53 Chypre      76 Maurice"
-		echo -e "7  Congo-Kinshasa        33 Manitoba           54 Croatie     77 Mayotte"
-		echo -e "8  Côte d'Ivoire         34 New York           55 France      78 Réunion"
-		echo -e "9  Djibouti              35 Nouveau-Brunswick  56 Grèce       79 Seychelles"
-		echo -e "10 Égypte                36 Québec             57 Hongrie"
-		echo -e "11 Gabon                 37 Saint-Martin       58 Italie      \033[0;32mOcéan Pacifique\033[0;0m"
-		echo -e "12 Ghana                 38 Sainte-Lucie       59 Lettonie    80 Gambier"
-		echo -e "13 Guinée                39 Vermont            60 Lituanie    81 Nlle-Calédonie"
-		echo -e "14 Guinée-Bissau                               61 Luxembourg  82 Tahiti"
-		echo -e "15 Guinée équatoriale    \033[0;32mAsie\033[0;0m                  62 Macédoine   83 Vanuatu"
-		echo -e "16 Mali                  40 Arménie            63 Moldavie    84 Wallis-et-Futuna"
-		echo -e "17 Maroc                 41 Cambodge           64 Monaco"
-		echo -e "18 Mauritanie            42 Géorgie            65 Pologne"
-		echo -e "19 Mozambique            43 Israël             66 Roumanie"
-		echo -e "20 Niger                 44 Laos               67 Serbie"
-		echo -e "21 Rwanda                45 Liban              68 Slovaquie"
-		echo -e "22 Sao Tomé-et-Principe  46 Thaïlande          69 Slovénie"
-		echo -e "23 Sénégal               47 Viêt-Nam           70 Suisse"
-		echo -e "24 Tchad                                       71 Tchéquie"
-		echo -e "25 Togo                                        72 Ukraine"
-		echo -e "26 Tunisie"
+		echo -e "\033[0;32mAfrique                 Amérique              Europe         Océan Atlantique\033[0;0m"
+		echo -e "1  Algérie              28 Dominique          49 Albanie     74 Cap-Vert"
+		echo -e "2  Bénin                29 Guadeloupe         50 Andorre"
+		echo -e "3  Burkina Faso         30 Guyane française   51 Autriche    \033[0;32mOcéan Indien\033[0;0m"
+		echo -e "4  Burundi              31 Haïti              52 Belgique    75 Comores"
+		echo -e "5  Cameroun             32 Martinique         53 Bulgarie    76 Madagascar"
+		echo -e "6  Centrafrique         33 Maine              54 Chypre      77 Maurice"
+		echo -e "7  Congo-Brazzaville    34 Manitoba           55 Croatie     78 Mayotte"
+		echo -e "8  Congo-Kinshasa       35 New York           56 France      79 Réunion"
+		echo -e "9  Côte d'Ivoire        36 Nouveau-Brunswick  57 Grèce       80 Seychelles"
+		echo -e "10 Djibouti             37 Québec             58 Hongrie"
+		echo -e "11 Égypte               38 Saint-Martin       59 Italie      \033[0;32mOcéan Pacifique\033[0;0m"
+		echo -e "12 Gabon                39 Sainte-Lucie       60 Lettonie    81 Gambier"
+		echo -e "13 Ghana                40 Vermont            61 Lituanie    82 Nlle-Calédonie"
+		echo -e "14 Guinée                                     62 Luxembourg  83 Tahiti"
+		echo -e "15 Guinée-Bissau        \033[0;32mAsie\033[0;0m                  63 Macédoine   84 Vanuatu"
+		echo -e "16 Guinée équatoriale   41 Arménie            64 Moldavie    85 Wallis-et-Futuna"
+		echo -e "17 Mali                 42 Cambodge           65 Monaco"
+		echo -e "18 Maroc                43 Géorgie            66 Pologne"
+		echo -e "19 Mauritanie           44 Israël             67 Roumanie"
+		echo -e "20 Mozambique           45 Laos               68 Serbie"
+		echo -e "21 Niger                46 Liban              69 Slovaquie"
+		echo -e "22 Rwanda               47 Thaïlande          70 Slovénie"
+		echo -e "23 Sao Tomé-et-Principe 48 Viêt-Nam           71 Suisse"
+		echo -e "24 Sénégal                                    72 Tchéquie"
+		echo -e "25 Tchad                                      73 Ukraine"
+		echo -e "26 Togo"
+		echo -e "27 Tunisie"
 		echo -e ""
 		echo -e "0 Annuler"
 		echo -e ""
@@ -89,7 +96,7 @@ while [ ! "${TZOK}" = "OK" ]; do
 		read TZCODE;
 		# On remplit le tableau des fuseaux :
 		INDICE=0
-		for fuseau in Africa/Porto-Novo Africa/Ouagadougou Africa/Bujumbura Africa/Douala \
+		for fuseau in Africa/Algeria Africa/Porto-Novo Africa/Ouagadougou Africa/Bujumbura Africa/Douala \
 		Africa/Bangui Africa/Brazzaville Africa/Kinshasa Africa/Abidjan Africa/Djibouti \
 		Africa/Cairo Africa/Accra Africa/Libreville Africa/Conakry Africa/Bissau Africa/Malabo \
 		Africa/Bamako Africa/Casablanca Africa/Nouakchott Africa/Maputo Africa/Niamey \
@@ -108,10 +115,10 @@ while [ ! "${TZOK}" = "OK" ]; do
 			INDICE=${INDICE}+1
 			FUSEAUTAB[${INDICE}]="${fuseau}"
 		done
-		FUSEAUCHOISI=FUSEAUTAB[${TZCODE}]
+		FUSEAUCHOISI=${FUSEAUTAB[${TZCODE}]}
 		break
 	else
-		echo "Veuillez entrer un numéro valide (entre 0 et 84)."
+		echo "Veuillez entrer un numéro valide (entre 0 et 85)."
 		sleep 2
 		unset TZCODE CHOIXTZ
 		continue
@@ -119,10 +126,17 @@ while [ ! "${TZOK}" = "OK" ]; do
 done
 
 # On installe le fichier '/etc/localtime' :
-ln -sf ../usr/share/zoneinfo/${FUSEAUCHOISI} /etc/localtime
+ln -sf ../usr/share/zoneinfo/${FUSEAUCHOISI} ${SETUPROOT}/etc/localtime
 
 # On crée le fichier '/etc/hardwareclock' :
-echo "# /etc/hardwareclock : fichier de configuration de l'horloge matérielle." > /etc/hardwareclock
-echo "localtime" >> /etc/hardwareclock
+echo "# /etc/hardwareclock : fichier de configuration de l'horloge matérielle." > ${SETUPROOT}/etc/hardwareclock
+echo "localtime" >> ${SETUPROOT}/etc/hardwareclock
+
+# Si $SETUPROOT est positionnée, on doit chrooter sur la racine :
+if [ ! "${SETUPROOT}" = "" ]; then
+	chroot ${SETUPROOT} hwclock --localtime --hctosys 2>/dev/null
+else
+	hwclock --localtime --hctosys 2>/dev/null
+fi
 
 # C'est fini !

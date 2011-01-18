@@ -2,8 +2,7 @@
 
 # On crée les répertoires temporaires s'ils n'existent pas :
 TMP=${TMP:-/var/log/setup/tmp}
-TMPMOUNT=${TMPMOUNT:-/var/log/mount}
-mkdir -p ${TMP} ${TMPMOUNT}
+mkdir -p ${TMP} /var/log/mount
 
 # La racine de destination du système à installer:
 mkdir -p /setuproot
@@ -19,19 +18,13 @@ crunch() {
 rm -f $TMP/*
 
 # On nettoie tous les points de montage :
-if mount | grep ${TMPMOUNT} 1> /dev/null 2> /dev/null ; then
-	umount ${TMPMOUNT}
+if mount | grep /var/log/mount 1> /dev/null 2> /dev/null ; then
+	umount /var/log/mount
 fi
 
 # S'il reste encore un volume monté, alors quelque chose ne va pas :
-if mount | grep ${TMPMOUNT} 1> /dev/null 2> /dev/null ; then
-	echo "Impossible de démonter ${TMPMOUNT}. Redémarrez et relancez l'installateur."
-	exit 1
-fi
-
-# On détecte si la table de montage est corrompue :
-if [ -d ${TMPMOUNT}/lost+found -o -d ${TMPMOUNT}/recycled -o -r ${TMPMOUNT}/io.sys ]; then
-	echo "Table de montage corrompue. Redémarrez la machine puis relancez l'installateur."
+if mount | grep /var/log/mount 1> /dev/null 2> /dev/null ; then
+	echo "Impossible de démonter /var/log/mount. Redémarrez et relancez l'installateur."
 	exit 1
 fi
 
@@ -78,14 +71,14 @@ while [ 0 ]; do
 	echo ""
 	echo "Entrez ci-après le code de la rubrique souhaitée et appuyez sur ENTRÉE."
 	echo ""
-	echo "1 : AIDE - lire l'aide de l'installateur"
-	echo "2 : CLAVIER - redéfinir la disposition des touches du clavier"
-	echo "3 : SWAP - définir votre partition d'échange « swap »"
+	echo "1 : AIDE       - lire l'aide de l'installateur"
+	echo "2 : CLAVIER    - redéfinir la disposition des touches du clavier"
+	echo "3 : SWAP       - définir votre partition d'échange « swap »"
 	echo "4 : PARTITIONS - définir les partitions sur lesquelles installer 0"
-	echo "5 : MÉDIA - spécifier le média d'installation"
-	echo "6 : INSTALLER - lancer l'installation des paquets logiciels"
+	echo "5 : MÉDIA      - spécifier le média d'installation"
+	echo "6 : INSTALLER  - lancer l'installation des paquets logiciels"
 	echo "7 : CONFIGURER - configurer votre nouveau système Linux"
-	echo "8 : QUITTER - quitter l'installateur"
+	echo "8 : QUITTER    - quitter l'installateur"
 	echo ""
 	echo -n "Votre choix : "
 	read CHOIXMENUPRINCIPAL;
@@ -106,8 +99,10 @@ while [ 0 ]; do
 		continue
 	;;
 	"4")
-		. partitions.sh
+		. partition_racine.sh
+		. partitions_linux.sh
 		. partitions_fat.sh
+		. formatage_montage.sh
 		unset CHOIXMENUPRINCIPAL
 		continue
 	;;
@@ -151,28 +146,6 @@ while [ 0 ]; do
 	esac
 done
 
-# On est ici censé avoir toutes nos infos pour le 'fstab'.
-touch ${SETUPROOT}/etc/fstab
-
-# On écrit le fichier '/etc/fstab'. D'abord la partition swap :
-if [ -r $TMP/choix_swap ]; then
-	cat $TMP/choix_swap > ${SETUPROOT}/etc/fstab
-fi
-
-# Puis les partitions Linux :
-cat $TMP/choix_partitions >> ${SETUPROOT}/etc/fstab
-
-# Puis les partitions FAT si elles ont été configurées :
-if [ -r $TMP/choix_partitions_fat ]; then
-	cat $TMP/choix_partitions_fat >> ${SETUPROOT}/etc/fstab
-fi
-
-# Et enfin on ajoute les systèmes de fichiers spéciaux vitaux :
-echo -n "devpts     /dev/pts     devpts     gid=5,mode=620     0     0" >> ${SETUPROOT}/etc/fstab
-echo -n "proc       /proc        proc       defaults           0     0" >> ${SETUPROOT}/etc/fstab
-echo -n "tmpfs      /dev/shm     tmpfs      defaults           0     0" >> ${SETUPROOT}/etc/fstab
-echo "" >> ${SETUPROOT}/etc/fstab
-
 # L'installation est terminée !
 clear
 echo -e "\033[1;32mInstallation du système terminée\033[0;0m"
@@ -189,13 +162,13 @@ chmod 0755 ${SETUPROOT}
 chmod 1777 ${SETUPROOT}/tmp
 
 # On démonte tout :
-umount -f ${TMPMOUNT} 2> /dev/null
+umount -f /var/log/mount 2> /dev/null
 
 # Une dernière vérification avant les prochains montages :
 if [ -f ${SETUPROOT}/etc/fstab ]; then
 	# On démonte le disque s'il y en a un :
 	if [ -r $TMP/choix_media ]; then
-		if mount | grep iso9660 > /dev/null 2> /dev/null ; then
+		if mount | grep iso9660 2> /dev/null ; then
 			umount $(mount | grep iso9660 | cut -f 1 -d ' ')
 			# On éjecte le disque
 			eject $(cat $TMP/choix_media) 1> /dev/null 2> /dev/null

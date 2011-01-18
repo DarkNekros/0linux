@@ -2,8 +2,7 @@
 
 # On crée les répertoires temporaires s'ils n'existent pas :
 TMP=${TMP:-/var/log/setup/tmp}
-TMPMOUNT=${TMPMOUNT:-/var/log/mount}
-mkdir -p ${TMP} ${TMPMOUNT}
+mkdir -p ${TMP} /var/log/mount
 
 unset CHOIXCLAVIER TESTCLAVIER
 rm -f $TMP/choix_clavier

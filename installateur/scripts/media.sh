@@ -28,11 +28,11 @@ while [ 0 ]; do
 	;;
 	"3")
 		#. rsync.sh
-		continue
+		break
 	;;
 	"4")
 		#. hdd.sh
-		continue
+		break
 	;;
 	*)
 		echo "Veuillez entrer un numéro valide (entre 1 et 2)."

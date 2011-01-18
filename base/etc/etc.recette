@@ -12,7 +12,7 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-VERSION=${VERSION:-0.71}
+VERSION=${VERSION:-0.72}
 NAMETGZ=${NAMETGZ:-etc}
 BUILD=${BUILD:-1}
 
