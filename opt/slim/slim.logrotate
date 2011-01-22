@@ -1,0 +1,7 @@
+/var/log/slim.log {
+  missingok
+  compress
+  size 2M
+  notifempty
+  copytruncate
+}
