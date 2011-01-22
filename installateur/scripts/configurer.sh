@@ -20,9 +20,16 @@ if [ -r $TMP/choix_clavier ]; then
 fi
 
 # On lance un à un les scripts de configuration pour finaliser l'installation :
-chroot ${SETUPROOT} 0horloge 
+
+# '0horloge' gère seul la racine et $SETUPROOT :
+0horloge 
+
+# Paramétrage de la « locale » :
 chroot ${SETUPROOT} 0locale
-. bootconfig.sh ${SETUPROOT}
+
+# Configuration du chargeur d'amorçage :
+. bootconfig.sh 
+
 # netconfig
 # setconsolefont?
 # xwmconfig?

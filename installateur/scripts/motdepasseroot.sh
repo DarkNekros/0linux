@@ -12,8 +12,7 @@ if [ "`cat ${SETUPROOT}/etc/shadow | grep 'root:' | cut -f 2 -d :`" = "" ]; then
 	echo -n "Appuyez sur ENTRÉE pour continuer."
 	read ENTERPASSWD;
 	
-	# On passe en terminal :
-	clear
+	# On appelle 'passwd' :
 	chroot ${SETUPROOT} /usr/bin/passwd root
 fi
 

@@ -10,4 +10,8 @@
 
 # Pour l'interface de loopback :
 127.0.0.1		localhost
+
+# Ce qui suit est faux mais empêchera les applications réseau de se
+# plaindre de l'impossibilité d'évaluer le nom d'hôte sur une machine
+# ne disposant que de l'interface loopback.
 127.0.0.1		pingouin.exemple.fr pingouin

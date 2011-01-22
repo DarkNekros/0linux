@@ -7,15 +7,14 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
-VERSION=${VERSION:-0.1}
+VERSION=${VERSION:-0.3}
 NAMETGZ=${NAMETGZ:-network-scripts}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -37,30 +36,20 @@ mkdir -p ${PKG}
 # On crée les différents répertoires pour les scripts :
 mkdir -p ${PKG}/etc/rc.d
 mkdir -p ${PKG}/sbin
-mkdir -p ${PKG}/usr/man/man{5,8}
 
-# Ce paquet doit faire l'objet d'une profonde refonte afin de sortir
-# les morceaux de Slackware...
+# On copie les scripts en veillant à ne rien écraser :
+cp -a $CWD/scripts/rc.ip_forward ${PKG}/etc/rc.d/rc.ip_forward.new
 
-for script in rc.inet1.conf rc.inet1 rc.inet2 rc.ip_forward; do
-	cp -a $CWD/scripts/${script} ${PKG}/etc/rc.d/${script}.new
-done
-
-chmod 755 ${PKG}/etc/rc.d/rc.inet{1,2}.new
-chmod 600 ${PKG}/etc/rc.d/rc.inet1.conf.new
-
-for script in HOSTNAME host.conf hosts.allow hosts.deny hosts.equiv hosts networks protocols resolv.conf; do
+for script in HOSTNAME host.conf hosts.allow hosts.deny hosts.equiv hosts networks protocols reseau.conf resolv.conf; do
 	cp -a $CWD/scripts/${script} ${PKG}/etc/${script}.new
 	chmod 644 ${PKG}/etc/${script}.new
 done
 
-# On place le script de configuration réseau 'netconfig' :
-cp -a $CWD/scripts/netconfig ${PKG}/sbin/netconfig
-chmod 755 ${PKG}/sbin/netconfig
+chmod 600 ${PKG}/etc/reseau.conf.new
 
-# On ajoute les manuels (non traduits...) :
-cp -a $CWD/manpages/rc.inet1.conf.5 ${PKG}/usr/man/man5
-cp -a $CWD/manpages/rc.inet1.8 ${PKG}/usr/man/man8
+# On place le script de configuration réseau '0reseau' :
+cp -a $CWD/scripts/0reseau ${PKG}/sbin
+chmod 755 ${PKG}/sbin/0reseau
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -98,19 +87,15 @@ config() {
 	fi
 }
 
-config etc/rc.d/rc.inet1.new
-config etc/rc.d/rc.inet1.conf.new
-config etc/rc.d/rc.inet2.new
 config etc/rc.d/rc.ip_forward.new
-config etc/hosts.new
 config etc/hosts.deny.new
 config etc/hosts.equiv.new
 config etc/networks.new
 config etc/resolv.conf.new
-config etc/HOSTNAME.new
 config etc/host.conf.new
 config etc/hosts.allow.new
 config etc/protocols.new
+config etc/reseau.conf.new
 
 # Inutiles, et sûrement déjà configurés :
 rm -f etc/HOSTNAME.new
@@ -127,9 +112,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}

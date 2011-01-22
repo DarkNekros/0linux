@@ -11,10 +11,11 @@ GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR="0"
 
 # On cache la ligne de commande :
-GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+GRUB_CMDLINE_LINUX_DEFAULT="splash=silent"
 GRUB_CMDLINE_LINUX=""
 
 # La résolution graphique :
+GRUB_TERMINAL_OUTPUT="gfxterm"
 GRUB_GFXMODE=640x480
 
 # On désactive les entrées du mode "recovery" :

@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
+
+# On nettoie :
 unset BLURB
 
 # Quelques vérif' avant l'installation des paquets. '/var/log/mount' doit
 # à ce stade contenir le répertoire '0' et les paquets résidents : 
-if [ ! -d /var/log/mount}/0/paquets/base ]; then
+if [ ! -d /var/log/mount/0/paquets/base ]; then
 	echo "Erreur fatale : '/var/log/mount' ne contient pas les paquets !"
 	echo "Ce répertoire doit contenir le sous-répertoire '0/paquets'."
 	echo "Je vais devoir abandonner..."
@@ -17,7 +19,7 @@ elif [ "${SETUPROOT}" = "" ]; then
 elif [ ! -d ${SETUPROOT} ]; then
 	echo "Erreur fatale : le répertoire accueillant la future racine système,"
 	echo "'${SETUPROOT}', est introuvable !"
-	echo "Ce répertoire doit exister. Je vais devoir abandonner..."
+	echo "Ce répertoire devrait normalement exister. Je vais devoir abandonner..."
 	sleep 3
 	exit 1
 fi

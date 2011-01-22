@@ -26,15 +26,13 @@ echo "Démontage des systèmes de fichiers distants."
 umount -a -r -t nfs,smbfs,cifs
 
 # On tue tous les processus :
-echo "Envoi du signal SIGHUP aux processus..."
+echo "Envoi des signaux d'arrêt aux processus en cours..."
 killall5 -1
-sleep 3
-echo "Envoi du signal SIGTERM aux processus..."
+sleep 1
 killall5 -15
-sleep 3
-echo "Envoi du signal SIGKILL aux processus..."
+sleep 1
 killall5 -9
-sleep 2
+sleep 1
 
 # On passe maintenant au mode mono-utilisateur :
 echo "Passage en mode mono-utilisateur..."

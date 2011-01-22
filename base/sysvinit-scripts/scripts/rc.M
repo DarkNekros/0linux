@@ -22,18 +22,97 @@ if [ -x /etc/rc.d/rc.syslog -a -x /usr/sbin/syslogd -a -d /var/log ]; then
 	. /etc/rc.d/rc.syslog start
 fi
 
-# Initialisation du matériel réseau :
-if [ -x /etc/rc.d/rc.inet1 ]; then
-	. /etc/rc.d/rc.inet1
+# On lit les paramètres réseau :
+. /etc/reseau.conf
+
+# On active la boucle locale « loopback ». Si le réseau est disponible :
+if [ ! "$(grep lo: /proc/net/dev)" = "" ]; then
+	# Si l'interface loopback n'est pas active, on réveille 'lo' :
+	if [ "$(ifconfig | grep -E 'Local Loopback|Boucle locale')" = "" ]; then
+		ifconfig lo 127.0.0.1
+		route add -net 127.0.0.0 netmask 255.0.0.0 lo
+	fi
 fi
 
-# Lancement des démons réseau :
-if [ -x /etc/rc.d/rc.inet2 ]; then
-	. /etc/rc.d/rc.inet2
+# Pour chaque interface Ethernet configurée dans '/etc/reseau.conf' :
+for i in 0 1 2 3; do
+	# Si et seulement si l'interface est présente :
+	if [ ! "$(grep eth${i}: /proc/net/dev)" = "" ]; then
+		# Si l'interface Ethernet concernée n'est pas active, on la réveille :
+		if [ "$(ifconfig | grep 'inet addr')" = "" ]; then
+			ifconfig eth${i}
+			route add -net 127.0.0.0 netmask 255.0.0.0 lo
+			fi
+		
+		# Si un routeur/passerelle spécifique a été configuré :
+		 if [ "$(route -n | grep \"^0.0.0.0\")" = "" ]; then
+			if [ ! "${PASSERELLE}" = "" ]; then
+				route add default gw ${PASSERELLE} metric 1
+			fi
+		fi
+		
+		# Si l'IP, le masque et la passerelle sont configurés, on se connecte en statique :
+		if [ ! "${PASSERELLE}" = "" -a ! "${IP[${i}]}" = "" -a ! "${SOUSRESEAU[${i}]}" = "" ]; then
+			
+			# On utilise 'ipmask' pour définir l'adresse à envoyer en « broadcast » :
+			BROADCAST[${i}]="$(ipmask ${SOUSRESEAU[${i}]} ${IP[${i}]} | cut -d' ' -f1)"
+			
+			# On envoie le tout à 'ifconfig' :
+			ifconfig eth${i} ${IP[${i}]} broadcast ${BROADCAST[${i}]} netmask ${SOUSRESEAU[${i}]}
+		
+		# Sinon, on suppose qu'on doit utiliser DHCP. On récupère les options à passer : :
+		else
+			if [ ! "${HOTEDHCP[${i}]}" = "" ]; then
+				OPTIONH${i}="-h ${HOTEDHCP[${i}]}"
+			fi
+			if [ ! "${IP[${i}]}" = "" ]; then
+				OPTIONS${i}="-s ${IP[${i}]}"
+			fi
+			
+			# On demande une IP :
+			dhcpcd  ${OPTIONH} ${OPTIONS} eth${i}
+		fi
+	fi
+done
+
+# On monte les volumes NFS :
+if [ ! "$(cat /etc/fstab | grep -v '^#' | grep -w nfs)" = "" ]; then
+	if [ -r /etc/rc.d/rc.rpc ]; then
+		. /etc/rc.d/rc.rpc start
+	fi
+	
+	echo "Montage des systèmes de fichiers distants (NFS)..."
+	mount -F -a -t nfs 2> /dev/null
+fi
+
+# On monte les partages Samba :
+if [ ! "$(cat /etc/fstab | grep -v '^#' | grep -w -E 'cifs|smbfs')" = "" ]; then
+	echo "Montage des systèmes de fichiers distants (Samba)..."
+	mount -R -a -t cifs,smbfs 2> /dev/null
+fi
+
+# On lance le pare-feu :
+if [ -x /etc/rc.d/rc.firewall ]; then
+	. /etc/rc.d/rc.firewall start
+fi
+
+# On lance « l'IP forward » :
+if [ -x /etc/rc.d/rc.ip_forward ]; then
+	. /etc/rc.d/rc.ip_forward start
+fi
+
+# On lance SSH :
+if [ -x /etc/rc.d/rc.sshd ]; then
+	echo "Démarrage d'OpenSSH..."
+	. /etc/rc.d/rc.sshd start
+fi
+
+# On lance NFS :
+if [ -x /etc/rc.d/rc.nfsd ]; then
+	. /etc/rc.d/rc.nfsd start
 fi
 
 # Montage du reste des systèmes de fichiers :
-echo "Montage des système de fichiers..."
 mount -F -a 2> /dev/null | grep -v "already mounted"
 
 # Nettoyage du système après le montage de systèmes de fichiers, superflu compris :
@@ -76,7 +155,7 @@ fi
 # Lancement de dcron :
 echo "Lancement de dcron..."
 if [ -x /usr/sbin/crond ]; then
-	/usr/sbin/crond -l10 >> /var/log/cron 2>&1
+	. /usr/sbin/crond -l10 >> /var/log/cron 2>&1
 fi
 
 # Lancement du serveur de pointage GPM :
@@ -86,7 +165,7 @@ fi
 
 # Lancement du script « local » personnel :
 if [ -x /etc/rc.d/rc.local ]; then
-	echo "Lancement du script de démarrage local :"
+	if [ -x /etc/rc.d/rc.local ]; then
 	. /etc/rc.d/rc.local
 fi
 

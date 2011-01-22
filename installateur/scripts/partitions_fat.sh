@@ -11,7 +11,7 @@ crunch() {
 }
 
 # Si une ou des partitions FAT/NTFS sont détectées :
-if [ ! "$(fdisk -l | grep 'Win9' 'NTFS' 'W95 F' 'FAT' | grep -v tendue 2> /dev/null | wc -l)" -eq "0" ]; then
+if [ "$(fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue 2> /dev/null | wc -l)" -gt "0" ]; then
 	# Boucle d'affichage du menu du choix de la partition à ajouter :
 	while [ 0 ]; do
 		clear

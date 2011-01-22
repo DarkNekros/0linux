@@ -60,11 +60,16 @@ while [ 0 ]; do
 				MAJORMINOR="1 0"
 			# On définit les options pour la racine système :
 			elif [ "${MOUNTDIR}" = "/" ]; then
-				# On monte la racine au passage :
-				echo "Montage de la racine... "
-				mount ${ROOTPART} ${SETUPROOT} 2>/dev/null
 				MOUNTOPTIONS="defaults"
 				MAJORMINOR="1 1"
+				
+				# On note la partition racine pour plus tard :
+				echo ${MOUNTPART} > $TMP/partition_racine
+				
+				# On monte la racine au passage :
+				echo "Montage de la racine... "
+				mount ${MOUNTPART} ${SETUPROOT} 2>/dev/null
+				
 			# On définit les options par défaut :
 			else
 				MOUNTOPTIONS="defaults"
@@ -90,7 +95,7 @@ while [ 0 ]; do
 		
 		# On écrit le fichier '/etc/fstab'. D'abord la partition swap :
 		if [ -r $TMP/choix_swap ]; then
-			echo "# Partition d'échange «swap » :" >> ${SETUPROOT}/etc/fstab
+			echo "# Partition d'échange « swap » :" >> ${SETUPROOT}/etc/fstab
 			cat $TMP/choix_swap >> ${SETUPROOT}/etc/fstab
 			echo "" >> ${SETUPROOT}/etc/fstab
 		fi
@@ -117,3 +122,5 @@ while [ 0 ]; do
 		continue
 	fi
 done
+
+# C'est fini !

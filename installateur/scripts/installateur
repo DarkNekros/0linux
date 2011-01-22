@@ -70,6 +70,7 @@ while [ 0 ]; do
 	echo -e "\033[1;32mInstallation de votre système Linux.\033[0;0m"
 	echo ""
 	echo "Entrez ci-après le code de la rubrique souhaitée et appuyez sur ENTRÉE."
+	echo "En cas de doute, faites les étapes suivantes dans l'ordre."
 	echo ""
 	echo "1 : AIDE       - lire l'aide de l'installateur"
 	echo "2 : CLAVIER    - redéfinir la disposition des touches du clavier"
@@ -77,8 +78,7 @@ while [ 0 ]; do
 	echo "4 : PARTITIONS - définir les partitions sur lesquelles installer 0"
 	echo "5 : MÉDIA      - spécifier le média d'installation"
 	echo "6 : INSTALLER  - lancer l'installation des paquets logiciels"
-	echo "7 : CONFIGURER - configurer votre nouveau système Linux"
-	echo "8 : QUITTER    - quitter l'installateur"
+	echo "7 : QUITTER    - quitter l'installateur"
 	echo ""
 	echo -n "Votre choix : "
 	read CHOIXMENUPRINCIPAL;
@@ -125,22 +125,20 @@ while [ 0 ]; do
 			echo "Appuyez sur ENTRÉE pour retourner au menu principal."
 			echo ""
 			read BLAH;
+			continue
+			unset CHOIXMENUPRINCIPAL
 		else
 			. installer.sh
+			. configurer.sh
 		fi
-		unset CHOIXMENUPRINCIPAL
-		continue
-	;;
-	"7")
-		. configurer.sh
 		unset CHOIXMENUPRINCIPAL
 		break
 	;;
-	"8")
+	"7")
 		exit 0
 	;;
 	*)
-		echo "Veuillez entrer un numéro valide (entre 1 et 8)."
+		echo "Veuillez entrer un numéro valide (entre 1 et 7)."
 		sleep 2
 		continue
 	esac
@@ -168,8 +166,8 @@ umount -f /var/log/mount 2> /dev/null
 if [ -f ${SETUPROOT}/etc/fstab ]; then
 	# On démonte le disque s'il y en a un :
 	if [ -r $TMP/choix_media ]; then
-		if mount | grep iso9660 2> /dev/null ; then
-			umount $(mount | grep iso9660 | cut -f 1 -d ' ')
+		if [ ! "$(mount | grep iso9660 2> /dev/null)" = "" ]; then
+			umount $(mount | grep iso9660 | crunch | cut  -d ' ' -f1)
 			# On éjecte le disque
 			eject $(cat $TMP/choix_media) 1> /dev/null 2> /dev/null
 		fi
