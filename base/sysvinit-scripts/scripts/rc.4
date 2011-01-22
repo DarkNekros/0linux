@@ -23,11 +23,4 @@ if [ -x /usr/bin/xdm -o -x /usr/X11R6/bin/xdm ]; then
 	xdm -nodaemon
 fi
 
-# Aucun ?
-echo "Oups ! Ni GDM, ni KDM, ni SLiM, ni XDM ne sont installés ! Le niveau"
-echo "d'exécution 4 nécessite au moins un gestionnaire de connexion. "
-echo "Retour au niveau d'exécution 3..."
-sleep 3
-telinit 3
-
 # C'est fini !
