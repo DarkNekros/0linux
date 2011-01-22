@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-slim}
 VERSION=${VERSION:-1.3.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-slim}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -51,7 +51,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}
+mkdir -p ${PKG}/usr/share/slim/themes/0theme
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -94,25 +94,6 @@ make
 
 fakeroot make install DESTDIR=${PKG}
 
-# On ajoute quelques thèmes indépendants :
-for theme in capernoited fingerprint flat flower2 lake mindlock \
-parallel-dimensions previous rainbow rear-window scotland-road subway wave; do
-	
-	# On télécharge chaque thème :
-	if [ ! -r $CWD/slim-${theme}.tar.* ]; then
-		SOURCE="http://download.berlios.de/slim/slim-${theme}.tar.gz"
-		wget -vc ${SOURCE} -O $CWD/slim-${theme}.tar.gz.part
-		mv $CWD/slim-${theme}.tar.gz.part $CWD/slim-${theme}.tar.gz
-	fi
-	
-	# On les vérifie :
-	tar ft $CWD/slim-${theme}.tar.gz 1> /dev/null 2> /dev/null
-	
-	# On les extrait où il faut :
-	tar -xf $CWD/slim-${theme}.tar.gz -C ${PKG}/usr/share/slim/themes;
-	chmod 644 ${PKG}/usr/share/slim/themes/${theme}/*
-done
-
 # On crée un fichier journal vide :
 mkdir -p ${PKG}/var/log
 touch ${PKG}/var/log/slim.log
@@ -125,6 +106,9 @@ cp -a $CWD/slim.logrotate ${PKG}/etc/logrotate.d/slim.new
 # en prenant garde à ne rien écraser :
 rm -f ${PKG}/etc/slim.conf
 cat $CWD/slim.conf > ${PKG}/etc/slim.conf.new
+
+# On place notre thème :
+cp -a $CWD/{background.png,panel.png,slim.theme} ${PKG}/usr/share/slim/themes/0theme
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
