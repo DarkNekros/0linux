@@ -165,7 +165,6 @@ fi
 
 # Lancement du script « local » personnel :
 if [ -x /etc/rc.d/rc.local ]; then
-	if [ -x /etc/rc.d/rc.local ]; then
 	. /etc/rc.d/rc.local
 fi
 
