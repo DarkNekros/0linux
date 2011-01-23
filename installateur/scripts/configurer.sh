@@ -36,9 +36,6 @@ chroot ${SETUPROOT} 0reseau
 # Configuration du chargeur d'amorçage :
 . bootconfig.sh 
 
-
-# xwmconfig?
-
 # On définit un mot de passe pour root :
 . motdepasseroot.sh
 

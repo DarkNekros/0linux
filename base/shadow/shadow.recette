@@ -7,17 +7,16 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
-
 
 NAMESRC=${NAMESRC:-shadow}
 VERSION=${VERSION:-4.1.4.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-shadow}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -50,7 +49,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}
+mkdir -p ${PKG}/sbin
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -94,9 +93,9 @@ fakeroot make install DESTDIR=${PKG}
 mv ${PKG}/etc/login.defs{,.new}
 mv ${PKG}/etc/login.access{,.new}
 
-# On ajoute le script 'adduser' de Slackware :
-cp -a $CWD/adduser ${PKG}/usr/sbin
-chmod 755 ${PKG}/usr/sbin/adduser
+# On ajoute le script '0nouvel_utilisateur' :
+cp -a $CWD/0nouvel_utilisateur ${PKG}/sbin
+chmod 755 ${PKG}/sbin/0nouvel_utilisateur
 
 # On déplace 'passwd' vers /bin et on le lie :
 mv ${PKG}/usr/bin/passwd ${PKG}/bin
@@ -164,9 +163,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
