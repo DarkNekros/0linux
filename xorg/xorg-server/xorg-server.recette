@@ -17,7 +17,7 @@ NAMESRC=${NAMESRC:-xorg-server}
 VERSION=${VERSION:-1.9.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -110,6 +110,10 @@ mkdir -p ${PKG}/etc/X11/xorg.conf.d
 for fichierconfig in accelerometre evdev graphique synaptics; do
 	cp -a $CWD/${fichierconfig}.conf ${PKG}/etc/X11/xorg.conf.d/${fichierconfig}.conf.new
 done
+
+# On place le script de configuration '0bureau' :
+mkdir -p ${PKG}/usr/bin
+cp -a $CWD/0bureau ${PKG}/usr/bin
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
