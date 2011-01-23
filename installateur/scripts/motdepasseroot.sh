@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
+
+unset ENTERPASSWD
+
 # Si aucun mot de passe root n'est défini :
-if [ "`cat ${SETUPROOT}/etc/shadow | grep 'root:' | cut -f 2 -d :`" = "" ]; then
+if [ "$(cat ${SETUPROOT}/etc/shadow | grep 'root:' | cut -d':' -f2)" = "" ]; then
 	clear
 	echo -e "\033[1;32mAucun mot de passe n'est défini pour « root »\033[0;0m"
 	echo ""
@@ -13,7 +16,7 @@ if [ "`cat ${SETUPROOT}/etc/shadow | grep 'root:' | cut -f 2 -d :`" = "" ]; then
 	read ENTERPASSWD;
 	
 	# On appelle 'passwd' :
-	chroot ${SETUPROOT} /usr/bin/passwd root
+	chroot ${SETUPROOT} passwd root
 fi
 
 # C'est fini !

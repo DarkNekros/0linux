@@ -22,16 +22,21 @@ fi
 # On lance un à un les scripts de configuration pour finaliser l'installation :
 
 # '0horloge' gère seul la racine et $SETUPROOT :
-0horloge 
+. 0horloge
 
 # Paramétrage de la « locale » :
 chroot ${SETUPROOT} 0locale
 
+# Paramétrage de la police console :
+chroot ${SETUPROOT} 0police
+
+# Configuration du réseau :
+chroot ${SETUPROOT} 0reseau
+
 # Configuration du chargeur d'amorçage :
 . bootconfig.sh 
 
-# netconfig
-# setconsolefont?
+
 # xwmconfig?
 
 # On définit un mot de passe pour root :
