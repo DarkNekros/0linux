@@ -83,8 +83,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--enable-python \
-	--enable-cxx \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -122,8 +120,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--enable-python \
-	--enable-cxx \
 	--build=${TARGET64}
 
 make -j3 || make
