@@ -69,8 +69,6 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
-sed -i "s/ld -shared/& ${LD_BUILD32}/" src/python/Makefile.in
-
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
@@ -109,8 +107,6 @@ find . \
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
-
-sed -i "s/ld -shared/& ${LD_BUILD64}/" src/python/Makefile.in
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
