@@ -152,8 +152,6 @@ fi
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -ra ${PKG}/usr/share/doc/Thunar/html/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/html
-rm -rf ${PKG}/usr/share/doc
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
