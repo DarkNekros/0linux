@@ -7,9 +7,9 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
 NAMESRC=${NAMESRC:-xtrans}
@@ -75,6 +75,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -86,7 +87,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--build=${TARGET32}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -119,6 +120,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -130,7 +132,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--build=${TARGET64}
 
 make -j3 || make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH

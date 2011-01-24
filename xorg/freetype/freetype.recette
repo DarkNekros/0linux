@@ -7,14 +7,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-freetype}
-VERSION=${VERSION:-2.4.3}
+VERSION=${VERSION:-2.4.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-freetype}
 BUILD=${BUILD:-1}

@@ -7,11 +7,10 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
-
 
 NAMESRC=${NAMESRC:-fontconfig}
 VERSION=${VERSION:-2.8.0}
@@ -112,7 +111,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige les chemins des polices, 'fontconfig' a tendance à vouloir
-# indexer des horreurs automatiquement et à s eplaindre sur le terminal :
+# indexer des horreurs automatiquement et às  eplaindre sur le terminal :
 cat $CWD/fontconfig.chemins-polices.patch | patch -p1
 
 # On positionne USE_ARCH :
@@ -199,7 +198,7 @@ fi
 
 # On met à jour l'indexation des polices :
 if [ -x /usr/bin/fc-cache ]; then
-	/usr/bin/fc-cache -f
+	/usr/bin/fc-cache -f 2>/dev/null
 fi
 
 EOF
@@ -212,9 +211,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
