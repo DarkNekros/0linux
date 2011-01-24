@@ -7,16 +7,15 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
-VERSION=${VERSION:-7.5}
+VERSION=${VERSION:-7.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-libs}
-BUILD=${BUILD:-8}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
