@@ -1,0 +1,882 @@
+diff --git a/Makefile.am b/Makefile.am
+index a444d78..c33ff2b 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,20 +1,20 @@
+ # $Id$
+ 
+ if INCLUDED_LIBICAL
+-LIBICAL_SUBDIR=								\
++LIBICAL_SUBDIR=						\
+ 	libical
+ endif
+ 
+-SUBDIRS = 								\
+-	$(LIBICAL_SUBDIR)						\
++SUBDIRS = 							\
++	$(LIBICAL_SUBDIR)				\
+ 	doc								\
+-	icons								\
++	icons							\
+ 	po								\
+-	sounds								\
++	sounds							\
+ 	src								\
+-	panel-plugin							\
+-	globaltime							\
+-	tz_convert							\
++	panel-plugin					\
++	globaltime						\
++	tz_convert						\
+ 	plugin
+ 
+ desktopdir = $(datadir)/applications
+@@ -47,7 +47,7 @@ DISTCLEANFILES =							\
+ 	$(service_DATA)
+ 
+ AUTOMAKE_OPTIONS =							\
+-	1.8								\
++	1.8							        	\
+ 	dist-bzip2
+ 
+ distclean-local:
+diff --git a/NEWS b/NEWS
+index 6ec0037..0b4a7b8 100644
+--- a/NEWS
++++ b/NEWS
+@@ -1,3 +1,7 @@
++20101209: Version 4.7.6.1
++---------
++        * Compatible with Xfce 4.8 (and 4.6)
++
+ 20100205: Version 4.7.5.12
+ ---------
+         * Added event start time to be visible in main calendar event box.
+diff --git a/README b/README
+index f5da405..34338c4 100644
+--- a/README
++++ b/README
+@@ -1,11 +1,10 @@
+ Time-managing application for the Xfce desktop environment.
+ 
+-Orage uses ical interface instead of old dbh to store and
+-utilize calender appointments since version 4.3
+-
+-Private libical-0.24RC4 version is needed and it comes together with Orage
+-package. It contains several fixes so you must use this version instead
+-of any base libical version.
++Note that version 4.7.6 uses different format in parameter files, so
++oncy you start using 4.7.6, Orage will forget all parameters. To avoid
++that you can manually add row:
++[PARAMETERS]
++as first line to the parameter file (~/.config/orage/oragerc).
+ 
+ Note that there is no conversion routine to migrate your old data into 
+ the new version (from 4.4 to 4.6 for example) so after each major version
+@@ -14,3 +13,7 @@ you need to manually add appointments.
+ First thing you want to do is add your local timezone in the preferences,
+ If you do not set local timezone, do not use timezones in any appointments
+ either. It will cause just problems.
++
++Orage uses ical interface instead of old dbh to store and
++utilize calender appointments since version 4.3
++
+diff --git a/configure.in.in b/configure.in.in
+index de5870d..22dbcd8 100644
+--- a/configure.in.in
++++ b/configure.in.in
+@@ -2,14 +2,14 @@ dnl $Id$
+ dnl
+ dnl Orage - Calendar application for Xfce
+ dnl
+-dnl Copyright (c) 2003-2006
++dnl Copyright (c) 2003-2011
+ dnl         The Xfce development team. All rights reserved.
+ dnl
+ dnl Written for Xfce by Juha Kautto <juha at xfce.org>
+ dnl
+ 
+ dnl Version information
+-m4_define([orage_version], [4.7.6.0-git])
++m4_define([orage_version], [4.7.6.1-git])
+ 
+ m4_define([gtk_minimum_version], [2.10.0])
+ m4_define([xfce_minimum_version], [4.6.0])
+@@ -72,10 +72,18 @@ dnl Check for i18n support
+ XDT_I18N([@LINGUAS@])
+ 
+ dnl Check for required packages
+-XDT_CHECK_PACKAGE([LIBXFCEGUI4], [libxfcegui4-1.0], [xfce_minimum_version])
++#XDT_CHECK_PACKAGE([LIBXFCEGUI4], [libxfcegui4-1.0], [xfce_minimum_version])
++XDT_CHECK_PACKAGE([LIBGTK], [gtk+-2.0], [gtk_minimum_version])
+ 
+ dnl Needed for panel plugin
+-XDT_CHECK_PACKAGE([LIBXFCE4PANEL], [libxfce4panel-1.0], [xfce_minimum_version])
++#XDT_CHECK_PACKAGE([LIBXFCE4PANEL], [libxfce4panel-1.0], [xfce_minimum_version])
++
++dnl ************************************************
++dnl *** Optional support for Xfce Panel          ***
++dnl ************************************************
++XDT_CHECK_OPTIONAL_PACKAGE([LIBXFCE4PANEL], [libxfce4panel-1.0],
++                            [xfce_minimum_version], [libxfce4panel],
++                            [LIBXFCE4PANEL support])
+ 
+ dnl *********************************************
+ dnl *** Optional support for external libical ***
+@@ -254,6 +262,19 @@ if test x"$enable_archive" = x"yes"; then
+     have_archive="yes"
+ fi
+ 
++dnl ************************************************
++dnl *** Optional support for 4.6 Xfce            ***
++dnl ************************************************
++dnl XDT_CHECK_OPTIONAL_PACKAGE([LIBXFCEGUI4], [libxfcegui4-1.0],
++dnl                            [xfce_minimum_version], [libxfcegui4],
++dnl                            [LIBXFCEGUI4 support])
++
++dnl ************************************************
++dnl *** Optional support for 4.8 Xfce            ***
++dnl ************************************************
++dnl XDT_CHECK_OPTIONAL_PACKAGE([LIBXFCE4UI], [libxfce4ui-1],
++dnl                            [xfce_minimum_version], [libxfce4ui],
++dnl                            [LIBXFCE4UI support])
+ 
+ dnl Check for debugging support
+ dnl BM_DEBUG_SUPPORT()
+@@ -263,7 +284,7 @@ dnl the intention was to use variable
+ dnl $LIBICAL_DIRS
+ dnl to control if libical is being compiled or not, but only very
+ dnl recent autotools can have such variables in AC_OUTPUT.
+-dnl Revertign back to full list until time is right for using it.
++dnl Reverting back to full list until time is right for using it.
+ dnl This causes some extra work at compile time, but should not cause
+ dnl any issues to users.
+ 
+@@ -311,14 +332,20 @@ else
+ echo "* LIBNOTIFY support:         no"
+ fi
+ if test x"$LIBICAL_FOUND" = x"yes"; then
+-echo "* LIBICAL support:           External package"
++echo "* LIBICAL support:           yes"
+ else
+-echo "* LIBICAL support:           Orage local"
++echo "* LIBICAL support:           no. Using Orage local libical"
+ fi
+ echo "* Automatic archiving:       $have_archive"
+ if test x"$have_popt" = x"yes"; then
+-echo "* libpopt available:         building tz_convert"
++echo "* libpopt available:         yes, building tz_convert"
+ else
+-echo "* libpopt not available:     not building tz_convert"
++echo "* libpopt not available:     no, not building tz_convert"
++fi
++if test x"$LIBXFCE4PANEL_FOUND" = x"yes"; then
++echo "* LIBXFCE4PANEL support:     yes, building xfce panel plugin"
++else
++echo "* LIBXFCE4PANEL support:     no, not building xfce panel plugin"
+ fi
+ echo
++
+diff --git a/globaltime/Makefile.am b/globaltime/Makefile.am
+index c5e144c..66bf7a3 100644
+--- a/globaltime/Makefile.am
++++ b/globaltime/Makefile.am
+@@ -27,13 +27,12 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+ 
+ 
+ globaltime_CFLAGS =							\
+-	$(LIBXFCEGUI4_CFLAGS)					\
++    $(LIBGTK_CFLAGS)                        \
+ 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"		\
+ 	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\"
+ 
+ globaltime_LDADD =							\
+-	$(LIBXFCEGUI4_LIBS)						\
+-	$(LIBXFCEUTIL_LIBS)						\
++    $(LIBGTK_LIBS)                          \
+ 	-lX11		            				\
+ 	$(INTLLIBS) 
+ 
+diff --git a/globaltime/tz_zoneinfo_read.c b/globaltime/tz_zoneinfo_read.c
+index d029177..31d2ab1 100644
+--- a/globaltime/tz_zoneinfo_read.c
++++ b/globaltime/tz_zoneinfo_read.c
+@@ -265,7 +265,8 @@ static void process_abbr_table()
+     tmp = in_head;
+     for (i = 0; i < charcnt; i++) { /* we need to walk over the table */
+         if (debug > 3)
+-            printf("Abbr:%d (%d)(%s)\n", i, strlen((char *)(tmp + i)), tmp + i);
++            printf("Abbr:%d (%d)(%s)\n", i, (int)strlen((char *)(tmp + i))
++                    , tmp + i);
+         i += strlen((char *)(tmp + i));
+     }
+     in_head += charcnt;
+diff --git a/panel-plugin/Makefile.am b/panel-plugin/Makefile.am
+index 5e17ce7..6f35cbe 100644
+--- a/panel-plugin/Makefile.am
++++ b/panel-plugin/Makefile.am
+@@ -1,31 +1,32 @@
+-plugindir = $(libexecdir)/xfce4/panel-plugins
+-
++if HAVE_LIBXFCE4PANEL
+ plugin_PROGRAMS = xfce4-orageclock-plugin
++endif
++
++plugindir = $(libexecdir)/xfce4/panel-plugins
+ 
+-xfce4_orageclock_plugin_CFLAGS =							\
++xfce4_orageclock_plugin_CFLAGS =					\
+ 	-DPACKAGE_DATA_DIR=\"$(datadir)\"				\
+ 	-DPACKAGE_LOCALE_DIR=\"$(localedir)\"			\
+-	@LIBXFCE4PANEL_CFLAGS@                          \
+-	@LIBXFCEGUI4_CFLAGS@
++	@LIBXFCE4PANEL_CFLAGS@
+ 
+-xfce4_orageclock_plugin_LDFLAGS =						\
++xfce4_orageclock_plugin_LDFLAGS =					\
+ 	@LIBXFCE4PANEL_LIBS@                            \
+-	@LIBXFCEGUI4_LIBS@                            \
+ 	-lX11
+ 
+-xfce4_orageclock_plugin_SOURCES = 						\
++xfce4_orageclock_plugin_SOURCES = 					\
+ 	oc_config.c										\
+ 	timezone_selection.c							\
+ 	timezone_selection.h							\
+ 	tz_zoneinfo_read.c								\
+ 	tz_zoneinfo_read.h								\
+-	xfce4-orageclock-plugin.c							\
+-	xfce4-orageclock-plugin.h
++	xfce4-orageclock-plugin.c						\
++	xfce4-orageclock-plugin.h                       \
++    ../src/functions.c                              \
++    ../src/functions.h
+ 
+ if HAVE_CYGWIN
+-xfce4_orageclock_plugin_LDFLAGS +=                      \
+-	-no-undefined                                  \
+-	@LIBXFCEGUI4_LIBS@
++xfce4_orageclock_plugin_LDFLAGS +=                 \
++	-no-undefined
+ endif
+ 
+ # .desktop file
+diff --git a/panel-plugin/oc_config.c b/panel-plugin/oc_config.c
+index 4a41523..c8209f7 100644
+--- a/panel-plugin/oc_config.c
++++ b/panel-plugin/oc_config.c
+@@ -33,10 +33,10 @@
+ #include <gtk/gtk.h>
+ #include <gdk/gdkevents.h>
+ 
+-#include <libxfce4util/libxfce4util.h>
+-#include <libxfcegui4/libxfcegui4.h>
+ #include <libxfce4panel/xfce-panel-plugin.h>
+ 
++#include "../src/orage-i18n.h"
++#include "../src/functions.h"
+ #include "xfce4-orageclock-plugin.h"
+ #include "tz_zoneinfo_read.h"
+ #include "timezone_selection.h"
+@@ -211,20 +211,19 @@ static void oc_table_add(GtkWidget *table, GtkWidget *widget, int col, int row)
+ 
+ static void oc_properties_appearance(GtkWidget *dlg, Clock *clock)
+ {
+-    GtkWidget *frame, *bin, *cb, *color, *sb;
++    GtkWidget *frame, *cb, *color, *sb;
+     GdkColor def_fg, def_bg;
+     GtkStyle *def_style;
+     GtkWidget *table;
+ 
+-    frame = xfce_create_framebox(_("Appearance"), &bin);
+-    gtk_container_set_border_width(GTK_CONTAINER(frame), 6);
+-    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox), frame, FALSE, FALSE, 0);
+-    
+     table = gtk_table_new(3, 4, FALSE);
+     gtk_container_set_border_width(GTK_CONTAINER(table), 10);
+     gtk_table_set_row_spacings(GTK_TABLE(table), 6);
+     gtk_table_set_col_spacings(GTK_TABLE(table), 6);
+-    gtk_container_add(GTK_CONTAINER(bin), table);
++    
++    frame = orage_create_framebox_with_content(_("Appearance"), table);
++    gtk_container_set_border_width(GTK_CONTAINER(frame), 6);
++    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox), frame, FALSE, FALSE, 0);
+ 
+     /* show frame */
+     cb = gtk_check_button_new_with_mnemonic(_("Show _frame"));
+@@ -299,7 +298,7 @@ static void oc_properties_appearance(GtkWidget *dlg, Clock *clock)
+ 
+ void oc_properties_options(GtkWidget *dlg, Clock *clock)
+ {
+-    GtkWidget *frame, *bin, *cb, *label, *entry, *font, *button;
++    GtkWidget *frame, *cb, *label, *entry, *font, *button;
+     GtkStyle *def_style;
+     gchar *def_font, tmp[100];
+     GtkWidget *table, *toolbar;
+@@ -308,22 +307,21 @@ void oc_properties_options(GtkWidget *dlg, Clock *clock)
+     ClockLine *line;
+     GList   *tmp_list;
+ 
+-    frame = xfce_create_framebox(_("Clock Options"), &bin);
++    line_cnt = g_list_length(clock->lines);
++    table = gtk_table_new(3+line_cnt, 4, FALSE);
++    gtk_container_set_border_width(GTK_CONTAINER(table), 10);
++    gtk_table_set_row_spacings(GTK_TABLE(table), 6);
++    gtk_table_set_col_spacings(GTK_TABLE(table), 6);
++
++    frame = orage_create_framebox_with_content(_("Clock Options"), table);
+     gtk_container_set_border_width(GTK_CONTAINER(frame), 6);
+     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox), frame, FALSE, FALSE, 0);
+     /* we sometimes call this function again, so we need to put it to the 
+        correct position */
+-    gtk_box_reorder_child(GTK_BOX(GTK_DIALOG(dlg)->vbox), frame, 3);
++    gtk_box_reorder_child(GTK_BOX(GTK_DIALOG(dlg)->vbox), frame, 2);
+     /* this is needed when we restructure this frame */
+     g_object_set_data(G_OBJECT(clock->plugin), "properties_frame", frame);
+ 
+-    line_cnt = g_list_length(clock->lines);
+-    table = gtk_table_new(3+line_cnt, 4, FALSE);
+-    gtk_container_set_border_width(GTK_CONTAINER(table), 10);
+-    gtk_table_set_row_spacings(GTK_TABLE(table), 6);
+-    gtk_table_set_col_spacings(GTK_TABLE(table), 6);
+-    gtk_container_add(GTK_CONTAINER(bin), table);
+-
+     /* timezone */
+     label = gtk_label_new(_("set timezone to:"));
+     oc_table_add(table, label, 0, 0);
+@@ -393,7 +391,9 @@ void oc_properties_options(GtkWidget *dlg, Clock *clock)
+         }
+         oc_table_add(table, toolbar, 3, cur_line);
+ 
++        /*
+         button = gtk_button_new_from_stock(GTK_STOCK_DELETE);
++        */
+     }
+ 
+ 
+@@ -446,13 +446,14 @@ static void oc_dialog_response(GtkWidget *dlg, int response, Clock *clock)
+ 
+ void oc_properties_dialog(XfcePanelPlugin *plugin, Clock *clock)
+ {
+-    GtkWidget *dlg, *header;
++    GtkWidget *dlg;
+ 
+     xfce_panel_plugin_block_menu(plugin);
+     
+     /* change interval to show quick feedback on panel */
+     clock->interval = OC_CONFIG_INTERVAL; 
+     oc_start_timer(clock);
++
+     dlg = gtk_dialog_new_with_buttons(_("Orage clock Preferences"), 
+             GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(plugin))),
+             GTK_DIALOG_DESTROY_WITH_PARENT |
+@@ -461,17 +462,9 @@ void oc_properties_dialog(XfcePanelPlugin *plugin, Clock *clock)
+             NULL);
+     
+     g_object_set_data(G_OBJECT(plugin), "dialog", dlg);
+-
+     gtk_window_set_position(GTK_WINDOW(dlg), GTK_WIN_POS_CENTER);
+-    
+-    g_signal_connect(dlg, "response", G_CALLBACK(oc_dialog_response), clock);
+-
+     gtk_container_set_border_width(GTK_CONTAINER(dlg), 2);
+-    
+-    header = xfce_create_header(NULL, _("Orage clock"));
+-    gtk_widget_set_size_request(GTK_BIN(header)->child, 200, 32);
+-    gtk_container_set_border_width(GTK_CONTAINER(header), 6);
+-    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox), header, FALSE, TRUE, 0);
++    g_signal_connect(dlg, "response", G_CALLBACK(oc_dialog_response), clock);
+     
+     oc_properties_appearance(dlg, clock);
+     oc_properties_options(dlg, clock);
+diff --git a/panel-plugin/timezone_selection.c b/panel-plugin/timezone_selection.c
+index 59a4dbe..d86bbff 100644
+--- a/panel-plugin/timezone_selection.c
++++ b/panel-plugin/timezone_selection.c
+@@ -52,7 +52,6 @@
+ #include <glib/gstdio.h>
+ 
+ #include <libxfce4util/libxfce4util.h>
+-#include <libxfcegui4/libxfcegui4.h>
+ #include <libxfce4panel/xfce-panel-plugin.h>
+ 
+ #include "tz_zoneinfo_read.h"
+diff --git a/panel-plugin/xfce4-orageclock-plugin.c b/panel-plugin/xfce4-orageclock-plugin.c
+index 49de0b8..ae97b48 100644
+--- a/panel-plugin/xfce4-orageclock-plugin.c
++++ b/panel-plugin/xfce4-orageclock-plugin.c
+@@ -33,11 +33,12 @@
+ #include <glib.h>
+ #include <gtk/gtk.h>
+ #include <gdk/gdkevents.h>
++#include <gdk/gdkx.h>
+ 
+ #include <libxfce4util/libxfce4util.h>
+-#include <libxfcegui4/libxfcegui4.h>
+ #include <libxfce4panel/xfce-panel-plugin.h>
+ 
++#include "../src/functions.h"
+ #include "xfce4-orageclock-plugin.h"
+ 
+ /* -------------------------------------------------------------------- *
+@@ -357,7 +358,7 @@ static gboolean popup_program(GtkWidget *widget, gchar *program, Clock *clock
+             g_unsetenv("TZ");
+         tzset();
+ 
+-        if (!xfce_exec(program, FALSE, FALSE, &error)) 
++        if (!orage_exec(program, FALSE, &error)) 
+             g_message("%s: start of %s failed", OC_NAME, program);
+ 
+         if ((clock->timezone->str != NULL) && (clock->timezone->len > 0)) {
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 1940dce..56dce5f 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -21,29 +21,28 @@ orage_SOURCES =					\
+ 	main.c								\
+ 	mainbox.c							\
+ 	mainbox.h							\
+-	orage-i18n.h							\
++	orage-i18n.h						\
+ 	parameters.c						\
+ 	parameters.h						\
+ 	reminder.c							\
+ 	reminder.h							\
+ 	timezone_names.c					\
+-	timezone_selection.c					\
+-	timezone_selection.h					\
++	timezone_selection.c				\
++	timezone_selection.h				\
+ 	tray_icon.c							\
+ 	tray_icon.h							\
+ 	tz_zoneinfo_read.c					\
+ 	tz_zoneinfo_read.h
+ 
+ orage_CFLAGS =							\
+-	$(LIBXFCEGUI4_CFLAGS)						\
+-	-DPACKAGE_DATA_DIR=\""$(datadir)"\"			\
++    $(LIBGTK_CFLAGS)                    \
++	-DPACKAGE_DATA_DIR=\""$(datadir)"\"	\
+ 	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\"
+ 
+ orage_LDADD =							\
+-	$(LIBXFCEGUI4_LIBS)						\
+-	$(LIBXFCEUTIL_LIBS)						\
+-	-lX11            						\
+-	-lm              						\
++    $(LIBGTK_LIBS)                      \
++	-lX11            					\
++	-lm              					\
+ 	$(INTLLIBS)
+ 
+ if INCLUDED_LIBICAL
+@@ -54,8 +53,8 @@ orage_CFLAGS +=							\
+ 	-I$(top_srcdir)/libical/src/libicalss
+ 
+ orage_LDADD +=							\
+-	$(PTHREAD_LIBS)											\
+-	$(top_builddir)/libical/src/libical/libical.la			\
++	$(PTHREAD_LIBS)										\
++	$(top_builddir)/libical/src/libical/libical.la		\
+ 	$(top_builddir)/libical/src/libicalss/libicalss.la
+ else
+ orage_CFLAGS +=							\
+diff --git a/src/appointment.c b/src/appointment.c
+index 4254e2b..a4faf84 100644
+--- a/src/appointment.c
++++ b/src/appointment.c
+@@ -1670,7 +1670,7 @@ static OrageRc *orage_category_file_open(gboolean read_only)
+     OrageRc *orc;
+ 
+     fpath = orage_data_file_location(ORAGE_CATEGORIES_DIR_FILE);
+-    if ((orc = (OrageRc *)orage_rc_file_open(fpath, read_only)) == NULL) {
++    if ((orc = orage_rc_file_open(fpath, read_only)) == NULL) {
+         orage_message(150, "orage_category_file_open: category file open failed.");
+     }
+     g_free(fpath);
+@@ -2385,7 +2385,7 @@ static OrageRc *orage_alarm_file_open(gboolean read_only)
+     fpath = orage_config_file_location(ORAGE_DEFAULT_ALARM_DIR_FILE);
+     if (!read_only)  /* we need to empty it before each write */
+         g_remove(fpath);
+-    if ((orc = (OrageRc *)orage_rc_file_open(fpath, read_only)) == NULL) {
++    if ((orc = orage_rc_file_open(fpath, read_only)) == NULL) {
+         orage_message(150, "orage_alarm_file_open: default alarm file open failed.");
+     }
+     g_free(fpath);
+diff --git a/src/functions.c b/src/functions.c
+index ddb84e0..46ec480 100644
+--- a/src/functions.c
++++ b/src/functions.c
+@@ -33,11 +33,13 @@
+ 
+ #include <glib.h>
+ #include <glib/gprintf.h>
++#include <glib/gstdio.h>
+ #include <gtk/gtk.h>
+ #include <gdk/gdk.h>
+-
++/*
+ #include <libxfce4util/libxfce4util.h>
+ #include <libxfcegui4/libxfcegui4.h>
++*/
+ 
+ #include "orage-i18n.h"
+ #include "functions.h"
+@@ -744,26 +746,53 @@ void orage_select_today(GtkCalendar *cal)
+ }
+ 
+ /*******************************************************
+- * cata and config file locations
++ * data and config file locations
+  *******************************************************/
+ 
+-gchar *orage_data_file_location(char *dir_name)
++gchar *orage_data_file_location(char *name)
+ {
+-    char *file_name;
++    char *file_name, *dir_name;
++    const char *base_dir;
++    int mode = 700;
+ 
+-    file_name = xfce_resource_save_location(XFCE_RESOURCE_DATA, dir_name, TRUE);
++    /*
++    file_name = xfce_resource_save_location(XFCE_RESOURCE_DATA, name, TRUE);
+     g_print("orage_data_file_location (%s) (%s)\n", file_name, g_get_user_data_dir());
++    */
++
++    base_dir = g_get_user_data_dir();
++    file_name = g_build_filename(base_dir, name, NULL);
++    dir_name = g_path_get_dirname((const gchar *)file_name);
++    if (g_mkdir_with_parents(dir_name, mode)) {
++        g_print("orage_data_file_location: (%s) (%s) directory creation failed.\n", base_dir, file_name);
++    }
++    g_print("orage_data_file_location end (%s) (%s)\n", file_name, dir_name);
++    g_free(dir_name);
++
+     return(file_name);
+ }
+ 
+-gchar *orage_config_file_location(char *dir_name)
++gchar *orage_config_file_location(char *name)
+ {
+-    /* g_get_system_config_dirs */
+-    char *file_name;
++    char *file_name, *dir_name;
++    const char *base_dir;
++    int mode = 700;
+ 
+-    file_name = xfce_resource_save_location(XFCE_RESOURCE_CONFIG, dir_name
++    /*
++    file_name = xfce_resource_save_location(XFCE_RESOURCE_CONFIG, name
+             , TRUE);
+     g_print("orage_config_file_location (%s) (%s)\n", file_name, g_get_user_config_dir());
++    */
++
++    base_dir = g_get_user_config_dir();
++    file_name = g_build_filename(base_dir, name, NULL);
++    dir_name = g_path_get_dirname((const gchar *)file_name);
++    if (g_mkdir_with_parents(dir_name, mode)) {
++        g_print("orage_config_file_location: (%s) (%s) directory creation failed.\n", base_dir, file_name);
++    }
++    g_print("orage_config_file_location end (%s) (%s)\n", file_name, dir_name);
++    g_free(dir_name);
++
+     return(file_name);
+ }
+ 
+@@ -773,92 +802,199 @@ gchar *orage_config_file_location(char *dir_name)
+ 
+ OrageRc *orage_rc_file_open(char *fpath, gboolean read_only)
+ {
+-    XfceRc *rc;
++    /* XfceRc *rc; */
+     OrageRc *orc = NULL;
++    GKeyFile *grc;
++    GError *error = NULL;
+ 
++    /*
+     if ((rc = xfce_rc_simple_open(fpath, read_only)) == NULL && read_only) {
+         orage_message(-90, "orage_rc_open: Unable to open (read) RC file (%s). Creating it.", fpath);
+-        /* let's try to build it */
++        / * let's try to build it * /
+         if ((rc = xfce_rc_simple_open(fpath, FALSE)) == NULL) {
+-            /* still failed, can't do more */
++            / * still failed, can't do more * /
+             orage_message(150, "orage_rc_open: Unable to open (write) RC file (%s).", fpath);
+         }
+     }
+-
+-    if (rc) { /* we managed to open it */
++    if (rc) { / * we managed to open it * /
+         orc = g_new(OrageRc, 1);
+         orc->rc = rc;
+     }
+     return(orc);
++    */
++
++    grc = g_key_file_new();
++    if (g_key_file_load_from_file(grc, (const gchar *)fpath
++            , G_KEY_FILE_KEEP_COMMENTS, &error)) { /* success */
++        orc = g_new(OrageRc, 1);
++        orc->rc = grc;
++        orc->read_only = read_only;
++        orc->file_name = g_strdup(fpath);
++        orc->cur_group = NULL;
++    }
++    else {
++        orage_message(-90, "orage_rc_file_open: Unable to open RC file (%s). Creating it. (%s)", fpath, error->message);
++        g_clear_error(&error);
++        if (g_file_set_contents((const gchar *)fpath, "#Created by Orage", -1
++                    , &error)) { /* successfully created new file */
++            orc = g_new(OrageRc, 1);
++            orc->rc = grc;
++            orc->read_only = read_only;
++            orc->file_name = g_strdup(fpath);
++            orc->cur_group = NULL;
++        }
++        else {
++            orage_message(150, "orage_rc_file_open: Unable to open (create) RC file (%s). (%s)", fpath, error->message);
++            g_key_file_free(grc);
++        }
++    }
++
++    return(orc);
+ }
+ 
+ void orage_rc_file_close(OrageRc *orc)
++    /* FIXME: check if file contents have been changed and only write when
++       needed or build separate save function */
+ {
++    GError *error = NULL;
++    gchar *file_content = NULL;
++    gsize length;
++
+     if (orc) {
+-        xfce_rc_close((XfceRc *)orc->rc);
++        /* xfce_rc_close((XfceRc *)orc->rc); */
++        if (!orc->read_only) { /* need to write it */
++            file_content = g_key_file_to_data(orc->rc, &length, NULL);
++            orage_message(150, "orage_rc_file_close: File (%s). String (%s)", orc->file_name, file_content);
++            if (file_content 
++            && !g_file_set_contents(orc->file_name, file_content, -1
++                , &error)) { /* write needed and failed */
++                orage_message(150, "orage_rc_file_close: File save failed. RC file (%s). (%s)", orc->file_name, error->message);
++            }
++            g_free(file_content);
++        }
++        g_key_file_free(orc->rc);
++        g_free((void *)orc->file_name);
++        g_free((void *)orc->cur_group);
+         g_free(orc);
+     }
++    else {
++        orage_message(-90, "orage_rc_file_close: closing empty file.");
++    }
+ }
+ 
+ gchar **orage_rc_get_groups(OrageRc *orc)
+ {
+-    return(xfce_rc_get_groups((XfceRc *)orc->rc));
++    /* return(xfce_rc_get_groups((XfceRc *)orc->rc)); */
++    return(g_key_file_get_groups((GKeyFile *)orc->rc, NULL));
+ }
+ 
+ void orage_rc_set_group(OrageRc *orc, char *grp)
+ {
+-    xfce_rc_set_group((XfceRc *)orc->rc, grp);
++    /* xfce_rc_set_group((XfceRc *)orc->rc, grp); */
++    orage_message(150, "orage_rc_set_group: old group (%s) new group (%s).", orc->cur_group, grp);
++    g_free((void *)orc->cur_group);
++    orc->cur_group = g_strdup(grp);
+ }
+ 
+ void orage_rc_del_group(OrageRc *orc, char *grp)
+ {
+-    xfce_rc_delete_group((XfceRc *)orc->rc, grp, FALSE);
++    GError *error = NULL;
++
++    /* xfce_rc_delete_group((XfceRc *)orc->rc, grp, FALSE); */
++    if (!g_key_file_remove_group((GKeyFile *)orc->rc, (const gchar *)grp
++                , &error)) {
++        orage_message(150, "orage_rc_del_group: Group remove failed. RC file (%s). group (%s) (%s)", orc->file_name, grp, error->message);
++    }
+ }
+ 
+ gchar *orage_rc_get_group(OrageRc *orc)
+ {
+-    return(g_strdup(xfce_rc_get_group((XfceRc *)orc->rc)));
++    /* return(g_strdup(xfce_rc_get_group((XfceRc *)orc->rc))); */
++    return(g_strdup(orc->cur_group));
+ }
+ 
+ gchar *orage_rc_get_str(OrageRc *orc, char *key, char *def)
+ {
+-    return(g_strdup(xfce_rc_read_entry((XfceRc *)orc->rc, key, def)));
++    GError *error = NULL;
++    gchar *ret;
++
++    /* return(g_strdup(xfce_rc_read_entry((XfceRc *)orc->rc, key, def))); */
++        orage_message(150, "orage_rc_get_str: str (%s) group (%s) in RC file (%s) not found, using default (%s)", key, orc->cur_group, orc->file_name, def);
++    ret = g_key_file_get_string((GKeyFile *)orc->rc, orc->cur_group
++            , (const gchar *)key, &error);
++    if (!ret && error) {
++        ret = g_strdup(def);
++        orage_message(-90, "orage_rc_get_str: str (%s) group (%s) in RC file (%s) not found, using default (%s)", key, orc->cur_group, orc->file_name, ret);
++    }
++    return(ret);
+ }
+ 
+ gint orage_rc_get_int(OrageRc *orc, char *key, gint def)
+ {
+-    return(xfce_rc_read_int_entry((XfceRc *)orc->rc, key, def));
++    GError *error = NULL;
++    gint ret;
++
++    /* return(xfce_rc_read_int_entry((XfceRc *)orc->rc, key, def)); */
++    ret = g_key_file_get_integer((GKeyFile *)orc->rc, orc->cur_group
++            , (const gchar *)key, &error);
++    if (!ret && error) {
++        ret = def;
++        orage_message(-90, "orage_rc_get_int: str (%s) group (%s) in RC file (%s) not found, using default (%d)", key, orc->cur_group, orc->file_name, ret);
++    }
++    return(ret);
+ }
+ 
+ gboolean orage_rc_get_bool(OrageRc *orc, char *key, gboolean def)
+ {
+-    return(xfce_rc_read_bool_entry((XfceRc *)orc->rc, key, def));
++    GError *error = NULL;
++    gboolean ret;
++
++    /* return(xfce_rc_read_bool_entry((XfceRc *)orc->rc, key, def)); */
++    ret = g_key_file_get_boolean((GKeyFile *)orc->rc, orc->cur_group
++            , (const gchar *)key, &error);
++    if (!ret && error) {
++        ret = def;
++        orage_message(-90, "orage_rc_get_bool: str (%s) group (%s) in RC file (%s) not found, using default (%d)", key, orc->cur_group, orc->file_name, ret);
++    }
++    return(ret);
+ }
+ 
+ void orage_rc_put_str(OrageRc *orc, char *key, char *val)
+ {
++    /*
+     if (val != NULL)
+         xfce_rc_write_entry((XfceRc *)orc->rc, key, val);
++        */
++    g_key_file_set_string((GKeyFile *)orc->rc, orc->cur_group
++            , (const gchar *)key, (const gchar *)val);
+ }
+ 
+ void orage_rc_put_int(OrageRc *orc, char *key, gint val)
+ {
+-    xfce_rc_write_int_entry((XfceRc *)orc->rc, key, val);
++    /* xfce_rc_write_int_entry((XfceRc *)orc->rc, key, val); */
++    g_key_file_set_integer((GKeyFile *)orc->rc, orc->cur_group
++            , (const gchar *)key, val);
+ }
+ 
+ void orage_rc_put_bool(OrageRc *orc, char *key, gboolean val)
+ {
+-    xfce_rc_write_bool_entry((XfceRc *)orc->rc, key, val);
++    /* xfce_rc_write_bool_entry((XfceRc *)orc->rc, key, val); */
++    g_key_file_set_boolean((GKeyFile *)orc->rc, orc->cur_group
++            , (const gchar *)key, val);
+ }
+ 
+ gboolean orage_rc_exists_item(OrageRc *orc, char *key)
+ {
+-    return(xfce_rc_has_entry((XfceRc *)orc->rc, key));
++    /* return(xfce_rc_has_entry((XfceRc *)orc->rc, key)); */
++    return(g_key_file_has_key((GKeyFile *)orc->rc, orc->cur_group
++            , (const gchar *)key, NULL));
+ }
+ 
+ void orage_rc_del_item(OrageRc *orc, char *key)
+ {
+-    xfce_rc_delete_entry((XfceRc *)orc->rc, key, FALSE);
++    /* xfce_rc_delete_entry((XfceRc *)orc->rc, key, FALSE); */
++    g_key_file_remove_key((GKeyFile *)orc->rc, orc->cur_group
++            , (const gchar *)key, NULL);
+ }
+ 
+ /*******************************************************
+diff --git a/src/functions.h b/src/functions.h
+index eb4dfa7..542ce36 100644
+--- a/src/functions.h
++++ b/src/functions.h
+@@ -54,6 +54,9 @@
+ typedef struct _OrageRc
+ {
+     void *rc;
++    gboolean read_only;
++    const char *file_name;
++    const char *cur_group;
+ } OrageRc;
+ 
+ void program_log (const char *format, ...);
+diff --git a/src/interface.c b/src/interface.c
+index 7014826..f23639e 100644
+--- a/src/interface.c
++++ b/src/interface.c
+@@ -601,7 +601,7 @@ gboolean orage_foreign_file_remove(gchar *filename)
+ 
+ static void for_remove_button_clicked(GtkButton *button, gpointer user_data)
+ {
+-    gint del_line = (gint) user_data;
++    gint del_line = GPOINTER_TO_INT(user_data);
+ 
+     orage_foreign_file_remove_line(del_line);
+ }
+@@ -647,7 +647,7 @@ static void refresh_foreign_files(intf_win *intf_w, gboolean first)
+                     , label, hbox
+                     , i, (GTK_EXPAND | GTK_FILL), (0));
+             g_signal_connect((gpointer)button, "clicked"
+-                    , G_CALLBACK(for_remove_button_clicked), (void *)i);
++                    , G_CALLBACK(for_remove_button_clicked),GINT_TO_POINTER(i));
+             g_signal_connect_after((gpointer)button, "clicked"
+                     , G_CALLBACK(for_remove_button_clicked2), intf_w);
+         }
+diff --git a/src/parameters.c b/src/parameters.c
+index 5dd45ca..9b51b33 100644
+--- a/src/parameters.c
++++ b/src/parameters.c
+@@ -922,7 +922,7 @@ OrageRc *orage_parameters_file_open(gboolean read_only)
+     OrageRc *orc;
+ 
+     fpath = orage_config_file_location(ORAGE_PAR_DIR_FILE);
+-    if ((orc = (OrageRc *)orage_rc_file_open(fpath, read_only)) == NULL) {
++    if ((orc = orage_rc_file_open(fpath, read_only)) == NULL) {
+         orage_message(150, "orage_category_file_open: Parameter file open failed.");
+     }
+     g_free(fpath);
+@@ -938,6 +938,7 @@ void write_parameters()
+ 
+     orc = orage_parameters_file_open(FALSE);
+ 
++    orage_rc_set_group(orc, "PARAMETERS");
+     orage_rc_put_str(orc, "Timezone", g_par.local_timezone);
+ #ifdef HAVE_ARCHIVE
+     orage_rc_put_int(orc, "Archive limit", g_par.archive_limit);
+@@ -1093,6 +1094,7 @@ void read_parameters(void)
+ 
+     orc = orage_parameters_file_open(TRUE);
+ 
++    orage_rc_set_group(orc, "PARAMETERS");
+     g_par.local_timezone = orage_rc_get_str(orc, "Timezone", "not found");
+     if (!strcmp(g_par.local_timezone, "not found")) { 
+         init_default_timezone();
+diff --git a/src/tz_zoneinfo_read.c b/src/tz_zoneinfo_read.c
+index d029177..5e7e096 100644
+--- a/src/tz_zoneinfo_read.c
++++ b/src/tz_zoneinfo_read.c
+@@ -265,7 +265,8 @@ static void process_abbr_table()
+     tmp = in_head;
+     for (i = 0; i < charcnt; i++) { /* we need to walk over the table */
+         if (debug > 3)
+-            printf("Abbr:%d (%d)(%s)\n", i, strlen((char *)(tmp + i)), tmp + i);
++            printf("Abbr:%d (%d)(%s)\n", i, (int)strlen((char *)(tmp + i))
++                    ,tmp + i);
+         i += strlen((char *)(tmp + i));
+     }
+     in_head += charcnt;
