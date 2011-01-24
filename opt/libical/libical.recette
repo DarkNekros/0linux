@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://prdownloads.sourceforge.net/libical/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/freeassociation/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog COPYING INSTALL LICENSE NEWS README* TEST THANKS TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Implémentation Open Source des protocoles iCalendar de l'IETF"
