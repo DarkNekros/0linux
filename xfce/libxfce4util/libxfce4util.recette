@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://www.xfce.org/archive/src/xfce/$NAMESRC/4.6/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.xfce.org/archive/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README* THANKS TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèque native d'XFCE"
