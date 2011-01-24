@@ -8,6 +8,12 @@ fi
 # On nettoie :
 unset USERNM USERID
 
+# Cette fonction supprime les espaces superflus via 'echo' :
+crunch() {
+	read STRING;
+	echo ${STRING};
+}
+
 while [ 0 ]; do
 	clear
 	echo -e "\033[1;32mAjout d'un nouvel utilisateur.\033[0;0m"
@@ -40,36 +46,32 @@ while [ 0 ]; do
 done
 
 # Choix de l'UID :
+clear
+echo -e "\033[1;32mChoix d'un numéro d'identifiant utilisateur (UID).\033[0;0m"
+echo ""
+echo "Entrez ci-après le numéro d'identifiant utilisateur souhaité ou appuyez sur"
+echo "ENTRÉE pour le choix par défaut (1000 pour le premier utilisateur créé)."
+echo ""
+echo -n "Votre choix : "
+read USERID;
+# Si l'utilisateur choisit le paramètre par défaut :
+if [ "${USERID}" = "" ]; then
+	USERID=1000
+fi
+
+# On incrémente $USERID tant qu'on trouve un utilisateur avec le même UID :
 while [ 0 ]; do
-	clear
-	echo -e "\033[1;32mChoix d'un numéro d'identifiant utilisateur (UID).\033[0;0m"
-	echo ""
-	echo "Entrez ci-après le numéro d'identifiant utilisateur souhaité ou appuyez sur"
-	echo "ENTRÉE pour le choix par défaut (1000 pour le premier utilisateur créé)."
-	echo ""
-	echo -n "Votre choix : "
-	read USERID;
-	# Si l'utilisateur choisit le paramètre par défaut :
-	if [ "${USERID}" = "" ]; then
-		USERID=1000
+	if [ "$(cat /etc/passwd | grep ${USERID} | crunch | cut -d':' -f3)" = "" ]; then
+		break
+	else
+		USERID=$(($USERID +1))
+		continue
 	fi
-	
-	# On incrémente $USERID tant qu'on trouve un utilisateur avec le même UID :
-	while [ 0 ]; do
-		if [ "$(cat /etc/passwd | grep ${USERID} | crunch | cut -d':' -f3)" = "" ]; then
-			break
-		else
-			USERID=$(($USERID +1))
-			continue
-		fi
-	done
 done
 
 # Si le répertoire utilisateur existe déjà :
 if [ -d /home/${USERNM} ]; then
 	chmod 711 /home/${USERNM}
-fi
-
 # Sinon, on crée le répertoire utilisateur :
 else
 	mkdir -p /home/${USERNM}
