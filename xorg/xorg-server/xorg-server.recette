@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-xorg-server}
 VERSION=${VERSION:-1.9.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -88,6 +88,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-install-setuid \
+	--enable-dga \
+	--enable-glx-tls \
+	--enable-ipv6 \
 	--with-dri-driver-path=/usr/lib${LIBDIRSUFFIX}/dri \
 	--with-os-name=0 \
 	--with-module-dir=/usr/lib${LIBDIRSUFFIX}/xorg/modules \
