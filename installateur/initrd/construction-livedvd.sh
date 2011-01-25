@@ -14,9 +14,9 @@ CWD=$(pwd)
 SOURCES=${SOURCES:-/marmite/0/sources}
 PAQUETS=${PAQUETS:-/marmite/0/paquets}
 LIVEOS=${LIVEOS:-/marmite/0/liveos}
-INITRDGZ=${INITRDGZ:-/tmp/initrd.gz}
-DVDROOT=${DVDROOT:-/tmp/dvdroot}
-ISODIR=${ISODIR:-/tmp}
+INITRDGZ=${INITRDGZ:-/marmite/initrd.gz}
+DVDROOT=${DVDROOT:-/marmite/dvdroot}
+ISODIR=${ISODIR:-/marmite}
 
 if [ "$1" = " " ]; then
 	VERSION="2011"
@@ -87,9 +87,9 @@ chmod -x ${LIVEOS}/etc/rc.d/rc.sshd
 # On évite aussi que se lance 'rc.firewall' :
 chmod -x ${LIVEOS}/etc/rc.d/rc.firewall
 
-# On copie le nouveau noyau dans /tmp sans sa version :
-rm -f /tmp/noyau
-cp ${LIVEOS}/boot/noyau-2* /tmp/noyau
+# On copie le nouveau noyau  sans sa version :
+rm -f /marmite/noyau
+cp ${LIVEOS}/boot/noyau-2* /marmite/noyau
 
 # On positionne le fuseau à Paris car on est franco-français et chauvin :
 echo "localtime" > ${LIVEOS}/etc/hardwareclock
@@ -111,7 +111,7 @@ cp -a /usr/share/syslinux/{{chain,kbdmap,linux,reboot,vesamenu}.c32,isolinux.bin
 chmod +x ${DVDROOT}/boot/isolinux/*.c32
 
 # On copie le noyau et l'initrd :
-cp -a ${INITRDGZ} /tmp/noyau ${DVDROOT}/boot/
+cp -a ${INITRDGZ} /marmite/noyau ${DVDROOT}/boot/
 
 # On copie tous les paquets :
 rsync -auv --delete-after ${PAQUETS}/* ${DVDROOT}/0/paquets
