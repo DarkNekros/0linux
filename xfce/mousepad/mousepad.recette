@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-mousepad}
 VERSION=${VERSION:-0.2.16}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mousepad}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -121,6 +121,17 @@ cat > ${PKG}/install/doinst.sh << "EOF"
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
+
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
 
 if [ -x usr/bin/update-desktop-database ]; then
 	chroot . /usr/bin/update-desktop-database &> /dev/null
