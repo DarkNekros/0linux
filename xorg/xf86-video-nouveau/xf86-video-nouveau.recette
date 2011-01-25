@@ -28,7 +28,6 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Pilote X11 accéléré pour cartes vidéo Nvidia"
@@ -43,7 +42,7 @@ fi
 # On télécharge les sources :
 if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
 	echo "Synchronisation GIT..."
-	git clone git://git.frugalware.org/pub/other/sources/xf86-video-nouveau ${NAMESRC}-${VERSION}
+	git clone git://anongit.freedesktop.org/nouveau/xf86-video-nouveau ${NAMESRC}-${VERSION}
 	rm -rf $(find . -type d -name ".git")
 	echo "Création de l'archive source en cours..."
 	tar cfJ ${NAMESRC}-${VERSION}.$EXT ${NAMESRC}-${VERSION}

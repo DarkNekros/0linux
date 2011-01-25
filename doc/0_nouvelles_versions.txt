@@ -1,5 +1,4 @@
 Binutils 2.21
-freetype 2.4.4
 coreutils 8.9 
 dbus-glib 0.90
 GnuTLS 2.10.4
@@ -11,7 +10,6 @@ linux 2.6.37
 lvm 2.02.77
 ImageMagick 6.6.5-9 
 man-pages 3.32 
-mesa 7.9.1
 poppler 0.14.5
 poppler-data 0.4.4
 python 2.7 / 3.1.3
