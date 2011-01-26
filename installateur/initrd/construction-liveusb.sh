@@ -27,12 +27,17 @@ CWD=$(pwd)
 
 SOURCES=${SOURCES:-/marmite/0/sources}
 PAQUETS=${PAQUETS:-/marmite/0/paquets}
-LIVEOS=${LIVEOS:-/marmite/0/liveos}
-INITRDGZ=${INITRDGZ:-/tmp/initrd.gz}
+TMP=${TMP:-/marmite/temp}
+
+LIVEOS=${LIVEOS:-$TMP/liveos}
+INITRDGZ=${INITRDGZ:-$TMP/initrd.gz}
+NOYAU=${NOYAU:-$TMP/noyau}
 USBDEV=${USBDEV:-$1}
 
+mkdir -p $TMP
+
 # On crée et on vide le répertoire d'accueil :
-rm -rf ${LIVEOS}
+rm -rf ${LIVEOS} ${INITRDGZ} ${NOYAU}
 mkdir -p ${LIVEOS}
 
 # On installe les paquets pour le LiveOS :
@@ -93,8 +98,8 @@ chmod -x ${LIVEOS}/etc/rc.d/rc.sshd
 chmod -x ${LIVEOS}/etc/rc.d/rc.firewall
 
 # On copie le nouveau noyau dans /tmp sans sa version :
-rm -f /tmp/noyau
-cp ${LIVEOS}/boot/noyau-2* /tmp/noyau
+rm -f ${NOYAU}
+cp ${LIVEOS}/boot/noyau-2* ${NOYAU}
 
 # On positionne le fuseau à Paris car on est franco-français et chauvin :
 echo "localtime" > ${LIVEOS}/etc/hardwareclock
@@ -102,7 +107,6 @@ ln -sf ../usr/share/zoneinfo/Europe/Paris ${LIVEOS}/etc/localtime
 
 # On crée l'initrd :
 echo -n "Création de l'initrd en cours... "
-rm -f ${INITRDGZ}
 cd ${LIVEOS}
 find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
 echo "Terminé."
@@ -136,7 +140,7 @@ cp -a /usr/share/syslinux/{chain,kbdmap,linux,reboot,vesamenu}.c32 /mnt/tmp/boot
 chmod +x /mnt/tmp/boot/extlinux/*.c32
 
 # On copie le noyau et l'initrd :
-cp -a ${INITRDGZ} /tmp/noyau /mnt/tmp/boot/
+cp -a ${INITRDGZ} ${NOYAU} /mnt/tmp/boot/
 
 # On copie les paquets :
 rsync -auv --delete-after ${PAQUETS}/* /mnt/tmp/0/paquets
