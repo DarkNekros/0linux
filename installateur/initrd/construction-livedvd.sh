@@ -34,6 +34,7 @@ rm -rf ${DVDROOT} ${NOYAU} ${LIVEOS} ${NOYAU}
 rm -f ${ISODIR}/0linux-${VERSION}-DVD.iso
 mkdir -p ${LIVEOS} 
 mkdir -p ${DVDROOT}/{boot/isolinux,0/paquets}
+
 # On installe les paquets pour le LiveOS :
 echo "Création du DVD autonome en cours..."
 echo -n "Installation en cours... "
@@ -42,40 +43,52 @@ echo -n "Installation en cours... "
 for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*"); do
 	spkadd --quiet --root=${LIVEOS} ${paq} &>/dev/null 2>&1
 done
+
 # xorg :
-spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{libX*,x11-libs*,libSM*,libICE*}.cpio &>/dev/null 2>&1
+spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{libxcb*,freetype*,libX*,x11-libs*,libSM*,libICE*}.cpio &>/dev/null 2>&1
+
 # opt :
-for paq in bc-* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
+for paq in bc-* berkeley-db* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
 libidn* libpng* libssh2* mpc* mpfr* popt* python-2* ruby*; do
+	
 	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio &>/dev/null 2>&1
+	
 done
 
 # On copie les bibliothèques requises en dépendances pour les isoler :
 mkdir -p ${LIVEOS}/conserver/{,usr/}lib64
 
-for libbb in libICE.so* libSM.so* libX11.so* libXaw.so* libXmu.so* libXt.so* \
+for libbb in libICE.so* libSM.so* libX11.so* libXaw*.so* libXmu.so* libXt.so* \
 libbz2.so* libdb-*.so* libdbus-1.so* libexpat.so* libfreetype.so* libgcc_s.so* \
 libgcj.so* libglib-2.0.so* libgmp.so* libgobject-2.0.so* libgomp.so* \
 libgthread-2.0.so* libidn.so* libpopt.so* libpython*.so* libmpc.so* libmpfr.so* libssh2.so* \
-libstdc++.so* libperl.so* libz.so*; do
+libstdc++.so* libperl.so* libz.so* libfuse.so* libxcb.so* libfreetype.so* libdb-5*.so*; do
+	
 	find ${LIVEOS}/lib64 -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/lib64 \;
 	find ${LIVEOS}/usr/lib64 -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/usr/lib64 \;
+	
 done
 
 # On désinstalle les paquets superflus, maintenant qu'on a les bibliothèques en lieu sûr :
 # opt
 for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
 libidn* libpng* python-2* ruby*; do
+	
 	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
+	
 done
+
 # xorg
-chroot ${LIVEOS} spkrm /var/log/paquets/{libX*,x11-libs*,libSM*,libICE*}.cpio &>/dev/null 2>&1
+chroot ${LIVEOS} spkrm /var/log/paquets/{libxcb*,freetype*,libX*,x11-libs*,libSM*,libICE*}.cpio &>/dev/null 2>&1
 
 # base
 for paq in multiarch_wrapper vim bzip2 zlib fuse ntfsprogs dosfstools tar \
 linux-headers dhcp perl; do
+	
 	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
+	
 done
+
 echo "Terminé."
 
 # On ramène les bibliothèques : 
