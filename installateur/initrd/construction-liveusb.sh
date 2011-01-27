@@ -42,25 +42,52 @@ mkdir -p ${LIVEOS}
 
 # On installe les paquets pour le LiveOS :
 echo "Création de la clé USB autonome en cours..."
-echo -n "Installation : base... "
-for paq in base-systeme* etc* eglibc* sgml*; do
-	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/base/${paq} &>/dev/null 2>&1
-done
+echo -n "Installation en cours... "
 
-
+# base :
 for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*"); do
 	spkadd --quiet --root=${LIVEOS} ${paq} &>/dev/null 2>&1
 done
-
-echo -n "xorg... "
-spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/*.cpio &>/dev/null 2>&1
-
-echo -n "opt... "
+# xorg :
+spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{libX*,x11-libs*}.cpio &>/dev/null 2>&1
+# opt :
 for paq in bc-* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
-	libidn* libpng* libssh2* popt* python-2* ruby*; do
+libidn* libpng* libssh2* mpc* mpfr* popt* python-2* ruby*; do
 	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio &>/dev/null 2>&1
 done
+
+# On copie les bibliothèques requises en dépendances pour les isoler :
+mkdir -p ${LIVEOS}/conserver/{,usr/}lib64
+
+for libbb in libICE.so* libSM.so* libX11.so* libXaw.so* libXmu.so* libXt.so* \
+libbz2.so* libdb-*.so* libdbus-1.so* libexpat.so* libfreetype.so* libgcc_s.so* \
+libgcj.so* libglib-2.0.so* libgmp.so* libgobject-2.0.so* libgomp.so* \
+libgthread-2.0.so* libidn.so* libpopt.so* libpython*.so* libmpc.so* libmpfr.so* libssh2.so* \
+libstdc++.so* libperl.so*; do
+	cp -a $(find ${LIVEOS}/lib64 -name "${libbb}") ${LIVEOS}/conserver/lib64
+	cp -a $(find ${LIVEOS}/usr/lib64 -name "${libbb}") ${LIVEOS}/conserver/usr/lib64
+done
+
+# On désinstalle les paquets superflus, maintenant qu'on a les bibliothèques en lieu sûr :
+# opt
+for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
+libidn* libpng* python-2* ruby*; do
+	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
+done
+# xorg
+chroot ${LIVEOS} spkrm /var/log/paquets/{libX*,x11-libs*}.cpio &>/dev/null 2>&1
+
+# base
+for paq in multiarch_wrapper vim bzip2 zlib fuse ntfsprogs dosfstools tar \
+linux-headers dhcp perl; do
+	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
+done
 echo "Terminé."
+
+# On ramène les bibliothèques : 
+cp -a ${LIVEOS}/conserver/usr/lib64 ${LIVEOS}/usr/lib64
+cp -a ${LIVEOS}/conserver/lib64 ${LIVEOS}/lib64
+rm -rf ${LIVEOS}/conserver
 
 # On allège :
 rm -rf ${LIVEOS}/usr/doc/*
@@ -86,7 +113,7 @@ if [ -r ${LIVEOS}/bin/bash4.new ]; then
 fi
 
 # On met à jour les liens des bibliothèques :
-chroot ${LIVEOS} /sbin/ldconfig
+chroot ${LIVEOS} /sbin/ldconfig 2>/dev/null
  
 # On met à jour les dépendances des modules du noyau :
 chroot ${LIVEOS} /usr/sbin/depmod -a

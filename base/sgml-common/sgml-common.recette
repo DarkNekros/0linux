@@ -7,11 +7,10 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
-
 
 NAMESRC=${NAMESRC:-sgml-common}
 VERSION=${VERSION:-0.6.3}
@@ -85,6 +84,7 @@ autoreconf -f -i
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -96,7 +96,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--build=${TARGET64}
 
 make
-make install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -150,8 +150,8 @@ config etc/sgml/sgml.conf.new
 # On crée les catalogues (on n'oublie SURTOUT PAS d'indiquer la racine, auquel
 # cas on casse tout le système de documentation des autres paquets. On doit donc
 # chrooter ) :
-chroot . install-catalog --add /etc/sgml/sgml-ent.cat /usr/share/sgml/sgml-iso-entities-8879.1986/catalog
-chroot . install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/sgml-ent.cat
+chroot . install-catalog --add /etc/sgml/sgml-ent.cat /usr/share/sgml/sgml-iso-entities-8879.1986/catalog &>/dev/null 2>&1
+chroot . install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/sgml-ent.cat &>/dev/null 2>&1
 
 EOF
 
@@ -163,9 +163,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
