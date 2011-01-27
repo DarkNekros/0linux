@@ -57,7 +57,7 @@ for libbb in libICE.so* libSM.so* libX11.so* libXaw.so* libXmu.so* libXt.so* \
 libbz2.so* libdb-*.so* libdbus-1.so* libexpat.so* libfreetype.so* libgcc_s.so* \
 libgcj.so* libglib-2.0.so* libgmp.so* libgobject-2.0.so* libgomp.so* \
 libgthread-2.0.so* libidn.so* libpopt.so* libpython*.so* libmpc.so* libmpfr.so* libssh2.so* \
-libstdc++.so* libperl.so*; do
+libstdc++.so* libperl.so* zlib.so*; do
 	find ${LIVEOS}/lib64 -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/lib64 \;
 	find ${LIVEOS}/usr/lib64 -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/usr/lib64 \;
 done
