@@ -32,7 +32,7 @@ mkdir -p $TMP
 # On crée et on vide les répertoires d'accueil :
 rm -rf ${DVDROOT} ${NOYAU} ${LIVEOS} ${NOYAU}
 rm -f ${ISODIR}/0linux-${VERSION}-DVD.iso
-mkdir -p ${LIVEOS} 
+mkdir -p ${LIVEOS} ${ISODIR} 
 mkdir -p ${DVDROOT}/{boot/isolinux,0/paquets}
 
 # On installe les paquets pour le LiveOS :
