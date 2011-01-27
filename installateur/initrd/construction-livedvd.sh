@@ -79,11 +79,11 @@ libidn* libpng* python-2* ruby* mpfr* mpc* libssh2* berkeley-db*; do
 done
 
 # xorg
-chroot ${LIVEOS} spkrm /var/log/paquets/{libXpm*,libxcb*,freetype*,x11-libs*,libSM*,libICE*,libX*} &>/dev/null 2>&1
+chroot ${LIVEOS} spkrm /var/log/paquets/{libXpm-*,libxcb*,freetype*,x11-libs*,libSM*,libICE*,libX*} &>/dev/null 2>&1
 
 # base
 for paq in multiarch_wrapper* vim* bzip2* zlib* fuse* ntfsprogs* dosfstools* tar* \
-linux-headers* dhcp-* perl* infozip* gfxboot* ncurse* dialog* libxml2* sgml-common* \
+linux-headers* dhcp-* perl* infozip* gfxboot* dialog* libxml2* sgml-common* \
 linux-modules* popt* binutils* tree*; do
 	
 	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
