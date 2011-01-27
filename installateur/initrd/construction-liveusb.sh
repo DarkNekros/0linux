@@ -85,8 +85,8 @@ done
 echo "Terminé."
 
 # On ramène les bibliothèques : 
-cp -a ${LIVEOS}/conserver/usr/lib64 ${LIVEOS}/usr/lib64
-cp -a ${LIVEOS}/conserver/lib64 ${LIVEOS}/lib64
+cp -a ${LIVEOS}/conserver/usr/lib64/* ${LIVEOS}/usr/lib64/
+cp -a ${LIVEOS}/conserver/lib64/* ${LIVEOS}/lib64/
 rm -rf ${LIVEOS}/conserver
 
 # On allège :
