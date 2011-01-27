@@ -71,20 +71,20 @@ done
 
 # On désinstalle les paquets superflus, maintenant qu'on a les bibliothèques en lieu sûr :
 # opt
-for paq in dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
-libidn* libpng* python-2* ruby* mpfr* mpc* libssh2 berkeley-db*; do
+for paq in bc-* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
+libidn* libpng* python-2* ruby* mpfr* mpc* libssh2* berkeley-db*; do
 	
 	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
 	
 done
 
 # xorg
-chroot ${LIVEOS} spkrm /var/log/paquets/{libxcb*,freetype*,x11-libs*,libSM*,libICE*,libX*} &>/dev/null 2>&1
+chroot ${LIVEOS} spkrm /var/log/paquets/{libXpm*,libxcb*,freetype*,x11-libs*,libSM*,libICE*,libX*} &>/dev/null 2>&1
 
 # base
 for paq in multiarch_wrapper* vim* bzip2* zlib* fuse* ntfsprogs* dosfstools* tar* \
-linux-headers* dhcp* perl* infozip* gfxboot* ncurses* dialog* libxml2* sgml-common* \
-linux-modules* psmisc popt*; do
+linux-headers* dhcp-* perl* infozip* gfxboot* ncurse* dialog* libxml2* sgml-common* \
+linux-modules* popt* binutils* tree*; do
 	
 	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
 	
