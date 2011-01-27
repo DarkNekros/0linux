@@ -49,7 +49,7 @@ for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*"); do
 	spkadd --quiet --root=${LIVEOS} ${paq} &>/dev/null 2>&1
 done
 # xorg :
-spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{libX*,x11-libs*}.cpio &>/dev/null 2>&1
+spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{libX*,x11-libs*,libSM*,libICE*}.cpio &>/dev/null 2>&1
 # opt :
 for paq in bc-* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
 libidn* libpng* libssh2* mpc* mpfr* popt* python-2* ruby*; do
@@ -75,7 +75,7 @@ libidn* libpng* python-2* ruby*; do
 	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
 done
 # xorg
-chroot ${LIVEOS} spkrm /var/log/paquets/{libX*,x11-libs*}.cpio &>/dev/null 2>&1
+chroot ${LIVEOS} spkrm /var/log/paquets/{libX*,x11-libs*,libSM*,libICE*}.cpio &>/dev/null 2>&1
 
 # base
 for paq in multiarch_wrapper vim bzip2 zlib fuse ntfsprogs dosfstools tar \
