@@ -3,11 +3,13 @@
 # On nettoie :
 unset BLURB
 
+DIR0=$(find /var/log/mount -type d -name "paquets" -print 2>/dev/null)
+
 # Quelques vérif' avant l'installation des paquets. '/var/log/mount' doit
-# à ce stade contenir le répertoire '0' et les paquets résidents : 
-if [ ! -d /var/log/mount/0/paquets/base ]; then
+# à ce stade contenir le répertoire 'paquets' et les paquets résidents : 
+if [ "${DIR0}" = "" ]; then
 	echo "Erreur fatale : '/var/log/mount' ne contient pas les paquets !"
-	echo "Ce répertoire doit contenir le sous-répertoire '0/paquets'."
+	echo "Ce répertoire doit contenir un répertoire 'paquets'."
 	echo "Je vais devoir abandonner..."
 	sleep 3
 	exit 1
@@ -35,12 +37,12 @@ read BLURB;
 
 # On installe d'abord les paquets vitaux :
 for paq in base-systeme* etc* eglibc* sgml* ; do
-	spkadd --about /var/log/mount/0/paquets/base/${paq}
-	spkadd --root=${SETUPROOT} /var/log/mount/0/paquets/base/${paq} &>/dev/null 2>&1
+	spkadd --about ${DIR0}/base/${paq}
+	spkadd --root=${SETUPROOT} ${DIR0}/base/${paq} &>/dev/null 2>&1
 done
 
 # On installe tout le reste sauf linux-source-*, qu'on installe en dernier :
-for paquet in $(find /var/log/mount/0/paquets -type f \( -name "*.cpio" \
+for paquet in $(find ${DIR0} -type f \( -name "*.cpio" \
 	-a \! -name "base-systeme*" \
 	-a \! -name "etc*" \
 	-a \! -name "eglibc*" \
@@ -52,7 +54,7 @@ done
 
 # Les sources de Linux (appel à 'make' en post-installation, donc de
 # nombreuses dépendances) :
-spkadd --about /var/log/mount/0/paquets/base/linux-source-*
-spkadd --root=${SETUPROOT} /var/log/mount/0/paquets/base/linux-source-* &>/dev/null 2>&1
+spkadd --about ${DIR0}/base/linux-source-*
+spkadd --root=${SETUPROOT} ${DIR0}/base/linux-source-* &>/dev/null 2>&1
 
 # C'est fini !

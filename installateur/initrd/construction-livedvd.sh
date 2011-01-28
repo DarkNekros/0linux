@@ -172,8 +172,10 @@ mkisofs -o ${ISODIR}/0linux-${VERSION}-DVD.iso \
 	-b boot/isolinux/isolinux.bin \
 	-c boot/isolinux/boot.cat \
 	-d \
+	-J \
 	-l \
 	-N \
+	-R \
 	-V "0linuxDVD" \
 	-boot-load-size 4 \
 	-boot-info-table \

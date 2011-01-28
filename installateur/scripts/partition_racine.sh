@@ -29,7 +29,7 @@ else
 		echo -e "\033[1;32mPréparer la partition racine pour Linux.\033[0;0m"
 		echo ""
 		echo "Dans la console n°2, utilisez au choix les outils suivants pour"
-		echo " déterminer vos partitions Linux existantes :"
+		echo "déterminer vos partitions Linux existantes :"
 		echo ""
 		echo "		# cfdisk"
 		echo "		# fdisk -l"

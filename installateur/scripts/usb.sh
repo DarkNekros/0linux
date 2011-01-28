@@ -28,7 +28,7 @@ while [ 0 ]; do
 		continue
 	else
 		echo "Montage en cours du périphérique ${USBSELECT} dans /var/log/mount..."
-		mount -o ro ${USBSELECT} /var/log/mount 1> /dev/null 2> /dev/null
+		mount ${USBSELECT} /var/log/mount 1> /dev/null 2> /dev/null
 		# Si le volume contient le répertoire '0/paquets/base', alors on
 		# considère qu'on tient là notre support d'installation :
 		if [ -d /var/log/mount/0/paquets/base ]; then

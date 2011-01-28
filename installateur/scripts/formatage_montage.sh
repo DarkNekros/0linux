@@ -12,6 +12,10 @@ crunch() {
 
 # Boucle d'affichage pour les formatages et montages des partitions choisies : :
 while [ 0 ]; do
+	# Si aucun formatage n'est prévu, on quitte :
+	if [ "$(cat $TMP/formatages | crunch)" = "" ]; then
+		break
+	fi
 	clear
 	echo -e "\033[1;32mConfirmation des formatages des partitions.\033[0;0m"
 	echo ""
@@ -77,7 +81,7 @@ while [ 0 ]; do
 			fi
 			
 			# On crée 'fstab' s'il est absent :
-			elif [ ! -r $TMP/fstab ]; then
+			if [ ! -r $TMP/fstab ]; then
 				touch $TMP/fstab
 			fi
 			

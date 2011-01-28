@@ -25,7 +25,7 @@ if [ "$(fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue 2> /dev/null |
 		echo ""
 		echo "Voici les montages FAT/NTFS déjà configurés : "
 		echo ""
-		cat $TMP/choix_partitions_fat
+		cat $TMP/choix_partitions_fat 2>/dev/null
 		echo ""
 		echo -n "Votre choix : "
 		read FATADD;

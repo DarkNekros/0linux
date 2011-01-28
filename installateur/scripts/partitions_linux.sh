@@ -68,30 +68,44 @@ if [ "$(fdisk -l | grep Linux | grep -v swap 2> /dev/null | wc -l)" -gt "1" ]; t
 					case "$BLAHFORMAT" in
 					"1")
 						LINUXFORMAT="mkfs.ext2 ${LINUXADD1} 2> /dev/null"
+						echo "${LINUXFORMAT}" >> $TMP/formatages
+						unset LINUXFORMAT BLAHFORMAT
 						break
 					;;
 					"2")
 						LINUXFORMAT="mkfs.ext3 -j ${LINUXADD1} 2> /dev/null"
+						echo "${LINUXFORMAT}" >> $TMP/formatages
+						unset LINUXFORMAT BLAHFORMAT
 						break
 					;;
 					"3")
 						LINUXFORMAT="mkfs.ext4 ${LINUXADD1} 2> /dev/null"
+						echo "${LINUXFORMAT}" >> $TMP/formatages
+						unset LINUXFORMAT BLAHFORMAT
 						break
 					;;
 					"4")
 						LINUXFORMAT="mkfs.jfs -q ${LINUXADD1} 2> /dev/null"
+						echo "${LINUXFORMAT}" >> $TMP/formatages
+						unset LINUXFORMAT BLAHFORMAT
 						break
 					;;
 					"5")
 						LINUXFORMAT="echo \"y\" | mkreiserfs ${LINUXADD1} 2> /dev/null"
+						echo "${LINUXFORMAT}" >> $TMP/formatages
+						unset LINUXFORMAT BLAHFORMAT
 						break
 					;;
 					"6")
 						LINUXFORMAT="mkfs.xfs -f ${LINUXADD1} 2> /dev/null"
+						echo "${LINUXFORMAT}" >> $TMP/formatages
+						unset LINUXFORMAT BLAHFORMAT
 						break
 					;;
 					"")
 						LINUXFORMAT=""
+						echo "${LINUXFORMAT}" >> $TMP/formatages
+						unset LINUXFORMAT BLAHFORMAT
 						break
 					;;
 					*)
@@ -102,11 +116,6 @@ if [ "$(fdisk -l | grep Linux | grep -v swap 2> /dev/null | wc -l)" -gt "1" ]; t
 						continue
 					esac
 					
-					# On *ajoute* la commande de formatage prévue dans un fichier temporaire :
-					if [ ! "${LINUXFORMAT}" = "" ]; then
-						echo "${LINUXFORMAT}" >> $TMP/formatages
-					fi
-					unset LINUXFORMAT BLAHFORMAT
 				done
 			
 			# On ajoute la partition et le montage au fichier temporaire :

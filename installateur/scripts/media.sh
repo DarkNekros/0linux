@@ -12,26 +12,22 @@ while [ 0 ]; do
 	echo "Veuillez entrez ci-dessous le code du média d'installation dont vous"
 	echo "disposez pour installer votre système Linux."
 	echo ""
-	echo "1 : USB - vous installez depuis une clé USB ou une carte mémoire"
-	echo "2 : DISQUE - vous installez depuis un disque optique (CD ou DVD)"
+	echo "1 : DISQUE DUR/USB - depuis un disque dur, une clé USB, une carte mémoire"
+	echo "2 : CD/DVD         - depuis un disque optique (CD ou DVD)"
 	echo ""
 	echo -n "Votre choix : "
 	read MEDIA;
 	case "$MEDIA" in
 	"1")
-		. usb.sh
+		. disque.sh
 		break
 	;;
 	"2")
-		. disque.sh
+		. optique.sh
 		break
 	;;
 	"3")
 		#. rsync.sh
-		break
-	;;
-	"4")
-		#. hdd.sh
 		break
 	;;
 	*)
