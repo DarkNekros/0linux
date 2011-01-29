@@ -72,9 +72,6 @@ cd ${NAME}
 # On nettoie obligatoirement :
 make mrproper
 
-# Pour en finir avec les erreurs des applications utilisant scsi/scsi.h :
-cat $CWD/linux-headers.__u8-scsi.h.patch | patch -p1
-
 # On crée le seul répertoire nécessaire :
 mkdir -p ${PKG}/boot
 
