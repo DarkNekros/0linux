@@ -4,6 +4,7 @@ if [ ! "${SETUPROOT}" = "/" ]; then
 	mkdir -p ${SETUPROOT}/{proc,sys}
 	mount --bind /proc ${SETUPROOT}/proc 1> /dev/null 2> /dev/null
 	mount --bind /sys ${SETUPROOT}/sys 1> /dev/null 2> /dev/null
+	mount --bind /dev ${SETUPROOT}/dev 1> /dev/null 2> /dev/null
 fi
 
 if [ -r $TMP/choix_clavier ]; then
