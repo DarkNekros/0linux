@@ -23,7 +23,7 @@ while [ ! -r $TMP/choix_media ]; do
 		echo "Recherche d'un lecteur optique contenant un média d'installation..."
 		# On recherche les lecteurs IDE :
 		for optique in /dev/hd*; do
-			mount -o ro -t iso9660 ${optique} /var/log/mount 1> /dev/null 2> /dev/null
+			mount -o ro -t iso9660 ${optique} /var/log/mount 2> /dev/null
 			
 			# Périphérique trouvé :
 			if [ $? = 0 ]; then
@@ -31,15 +31,13 @@ while [ ! -r $TMP/choix_media ]; do
 				echo ${optique} > $TMP/choix_media
 				sleep 2
 				break
-			else
-				umount /var/log/mount 1> /dev/null 2> /dev/null
 			fi
 		done
 		
 			
 		# On recherche les lecteurs SCSI/SATA :
 		for optique in /dev/sr{0,1,2,3}; do
-			mount -o ro -t iso9660 ${optique} /var/log/mount 1> /dev/null 2> /dev/null
+			mount -o ro -t iso9660 ${optique} /var/log/mount 2> /dev/null
 			
 			# Périphérique trouvé :
 			if [ $? = 0 ]; then
@@ -47,8 +45,6 @@ while [ ! -r $TMP/choix_media ]; do
 				echo ${optique} > $TMP/choix_media
 				sleep 2
 				break
-			else
-				umount /var/log/mount 1> /dev/null 2> /dev/null
 			fi
 		done
 	;;
@@ -76,7 +72,7 @@ while [ ! -r $TMP/choix_media ]; do
 				continue
 			else
 				echo "Montage en cours du périphérique ${DISKSELECT} dans /var/log/mount..."
-				mount -o ro ${DISKSELECT} /var/log/mount 1> /dev/null 2> /dev/null
+				mount -o ro ${DISKSELECT} /var/log/mount 2> /dev/null
 				# Si le volume contient le répertoire '0/paquets/base', alors on
 				# considère qu'on tient là notre support d'installation :
 				if [ -d /var/log/mount/0/paquets/base ]; then
@@ -89,7 +85,7 @@ while [ ! -r $TMP/choix_media ]; do
 					echo "Ce périphérique ne contient pas de dépôt des paquets : j'ai recherché"
 					echo "le répertoire /var/log/mount/0/paquets/base, en vain. Démontage..."
 					sleep 2
-					umount /var/log/mount 1> /dev/null 2> /dev/null
+					umount /var/log/mount 2> /dev/null
 					continue
 				fi
 			fi
