@@ -38,17 +38,17 @@ mkdir -p ${PKG}/etc/rc.d
 mkdir -p ${PKG}/sbin
 
 # On copie les scripts en veillant à ne rien écraser :
-cp -a $CWD/scripts/rc.ip_forward ${PKG}/etc/rc.d/rc.ip_forward.new
+cp -a $CWD/rc.ip_forward ${PKG}/etc/rc.d/rc.ip_forward.new
 
 for script in HOSTNAME host.conf hosts.allow hosts.deny hosts.equiv hosts networks protocols reseau.conf resolv.conf; do
-	cp -a $CWD/scripts/${script} ${PKG}/etc/${script}.new
+	cp -a $CWD/${script} ${PKG}/etc/${script}.new
 	chmod 644 ${PKG}/etc/${script}.new
 done
 
 chmod 600 ${PKG}/etc/reseau.conf.new
 
 # On place le script de configuration réseau '0reseau' :
-cp -a $CWD/scripts/0reseau ${PKG}/sbin
+cp -a $CWD/0reseau ${PKG}/sbin
 chmod 755 ${PKG}/sbin/0reseau
 
 # On compresse les manuels :
