@@ -41,15 +41,18 @@ for paq in base-systeme* etc* eglibc* sgml* ; do
 	spkadd --root=${SETUPROOT} ${DIR0}/base/${paq} &>/dev/null 2>&1
 done
 
-# On installe tout le reste sauf linux-source-*, qu'on installe en dernier :
-for paquet in $(find ${DIR0} -type f \( -name "*.cpio" \
-	-a \! -name "base-systeme*" \
-	-a \! -name "etc*" \
-	-a \! -name "eglibc*" \
-	-a \! -name "sgml*" \
-	-a \! -name "linux-source*" \) | sort) ; do
-	spkadd --about ${paquet}
-	spkadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
+# On installe tout le reste sauf linux-source-*, qu'on installe en dernier,
+# tout en ignorant le répertoire 'extra' :
+for paquet in $(find ${DIR0} -type d \! -name "extra" | sort); do
+	for paquet in $(find ${DIR0}/${SUBDIR0} -type f \( -name "*.cpio" \
+		-a \! -name "base-systeme*" \
+		-a \! -name "etc*" \
+		-a \! -name "eglibc*" \
+		-a \! -name "sgml*" \
+		-a \! -name "linux-source*" \) | sort) ; do
+		spkadd --about ${paquet}
+		spkadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
+	done
 done
 
 # Les sources de Linux (appel à 'make' en post-installation, donc de

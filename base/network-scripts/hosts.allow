@@ -1,0 +1,4 @@
+#
+# /etc/hosts.allow : ce fichier décrit les noms d'hôte autorisés à accéder
+# aux services INET locaux.
+#
