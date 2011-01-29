@@ -116,12 +116,6 @@ make modules_install INSTALL_MOD_PATH=${PKGMODULES}
 # On supprime les firmwares (ce paquet est en 'extra/' pour tests !) :
 rm -rf ${PKGMODULES}/lib/firmware
 
-# On relie enfin les répertoires 'build' et 'source' des modules aux sources du noyau :
-rm -rf ${PKGMODULES}/lib/modules/${VERSION}-${RTVERSION}/build
-rm -rf ${PKGMODULES}/lib/modules/${VERSION}-${RTVERSION}/source
-ln -sf ../../../usr/src/linux-${VERSION}-${RTVERSION} ${PKGMODULES}/lib/modules/${VERSION}-${RTVERSION}/build
-ln -sf ../../../usr/src/linux-${VERSION}-${RTVERSION} ${PKGMODULES}/lib/modules/${VERSION}-${RTVERSION}/source
-
 # On installe les slack-desc :
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 echo "${NAMETGZMODULES}: ${NAMETGZMODULES} (${SLACKDESCMODULES})" > ${PKGMODULES}/install/slack-desc
