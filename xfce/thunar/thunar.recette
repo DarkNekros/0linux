@@ -85,7 +85,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION}/html \
+	--enable-gtk-doc-html=no \
+	--enable-gen-doc=no \
 	--build=${TARGET32}
 
 make -j3 || make
