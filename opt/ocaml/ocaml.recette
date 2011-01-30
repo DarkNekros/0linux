@@ -81,7 +81,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	-bindir /usr/bin \
 	-libdir /usr/lib${LIBDIRSUFFIX}/ocaml \
 	-mandir /usr/man \
-	--with-pthread
+	--with-pthread \
+	-host ${TARGET32}
 
 sed -i "s@\(BYTECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
 sed -i "s@\(NATIVECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
@@ -126,7 +127,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	-bindir /usr/bin \
 	-libdir /usr/lib${LIBDIRSUFFIX}/ocaml \
 	-mandir /usr/man \
-	--with-pthread
+	--with-pthread \
+	-host ${TARGET64}
 
 sed -i "s@\(BYTECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
 sed -i "s@\(NATIVECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
