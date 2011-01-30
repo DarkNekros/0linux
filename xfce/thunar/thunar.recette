@@ -85,9 +85,12 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-gtk-doc-html=no \
-	--enable-gen-doc=no \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION}/html \
 	--build=${TARGET32}
+
+# On force les liens symboliques pour la doc :
+sed -i 's@LN_S = ln -s@#f@g' Makefile
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
@@ -128,6 +131,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION}/html \
 	--build=${TARGET64}
+
+# On force les liens symboliques pour la doc :
+sed -i 's@LN_S = ln -s@#f@g' Makefile
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
