@@ -12,11 +12,11 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-tumbler}
-VERSION=${VERSION:-0.1.6}
+NAMESRC=${NAMESRC:-xfce4-screenshooter}
+VERSION=${VERSION:-1.7.9}
 EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-tumbler}
-BUILD=${BUILD:-2}
+NAMETGZ=${NAMETGZ:-xfce4-screenshooter}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -31,7 +31,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 WGET=${WGET:-http://www.xfce.org/archive/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Générateur de vignettes pour Xfce"
+SLACKDESC="Outil de capture d'écran pour Xfce"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
