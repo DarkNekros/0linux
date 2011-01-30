@@ -12,15 +12,15 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-VERSION=${VERSION:-0.4}
-NAMETGZ=${NAMETGZ:-network-scripts}
+VERSION=${VERSION:-0.1}
+NAMETGZ=${NAMETGZ:-reseau-systeme}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-noarch}
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Configuration réseau"
+SLACKDESC="Configuration et scripts réseau"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -37,8 +37,10 @@ mkdir -p ${PKG}
 mkdir -p ${PKG}/etc/rc.d
 mkdir -p ${PKG}/sbin
 
-# On copie les scripts en veillant à ne rien écraser :
+# On copie les scripts réseau en veillant à ne rien écraser :
 cp -a $CWD/rc.ip_forward ${PKG}/etc/rc.d/rc.ip_forward.new
+cp -a $CWD/rc.reseau ${PKG}/etc/rc.d/rc.reseau.new
+chmod 755 ${PKG}/etc/rc.d/rc.*
 
 for script in HOSTNAME host.conf hosts.allow hosts.deny hosts.equiv hosts networks protocols reseau.conf resolv.conf; do
 	cp -a $CWD/${script} ${PKG}/etc/${script}.new
@@ -88,6 +90,7 @@ config() {
 }
 
 config etc/rc.d/rc.ip_forward.new
+config etc/rc.d/rc.reseau.new
 config etc/hosts.deny.new
 config etc/hosts.equiv.new
 config etc/networks.new
