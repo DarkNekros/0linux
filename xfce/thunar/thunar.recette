@@ -87,14 +87,14 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
-# On force les liens symboliques pour la doc :
-sed -i "s@LN_S = ln -s@LN_S = ln -sf@g" Makefile
-
-fakeroot make -j3 || fakeroot make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# on nettoie la doc, problématique pour le 64 bits :
+rm -rf ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/html
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -129,10 +129,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-# On force les liens symboliques pour la doc :
-sed -i "s@LN_S = ln -s@LN_S = ln -sf@g" Makefile
-
-fakeroot make -j3 || fakeroot make
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
