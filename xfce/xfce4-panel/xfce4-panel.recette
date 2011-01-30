@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-xfce4-panel}
-VERSION=${VERSION:-4.8.0}
+VERSION=${VERSION:-4.8.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-panel}
 BUILD=${BUILD:-1}
