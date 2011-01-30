@@ -85,8 +85,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION}/html \
 	--build=${TARGET32}
 
 # On force les liens symboliques pour la doc :
@@ -129,7 +127,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION}/html \
 	--build=${TARGET64}
 
 # On force les liens symboliques pour la doc :
