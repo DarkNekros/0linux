@@ -78,8 +78,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
-	--enable-system \
-	--build=${TARGET64}
+	--enable-system
 
 make -j3 OS_CFLAGS="$SLKCFLAGS" || make OS_CFLAGS="$SLKCFLAGS"
 fakeroot make install DESTDIR=${PKG}
