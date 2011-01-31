@@ -62,7 +62,7 @@ for libbb in libICE.so* libSM.so* libX11.so* libXaw*.so* libXmu.so* libXt.so* \
 libbz2.so* libdb-*.so* libdbus-1.so* libexpat.so* libfreetype.so* libgcc_s.so* \
 libgcj.so* libglib-2.0.so* libgmp.so* libgobject-2.0.so* libgomp.so* \
 libgthread-2.0.so* libidn.so* libpopt.so* libpython*.so* libmpc.so* libmpfr.so* libssh2.so* \
-libstdc++.so* libperl.so* libz.so* libfuse.so* libxcb.so* libfreetype.so* libdb-5*.so*; do
+libstdc++.so* libperl.so* libz.so* libxcb.so* libfreetype.so* libdb-5*.so*; do
 	
 	find ${LIVEOS}/lib64 -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/lib64 \;
 	find ${LIVEOS}/usr/lib64 -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/usr/lib64 \;
@@ -82,7 +82,7 @@ done
 chroot ${LIVEOS} spkrm /var/log/paquets/{libXpm-*,libxcb*,freetype*,x11-libs*,libSM*,libICE*,libX*} &>/dev/null 2>&1
 
 # base
-for paq in multiarch_wrapper* vim* bzip2* zlib* fuse* ntfsprogs* dosfstools* tar* \
+for paq in multiarch_wrapper* vim* bzip2* zlib* tar* \
 linux-headers* dhcp-* perl* infozip* gfxboot* dialog* libxml2* sgml-common* \
 linux-modules* popt* binutils* tree*; do
 	
@@ -103,6 +103,7 @@ rm -rf ${LIVEOS}/usr/share/gtk-doc/*
 rm -f ${LIVEOS}/lib/*.{a,la,so.*,so}
 rm -f ${LIVEOS}/{,usr/}lib64/*.{a,la}
 rm -rf ${LIVEOS}/usr/lib/*
+rm -rf ${LIVEOS}/usr/include/*
 
 # On copie nos fichiers spéciaux pour le Live :
 install -m 644 $CWD/fstab ${LIVEOS}/etc
@@ -127,13 +128,13 @@ chroot ${LIVEOS} /sbin/ldconfig
 # On met à jour les dépendances des modules du noyau :
 chroot ${LIVEOS} /usr/sbin/depmod -a
 
-# On évite que se lance 'sshd' (+ effet d'escalier à l'affichage) :
+# On évite que se lance 'rc.sshd' (+ effet d'escalier à l'affichage) :
 chmod -x ${LIVEOS}/etc/rc.d/rc.sshd
 
 # On évite aussi que se lance 'rc.firewall' :
 chmod -x ${LIVEOS}/etc/rc.d/rc.firewall
 
-# On copie le nouveau noyau  sans sa version :
+# On copie le nouveau noyau sans sa version :
 rm -f ${NOYAU}
 cp ${LIVEOS}/boot/noyau-2* ${NOYAU}
 
