@@ -12,10 +12,10 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-ocaml}
-VERSION=${VERSION:-3.12.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-ocaml}
+NAMESRC=${NAMESRC:-qemu}
+VERSION=${VERSION:-0.12.5}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-qemu}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -28,10 +28,10 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://caml.inria.fr/pub/distrib/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="Changes INSTALL LICENSE README*"
+WGET=${WGET:-http://download.savannah.gnu.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DOC="COPYING* LICENSE MAINTAINERS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Le langage Objective Caml"
+SLACKDESC="Émulateur de processeurs"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -66,9 +66,6 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On force le 64 bits, juste pour être cohérent :
-sed -i "/aspp=/s/'gcc'/'gcc ${BUILD32}'/g" configure
-
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
@@ -80,30 +77,20 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
-	-prefix /usr \
-	-bindir /usr/bin \
-	-libdir /usr/lib${LIBDIRSUFFIX}/ocaml \
-	-mandir /usr/man \
-	--with-pthread \
-	-cc "gcc ${BUILD64}" \
-	-host ${TARGET64}
+	--prefix=/usr \
+	--enable-system \
+	--build=${TARGET64}
 
-# On force nos drapeaux de compilation :
-sed -i "s@\(BYTECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
-sed -i "s@\(NATIVECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
-
-make world
-make opt
-make opt.opt
-
-fakeroot make BINDIR=${PKG}/usr/bin LIBDIR=${PKG}/usr/lib${LIBDIRSUFFIX}/ocaml \
-MANDIR=${PKG}/usr/man install
-
-# On corrige une référence au paquet :
-sed -i "s@${PKG}@@" ${PKG}/usr/lib${LIBDIRSUFFIX}/ocaml/ld.conf
+make -j3 OS_CFLAGS="$SLKCFLAGS" || make OS_CFLAGS="$SLKCFLAGS"
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On déplace les manuels :
+if [ -d ${PKG}/usr/share/man ]; then
+	mv ${PKG}/usr/share/man ${PKG}/usr
+fi
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -123,6 +110,12 @@ fi
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+# On déplace la doc :
+if [ -d ${PKG}/usr/share/doc ]; then
+	mv ${PKG}/usr/share/doc/qemu/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+	rm -rf ${PKG}/usr/share/doc
+fi
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
