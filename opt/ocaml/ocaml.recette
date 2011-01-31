@@ -66,68 +66,6 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On force le 32 bits :
-sed -i "/aspp=/s/'gcc'/'gcc ${BUILD32}'/g" configure
-
-# On positionne USE_ARCH :
-export USE_ARCH=32
-
-# Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
-LIBDIRSUFFIX=""
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	-prefix /usr \
-	-bindir /usr/bin \
-	-libdir /usr/lib${LIBDIRSUFFIX}/ocaml \
-	-mandir /usr/man \
-	--with-pthread \
-	-cc "gcc ${BUILD32}" \
-	-host ${TARGET32}
-
-# On force nos drapeaux de compilation :
-sed -i "s@\(BYTECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
-sed -i "s@\(NATIVECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
-
-# On force l'assembleur à produire du code 32 bits :
-ln -sf i386/proc.ml asmcomp/proc.ml
-
-make world
-make opt
-make opt.opt
-
-fakeroot make BINDIR=${PKG}/usr/bin LIBDIR=${PKG}/usr/lib${LIBDIRSUFFIX}/ocaml \
-MANDIR=${PKG}/usr/man install
-
-# On corrige une référence au paquet :
-sed -i "s@${PKG}@@" ${PKG}/usr/lib${LIBDIRSUFFIX}/ocaml/ld.conf
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
-# On renomme les binaires 32 bits pour les envelopper :
-for binaire in camlp4 camlp4o camlp4o.opt camlp4r camlp4r.opt labltk mkcamlp4 \
-	ocaml ocamlbrowser ocamlc ocamlc.opt ocamldebug ocamldep ocamldep.opt \
-	ocamldoc ocamldoc.opt ocamlopt ocamlopt.opt ocamlprof ocamlrun ocpp; do
-	
-	mv ${PKG}/usr/bin/${binaire}{,-32}
-done
-
-# On re-déballe et on se re-place dans les sources :
-cd $TMP
-rm -rf ${NAME}
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
-
-# On re-vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
 # On force le 64 bits, juste pour être cohérent :
 sed -i "/aspp=/s/'gcc'/'gcc ${BUILD32}'/g" configure
 
@@ -154,9 +92,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 sed -i "s@\(BYTECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
 sed -i "s@\(NATIVECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
 
-# On force l'assembleur à produire du code 32 bits :
-ln -sf amd64/proc.ml asmcomp/proc.ml
-
 make world
 make opt
 make opt.opt
@@ -169,16 +104,6 @@ sed -i "s@${PKG}@@" ${PKG}/usr/lib${LIBDIRSUFFIX}/ocaml/ld.conf
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On renomme les binaires 64 bits pour les envelopper et on lie d efaux binaires au
-# programme enveloppe :
-for binaire in camlp4 camlp4o camlp4o.opt camlp4r camlp4r.opt labltk mkcamlp4 \
-	ocaml ocamlbrowser ocamlc ocamlc.opt ocamldebug ocamldep ocamldep.opt \
-	ocamldoc ocamldoc.opt ocamlopt ocamlopt.opt ocamlprof ocamlrun ocpp; do
-	
-	mv ${PKG}/usr/bin/${binaire}{,-64}
-	ln -sf multiarch_wrapper ${PKG}/usr/bin/${binaire}
-done
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
