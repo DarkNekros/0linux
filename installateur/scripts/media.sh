@@ -15,6 +15,7 @@ while [ 0 ]; do
 	echo "1 : DISQUE DUR/USB - depuis un disque dur, une clé USB, une carte mémoire"
 	echo "2 : CD/DVD         - depuis un disque optique (CD ou DVD)"
 	echo "3 : RÉPERTOIRE     - depuis un répertoire déjà monté manuellement"
+	echo "4 : IMAGE          - depuis un fichier-image présent sur le système"
 	echo ""
 	echo -n "Votre choix : "
 	read MEDIA;
@@ -31,8 +32,12 @@ while [ 0 ]; do
 		. repertoire.sh
 		break
 	;;
+	"4")
+		. fichier_iso.sh
+		break
+	;;
 	*)
-		echo "Veuillez entrer un numéro valide (entre 1 et 3)."
+		echo "Veuillez entrer un numéro valide (entre 1 et 4)."
 		sleep 2
 		unset MEDIA
 		continue

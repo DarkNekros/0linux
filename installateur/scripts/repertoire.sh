@@ -57,7 +57,7 @@ if [ "$(echo ${DETECTEDREPO} | wc -l)" -eq 1 ]; then
 	read DETECTSELECT;
 	# On crée un lien et un fichier 'choix_media' vide si le choix est accepté :
 	if [ "${DETECTSELECT}" = "oui" ]; then
-		ln -sf ${DETECTSELECT} /var/log/mount
+		ln -sf ${DETECTEDREPO} /var/log/mount
 		touch $TMP/choix_media
 	else
 		demander_choix_dir
