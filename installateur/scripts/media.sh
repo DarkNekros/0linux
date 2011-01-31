@@ -14,6 +14,7 @@ while [ 0 ]; do
 	echo ""
 	echo "1 : DISQUE DUR/USB - depuis un disque dur, une clé USB, une carte mémoire"
 	echo "2 : CD/DVD         - depuis un disque optique (CD ou DVD)"
+	echo "3 : RÉPERTOIRE     - depuis un répertoire déjà monté manuellement"
 	echo ""
 	echo -n "Votre choix : "
 	read MEDIA;
@@ -27,11 +28,11 @@ while [ 0 ]; do
 		break
 	;;
 	"3")
-		#. rsync.sh
+		. repertoire.sh
 		break
 	;;
 	*)
-		echo "Veuillez entrer un numéro valide (entre 1 et 2)."
+		echo "Veuillez entrer un numéro valide (entre 1 et 3)."
 		sleep 2
 		unset MEDIA
 		continue
