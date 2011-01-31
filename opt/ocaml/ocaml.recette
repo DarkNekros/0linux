@@ -93,8 +93,7 @@ sed -i "s@\(BYTECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
 sed -i "s@\(NATIVECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
 
 # On force l'assembleur à produire du code 32 bits :
-make asmcomp/proc.ml
-sed -i "/Ccomp.command/s/as/as --32/g" asmcomp/proc.ml
+ln -sf i386/proc.ml asmcomp/proc.ml
 
 make world
 make opt
@@ -154,6 +153,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 # On force nos drapeaux de compilation :
 sed -i "s@\(BYTECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
 sed -i "s@\(NATIVECCCOMPOPTS=.*\)@\1 ${SLKCFLAGS}@" config/Makefile
+
+# On force l'assembleur à produire du code 32 bits :
+ln -sf amd64/proc.ml asmcomp/proc.ml
 
 make world
 make opt
