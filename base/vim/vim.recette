@@ -7,17 +7,16 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
-
 
 NAMESRC=${NAMESRC:-vim}
 VERSION=${VERSION:-7.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-vim}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -80,7 +79,7 @@ export USE_ARCH=64
 # On force l'emplacement de 'vimrc' dans /etc :
 echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 
-# Compilation pour 64 bits :
+# Compilation pour 64 bits de 'gvim' pour X :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
@@ -91,18 +90,44 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--prefix=/usr \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--enable-gui=gtk2 \
 	--enable-pythoninterp \
 	--enable-perlinterp \
 	--enable-rubyinterp \
 	--enable-multibyte \
 	--with-features=huge \
-	--without-x \
-	--disable-gui \
-	--with-compiledby="<appzer0@free.fr>" \
+	--with-vim-name=gvim \
+	--with-x \
 	--build=${TARGET64}
 
-make
-fakeroot make install DESTDIR=${PKG}
+make -j3 || make
+fakeroot make install VIMRTDIR= DESTDIR=${PKG}
+
+# On crée un lien pour 'gview' :
+ln -sf gvim ${PKG}/usr/bin/gview
+
+# On nettoie la présente compilation :
+make distclean
+
+# Compilation pour 64 bits du 'vim' minimal sans X :
+SLKCFLAGS="-O2 -fPIC -pipe"
+LIBDIRSUFFIX="64"
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--disable-gui \
+	--enable-multibyte \
+	--with-features=tiny \
+	--without-x \
+	--build=${TARGET64}
+
+make -j3 || make
+fakeroot make installvimbin VIMRTDIR= DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -188,9 +213,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}

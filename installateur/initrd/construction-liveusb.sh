@@ -3,7 +3,7 @@
 
 # *** À LANCER EN ROOT ! ***
 # Lancer comme suit :  './construction-liveusb.recette PÉRIPHÉRIQUE_USB', par ex. :
-# 	# ./construction-liveusb.recette /dev/sdc
+# 	# ./construction-liveusb.sh /dev/sdc
 
 # ATTENTION : Bien vérifier qu'on désigne la clé USB et PAS un disque dur 
 # système et/ou données !!! Ne spécifiez PAS une partition (se terminant par un
@@ -23,7 +23,7 @@ umask 022
 CWD=$(pwd)
 
 # Changer ces paramètres via la ligne de commande, par ex. :
-# 	# SOURCES=/ici PAQUETS=/quelque/part LIVEOS=/ailleurs ./construction-liveusb.recette /dev/sdX
+# 	# SOURCES=/ici PAQUETS=/quelque/part LIVEOS=/ailleurs ./construction-liveusb.sh /dev/sdX
 
 SOURCES=${SOURCES:-/marmite/0/sources}
 PAQUETS=${PAQUETS:-/marmite/0/paquets}

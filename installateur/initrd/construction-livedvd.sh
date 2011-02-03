@@ -21,10 +21,10 @@ ISODIR=${ISODIR:-$TMP/iso}
 INITRDGZ=${INITRDGZ:-$TMP/initrd.gz}
 NOYAU=${NOYAU:-$TMP/noyau}
 
-if [ "$1" = " " ]; then
-	VERSION="2011"
-else
+if [ ! "$1" = "" ]; then
 	VERSION="$1"
+else
+	VERSION="2011"
 fi
 
 mkdir -p $TMP
