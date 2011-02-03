@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-shadow}
 VERSION=${VERSION:-4.1.4.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-shadow}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -92,10 +92,6 @@ fakeroot make install DESTDIR=${PKG}
 # On renomme en .new les fichiers à na pas écraser lors de mises à niveau :
 mv ${PKG}/etc/login.defs{,.new}
 mv ${PKG}/etc/login.access{,.new}
-
-# On ajoute le script '0nouvel_utilisateur' :
-cp -a $CWD/0nouvel_utilisateur ${PKG}/sbin
-chmod 755 ${PKG}/sbin/0nouvel_utilisateur
 
 # On déplace 'passwd' vers /bin et on le lie :
 mv ${PKG}/usr/bin/passwd ${PKG}/bin

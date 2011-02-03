@@ -12,7 +12,7 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-VERSION=${VERSION:-0.72}
+VERSION=${VERSION:-0.73}
 NAMETGZ=${NAMETGZ:-etc}
 BUILD=${BUILD:-1}
 
@@ -61,10 +61,6 @@ chmod 664 ${PKG}/var/run/utmp.new
 # On place le fichier de configuration du squelette de compte utilisateur :
 cp -a $CWD/xsession ${PKG}/etc/skel/.xsession
 chmod 755 ${PKG}/etc/skel/.xsession
-
-# On copie le script '0locale' :
-cp -a $CWD/0locale ${PKG}/sbin
-chmod 755 ${PKG}/sbin/0locale
 
 # On restreint les permissions sur *shadow :
 chmod 640 ${PKG}/etc/{,g}shadow.new

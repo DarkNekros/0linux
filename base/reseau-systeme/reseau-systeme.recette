@@ -12,7 +12,7 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-VERSION=${VERSION:-0.1}
+VERSION=${VERSION:-0.2}
 NAMETGZ=${NAMETGZ:-reseau-systeme}
 BUILD=${BUILD:-1}
 
@@ -42,16 +42,10 @@ cp -a $CWD/rc.ip_forward ${PKG}/etc/rc.d/rc.ip_forward.new
 cp -a $CWD/rc.reseau ${PKG}/etc/rc.d/rc.reseau.new
 chmod 755 ${PKG}/etc/rc.d/rc.*
 
-for script in HOSTNAME host.conf hosts.allow hosts.deny hosts.equiv hosts networks protocols reseau.conf resolv.conf; do
+for script in HOSTNAME host.conf hosts.allow hosts.deny hosts.equiv hosts networks protocols resolv.conf; do
 	cp -a $CWD/${script} ${PKG}/etc/${script}.new
 	chmod 644 ${PKG}/etc/${script}.new
 done
-
-chmod 600 ${PKG}/etc/reseau.conf.new
-
-# On place le script de configuration réseau '0reseau' :
-cp -a $CWD/0reseau ${PKG}/sbin
-chmod 755 ${PKG}/sbin/0reseau
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -98,12 +92,10 @@ config etc/resolv.conf.new
 config etc/host.conf.new
 config etc/hosts.allow.new
 config etc/protocols.new
-config etc/reseau.conf.new
 
 # Inutiles, et sûrement déjà configurés :
 rm -f etc/HOSTNAME.new
 rm -f etc/hosts.new
-rm -f etc/resolv.conf.new
 
 EOF
 
