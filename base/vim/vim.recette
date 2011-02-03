@@ -127,7 +127,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64}
 
 make -j3 || make
-fakeroot make installvimbin VIMRTDIR= DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -151,6 +150,10 @@ set spell
 set background=dark
 set number
 set mouse=a" >> ${PKG}/etc/vimrc.new
+
+# On place le binaire :
+cp -a src/vim ${PKG}/usr/bin
+chmod 755 ${PKG}/usr/bin/vim
 
 # On ajoute un lien de 'vi' vers 'vim' :
 ln -sf vim ${PKG}/usr/bin/vi
