@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+
+# Ce script utilise $SETUPROOT. Si la variable n'existe pas, il s'installe sur la racine.
+
+# On nettoie :
+unset CHOIXTZ CHOIXZONE TZSELECTRESULT FAIL TZCODE FUSEAUTAB
+
+while [ 0 ]; do
+	if [ "${TZOK}" = "OK" ]; then
+		break
+	fi
+	clear
+	echo -e "\033[1;32mDéfinition du fuseau horaire.\033[0;0m"
+	echo ""
+	echo "Entrez ci-après le code de la rubrique souhaitée parmi la liste suivante."
+	echo ""
+	echo "La liste francophone tente de contenir les pays membres de la Francophonie"
+	echo "et les pays dont la communauté francophone est connue. Si votre emplacement"
+	echo "n'y figure pas, il vous fauda entrer manuellement l'emplacement du fichier"
+	echo "du fuseau horaire via l'utilisation de 'tzselect' (en anglais)."
+	echo ""
+	echo "1 : Choisir un fuseau horaire dans la liste francophone"
+	echo "2 : Entrer manuellement un fuseau horaire via 'tzselect'"
+	echo ""
+	echo -n "Votre choix : "
+	read CHOIXTZ;
+	if [ "${CHOIXTZ}" = "2" ]; then
+		while [ 0 ]; do
+			clear
+			echo -e "\033[1;32mChoix du fuseau horaire via 'tzselect'.\033[0;0m"
+			echo ""
+			echo "Passez sur la console n°2 et tapez 'tzselect' afin de choisir votre"
+			echo "fuseau horaire en suivant les instructions à l'écran, puis revenez sur"
+			echo "cette console pour y recopier le résultat de 'tzselect' (la dernière ligne"
+			echo "affichée, qui doit être de la forme « Zone/Sous-zone »)."
+			echo ""
+			echo -n "Votre fuseau (ex. : Europe/Paris) : "
+			read TZSELECTRESULT;
+			if [ ! -r /usr/share/zoneinfo/${TZSELECTRESULT} ]; then
+				echo "Ce fuseau horaire n'existe pas ! Le fichier "
+				echo "'/usr/share/zoneinfo/${TZSELECTRESULT}' est introuvable."
+				echo "Veuillez saisir un fichier de fuseau valide."
+				echo "Exemples :"
+				echo "	Africa/Casablanca"
+				echo "	America/New_York"
+				echo "	America/Winnipeg"
+				echo "	Europe/Paris"
+				echo "	Indian/Reunion"
+				echo "Appuyez sur ENTRÉE pour saisir un autre fuseau horaire."
+				read FAIL;
+				unset TZSELECTRESULT
+				continue
+			else
+				TZOK="OK"
+				break
+			fi
+		done
+	elif [ "${CHOIXTZ}" = "1" ]; then
+		clear
+		echo -e "\033[1;32mChoix d'une zone géographique.\033[0;0m"
+		echo ""
+		echo "Entrez ci-après le code de la zone où vous vous trouvez ou tapez 0 pour annuler."
+		echo ""
+		echo -e "\033[0;32mAfrique                 Amérique              Europe         Océan Atlantique\033[0;0m"
+		echo -e "1  Algérie              28 Dominique          49 Albanie     74 Cap-Vert"
+		echo -e "2  Bénin                29 Guadeloupe         50 Andorre"
+		echo -e "3  Burkina Faso         30 Guyane française   51 Autriche    \033[0;32mOcéan Indien\033[0;0m"
+		echo -e "4  Burundi              31 Haïti              52 Belgique    75 Comores"
+		echo -e "5  Cameroun             32 Martinique         53 Bulgarie    76 Madagascar"
+		echo -e "6  Centrafrique         33 Maine              54 Chypre      77 Maurice"
+		echo -e "7  Congo-Brazzaville    34 Manitoba           55 Croatie     78 Mayotte"
+		echo -e "8  Congo-Kinshasa       35 New York           56 France      79 Réunion"
+		echo -e "9  Côte d'Ivoire        36 Nouveau-Brunswick  57 Grèce       80 Seychelles"
+		echo -e "10 Djibouti             37 Québec             58 Hongrie"
+		echo -e "11 Égypte               38 Saint-Martin       59 Italie      \033[0;32mOcéan Pacifique\033[0;0m"
+		echo -e "12 Gabon                39 Sainte-Lucie       60 Lettonie    81 Gambier"
+		echo -e "13 Ghana                40 Vermont            61 Lituanie    82 Nlle-Calédonie"
+		echo -e "14 Guinée                                     62 Luxembourg  83 Tahiti"
+		echo -e "15 Guinée-Bissau        \033[0;32mAsie\033[0;0m                  63 Macédoine   84 Vanuatu"
+		echo -e "16 Guinée équatoriale   41 Arménie            64 Moldavie    85 Wallis-et-Futuna"
+		echo -e "17 Mali                 42 Cambodge           65 Monaco"
+		echo -e "18 Maroc                43 Géorgie            66 Pologne"
+		echo -e "19 Mauritanie           44 Israël             67 Roumanie"
+		echo -e "20 Mozambique           45 Laos               68 Serbie"
+		echo -e "21 Niger                46 Liban              69 Slovaquie"
+		echo -e "22 Rwanda               47 Thaïlande          70 Slovénie"
+		echo -e "23 Sao Tomé-et-Principe 48 Viêt-Nam           71 Suisse"
+		echo -e "24 Sénégal                                    72 Tchéquie"
+		echo -e "25 Tchad                                      73 Ukraine"
+		echo -e "26 Togo"
+		echo -e "27 Tunisie"
+		echo -e ""
+		echo -e "0 Annuler"
+		echo -e ""
+		echo -n "Votre choix : "
+		read TZCODE;
+		# On remplit le tableau des fuseaux :
+		INDICE=0
+		for fuseau in Africa/Algeria Africa/Porto-Novo Africa/Ouagadougou Africa/Bujumbura Africa/Douala \
+		Africa/Bangui Africa/Brazzaville Africa/Kinshasa Africa/Abidjan Africa/Djibouti \
+		Africa/Cairo Africa/Accra Africa/Libreville Africa/Conakry Africa/Bissau Africa/Malabo \
+		Africa/Bamako Africa/Casablanca Africa/Nouakchott Africa/Maputo Africa/Niamey \
+		Africa/Kigali Africa/Sao_Tome Africa/Dakar Africa/Ndjamena Africa/Lome Africa/Tunis \
+		America/Dominica America/Guadeloupe America/Guyana America/Port-au-Prince \
+		America/Martinique America/New_York America/Winnipeg America/New_York America/Moncton \
+		America/Montreal America/Marigot America/St_Lucia America/New_York Asia/Yerevan \
+		Asia/Phnom_Penh Asia/Tbilisi Asia/Jerusalem Asia/Vientiane Asia/Beirut Asia/Bangkok \
+		Asia/Ho_Chi_Minh Europe/Tirane Europe/Andorra Europe/Vienna Europe/Brussels \
+		Europe/Sofia Europe/Nicosia Europe/Zagreb Europe/Paris Europe/Athens Europe/Budapest \
+		Europe/Rome Europe/Riga Europe/Vilnius Europe/Luxembourg Europe/Skopje Europe/Chisinau \
+		Europe/Monaco Europe/Warsaw Europe/Bucharest Europe/Belgrade Europe/Bratislava \
+		Europe/Ljubljana Europe/Zurich Europe/Prague Europe/Kiev Atlantic/Cape_Verde \
+		Indian/Comoro Indian/Antananarivo Indian/Mauritius Indian/Mayotte Indian/Reunion \
+		Indian/Mahe Pacific/Gambier Pacific/Noumea Pacific/Tahiti Pacific/Efate Pacific/Wallis; do
+			INDICE=${INDICE}+1
+			FUSEAUTAB[${INDICE}]="${fuseau}"
+		done
+		FUSEAUCHOISI=${FUSEAUTAB[${TZCODE}]}
+		break
+	else
+		echo "Veuillez entrer un numéro valide (entre 0 et 85)."
+		sleep 2
+		unset TZCODE CHOIXTZ
+		continue
+	fi
+done
+
+# On installe le fichier '/etc/localtime' :
+ln -sf ../usr/share/zoneinfo/${FUSEAUCHOISI} ${SETUPROOT}/etc/localtime
+
+# On crée le fichier '/etc/hardwareclock' :
+echo "# /etc/hardwareclock : fichier de configuration de l'horloge matérielle." > ${SETUPROOT}/etc/hardwareclock
+echo "localtime" >> ${SETUPROOT}/etc/hardwareclock
+
+# Si $SETUPROOT est positionnée, on doit chrooter sur la racine :
+if [ ! "${SETUPROOT}" = "" ]; then
+	chroot ${SETUPROOT} hwclock --localtime --hctosys 2>/dev/null
+else
+	hwclock --localtime --hctosys 2>/dev/null
+fi
+
+# C'est fini !

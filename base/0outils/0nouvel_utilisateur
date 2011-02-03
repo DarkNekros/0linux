@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+if [ ! "$UID" = "0" ]; then
+	echo "Seul root peut ajouter un utilisateur."
+	exit 1
+fi
+
+# On nettoie :
+unset USERNM USERID
+
+# Cette fonction supprime les espaces superflus via 'echo' :
+crunch() {
+	read STRING;
+	echo ${STRING};
+}
+
+while [ 0 ]; do
+	clear
+	echo -e "\033[1;32mAjout d'un nouvel utilisateur.\033[0;0m"
+	echo ""
+	echo "Entrez ci-après le nom du nouvel utilisateur souhaité."
+	echo "Le nom ne doit comporter ni majuscule, ni ponctuation, ni caractère"
+	echo "spécial et ne doit pas commencer par un chiffre."
+	echo ""
+	echo -n "Votre choix : "
+	read USERNM;
+	# Si l'utilisateur se trompe :
+	if [ "${USERNM}" = "" -o ! "$(echo ${USERNM} | grep -E '^[0-9]|\.')" = "" -o \
+		! "${USERNM}" = "$(echo ${USERNM} | tr A-Z a-z)" ]; then
+		echo "Veuillez entrer un nom d'utilisateur valide."
+		unset USERNM
+		sleep 2
+		continue
+	else
+		# Si l'utilisateur existe déjà :
+		if [ ! "$(grep \"^${USERNM}:\" /etc/passwd)" = "" ]; then
+			echo "Cet utilisateur existe déjà ! Veuillez en choisir un autre."
+			unset USERNM
+			sleep 2
+			continue
+		else
+			# Le nom d'utilisateur est OK :
+			break
+		fi
+	fi
+done
+
+# Choix de l'UID :
+clear
+echo -e "\033[1;32mChoix d'un numéro d'identifiant utilisateur (UID).\033[0;0m"
+echo ""
+echo "Entrez ci-après le numéro d'identifiant utilisateur souhaité ou appuyez sur"
+echo "ENTRÉE pour le choix par défaut (1000 pour le premier utilisateur créé)."
+echo ""
+echo -n "Votre choix : "
+read USERID;
+# Si l'utilisateur choisit le paramètre par défaut :
+if [ "${USERID}" = "" ]; then
+	USERID=1000
+fi
+
+# On incrémente $USERID tant qu'on trouve un utilisateur avec le même UID :
+while [ 0 ]; do
+	if [ "$(cat /etc/passwd | grep ${USERID} | crunch | cut -d':' -f3)" = "" ]; then
+		break
+	else
+		USERID=$(($USERID +1))
+		continue
+	fi
+done
+
+# Si le répertoire utilisateur existe déjà :
+if [ -d /home/${USERNM} ]; then
+	chmod 711 /home/${USERNM}
+# Sinon, on crée le répertoire utilisateur :
+else
+	mkdir -p /home/${USERNM}
+	chmod 711 /home/${USERNM}
+fi
+
+# On crée maintenant l'utilisateur sans oublier les groupes supplémentaires :
+useradd ${USERNM} -M -u ${USERID} -g users -G audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,video -s /bin/bash
+
+# On peut maintenant modifier les permissions :
+chown ${USERNM}.users /home/${USERNM}
+
+# On définit un mot de passe pour le nouvel utilisateur :
+passwd ${USERNM}
+
+# C'est fini !

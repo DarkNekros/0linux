@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# On nettoie :
+unset CHOIXLOCALE LOCALE
+
+clear
+echo -e "\033[1;32mLocalisation francophone du système.\033[0;0m"
+echo ""
+echo "Veuillez entrer le code de la localisation francophone souhaitée"
+echo "parmi la liste ci-dessous :"
+echo ""
+echo "1 : en_US.UTF-8 - Ignorer la localisation francophone"
+echo "2 : fr_BE.UTF-8 - Système en français de Belgique"
+echo "3 : fr_CA.UTF-8 - Système en français du Canada"
+echo "4 : fr_CH.UTF-8 - Système en français de Suisse"
+echo "5 : fr_FR.UTF-8 - Système en français de France"
+echo "6 : fr_LU.UTF-8 - Système en français du Luxembourg"
+echo ""
+echo -n "Votre choix : "
+read CHOIXLOCALE;
+case "$CHOIXLOCALE" in
+"1")
+	LOCALE="en_US.UTF-8"
+;;
+"2")
+	LOCALE="fr_BE.UTF-8"
+;;
+"3")
+	LOCALE="fr_CA.UTF-8"
+;;
+"4")
+	LOCALE="fr_CH.UTF-8"
+;;
+"5")
+	LOCALE="fr_FR.UTF-8"
+;;
+"6")
+	LOCALE="fr_LU.UTF-8"
+;;
+*)
+	echo "Veuillez entrer un numéro valide (entre 1 et 6)."
+	sleep 2
+	continue
+esac
+
+# On entre la locale dans le fichier profil :
+echo "export LC_ALL=${LOCALE}" >> /etc/profile.d/lang.sh
+echo "export LANG=${LOCALE}" >> /etc/profile.d/lang.sh
+echo "" >> /etc/profile.d/lang.sh
+
+# C'est fini !
