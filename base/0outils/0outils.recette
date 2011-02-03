@@ -44,10 +44,10 @@ mkdir -p ${PKG}/{etc,{,s}bin}
 
 # On place les scripts réservés à root :
 for script in $CWD/0*; do
-	cp -a ${script} ${pkg}/sbin
+	cp -a ${script} ${PKG}/sbin
 done
 
-chmod 755 ${pkg}/sbin/*
+chmod 755 ${PKG}/sbin/*
 
 # On place les script utilisateurs :
 cp -a $CWD/0bureau ${PKG}/bin
