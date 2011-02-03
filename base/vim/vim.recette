@@ -132,7 +132,7 @@ make -j3 || make
 unset USE_ARCH
 
 # On ajoute le dictionnaire pour le français en encodage UTF-8 :
-cp -a $CWD/fr.utf-8.* ${PKG}/usr/share/vim/vim$(echo ${VERSION} | tr -d ".")/spell
+cp -a $CWD/fr.utf-8.* ${PKG}/usr/share/vim/vim$(echo ${VERSION} | tr -d ".")/spell/
 
 # On copie le vimrc à sa place :
 cp -a runtime/vimrc_example.vim ${PKG}/usr/share/vim
