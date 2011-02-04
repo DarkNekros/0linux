@@ -87,9 +87,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-consolekit \
 	--enable-gnome \
-	--enable-panel-plugin
+	--enable-panel-plugin \
 	--enable-polkit \
-	--enable-session-screenshots \-
+	--enable-session-screenshots \
 	--enable-upower \
 	--build=${TARGET32}
 
@@ -132,9 +132,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-consolekit \
 	--enable-gnome \
-	--enable-panel-plugin
+	--enable-panel-plugin \
 	--enable-polkit \
-	--enable-session-screenshots \-
+	--enable-session-screenshots \
 	--enable-upower \
 	--build=${TARGET64}
 
