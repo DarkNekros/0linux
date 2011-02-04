@@ -1,0 +1,119 @@
+# /etc/nanorc : fichier de configuration de 'nano'.
+#
+# Consultez le fichier 'nanorc.sample' dans al documentation pour un exemple
+# plus complet (en anglais) des paramètres disponibles.
+
+# Auto-indentation :
+set autoindent
+
+# Les fichiers sont sauvegardés en 'fichier~' :
+set backup
+
+# Les caractères, à la suite, traités comme des fermetures de parenthèses/crochets/expressions :
+set brackets ""')>]}"
+
+# Le type de césure pour les fins de ligne :
+set cut
+set nowrap
+
+# Les caractères ouvrants et fermants pour les recherches :
+set matchbrackets "(<[{)>]}"
+
+# Support de la souris, via GPM ou sous X, pour placer le curseur, des marques
+# ou des raccourcis :
+set mouse
+
+# On permet les tampons (ou « buffers ») multiples (l'insertion d'un fichier
+# se fait alors dans un tampon séparé du tampon principal) :
+set multibuffer
+
+# Les caractères de ponctuation traités comme des fins de phrase :
+set punct "!.?"
+
+# Activer les expressions régulières par défaut lors des recherches :
+set regexp
+
+# Touche DÉBUT intelligente, se plaçant différemment selon le contexte :
+set smarthome
+
+# Utiliser 'aspell' pour vérifier l'orthographe. Français de France pour chauvins
+# par défaut :
+set speller "aspell -x -c --lang=fr_FR"
+
+# Les fichiers de coloration syntaxique spécifiques aux langages :
+include "@PKGDATADIR@/nanorc.nanorc"
+
+# C/C++
+ include "@PKGDATADIR@/c.nanorc"
+
+# Fichiers Makefile
+include "@PKGDATADIR@/makefile.nanorc"
+
+# CSS
+include "@PKGDATADIR@/css.nanorc"
+
+# Debian
+include "@PKGDATADIR@/debian.nanorc"
+
+# Gentoo
+include "@PKGDATADIR@/gentoo.nanorc"
+
+# HTML
+include "@PKGDATADIR@/html.nanorc"
+
+# PHP
+include "@PKGDATADIR@/php.nanorc"
+
+# TCL
+include "@PKGDATADIR@/tcl.nanorc"
+
+# TeX
+include "@PKGDATADIR@/tex.nanorc"
+
+# Courriels en citation (sous 'mutt' par exemple)
+include "@PKGDATADIR@/mutt.nanorc"
+
+# Correctifs/patches
+include "@PKGDATADIR@/patch.nanorc"
+
+# Manuels
+include "@PKGDATADIR@/man.nanorc"
+
+# Groff
+include "@PKGDATADIR@/groff.nanorc"
+
+# Perl
+include "@PKGDATADIR@/perl.nanorc"
+
+# Python
+include "@PKGDATADIR@/python.nanorc"
+
+# Ruby
+include "@PKGDATADIR@/ruby.nanorc"
+
+# Java
+include "@PKGDATADIR@/java.nanorc"
+
+# Fortran
+include "@PKGDATADIR@/fortran.nanorc"
+
+# Objective-C
+include "@PKGDATADIR@/objc.nanorc"
+
+# OCaml
+include "@PKGDATADIR@/ocaml.nanorc"
+
+# AWK
+include "@PKGDATADIR@/awk.nanorc"
+
+# Assembleur
+include "@PKGDATADIR@/asm.nanorc"
+
+# Scripts shell
+include "@PKGDATADIR@/sh.nanorc"
+
+# POV-Ray
+include "@PKGDATADIR@/pov.nanorc"
+
+# Fichiers XML
+include "@PKGDATADIR@/xml.nanorc"
