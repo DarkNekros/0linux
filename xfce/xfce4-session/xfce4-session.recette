@@ -99,6 +99,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On supprime la doc pour éviter un conflit lors de la création en 64 bits :
+fakeroot rm -rf ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/*
+
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
 rm -rf ${NAME}
