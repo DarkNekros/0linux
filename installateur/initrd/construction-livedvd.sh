@@ -134,9 +134,9 @@ chmod -x ${LIVEOS}/etc/rc.d/rc.sshd
 # On évite aussi que se lance 'rc.firewall' :
 chmod -x ${LIVEOS}/etc/rc.d/rc.firewall
 
-# On copie le nouveau noyau sans sa version :
+# On déplace et on renomme le nouveau noyau sans sa version :
 rm -f ${NOYAU}
-cp ${LIVEOS}/boot/noyau-2* ${NOYAU}
+mv ${LIVEOS}/boot/noyau-2* ${NOYAU}
 
 # On positionne le fuseau à Paris car on est franco-français et chauvin :
 echo "localtime" > ${LIVEOS}/etc/hardwareclock
