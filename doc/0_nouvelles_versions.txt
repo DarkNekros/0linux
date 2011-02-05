@@ -1,5 +1,5 @@
 Binutils 2.21
-coreutils 8.9 
+coreutils 8.10 
 dbus-glib 0.90
 GnuTLS 2.10.4
 groff 1.21
