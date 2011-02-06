@@ -43,7 +43,7 @@ done
 # On installe tout le reste sauf linux-source-*, qu'on installe en dernier,
 # tout en ignorant le répertoire 'extra' :
 for subdir0 in $(find ${DIR0} -type d \! -name "extra" | sort); do
-	for paquet in $(find ${DIR0}/${subdir0} -type f \( -name "*.cpio" \
+	for paquet in $(find ${subdir0} -type f \( -name "*.cpio" \
 		-a \! -name "base-systeme*" \
 		-a \! -name "etc*" \
 		-a \! -name "eglibc*" \
