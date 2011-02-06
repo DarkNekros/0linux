@@ -3,6 +3,7 @@
 # On nettoie :
 unset BLURB
 
+DIR0=$(find /var/log/mount -type d -name "paquets" -print 2>/dev/null)
 # Quelques vérif' avant l'installation des paquets. '/var/log/mount' doit
 # à ce stade contenir le répertoire 'paquets' et les paquets résidents : 
 if [ "${DIR0}" = "" ]; then
@@ -41,8 +42,6 @@ done
 
 # On installe tout le reste sauf linux-source-*, qu'on installe en dernier,
 # tout en ignorant le répertoire 'extra' :
-DIR0=$(find /var/log/mount -type d -name "paquets" -print 2>/dev/null)
-
 for subdir0 in $(find ${DIR0} -type d \! -name "extra" | sort); do
 	for paquet in $(find ${DIR0}/${subdir0} -type f \( -name "*.cpio" \
 		-a \! -name "base-systeme*" \

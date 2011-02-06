@@ -3,7 +3,6 @@
 
 set -e
 umask 022
-CWD=$(pwd)
 
 unset PLOP
 
@@ -107,7 +106,7 @@ libidn* libpng* libssh2* mpc* mpfr* popt* python-2* ruby*; do
 	
 done
 
-echo "Nettoyage..."
+echo -n "Nettoyage... "
 # On copie les bibliothèques requises en dépendances pour les isoler :
 mkdir -p ${LIVEOS}/conserver/{,usr/}lib64
 
@@ -151,9 +150,13 @@ linux-modules* popt* binutils* tree* vim*; do
 	
 done
 
-# On ramène les bibliothèques : 
+# On ramène les bibliothèques et le nécesaire pour 'vim' : 
 cp -a ${LIVEOS}/conserver/usr/lib64/* ${LIVEOS}/usr/lib64/
 cp -a ${LIVEOS}/conserver/lib64/* ${LIVEOS}/lib64/
+cp -a ${LIVEOS}/conserver/vim ${LIVEOS}/usr/bin/
+mkdir -p ${LIVEOS}/usr/share/vim/lang/
+cp -ar ${LIVEOS}/conserver/fr ${LIVEOS}/usr/share/vim/lang/
+cp -a ${LIVEOS}/conserver/vimrc ${LIVEOS}/etc/
 rm -rf ${LIVEOS}/conserver
 
 # On allège : les bibliothèques 32 bits sous '/lib' :
@@ -172,13 +175,13 @@ rm -rf ${LIVEOS}/usr/include/*
 
 echo "Copie des fichiers..."
 # On copie nos fichiers spéciaux pour le Live :
-install -m 644 $CWD/fstab ${LIVEOS}/etc
-install -m 755 $CWD/{HOSTNAME,profile} ${LIVEOS}/etc
-install -m 755 $CWD/rc.* ${LIVEOS}/etc/rc.d
+install -m 644 ${SOURCES}/installateur/initrd/fstab ${LIVEOS}/etc
+install -m 755 ${SOURCES}/installateur/initrd/{HOSTNAME,profile} ${LIVEOS}/etc
+install -m 755 ${SOURCES}/installateur/initrd/rc.* ${LIVEOS}/etc/rc.d
 
 # On copie l'installateur et l'aide :
-install -m 755 $CWD/../scripts/{installateur,*.sh} ${LIVEOS}/sbin
-install -m 644 $CWD/../scripts/aide.txt ${LIVEOS}
+install -m 755 ${SOURCES}/installateur/scripts/{installateur,*.sh} ${LIVEOS}/sbin
+install -m 644 ${SOURCES}/installateur/scripts/aide.txt ${LIVEOS}
 
 # On crée le lien pour 'init' :
 ln -sf sbin/init ${LIVEOS}/init
