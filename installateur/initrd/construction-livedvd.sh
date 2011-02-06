@@ -1,22 +1,71 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-# *** À LANCER EN ROOT ! Suivi de la version souhaitée dans le nom de l'ISO. Ex. :
-#
-#	./construction-livedvd.sh alpha4
-#
-# ... créera l'image ISO '/tmp/0linux-alpha4-DVD.iso'.
+# *** À LANCER EN ROOT !
 
 set -e
 umask 022
 CWD=$(pwd)
 
+syntaxerror() {
+	echo "Erreur : ligne de commande incorrecte. "
+	echo ""
+	echo "Exemples :"
+	echo "Créer une clé USB (préalablement formatée en ext2/3/4) :"
+	echo "	./construction-live.sh usb /dev/sdc1 ext "
+	echo "Créer une clé USB (préalablement formatée en FAT/NTFS) :"
+	echo "	./construction-live.sh usb /dev/sdd1"
+	echo "Créer une image ISO de DVD amorçable avec la version \"alpha4\" :"
+	echo "	./construction-live.sh dvd alpha4"
+	echo ""
+	exit 1
+}
+		
+# On vérifie qu'on est bien root :
+if [ ! "$(whoami)" = "root" ]; then
+	echo "Erreur : veuillez m'exécuter en tant que root uniquement !"
+	exit 1
+fi
+
+# Si l'on veut créer une clé USB, on doit choisir entre 'extlinux' et 'syslinux' :
+if [ "$1" = "usb" ]; then
+	if [ ! "$(echo $2 | grep dev)" = "" ]; then
+		if [ "$3" = "ext" ]; then
+			SYSLINUXDIR="extlinux"
+			SYSLINUXINSTALL="extlinux --install"
+		else
+			SYSLINUXDIR="syslinux"
+			SYSLINUXINSTALL="syslinux"
+		fi
+	else
+		syntaxerr
+	fi
+elif [ "$1" = "dvd" ]; then
+
+
+
+
+	
+	break
+elif [ "$CHOIXMETHODE" = "2" ]; then
+	break
+elif [ "$CHOIXMETHODE" = "3" ]; then
+	break
+else
+	echo "Veuillez entrer un numéro valide (entre 1 et 3)."
+	sleep 2
+	unset CHOIXMETHODE
+	continue
+fi
+
+
+
 SOURCES=${SOURCES:-/marmite/0/sources}
 PAQUETS=${PAQUETS:-/marmite/0/paquets}
-TMP=${TMP:-/marmite/temp}
+TMP=${TMP:-/usr/local/temp}
 
 LIVEOS=${LIVEOS:-$TMP/liveos}
-DVDROOT=${DVDROOT:-$TMP/dvdroot}
+MEDIAROOT=${MEDIAROOT:-$TMP/mediaroot}
 ISODIR=${ISODIR:-$TMP/iso}
 INITRDGZ=${INITRDGZ:-$TMP/initrd.gz}
 NOYAU=${NOYAU:-$TMP/noyau}
@@ -27,27 +76,30 @@ else
 	VERSION="2011"
 fi
 
+rm -rf $TMP
 mkdir -p $TMP
 
 # On crée et on vide les répertoires d'accueil :
-rm -rf ${DVDROOT} ${NOYAU} ${LIVEOS} ${NOYAU}
+rm -rf ${MEDIAROOT} ${LIVEOS} ${NOYAU} ${INITRDGZ}
 rm -f ${ISODIR}/0linux-${VERSION}-DVD.iso
 mkdir -p ${LIVEOS} ${ISODIR} 
-mkdir -p ${DVDROOT}/{boot/isolinux,0/paquets}
+mkdir -p ${MEDIAROOT}/{boot/{extlinux,isolinux,syslinux}},0/paquets}
 
 # On installe les paquets pour le LiveOS :
-echo "Création du DVD autonome en cours..."
-echo -n "Installation en cours... "
+echo "Installation du système temporaire en cours... "
 
 # base :
+echo -n "base... "
 for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*"); do
 	spkadd --quiet --root=${LIVEOS} ${paq} &>/dev/null 2>&1
 done
 
 # xorg :
+echo -n "xorg... "
 spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{libxcb*,freetype*,libX*,x11-libs*,libSM*,libICE*}.cpio &>/dev/null 2>&1
 
 # opt :
+echo -n "opt... "
 for paq in bc-* berkeley-db* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
 libidn* libpng* libssh2* mpc* mpfr* popt* python-2* ruby*; do
 	
@@ -55,6 +107,7 @@ libidn* libpng* libssh2* mpc* mpfr* popt* python-2* ruby*; do
 	
 done
 
+echo "Nettoyage..."
 # On copie les bibliothèques requises en dépendances pour les isoler :
 mkdir -p ${LIVEOS}/conserver/{,usr/}lib64
 
@@ -69,6 +122,14 @@ libstdc++.so* libperl.so* libz.so* libxcb.so* libfreetype.so* libdb-5*.so*; do
 	
 done
 
+# On récupère le minimum de l'éditeur 'vim' (on dispose aussi de 'nano') :
+cp -a ${LIVEOS}/usr/bin/vim ${LIVEOS}/conserver
+cp -ar ${LIVEOS}/usr/share/vim/lang/fr ${LIVEOS}/conserver
+cp -a ${LIVEOS}/etc/vimrc ${LIVEOS}/conserver
+
+# On supprime la vérification orthographique de 'vim' :
+sed -i "s@set spell@\" &@g" ${LIVEOS}/conserver/vimrc
+
 # On désinstalle les paquets superflus, maintenant qu'on a les bibliothèques en lieu sûr :
 # opt
 for paq in bc-* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
@@ -79,32 +140,37 @@ libidn* libpng* python-2* ruby* mpfr* mpc* libssh2* berkeley-db*; do
 done
 
 # xorg
-chroot ${LIVEOS} spkrm /var/log/paquets/{libXpm-*,libxcb*,freetype*,x11-libs*,libSM*,libICE*,libX*} &>/dev/null 2>&1
+chroot ${LIVEOS} spkrm /var/log/paquets/{libX*,libxcb*,freetype*,x11-libs*,libSM*,libICE*} &>/dev/null 2>&1
 
 # base
 for paq in multiarch_wrapper* vim* bzip2* zlib* tar* \
 linux-headers* dhcp-* perl* infozip* gfxboot* dialog* libxml2* sgml-common* \
-linux-modules* popt* binutils* tree*; do
+linux-modules* popt* binutils* tree* vim*; do
 	
 	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
 	
 done
-
-echo "Terminé."
 
 # On ramène les bibliothèques : 
 cp -a ${LIVEOS}/conserver/usr/lib64/* ${LIVEOS}/usr/lib64/
 cp -a ${LIVEOS}/conserver/lib64/* ${LIVEOS}/lib64/
 rm -rf ${LIVEOS}/conserver
 
-# On allège :
-rm -rf ${LIVEOS}/usr/doc/*
-rm -rf ${LIVEOS}/usr/share/gtk-doc/*
+# On allège : les bibliothèques 32 bits sous '/lib' :
 rm -f ${LIVEOS}/lib/*.{a,la,so.*,so}
-rm -f ${LIVEOS}/{,usr/}lib64/*.{a,la}
+# La documentation :
+rm -rf ${LIVEOS}/usr/doc/*
+# La documentation pour 'gtk-doc' :
+rm -rf ${LIVEOS}/usr/share/gtk-doc/*
+# Les bibliothèques 32 bits :
 rm -rf ${LIVEOS}/usr/lib/*
+# Toutes les bibliothéques statiques et pour 'libtool' :
+find ${LIVEOS} -type f -name "*.a" -delete
+find ${LIVEOS} -type f -name "*.la" -delete
+# Tous les fichiers entêtes :
 rm -rf ${LIVEOS}/usr/include/*
 
+echo "Copie des fichiers..."
 # On copie nos fichiers spéciaux pour le Live :
 install -m 644 $CWD/fstab ${LIVEOS}/etc
 install -m 755 $CWD/{HOSTNAME,profile} ${LIVEOS}/etc
@@ -143,33 +209,38 @@ echo "localtime" > ${LIVEOS}/etc/hardwareclock
 ln -sf ../usr/share/zoneinfo/Europe/Paris ${LIVEOS}/etc/localtime
 
 # On crée l'initrd :
-echo -n "Création de l'initrd en cours... "
+echo -n "Création de l'initrd... "
 rm -f ${INITRDGZ}
 cd ${LIVEOS}
-find . | cpio -v -o -H newc | gzip -9 > ${INITRDGZ}
+find . | cpio -o -H newc | gzip -9 > ${INITRDGZ}
 echo "Terminé."
 
-echo -n "Copie des fichiers en cours... "
-# On copie tous les fichiers de isolinux/ :
-cp -ar ${SOURCES}/installateur/isolinux/* ${DVDROOT}/boot/isolinux/
-
-# On copie les modules binaires de Syslinux :
-cp -a /usr/share/syslinux/{{chain,kbdmap,linux,reboot,vesamenu}.c32,isolinux.bin} ${DVDROOT}/boot/isolinux/
-chmod +x ${DVDROOT}/boot/isolinux/*.c32
-
+echo "Copie des paquets, du noyau et de l'initrd..."
 # On copie le noyau et l'initrd :
-cp -a ${INITRDGZ} ${NOYAU} ${DVDROOT}/boot/
+cp -a ${INITRDGZ} ${NOYAU} ${MEDIAROOT}/boot/
 
 # On copie tous les paquets :
-rsync -auv --delete-after ${PAQUETS}/* ${DVDROOT}/0/paquets
+rsync -au --delete-after ${PAQUETS}/* ${MEDIAROOT}/0/paquets
+
+echo "Copie des paquets et du chargeur d'amorçage..."
+# On copie tous les fichiers de isolinux/ :
+cp -ar ${SOURCES}/installateur/isolinux/* ${MEDIAROOT}/boot/isolinux/
+
+# On copie les modules binaires pour isolinux :
+cp -a /usr/share/syslinux/{{chain,kbdmap,linux,reboot,vesamenu}.c32,isolinux.bin} ${MEDIAROOT}/boot/isolinux/
+chmod +x ${MEDIAROOT}/boot/isolinux/*.c32
+# On copie les modules binaires pour extlinux :
+cp -a /usr/share/syslinux/{chain,kbdmap,linux,reboot,vesamenu}.c32 /mnt/tmp/boot/extlinux/
+chmod +x /mnt/tmp/boot/extlinux/*.c32
+
 
 # On s'assure des permissions :
-chown -R root:root ${DVDROOT}/* 2> /dev/null || true
+chown -R root:root ${MEDIAROOT}/* 2> /dev/null || true
 
 # On crée enfin l'image ISO :
-cd ${DVDROOT}
+cd ${MEDIAROOT}
 mkisofs -o ${ISODIR}/0linux-${VERSION}-DVD.iso \
-	-A "0 linux DVD" \
+	-A "DVD 0linux" \
 	-b boot/isolinux/isolinux.bin \
 	-c boot/isolinux/boot.cat \
 	-d \
@@ -177,12 +248,12 @@ mkisofs -o ${ISODIR}/0linux-${VERSION}-DVD.iso \
 	-l \
 	-N \
 	-R \
-	-V "0linuxDVD" \
+	-V "DVD0linux" \
 	-boot-load-size 4 \
 	-boot-info-table \
 	-hide-rr-moved \
 	-no-emul-boot \
-	${DVDROOT}
+	${MEDIAROOT}
 
 echo "L'image '${ISODIR}/0linux-${VERSION}-DVD.iso' a été créée ."
 

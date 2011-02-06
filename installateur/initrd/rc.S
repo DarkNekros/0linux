@@ -12,32 +12,20 @@ rm -f /etc/mtab* /etc/nologin 1> /dev/null 2> /dev/null
 mount /proc 1> /dev/null 2> /dev/null
 
 # On règle l'horloge système selon l'horloge matérielle :
-if [ -x /sbin/hwclock ]; then
-	if grep -wq "^UTC" /etc/hardwareclock ; then
-		hwclock --utc --hctosys
-	else
-		hwclock --localtime --hctosys
-	fi
+if grep -wq "^UTC" /etc/hardwareclock ; then
+	hwclock --utc --hctosys 2>/dev/null
+else
+	hwclock --localtime --hctosys 2>/dev/null
 fi
 
-# On active 'syslog' pour épurer l'affichage :
-syslogd 2> /dev/null
-klogd -c 3 1> /dev/null
-
 # On monte tout notre 'fstab' :
-mount -o remount,rw /
-mount -a 1> /dev/null 2> /dev/null
+mount -a 2> /dev/null
 
 # On lance 'udev' :
 . /etc/rc.d/rc.udev start
 
 # On donne un nom à notre hôte :
 hostname --file /etc/HOSTNAME
-
-# On tente d'activer le réseau :
-if [ -x /etc/rc.d/rc.inet1 ]; then
-	. /etc/rc.d/rc.inet1
-fi
 
 # On charge la police :
 . /etc/rc.d/rc.font
