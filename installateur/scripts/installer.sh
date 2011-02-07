@@ -42,8 +42,9 @@ done
 
 # On installe tout le reste sauf linux-source-*, qu'on installe en dernier,
 # tout en ignorant le répertoire 'extra' :
-for subdir0 in $(find ${DIR0} -type d \! -name "extra" | sort); do
-	for paquet in $(find ${subdir0} -type f \( -name "*.cpio" \
+for subdir0 in base opt xorg xfce; do
+	for paquet in $(find ${DIR0}/${subdir0} -type f \( \
+		-name "*.cpio" \
 		-a \! -name "base-systeme*" \
 		-a \! -name "etc*" \
 		-a \! -name "eglibc*" \
@@ -57,6 +58,6 @@ done
 # Les sources de Linux (appel à 'make' en post-installation, donc de
 # nombreuses dépendances) :
 spkadd --about ${DIR0}/base/linux-source-*
-spkadd --root=${SETUPROOT} ${DIR0}/base/linux-source-* &>/dev/null 2>&1
+spkadd --root=${SETUPROOT} ${DIR0}/base/linux-source* &>/dev/null 2>&1
 
 # C'est fini !

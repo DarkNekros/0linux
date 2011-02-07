@@ -53,6 +53,9 @@ done
 
 # Boucle de configuration du réseau :
 while [ 0 ]; do
+	if [ "${NETCONFIG}" = "ok" ]; then
+		break
+	fi
 	clear
 	echo -e "\033[1;32mConfiguration du réseau filaire.\033[0;0m"
 	echo ""
@@ -90,13 +93,12 @@ while [ 0 ]; do
 				echo ""
 				echo -n "Votre choix : "
 				read DHCPHOST;
-				if [ "$DHCPHOST" = "" ]; then
-					break
-				else
+				if [ ! "$DHCPHOST" = "" ]; then
 					# On envoie l'hôte DHCP à la section pour eth0 :
 					sed -i "s/HOTEDHCP\[0\]=/&${DHCPHOST}/" /etc/reseau.conf
-					break
 				fi
+				NETCONFIG="ok"
+				break
 			done
 			
 		# Configuration manuelle :
@@ -161,6 +163,7 @@ while [ 0 ]; do
 					break
 				fi
 			done
+			NETCONFIG="ok"
 		fi
 	fi
 done

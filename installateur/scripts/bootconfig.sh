@@ -15,10 +15,10 @@ while [ 0 ]; do
 	echo -e "\033[1;32mInstallation du chargeur d'amorçage GRUB.\033[0;0m"
 	echo ""
 	echo "Voulez-vous installer le chargeur d'amorçage GRUB2 sur le bloc"
-	echo "de démarrage (ou « MBR ») de votre premier disque dur ?"
-	echo "N.B.: Tout ancien 0MBR sera écrasé !"
+	echo "d'amorçage principal (ou « MBR ») de votre premier disque dur ?"
+	echo "N.B.: Tout ancien MBR sera écrasé !"
 	echo ""
-	echo "1 : Installation GRUB2 sur le MBR de $(cat $TMP/partition_racine | crunch | cut -b1-8)"
+	echo "1 : Installer GRUB2 sur le MBR de $(cat $TMP/partition_racine | crunch | cut -b1-8)"
 	echo "2 : Voir comment configurer d'autres chargeurs d'amorçage pour amorcer 0"
 	echo "3 : Ignorer l'installation de GRUB2 et revenir au menu principal"
 	echo ""
@@ -44,7 +44,7 @@ while [ 0 ]; do
 		break
 	elif [ "$GRUBINST" = "1" ]; then
 		# On remplace le '/dev/sda1' pour 0 par la racine dans le fichier de config' :
-		sed -i "s@/dev/sda1 ro vt.default_utf8=1@$(cat $TMP/partition_racine | crunch) ro vt.default_utf8=1@" ${SETUPROOT}/etc/grub/d/40_custom
+		sed -i "s@/dev/sda1 ro vt.default_utf8=1@$(cat $TMP/partition_racine | crunch) ro vt.default_utf8=1@" ${SETUPROOT}/etc/grub.d/40_custom
 		
 		# On ajoute un éventuel système Windows :
 		if [ "$(fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' 2> /dev/null | wc -l)" -gt "0" ]; then
@@ -84,13 +84,14 @@ while [ 0 ]; do
 				fi
 				
 				# On remplit le fichier de config' pour Windows:
-				echo "# Entrée pour Windows :" >> ${SETUPROOT}/etc/grub/d/40_custom
-				echo "menuentry \"Windows\" {" >> ${SETUPROOT}/etc/grub/d/40_custom
-				echo "	set root=(hd${WINDISK},$(echo WINBOOT | cut -b9))" >> ${SETUPROOT}/etc/grub/d/40_custom
-				echo "	chainloader +1" >> ${SETUPROOT}/etc/grub/d/40_custom
-				echo "}" >> ${SETUPROOT}/etc/grub/d/40_custom
-				echo "" >> ${SETUPROOT}/etc/grub/d/40_custom
+				echo "# Entrée pour Windows :" >> ${SETUPROOT}/etc/grub.d/40_custom
+				echo "menuentry \"Windows\" {" >> ${SETUPROOT}/etc/grub.d/40_custom
+				echo "	set root=(hd${WINDISK},$(echo WINBOOT | cut -b9))" >> ${SETUPROOT}/etc/grub.d/40_custom
+				echo "	chainloader +1" >> ${SETUPROOT}/etc/grub.d/40_custom
+				echo "}" >> ${SETUPROOT}/etc/grub.d/40_custom
+				echo "" >> ${SETUPROOT}/etc/grub.d/40_custom
 			fi
+		fi
 		
 		# Il est temps d'installer GRUB2 en chrootant sur la racine :
 		echo "Installation de GRUB2..."

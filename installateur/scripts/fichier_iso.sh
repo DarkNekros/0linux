@@ -37,7 +37,8 @@ demander_choix_iso() {
 				echo "Ce fichier est introuvable. Veuillez recommencer"
 				sleep 2
 				unset ISOSELECT
-			continue
+				continue
+			fi
 		fi
 	done
 }
