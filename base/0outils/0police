@@ -2,6 +2,12 @@
 
 unset CONSOLEFONT
 
+# Cette fonction supprime les espaces superflus via 'echo' :
+crunch() {
+	read STRING;
+	echo $STRING;
+}
+
 while [ 0 ]; do
 	clear
 	echo -e "\033[1;32mChoix de la police console.\033[0;0m"

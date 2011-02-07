@@ -49,14 +49,6 @@ fi
 chmod 755 / 2> /dev/null
 chmod 1777 /tmp /var/tmp
 
-# Lancement du serveur de pointage GPM :
-if [ -x /etc/rc.d/rc.gpm ]; then
-	. /etc/rc.d/rc.gpm start
-fi
-
-# On attend que les messages ne polluent plus l'écran :
-sleep 3
-
 # On lance la configuration du clavier d'office :
 . clavier.sh
 

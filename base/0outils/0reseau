@@ -74,7 +74,7 @@ while [ 0 ]; do
 	read CHOIXCONFIG;
 	if [ "$CHOIXCONFIG" = "" ]; then
 		break
-	elif
+	else
 		if [ "$CHOIXCONFIG" = "1" ]; then
 			# Boucle pour la config' par DHCP :
 			while [ 0 ]; do
@@ -99,70 +99,68 @@ while [ 0 ]; do
 				fi
 			done
 			
-			# Configuration manuelle :
-			else
-				while [ 0 ]; do
-					clear
-					echo -e "\033[1;32mConfiguration manuelle du réseau.\033[0;0m"
-					echo ""
-					echo "Veuillez entrer ci-dessous votre paramètres réseau, séparés par"
-					echo "des espaces. Entrez successivement votre IP, votre masque de sous-"
-					echo "réseau, puis l'IP de votre passerelle par défaut sous la forme"
-					echo "« xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx »."
-					echo "Exemple : 192.168.0.12 255.255.255.0 192.168.0.254"
-					echo ""
-					echo -n "Votre choix : "
-					read NETPARAMS;
-					if [ "$NETPARAMS" = "" ]; then
-						break
-					else
-						# L'IP :
-						IPPARAM="$(echo $NETPARAMS | crunch | cut -d' ' -f1)"
-						# Le masque de sous-réseau :
-						MASKPARAM="$(echo $NETPARAMS | crunch | cut -d' ' -f2)"
-						# L'IP de la passerelle :
-						GATEPARAM="$(echo $NETPARAMS | crunch | cut -d' ' -f3)"
-						# Si l'utilisateur a mal entré ses paramètres :
-						if [ "$IPPARAM" = "" -o "$MASKPARAM" = "" -o "$GATEPARAM" = ""]; then
-							echo "Veuillez entrer 3 IP successives, séparées par un espace."
-							sleep 2
-							unset NETPARAMS
-							continue
-						fi
-						# On envoie les paramètres à la section pour eth0 :
-						sed -i "s/IP\[0\]=/&${IPPARAM}/" /etc/reseau.conf
-						sed -i "s/SOUSRESEAU\[0\]=/&${MASKPARAM}/" /etc/reseau.conf
-						sed -i "s/PASSERELLE=/&${GATEPARAM}/" /etc/reseau.conf
-						break
+		# Configuration manuelle :
+		else
+			while [ 0 ]; do
+				clear
+				echo -e "\033[1;32mConfiguration manuelle du réseau.\033[0;0m"
+				echo ""
+				echo "Veuillez entrer ci-dessous votre paramètres réseau, séparés par"
+				echo "des espaces. Entrez successivement votre IP, votre masque de sous-"
+				echo "réseau, puis l'IP de votre passerelle par défaut sous la forme"
+				echo "« xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx »."
+				echo "Exemple : 192.168.0.12 255.255.255.0 192.168.0.254"
+				echo ""
+				echo -n "Votre choix : "
+				read NETPARAMS;
+				if [ "$NETPARAMS" = "" ]; then
+					break
+				else
+					# L'IP :
+					IPPARAM="$(echo $NETPARAMS | crunch | cut -d' ' -f1)"
+					# Le masque de sous-réseau :
+					MASKPARAM="$(echo $NETPARAMS | crunch | cut -d' ' -f2)"
+					# L'IP de la passerelle :
+					GATEPARAM="$(echo $NETPARAMS | crunch | cut -d' ' -f3)"
+					# Si l'utilisateur a mal entré ses paramètres :
+					if [ "$IPPARAM" = "" -o "$MASKPARAM" = "" -o "$GATEPARAM" = ""]; then
+						echo "Veuillez entrer 3 IP successives, séparées par un espace."
+						sleep 2
+						unset NETPARAMS
+						continue
 					fi
-				done
-				
-				# Le serveur de noms pour '/etc/resolv.conf' :
-				while [ 0 ]; do
-					clear
-					echo -e "\033[1;32mConfiguration d 'un éventuel serveur de noms de domaine (DNS).\033[0;0m"
-					echo ""
-					echo "Si vous devez utiliser des serveurs de noms de domaine (DNS) précis"
-					echo "pour accéder au réseau, veuillez entrer ci-après 1 ou 2 de leurs IP."
-					echo "Appuyez sur ENTRÉE pour ignorer cette étape."
-					echo "Exemple : 212.27.134.42 212.27.134.50"
-					echo ""
-					echo -n "Votre choix : "
-					read DNSSERVERS;
-					DNS1="$(echo $DNSSERVERS | crunch | cut -d' ' -f1)"
-					DNS2="$(echo $DNSSERVERS | crunch | cut -d' ' -f2)"
-					if [ "$DNS1" = "" -a "$DNS2" = "" ]; then
-						echo "" > /etc/resolv.conf
-						break
-					else
-						# On envoie les IP à '/etc/resolv.conf' en écrasant le contenu:
-						echo "nameserver ${DNS1}" > /etc/resolv.conf
-						echo "nameserver ${DNS2}" >> /etc/resolv.conf
-						break
-					fi
-				done
-				
-			fi
+					# On envoie les paramètres à la section pour eth0 :
+					sed -i "s/IP\[0\]=/&${IPPARAM}/" /etc/reseau.conf
+					sed -i "s/SOUSRESEAU\[0\]=/&${MASKPARAM}/" /etc/reseau.conf
+					sed -i "s/PASSERELLE=/&${GATEPARAM}/" /etc/reseau.conf
+					break
+				fi
+			done
+			
+			# Le serveur de noms pour '/etc/resolv.conf' :
+			while [ 0 ]; do
+				clear
+				echo -e "\033[1;32mConfiguration d 'un éventuel serveur de noms de domaine (DNS).\033[0;0m"
+				echo ""
+				echo "Si vous devez utiliser des serveurs de noms de domaine (DNS) précis"
+				echo "pour accéder au réseau, veuillez entrer ci-après 1 ou 2 de leurs IP."
+				echo "Appuyez sur ENTRÉE pour ignorer cette étape."
+				echo "Exemple : 212.27.134.42 212.27.134.50"
+				echo ""
+				echo -n "Votre choix : "
+				read DNSSERVERS;
+				DNS1="$(echo $DNSSERVERS | crunch | cut -d' ' -f1)"
+				DNS2="$(echo $DNSSERVERS | crunch | cut -d' ' -f2)"
+				if [ "$DNS1" = "" -a "$DNS2" = "" ]; then
+					echo "" > /etc/resolv.conf
+					break
+				else
+					# On envoie les IP à '/etc/resolv.conf' en écrasant le contenu:
+					echo "nameserver ${DNS1}" > /etc/resolv.conf
+					echo "nameserver ${DNS2}" >> /etc/resolv.conf
+					break
+				fi
+			done
 		fi
 	fi
 done
