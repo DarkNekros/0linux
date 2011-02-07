@@ -44,7 +44,8 @@ while [ 0 ]; do
 		break
 	elif [ "$GRUBINST" = "1" ]; then
 		# On remplace le '/dev/sda1' pour 0 par la racine dans le fichier de config' :
-		sed -i "s@/dev/sda1 ro vt.default_utf8=1@$(cat $TMP/partition_racine | crunch) ro vt.default_utf8=1@" ${SETUPROOT}/etc/grub.d/40_custom
+		sed -i "s@/dev/sda1 ro vt.default_utf8=1@$(cat $TMP/partition_racine | crunch) ro vt.default_utf8=1@" \
+			${SETUPROOT}/etc/grub.d/40_custom
 		
 		# On ajoute un éventuel système Windows :
 		if [ "$(fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' 2> /dev/null | wc -l)" -gt "0" ]; then
@@ -95,6 +96,11 @@ while [ 0 ]; do
 		
 		# Il est temps d'installer GRUB2 en chrootant sur la racine :
 		echo "Installation de GRUB2..."
+		
+		# On s'assure que 'grub.cfg' n'est pas renommé (ça sent le vécu) :
+		find ${SETUPROOT}/boot/grub/ -type f -name "grub.cfg*" -delete 2>/dev/null
+		
+		# On génère le fichier de config' et on installe sur le MBR :
 		chroot ${SETUPROOT} grub-mkconfig -o /boot/grub/grub.cfg 2>/dev/null
 		sleep 1
 		chroot ${SETUPROOT} grub-install $(cat $TMP/partition_racine | crunch | cut -b1-8) &>/dev/null 2>&1

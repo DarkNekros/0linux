@@ -2,7 +2,7 @@
 
 # On nettoie avant toute chose :
 rm -f $TMP/choix_swap $TMP/ignorer_swap
-unset NOSWAP JHVF SWAPSELECT ABANDONSWAP BLAH
+unset NOSWAP JHVF SWAPSELECT ABANDONSWAP
 
 # On tente de détecter une ou plusieurs partitions swap existantes :
 listeswap() {
@@ -102,18 +102,7 @@ while [ 0 ]; do
 			echo "		swapon ${SWAPSELECT}"
 			swapon ${SWAPSELECT}
 			touch $TMP/choix_swap
-			echo "${SWAPSELECT}		swap		swap		defaults	0	0" > $TMP/choix_swap
-			sleep 1
-			clear
-			echo -e "\033[1;32mPartition d'échange configurée.\033[0;0m"
-			echo ""
-			echo "La partition d'échange ${SWAPSELECT} sera ajoutée à votre"
-			echo "fichier '/etc/fstab' de la façon suivante :"
-			echo ""
-			cat $TMP/choix_swap
-			echo ""
-			echo -n "Appuyez sur ENTRÉE pour continuer."
-			read BLAH;
+			echo "${SWAPSELECT}	swap		swap		defaults		0 0" > $TMP/choix_swap
 			break
 		fi
 	fi
