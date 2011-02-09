@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Certains scripts ont besoin de /proc et /sys :
+# Certains scripts ont besoin de /proc, /sys et /dev :
 if [ ! "${SETUPROOT}" = "/" ]; then
 	mkdir -p ${SETUPROOT}/{proc,sys}
 	mount --bind /proc ${SETUPROOT}/proc 1> /dev/null 2> /dev/null
@@ -39,6 +39,9 @@ chroot ${SETUPROOT} 0reseau
 
 # On définit un mot de passe pour root :
 . motdepasseroot.sh
+
+# On crée un nouvel utilisateur :
+chroot ${SETUPROOT} 0nouvel_utilisateur
 
 # C'est fini !
 

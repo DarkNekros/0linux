@@ -97,16 +97,16 @@ while [ 0 ]; do
 		# Il est temps d'installer GRUB2 en chrootant sur la racine :
 		echo "Installation de GRUB2..."
 		
-		# On s'assure que 'grub.cfg' n'est pas renommé (ça sent le vécu) :
-		find ${SETUPROOT}/boot/grub/ -type f -name "grub.cfg*" -delete 2>/dev/null
-		
 		# On génère le fichier de config' et on installe sur le MBR :
 		chroot ${SETUPROOT} grub-mkconfig -o /boot/grub/grub.cfg 2>/dev/null
-		sleep 1
+		
+		# On s'assure que 'grub.cfg' n'est pas renommé (ça sent le vécu) :
+		if [ -r ${SETUPROOT}/boot/grub/grub.cfg.new ]; then
+			mv ${SETUPROOT}/boot/grub/grub.cfg{.new,}
+		fi
+		
 		chroot ${SETUPROOT} grub-install $(cat $TMP/partition_racine | crunch | cut -b1-8) &>/dev/null 2>&1
-		sleep 1
 		chroot ${SETUPROOT} grub-setup $(cat $TMP/partition_racine | crunch | cut -b1-8) &>/dev/null 2>&1
-		sleep 1
 		break
 	else
 		echo "Veuillez entrer un chiffre entre 1 et 3 uniquement"

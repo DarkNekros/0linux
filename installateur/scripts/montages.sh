@@ -91,6 +91,8 @@ done
 # On écrit le fichier '/etc/fstab'. D'abord la partition swap :
 if [ ! -r $TMP/ignorer_swap ]; then
 	if [ -r $TMP/choix_swap ]; then
+		mkdir -p ${SETUPROOT}/etc
+		touch ${SETUPROOT}/etc/fstab
 		echo "# Partition d'échange « swap » :" >> ${SETUPROOT}/etc/fstab
 		cat $TMP/choix_swap >> ${SETUPROOT}/etc/fstab
 		echo "" >> ${SETUPROOT}/etc/fstab

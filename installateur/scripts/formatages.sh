@@ -39,6 +39,7 @@ while [ 0 ]; do
 		# On lance tous les formatages présents dans le fichier temporaire :
 		sh $TMP/formatages
 		echo "Terminés."
+		break
 	else
 		echo "Veuillez entrer « oui » ou appuyer sur ENTRÉE uniquement."
 		sleep 2
