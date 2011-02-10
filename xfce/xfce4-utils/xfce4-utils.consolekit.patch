@@ -1,0 +1,30 @@
+Updating branch refs/heads/master
+         to 96af982828d767763640c84f38b80bf0d3eb52b1 (commit)
+       from 35579be690bae1471154bb3d469308b477b4a3be (commit)
+
+commit 96af982828d767763640c84f38b80bf0d3eb52b1
+Author: Nick Schermer <n...@xfce.org>
+Date:   Mon Jul 26 19:53:53 2010 +0200
+
+    Launch xfce4-session with ck-launch-session if installed.
+
+ scripts/xinitrc.in.in |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/scripts/xinitrc.in.in b/scripts/xinitrc.in.in
+index 4807c66..d00476b 100755
+--- a/scripts/xinitrc.in.in
++++ b/scripts/xinitrc.in.in
+@@ -195,7 +195,11 @@ fi
+ 
+ # Run xfce4-session if installed
+ if type xfce4-session >/dev/null 2>&1; then
+-    xfce4-session
++    if type ck-launch-session >/dev/null 2>&1; then
++      ck-launch-session xfce4-session
++    else
++      xfce4-session
++    fi
+ 
+     if test "$ssh_agent_kill_cmd"; then
+         echo "running '$ssh_agent_kill_cmd'"
