@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-grub}
 VERSION=${VERSION:-1.98}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-grub}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-6}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -106,7 +106,7 @@ mv ${PKG}/etc/grub.d/40_custom{,.new}
 cp -a $CWD/0-grub-background.png ${PKG}/boot/grub
 
 # On injecte notre '40_custom' à nous :
-cat $CWD/40_custom >> ${PKG}/etc/grub.d/40_custom.new
+cat $CWD/40_custom > ${PKG}/etc/grub.d/40_custom.new
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
