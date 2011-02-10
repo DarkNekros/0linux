@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-grub}
 VERSION=${VERSION:-1.98}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-grub}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -107,9 +107,6 @@ cp -a $CWD/0-grub-background.png ${PKG}/boot/grub
 
 # On injecte notre '40_custom' à nous :
 cat $CWD/40_custom >> ${PKG}/etc/grub.d/40_custom.new
-
-# On place le fichier de thème graphique :
-install -m755 $CWD/05_0_theme ${PKG}/etc/grub.d/05_0_theme
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

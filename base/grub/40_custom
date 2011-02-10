@@ -1,5 +1,7 @@
-# /boot/grub/grub.cfg : fichier de configuration pour GRUB
+#!/bin/sh
+exec tail -n +3 $0
 
+# /boot/grub/grub.cfg : fichier de configuration pour GRUB
 # Voici les correspondances entre les volumes de Linux et ceux de GRUB.
 
 # Les volumes sont numérotés dans GRUB à partir de 0, les partitions à

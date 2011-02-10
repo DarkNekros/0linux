@@ -14,9 +14,10 @@ GRUB_DISTRIBUTOR="0"
 GRUB_CMDLINE_LINUX_DEFAULT="splash=silent"
 GRUB_CMDLINE_LINUX=""
 
-# La résolution graphique :
+# La résolution graphique et l'arrière-plan :
 GRUB_TERMINAL_OUTPUT="gfxterm"
 GRUB_GFXMODE=640x480
+GRUB_BACKGROUND="0-grub-background.png"
 
 # On désactive les entrées du mode "recovery" :
 GRUB_DISABLE_LINUX_RECOVERY="true"
