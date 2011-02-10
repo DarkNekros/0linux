@@ -1,6 +1,11 @@
+#!/bin/sh
+exec tail -n +3 $0
 # /boot/grub/grub.cfg : fichier de configuration pour GRUB
 
-# Les graphismes :
+# On insère les graphismes :
+insmod vbe
+insmod png
+background_image /boot/grub/0-grub-background.png
 set menu_color_normal=green/black
 set menu_color_highlight=light-green/black
 

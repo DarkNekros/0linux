@@ -15,7 +15,7 @@ done
 VERSION=${VERSION:-7.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-apps}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -145,6 +145,7 @@ chmod 755 ${PKG}/etc/X11/xinit/xinitrc.twm
 mkdir -p ${PKG}/usr/lib{,64}/X11/xdm
 cp -a $CWD/0-xdm ${PKG}/usr/lib/X11/xdm
 cp -a $CWD/0-xdm ${PKG}/usr/lib64/X11/xdm
+chmod 755 ${PKG}/usr/lib{,64}/X11/xdm/0-xdm/{buttons,Xsetup,Xstartup}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

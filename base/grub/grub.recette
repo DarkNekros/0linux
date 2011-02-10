@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-grub}
 VERSION=${VERSION:-1.98}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-grub}
-BUILD=${BUILD:-7}
+BUILD=${BUILD:-8}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
