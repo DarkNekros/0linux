@@ -43,15 +43,17 @@ if [ -x /etc/rc.d/rc.sysvinit ]; then
 fi
 
 # Lancement des programmes pour GTK+ et Pango dans les 2 architectures :
-if [ -d /etc/gtk-2.0 ]; then
+if [ ! -r etc/gtk-2.0-64/gdk-pixbuf.loaders ]; then
 	echo "Mise à jour des modules GTK+..."
 	gdk-pixbuf-query-loaders-32 > /etc/gtk-2.0-32/gdk-pixbuf.loaders
 	gdk-pixbuf-query-loaders-64 > /etc/gtk-2.0-64/gdk-pixbuf.loaders
+	gdk-pixbuf-query-loaders-32 --update-cache
+	gdk-pixbuf-query-loaders-64 --update-cache
 	gtk-query-immodules-2.0-32 > /etc/gtk-2.0-32/gtk.immodules
 	gtk-query-immodules-2.0-64 > /etc/gtk-2.0-64/gtk.immodules
 fi
 
-if [ -d /etc/pango ]; then
+if [ ! -r /etc/pango-64/pango.modules ]; then
 	echo "Mise à jour des modules Pango..."
 	pango-querymodules-32 > /etc/pango-32/pango.modules
 	pango-querymodules-64 > /etc/pango-64/pango.modules

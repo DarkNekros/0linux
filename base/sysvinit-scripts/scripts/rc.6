@@ -43,24 +43,14 @@ if [ -x /etc/rc.d/rc.local_shutdown ]; then
 	/etc/rc.d/rc.local_shutdown stop
 fi
 
-# On arrête NFS :
-if [ -x /etc/rc.d/rc.nfsd ]; then
-	/etc/rc.d/rc.nfsd stop
-fi
-
-# On arrête SSH :
-if [ -x /etc/rc.d/rc.sshd ]; then
-	/etc/rc.d/rc.sshd stop
-fi
-
 # On arrête D-Bus :
 if [ -x /etc/rc.d/rc.messagebus ]; then
 	/etc/rc.d/rc.messagebus stop
 fi
 
 # On désactive le réseau :
-if [ -x /etc/rc.d/rc.inet1 ]; then
-	. /etc/rc.d/rc.inet1 stop
+if [ -x /etc/rc.d/rc.reseau ]; then
+	. /etc/rc.d/rc.reseau stop
 fi
 
 # On tue tous les processus :

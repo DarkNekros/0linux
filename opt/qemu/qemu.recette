@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-qemu}
-VERSION=${VERSION:-0.12.5}
+VERSION=${VERSION:-0.13.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qemu}
 BUILD=${BUILD:-1}
@@ -31,7 +31,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 WGET=${WGET:-http://download.savannah.gnu.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="COPYING* LICENSE MAINTAINERS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Émulateur de processeurs"
+SLACKDESC="Émulateur de processeurs et systèmes multiples"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -85,6 +85,10 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On crée une règle 'udev' afin que que tous les utilisateurs aient accès à kvm :
+${PKG}/lib/udev/rules.d
+echo "KERNEL==\"kvm\", GROUP=\"users\", MODE=\"0660\"" > ${PKG}/lib/udev/rules.d/65-kvm.rules
 
 # On déplace les manuels :
 if [ -d ${PKG}/usr/share/man ]; then
