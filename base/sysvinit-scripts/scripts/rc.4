@@ -20,7 +20,7 @@ fi
 
 # Sinon, XDM :
 if [ -x /usr/bin/xdm -o -x /usr/X11R6/bin/xdm ]; then
-	xdm -nodaemon
+	xdm -nodaemon -config /usr/lib64/X11/xdm/0-xdm/xdm-config
 fi
 
 # C'est fini !

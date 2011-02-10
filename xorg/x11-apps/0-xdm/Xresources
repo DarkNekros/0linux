@@ -1,0 +1,41 @@
+Xlogin*login.translations:#override \
+	CtrlR:abort-display()\n\
+	F1:set-session-argument(failsafe) finish-field()\n\
+	Return:set-session-argument() finish-field()
+	CtrlReturn:set-session-argument(failsafe) finish-field()\n\
+
+Xlogin*greeting:CLIENTHOST
+Xlogin*namePrompt:Utilisateur : \040
+Xlogin*passwdPrompt:Mot de passe : \040
+Xlogin*fail:Incorrect
+Xlogin*shdColor:#000000
+Xlogin*hiColor:#000000
+Xlogin*greetColor:white
+Xlogin*promptColor:grey80
+Xlogin*failColor:red
+Xlogin*geometry:400x300+440+500
+*borderWidth:0
+*foreground:white
+*background:#000000
+
+XClock*analog:false
+XClock*strftime:(%A)\040%F\040%T
+XClock*update:1
+XClock*render:false
+XClock.width: 600
+XClock*geometry: +0+990
+
+Xmessage*message.scrollVertical:auto
+Xmessage*message.scrollHorizontal:never
+Xmessage*Command.highlightThickness:2
+Xmessage*Command.internalWidth:8
+Xmessage*Command.internalHeight:8
+Xmessage*Command.shapeStyle:rectangle
+
+XConsole*verbose:true
+XConsole*exitOnFail:true
+
+Chooser*geometry:700x550
+Chooser*allowShellResize:false
+Chooser*viewport.forceBars:true
+Chooser*label.label:XDMCP\040Host\040Menu\040from\040CLIENTHOST

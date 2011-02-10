@@ -1,0 +1,12 @@
+#!/bin/sh
+
+xmessage -buttons Redémarrer,Éteindre "$@" ""
+
+case "$?" in
+	101)
+		/sbin/reboot
+		;;
+	102)
+		/sbin/halt
+		;;
+esac
