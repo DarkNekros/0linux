@@ -148,8 +148,7 @@ set backupskip+=/var/spool/cron/*
 set spelllang=fr,en
 set spell
 set background=dark
-set number
-set mouse=a" >> ${PKG}/etc/vimrc.new
+set number" >> ${PKG}/etc/vimrc.new
 
 # On place le binaire :
 cp -a src/vim ${PKG}/usr/bin
