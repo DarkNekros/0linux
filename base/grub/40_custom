@@ -1,9 +1,6 @@
 # /boot/grub/grub.cfg : fichier de configuration pour GRUB
 
-# On insère les graphismes :
-insmod vbe
-insmod png
-backgroung_image /boot/grub/0-grub-background.png
+# Les graphismes :
 set menu_color_normal=green/black
 set menu_color_highlight=light-green/black
 
