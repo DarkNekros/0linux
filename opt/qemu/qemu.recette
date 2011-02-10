@@ -87,7 +87,7 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On crée une règle 'udev' afin que que tous les utilisateurs aient accès à kvm :
-${PKG}/lib/udev/rules.d
+mkdir -p ${PKG}/lib/udev/rules.d
 echo "KERNEL==\"kvm\", GROUP=\"users\", MODE=\"0660\"" > ${PKG}/lib/udev/rules.d/65-kvm.rules
 
 # On déplace les manuels :
