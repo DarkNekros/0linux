@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-xfce-utils}
 VERSION=${VERSION:-4.8.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-utils}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
