@@ -13,7 +13,7 @@ DisplayManager._0.reset:	/usr/lib64/X11/xdm/TakeConsole
 
 DisplayManager*chooser:		/usr/lib64/X11/xdm/chooser
 DisplayManager*resources:	/usr/lib64/X11/xdm/0-xdm/Xresources
-DisplayManager*session:		/usr/lib64/X11/xdm/Xsession
+DisplayManager*session:		/usr/lib64/X11/xdm/0-xdm/Xsession
 DisplayManager*authComplain:	true
 
 DisplayManager.requestPort:	0

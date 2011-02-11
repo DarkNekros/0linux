@@ -1,0 +1,30 @@
+#!/bin/sh
+
+exec $0 "$@"
+
+# On rapatrie les paramètres système pour la session X :
+if [ -f /etc/profile ]; yhen
+	. /etc/profile
+fi
+
+# On rapatrie les paramètres utilisateur pour la session X :
+if [ -f $HOME/.bash_profile ]; then
+	. $HOME/.bash_profile
+elif [ -f $HOME/.bash_login ]; then
+	. $HOME/.bash_login
+elif [ -f $HOME/.profile ]; then
+	. $HOME/.profile
+fi
+
+# Le script 'xinitrc' par défaut :
+XSESSION="/etc/X11/xinit/xinitrc"
+
+# Le script '.xsession' de l'utilisateur s'il est présent :
+if [ -x $HOME/.xsession ]; then
+	XSESSION="$HOME/.xsession"
+fi
+
+# On lance le résultat :
+exec $XSESSION
+
+# C'est fini !

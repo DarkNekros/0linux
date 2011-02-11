@@ -1,5 +1,5 @@
 #!/bin/sh
-# Fichier à conserver en ISO et non en UTF-8 !
+# Fichier en ISO et non en UTF-8 !
 
 xmessage -buttons Redémarrer,Éteindre "$@" ""
 
