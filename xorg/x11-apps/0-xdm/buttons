@@ -1,6 +1,7 @@
 #!/bin/sh
+# Fichier à conserver en ISO et non en UTF-8 !
 
-xmessage -buttons RedÃ©marrer,Ã‰teindre "$@" ""
+xmessage -buttons Redémarrer,Éteindre "$@" ""
 
 case "$?" in
 	101)

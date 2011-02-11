@@ -4,9 +4,9 @@ Xlogin*login.translations:#override \
 	Return:set-session-argument() finish-field()
 	CtrlReturn:set-session-argument(failsafe) finish-field()\n\
 
-Xlogin*greeting:CLIENTHOST
-Xlogin*namePrompt:Utilisateur : \040
-Xlogin*passwdPrompt:Mot de passe : \040
+Xlogin*greeting:Bienvenue sur CLIENTHOST
+Xlogin*namePrompt:Utilisateur :\040
+Xlogin*passwdPrompt:Mot de passe :\040
 Xlogin*fail:Incorrect
 Xlogin*shdColor:#000000
 Xlogin*hiColor:#000000
@@ -17,6 +17,26 @@ Xlogin*geometry:400x300+440+500
 *borderWidth:0
 *foreground:white
 *background:#000000
+
+#if WIDTH > 800
+xlogin*greetFont:	-adobe-helvetica-bold-o-normal--24-240-75-75-p-138-iso8859-1
+xlogin*font:		-adobe-helvetica-medium-r-normal--18-180-75-75-p-98-iso8859-1
+xlogin*promptFont:	-adobe-helvetica-bold-r-normal--18-180-75-75-p-103-iso8859-1
+xlogin*failFont:	-adobe-helvetica-bold-r-normal--18-180-75-75-p-103-iso8859-1
+xlogin*greetFace:	Serif-24:bold:italic
+xlogin*face: 		Helvetica-18
+xlogin*promptFace: 	Helvetica-18:bold
+xlogin*failFace: 	Helvetica-18:bold
+#else
+xlogin*greetFont:	-adobe-helvetica-bold-o-normal--17-120-100-100-p-92-iso8859-1
+xlogin*font:		-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1
+xlogin*promptFont:	-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1
+xlogin*failFont:	-adobe-helvetica-bold-o-normal--14-140-75-75-p-82-iso8859-1
+xlogin*greetFace:	Serif-18:bold:italic
+xlogin*face:		Helvetica-12
+xlogin*promptFace:	Helvetica-12:bold
+xlogin*failFace:	Helvetica-14:bold
+#endif
 
 XClock*analog:false
 XClock*strftime:(%A)\040%F\040%T
