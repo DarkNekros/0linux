@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# On localise avant tout :
+. /etc/profile.d/lang.sh
+
 # Fond noir :
 xsetroot -solid "#000000" -cursor_name left_ptr
 

@@ -1,4 +1,5 @@
 #!/bin/sh
 
 # On tue les clients démarrés par Xsetup :
-xwininfo -root -children | grep '  0x' | cut -d' ' -f6 | xargs -n1 xkill -id
+killall xmessage
+killall xclock
