@@ -37,6 +37,9 @@ chroot ${SETUPROOT} 0reseau
 # Configuration du chargeur d'amorçage :
 . bootconfig.sh 
 
+# On demande à configurer le démrrage graphique et le bureau :
+chroot ${SETUPROOT} 0bureau
+
 # On définit un mot de passe pour root :
 . motdepasseroot.sh
 

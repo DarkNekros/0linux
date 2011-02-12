@@ -41,7 +41,7 @@ if [ ! "$(grep 'id:4:initdefault' /etc/inittab)" = "" ]; then
 		echo "liste ci-dessous. Xfce est l'environnement par défaut."
 		echo "Appuyez sur ENTRÉE pour ignorer cette étape."
 		echo ""
-		echo "1 : XFCE - environnement de bureau léger en GTK+"
+		echo "1 : XFCE - environnement de bureau léger en GTK+ (par défaut)"
 		echo "2 : TWM  - gestionnaire de fenêtres basique, fourni avec X11"
 		echo ""
 		read XDE;
