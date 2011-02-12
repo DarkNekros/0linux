@@ -13,10 +13,10 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-xorg-server}
-VERSION=${VERSION:-1.9.3}
+VERSION=${VERSION:-1.9.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -71,6 +71,9 @@ export USE_ARCH=64
 
 # On force X à démarrer avec un écran noir et non gris chiné moche :
 cat $CWD/x11.ecran_noir.patch | patch -p1
+
+# On force X à prioriser 'nouveau' par rapport à 'nv' pour les cartes Nvidia :
+cat $CWD/x11.nouveau-nv.patch | patch -p1
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
