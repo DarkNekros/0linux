@@ -75,7 +75,6 @@ for archive in ${XDRIVERS}; do
 		if [ ! -r ${archive}.$EXT ]; then
 			git clone git://anongit.freedesktop.org/git/nouveau/xf86-video-nouveau/
 			( cd xf86-video-nouveau/ && git checkout 8bb82312 )
-			find . -type d -name ".git" -exec rm -rf {} \;
 			tar cfj xf86-video-nouveau-8bb82312.tar.bz2 xf86-video-nouveau/
 			rm -rf xf86-video-nouveau
 		fi
