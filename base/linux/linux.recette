@@ -11,21 +11,19 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-2.6.33.7}
-RTVERSION=${RTVERSION:-rt29}
+VERSION=${VERSION:-2.6.37}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-linux}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
-BUILD=${BUILD:-8}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -36,7 +34,6 @@ BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
 WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v2.6/$NAMESRC-$VERSION.$EXT}
-WGETRTPATCH=${WGETRTPATCH:-ftp://ftp.kernel.org/pub/linux/kernel/projects/rt/patch-$VERSION-$RTVERSION.bz2}
 ##########
 SLACKDESC="Le noyau Linux"
 SLACKDESCHEADERS="Les fichiers d'en-tête du noyau Linux"
@@ -59,12 +56,6 @@ fi
 # On les vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
-# On télécharge le patch RT :
-if [ ! -r patch-${VERSION}-${RTVERSION}.bz2 ]; then
-	wget -vc $WGETRTPATCH -O patch-${VERSION}-${RTVERSION}.bz2.part
-	mv patch-${VERSION}-${RTVERSION}.bz2.part patch-${VERSION}-${RTVERSION}.bz2
-fi
-
 # On crée les répertoires d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 PKGHEADERS=$TMP/build/${NAMETGZHEADERS}
@@ -85,13 +76,10 @@ cd ${NAME}
 # On nettoie obligatoirement :
 make mrproper
 
-# On comble des vulnérabilités :
-for patch in $CWD/*.diff.gz $CWD/linux.faille_rds.patch; do
-	zcat ${PATCH} | patch -p1
-done
-
-# On applique le patch RT :
-bzcat $CWD/patch-${VERSION}-${RTVERSION}.bz2 | patch -p1
+## On comble des vulnérabilités :
+#for patch in $CWD/*.diff.gz $CWD/linux.faille_rds.patch; do
+#	zcat ${PATCH} | patch -p1
+#done
 
 # Pour en finir avec les erreurs des applications utilisant scsi/scsi.h :
 cat $CWD/linux-headers.__u8-scsi.h.patch | patch -p1
@@ -121,18 +109,18 @@ make -j3
 # On copie le noyau fraîchement compilé, le fichier System.map et le .config
 # dans /boot, agrémentés de leur version et on récupère le '.config' pour nos
 # prochains paquets :
-cp -a arch/x86/boot/bzImage ${PKG}/boot/noyau-${VERSION}-${RTVERSION}
-cp -a System.map ${PKG}/boot/System.map-${VERSION}-${RTVERSION}
-cp -a .config ${PKG}/boot/config-${VERSION}-${RTVERSION}
+cp -a arch/x86/boot/bzImage ${PKG}/boot/noyau-${VERSION}
+cp -a System.map ${PKG}/boot/System.map-${VERSION}
+cp -a .config ${PKG}/boot/config-${VERSION}
 cat .config > $CWD/config
 
 # Puis on crée un lien 'vmlinuz' pour l'intérêt historique (et pour ne pas casser
 # de scripts utilisant le nom de fichier « vmlinuz ») :
-ln -sf noyau-${VERSION}-${RTVERSION} ${PKG}/boot/vmlinuz
+ln -sf noyau-${VERSION} ${PKG}/boot/vmlinuz
 
 # On relie l'ensemble des fichiers par défaut à « *-$VERSION » :
-ln -sf System.map-${VERSION}-${RTVERSION} ${PKG}/boot/System.map
-ln -sf config-${VERSION}-${RTVERSION} ${PKG}/boot/config
+ln -sf System.map-${VERSION} ${PKG}/boot/System.map
+ln -sf config-${VERSION} ${PKG}/boot/config
 
 ### 2- On génère le paquet pour les entêtes du noyau. ###
 
@@ -162,10 +150,10 @@ cat $CWD/rc.modules.new > ${PKGMODULES}/etc/rc.d/rc.modules.new
 chmod 755 ${PKGMODULES}/etc/rc.d/rc.modules.new
 
 # On relie enfin les répertoires 'build' et 'source' des modules aux sources du noyau :
-rm -rf ${PKGMODULES}/lib/modules/${VERSION}-${RTVERSION}/build
-rm -rf ${PKGMODULES}/lib/modules/${VERSION}-${RTVERSION}/source
-ln -sf ../../../usr/src/linux-${VERSION}-${RTVERSION} ${PKGMODULES}/lib/modules/${VERSION}-${RTVERSION}/build
-ln -sf ../../../usr/src/linux-${VERSION}-${RTVERSION} ${PKGMODULES}/lib/modules/${VERSION}-${RTVERSION}/source
+rm -rf ${PKGMODULES}/lib/modules/${VERSION}/build
+rm -rf ${PKGMODULES}/lib/modules/${VERSION}/source
+ln -sf ../../../usr/src/linux-${VERSION} ${PKGMODULES}/lib/modules/${VERSION}/build
+ln -sf ../../../usr/src/linux-${VERSION} ${PKGMODULES}/lib/modules/${VERSION}/source
 
 ### 3- On génère le paquet des sources du noyau ###
 
@@ -176,18 +164,18 @@ mkdir -p ${PKGSOURCE}/usr/src
 make mrproper
 
 # On copie toutes les sources et on crée le lien symbolique générique 'linux' :
-cp -a $TMP/${NAME} ${PKGSOURCE}/usr/src/${NAME}-${RTVERSION}
-ln -sf ${NAME}-${RTVERSION} ${PKGSOURCE}/usr/src/linux
+cp -a $TMP/${NAME} ${PKGSOURCE}/usr/src/${NAME}
+ln -sf ${NAME} ${PKGSOURCE}/usr/src/linux
 
 # On copie le fichier de configuration dans les sources :
-cat $CWD/config > ${PKGSOURCE}/usr/src/${NAME}-${RTVERSION}/.config
+cat $CWD/config > ${PKGSOURCE}/usr/src/${NAME}/.config
 
 # Installation de la documentation (on crée simplement un lien) :
-mkdir -p ${PKGSOURCE}/usr/doc/${NAMETGZSOURCE}-${VERSION}-${RTVERSION}
-ln -sf ../../src/${NAMESRC}-${VERSION}-${RTVERSION}/Documentation ${PKGSOURCE}/usr/doc/${NAMETGZSOURCE}-${VERSION}-${RTVERSION}/Documentation
+mkdir -p ${PKGSOURCE}/usr/doc/${NAMETGZSOURCE}-${VERSION}
+ln -sf ../../src/${NAMESRC}-${VERSION}/Documentation ${PKGSOURCE}/usr/doc/${NAMETGZSOURCE}-${VERSION}/Documentation
 # Il y a un peu de doc pour les firmwares :
-mkdir -p ${PKGMODULES}/usr/doc/${NAMETGZMODULES}-${VERSION}-${RTVERSION}
-cp -a $TMP/${NAME}/firmware/{README*,WHENCE} ${PKGMODULES}/usr/doc/${NAMETGZMODULES}-${VERSION}-${RTVERSION}
+mkdir -p ${PKGMODULES}/usr/doc/${NAMETGZMODULES}-${VERSION}
+cp -a $TMP/${NAME}/firmware/{README*,WHENCE} ${PKGMODULES}/usr/doc/${NAMETGZMODULES}-${VERSION}
 
 # On installe les slack-desc :
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
@@ -231,8 +219,8 @@ EOF
 # On installe le doinst.sh des sources :
 cat > ${PKGSOURCE}/install/doinst.sh << EOF
 #!/usr/bin/env bash
-chroot . make -C /usr/src/linux-${VERSION}-${RTVERSION} clean oldconfig prepare scripts
-rm -f usr/src/linux-${VERSION}-${RTVERSION}/.version
+chroot . make -C /usr/src/linux-${VERSION} clean oldconfig prepare scripts
+rm -f usr/src/linux-${VERSION}/.version
 
 EOF
 
@@ -240,7 +228,7 @@ EOF
 cd ${PKG}
 PACKAGING="
 	chown root:root . -R
-	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}_${RTVERSION}-${ARCH}-$BUILD"
+	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "$PACKAGING" | fakeroot
@@ -251,7 +239,7 @@ fi
 cd ${PKGHEADERS}
 PACKAGING="
 	chown root:root . -R
-	/sbin/spkcpio . $OUT/${NAMETGZHEADERS}-${VERSION}_${RTVERSION}-${ARCH}-$BUILD"
+	/sbin/spkcpio . $OUT/${NAMETGZHEADERS}-${VERSION}-${ARCH}-$BUILD"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "$PACKAGING" | fakeroot
@@ -262,7 +250,7 @@ fi
 cd ${PKGMODULES}
 PACKAGING="
 	chown root:root . -R
-	/sbin/spkcpio . $OUT/${NAMETGZMODULES}-${VERSION}_${RTVERSION}-${ARCH}-$BUILD"
+	/sbin/spkcpio . $OUT/${NAMETGZMODULES}-${VERSION}-${ARCH}-$BUILD"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "$PACKAGING" | fakeroot
@@ -273,7 +261,7 @@ fi
 cd ${PKGSOURCE}
 PACKAGING="
 	chown root:root . -R
-	/sbin/spkcpio . $OUT/${NAMETGZSOURCE}-${VERSION}_${RTVERSION}-${ARCH}-$BUILD
+	/sbin/spkcpio . $OUT/${NAMETGZSOURCE}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG} ${PKGHEADERS} ${PKGMODULES} ${PKGSOURCE}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
 		if [ -d $TMP/${NAME} ]; then

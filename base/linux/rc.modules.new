@@ -7,4 +7,11 @@ depmod -a
 # On charge le « governor » pour les performances processeur :
 modprobe cpufreq_performance
 
+# On charge le module ad-hoc pour la vitualisation via KVM :
+if grep -q ^flags.*\\\<vmx\\\> /proc/cpuinfo; then
+	modprobe kvm_intel
+elif grep -q ^flags.*\\\<svm\\\> /proc/cpuinfo; then
+	modprobe kvm_amd
+fi
+
 # C'est fini !
