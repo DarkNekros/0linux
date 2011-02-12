@@ -105,6 +105,24 @@ for archive in ${XDRIVERS}; do
 	# On positionne USE_ARCH :
 	USE_ARCH=64
 	
+	if [ "$NAME" = "xf86-video-nouveau" ]; then
+		# Compilation pour 64 bits :
+		SLKCFLAGS="-O2 -fPIC -pipe"
+		LIBDIRSUFFIX="64"
+		CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+		CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+		PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+		LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+		./autogen.sh \
+			--prefix=/usr \
+			--sysconfdir=/etc \
+			--localstatedir=/var \
+			--libdir=/usr/lib${LIBDIRSUFFIX} \
+			--mandir=/usr/man \
+			--infodir=/usr/info \
+			--build=${TARGET64}
+	fi
+	
 	# Compilation pour 64 bits :
 	SLKCFLAGS="-O2 -fPIC -pipe"
 	LIBDIRSUFFIX="64"
