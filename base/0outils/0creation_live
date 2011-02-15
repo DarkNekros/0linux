@@ -10,14 +10,17 @@ unset PLOP
 syntaxerror() {
 	echo "Syntaxe :"
 	echo ""
-	echo "$0 --dvd version_perso_2011"
+	echo "$0 --dvd [VERSION]"
 	echo "$0 --usb PÉRIPHÉRIQUE"
 	echo ""
+	echo "Où VERSION est une version, au choix de l'utilisateur. Si la version"
+	echo "n'est pas renseignée, la date (« JJMMAAAA ») est la valeur par défaut."
+	echo ""
 	echo "Où PÉRIPHÉRIQUE ne doit pas désigner une partition mais bien un"
-	echo "périphérique, sans aucune numérotation (/dev/sdd1 est incorrect par ex.)."
+	echo "périphérique, sans aucune numérotation (/dev/sdd et non /dev/sdd1 par ex.)."
 	echo ""
 	echo "Exemples d'invocation de ce script :"
-	exho ""
+	echo ""
 	echo "Créer une image ISO de DVD portant la version \"alpha4\" :"
 	echo "	$0 --dvd alpha4"
 	echo "Créer une clé USB, déjà formatée en FAT, NTFS, ext2, 3 ou 4 :"
@@ -28,7 +31,7 @@ syntaxerror() {
 		
 # On vérifie qu'on est bien root :
 if [ ! "$(whoami)" = "root" ]; then
-	echo "Erreur : veuillez m'exécuter en tant que root uniquement !"
+	echo "Erreur : seul root peut m'exécuter !"
 	exit 1
 fi
 
@@ -58,7 +61,7 @@ elif [ "$1" = "--dvd" ]; then
 	if [ ! "$2" = "" ]; then
 		VERSION="$2"
 	else
-		VERSION="2011"
+		VERSION="$(date +%d%m%Y)"
 	fi
 	SYSLINUXDIR="isolinux"
 else
@@ -259,7 +262,7 @@ if [ "$1" = "--dvd" ]; then
 elif [ "$1" = "--usb" ]; then
 	
 	# On monte la clé, sans la presser :
-	echo "La clé utilisée sera ${2}1."
+	echo "La clé utilisée sera ${2}."
 	echo "Appuyez sur ENTRÉE pour confirmer la création de la clé"
 	echo "ou bien appuyez sur CTRL+C pour annuler maintenant."
 	read PLOP;
