@@ -269,7 +269,7 @@ elif [ "$1" = "--usb" ]; then
 	sleep 4
 	
 	# On copie tout ${MEDIAROOT} sur la clé :
-	rsynv -au --delete-after ${MEDIAROOT} /mnt/tmp
+	rsync -au --delete-after ${MEDIAROOT}/* /mnt/tmp
 
 	# On nettoie la clé et on dévérouille 'ldlinux.sys' :
 	echo -n "Nettoyage de la clé... "
