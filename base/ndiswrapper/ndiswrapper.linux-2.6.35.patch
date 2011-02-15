@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+<head>
+<title>svntogit/packages.git - Git clone of the 'packages' subversion repository</title>
+<meta name='generator' content='cgit v0.8.3.4-124-ge7dc'/>
+<meta name='robots' content='index, nofollow'/>
+<link rel='stylesheet' type='text/css' href='/cgit.css'/>
+<link rel='alternate' title='Atom feed' href='http://projects.archlinux.org/svntogit/packages.git/atom/ndiswrapper/trunk/kernel-2.6.35.patch?h=master' type='application/atom+xml'/>
+<link rel="stylesheet" href="/archnavbar.css" />
+<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+	<div id="archnavbar"><!-- Arch Linux global navigation bar -->
+		<div id="archnavbarlogo">
+			<p><a href="http://www.archlinux.org/" title="Arch news, packages, projects and more"></a></p>
+		</div>
+		<div id="archnavbarmenu">
+			<ul id="archnavbarlist">
+				<li id="anb-home"><a href="http://www.archlinux.org/" title="Arch news, packages, projects and more">Home</a></li>
+				<li id="anb-packages"><a href="http://www.archlinux.org/packages/" title="Arch Package Database">Packages</a></li>
+				<li id="anb-forums"><a href="http://bbs.archlinux.org/" title="Community forums">Forums</a></li>
+				<li id="anb-wiki"><a href="http://wiki.archlinux.org/" title="Community documentation">Wiki</a></li>
+				<li id="anb-bugs"><a href="http://bugs.archlinux.org/" title="Report and follow bugs">Bugs</a></li>
+				<li id="anb-aur"><a href="http://aur.archlinux.org/" title="Arch Linux User Repository">AUR</a></li>
+				<li id="anb-download"><a href="http://www.archlinux.org/download/" title="Get Arch Linux">Download</a></li>
+			</ul>
+		</div>
+	</div><!-- #archnavbar -->
+<div id='cgit'><table id='header'>
+<tr>
+<td class='main'><a href='/'>index</a> : <a title='svntogit/packages.git' href='/svntogit/packages.git/'>svntogit/packages.git</a></td><td class='form'><form method='get' action=''>
+<select name='h' onchange='this.form.submit();'>
+<option value='master' selected='selected'>master</option>
+</select> <input type='submit' name='' value='switch'/></form></td></tr>
+<tr><td class='sub'>Git clone of the 'packages' subversion repository</td><td class='sub right'>Arch Linux Developers</td></tr></table>
+<table class='tabs'><tr><td>
+<a href='/svntogit/packages.git/'>summary</a><a href='/svntogit/packages.git/refs/'>refs</a><a href='/svntogit/packages.git/log/ndiswrapper/trunk/kernel-2.6.35.patch'>log</a><a class='active' href='/svntogit/packages.git/tree/ndiswrapper/trunk/kernel-2.6.35.patch'>tree</a><a href='/svntogit/packages.git/commit/ndiswrapper/trunk/kernel-2.6.35.patch'>commit</a><a href='/svntogit/packages.git/diff/ndiswrapper/trunk/kernel-2.6.35.patch'>diff</a><a href='/svntogit/packages.git/stats/ndiswrapper/trunk/kernel-2.6.35.patch'>stats</a></td><td class='form'><form class='right' method='get' action='/svntogit/packages.git/log/ndiswrapper/trunk/kernel-2.6.35.patch'>
+<select name='qt'>
+<option value='grep'>log msg</option>
+<option value='author'>author</option>
+<option value='committer'>committer</option>
+<option value='range'>range</option>
+</select>
+<input class='txt' type='text' size='10' name='q' value=''/>
+<input type='submit' value='search'/>
+</form>
+</td></tr></table>
+<div class='path'>path: <a href='/svntogit/packages.git/tree/'>root</a>/<a href='/svntogit/packages.git/tree/ndiswrapper'>ndiswrapper</a>/<a href='/svntogit/packages.git/tree/ndiswrapper/trunk'>trunk</a>/<a href='/svntogit/packages.git/tree/ndiswrapper/trunk/kernel-2.6.35.patch'>kernel-2.6.35.patch</a></div><div class='content'>blob: 1cfdab2d0613bb7123d8f9c1c2c1000da13d8490 (<a href='/svntogit/packages.git/plain/ndiswrapper/trunk/kernel-2.6.35.patch'>plain</a>)
+<table summary='blob content' class='blob'>
+<tr><td class='linenumbers'><pre><a class='no' id='n1' name='n1' href='#n1'>1</a>
+<a class='no' id='n2' name='n2' href='#n2'>2</a>
+<a class='no' id='n3' name='n3' href='#n3'>3</a>
+<a class='no' id='n4' name='n4' href='#n4'>4</a>
+<a class='no' id='n5' name='n5' href='#n5'>5</a>
+<a class='no' id='n6' name='n6' href='#n6'>6</a>
+<a class='no' id='n7' name='n7' href='#n7'>7</a>
+<a class='no' id='n8' name='n8' href='#n8'>8</a>
+<a class='no' id='n9' name='n9' href='#n9'>9</a>
+<a class='no' id='n10' name='n10' href='#n10'>10</a>
+<a class='no' id='n11' name='n11' href='#n11'>11</a>
+<a class='no' id='n12' name='n12' href='#n12'>12</a>
+<a class='no' id='n13' name='n13' href='#n13'>13</a>
+<a class='no' id='n14' name='n14' href='#n14'>14</a>
+<a class='no' id='n15' name='n15' href='#n15'>15</a>
+<a class='no' id='n16' name='n16' href='#n16'>16</a>
+<a class='no' id='n17' name='n17' href='#n17'>17</a>
+<a class='no' id='n18' name='n18' href='#n18'>18</a>
+<a class='no' id='n19' name='n19' href='#n19'>19</a>
+<a class='no' id='n20' name='n20' href='#n20'>20</a>
+<a class='no' id='n21' name='n21' href='#n21'>21</a>
+<a class='no' id='n22' name='n22' href='#n22'>22</a>
+<a class='no' id='n23' name='n23' href='#n23'>23</a>
+<a class='no' id='n24' name='n24' href='#n24'>24</a>
+<a class='no' id='n25' name='n25' href='#n25'>25</a>
+<a class='no' id='n26' name='n26' href='#n26'>26</a>
+<a class='no' id='n27' name='n27' href='#n27'>27</a>
+<a class='no' id='n28' name='n28' href='#n28'>28</a>
+<a class='no' id='n29' name='n29' href='#n29'>29</a>
+<a class='no' id='n30' name='n30' href='#n30'>30</a>
+<a class='no' id='n31' name='n31' href='#n31'>31</a>
+<a class='no' id='n32' name='n32' href='#n32'>32</a>
+<a class='no' id='n33' name='n33' href='#n33'>33</a>
+<a class='no' id='n34' name='n34' href='#n34'>34</a>
+<a class='no' id='n35' name='n35' href='#n35'>35</a>
+<a class='no' id='n36' name='n36' href='#n36'>36</a>
+<a class='no' id='n37' name='n37' href='#n37'>37</a>
+<a class='no' id='n38' name='n38' href='#n38'>38</a>
+<a class='no' id='n39' name='n39' href='#n39'>39</a>
+<a class='no' id='n40' name='n40' href='#n40'>40</a>
+<a class='no' id='n41' name='n41' href='#n41'>41</a>
+<a class='no' id='n42' name='n42' href='#n42'>42</a>
+<a class='no' id='n43' name='n43' href='#n43'>43</a>
+<a class='no' id='n44' name='n44' href='#n44'>44</a>
+<a class='no' id='n45' name='n45' href='#n45'>45</a>
+<a class='no' id='n46' name='n46' href='#n46'>46</a>
+<a class='no' id='n47' name='n47' href='#n47'>47</a>
+<a class='no' id='n48' name='n48' href='#n48'>48</a>
+<a class='no' id='n49' name='n49' href='#n49'>49</a>
+<a class='no' id='n50' name='n50' href='#n50'>50</a>
+<a class='no' id='n51' name='n51' href='#n51'>51</a>
+<a class='no' id='n52' name='n52' href='#n52'>52</a>
+<a class='no' id='n53' name='n53' href='#n53'>53</a>
+<a class='no' id='n54' name='n54' href='#n54'>54</a>
+<a class='no' id='n55' name='n55' href='#n55'>55</a>
+<a class='no' id='n56' name='n56' href='#n56'>56</a>
+<a class='no' id='n57' name='n57' href='#n57'>57</a>
+<a class='no' id='n58' name='n58' href='#n58'>58</a>
+<a class='no' id='n59' name='n59' href='#n59'>59</a>
+<a class='no' id='n60' name='n60' href='#n60'>60</a>
+<a class='no' id='n61' name='n61' href='#n61'>61</a>
+<a class='no' id='n62' name='n62' href='#n62'>62</a>
+<a class='no' id='n63' name='n63' href='#n63'>63</a>
+<a class='no' id='n64' name='n64' href='#n64'>64</a>
+<a class='no' id='n65' name='n65' href='#n65'>65</a>
+<a class='no' id='n66' name='n66' href='#n66'>66</a>
+<a class='no' id='n67' name='n67' href='#n67'>67</a>
+<a class='no' id='n68' name='n68' href='#n68'>68</a>
+<a class='no' id='n69' name='n69' href='#n69'>69</a>
+<a class='no' id='n70' name='n70' href='#n70'>70</a>
+<a class='no' id='n71' name='n71' href='#n71'>71</a>
+<a class='no' id='n72' name='n72' href='#n72'>72</a>
+<a class='no' id='n73' name='n73' href='#n73'>73</a>
+<a class='no' id='n74' name='n74' href='#n74'>74</a>
+<a class='no' id='n75' name='n75' href='#n75'>75</a>
+<a class='no' id='n76' name='n76' href='#n76'>76</a>
+<a class='no' id='n77' name='n77' href='#n77'>77</a>
+<a class='no' id='n78' name='n78' href='#n78'>78</a>
+<a class='no' id='n79' name='n79' href='#n79'>79</a>
+<a class='no' id='n80' name='n80' href='#n80'>80</a>
+<a class='no' id='n81' name='n81' href='#n81'>81</a>
+<a class='no' id='n82' name='n82' href='#n82'>82</a>
+<a class='no' id='n83' name='n83' href='#n83'>83</a>
+<a class='no' id='n84' name='n84' href='#n84'>84</a>
+<a class='no' id='n85' name='n85' href='#n85'>85</a>
+<a class='no' id='n86' name='n86' href='#n86'>86</a>
+<a class='no' id='n87' name='n87' href='#n87'>87</a>
+<a class='no' id='n88' name='n88' href='#n88'>88</a>
+<a class='no' id='n89' name='n89' href='#n89'>89</a>
+<a class='no' id='n90' name='n90' href='#n90'>90</a>
+<a class='no' id='n91' name='n91' href='#n91'>91</a>
+<a class='no' id='n92' name='n92' href='#n92'>92</a>
+<a class='no' id='n93' name='n93' href='#n93'>93</a>
+<a class='no' id='n94' name='n94' href='#n94'>94</a>
+<a class='no' id='n95' name='n95' href='#n95'>95</a>
+<a class='no' id='n96' name='n96' href='#n96'>96</a>
+<a class='no' id='n97' name='n97' href='#n97'>97</a>
+<a class='no' id='n98' name='n98' href='#n98'>98</a>
+</pre></td>
+<td class='lines'><pre><code>diff -uNr ndiswrapper-1.56.old/driver/usb.c ndiswrapper-1.56/driver/usb.c
+<span class="hl kwb">--- ndiswrapper-1.56.old/driver/usb.c	2010-02-10 18:09:32.000000000 -0800</span>
+<span class="hl kwa">+++ ndiswrapper-1.56/driver/usb.c	2010-07-25 02:29:25.442145846 -0700</span>
+<span class="hl kwd">&#64;&#64; -191,9 +191,15 &#64;&#64;</span>
+ 	if (wrap_urb-&gt;flags &amp; WRAP_URB_COPY_BUFFER) {
+ 		USBTRACE(&quot;freeing DMA buffer for URB: %p %p&quot;,
+ 			 urb, urb-&gt;transfer_buffer);
+<span class="hl kwa">+#if LINUX_VERSION_CODE &lt; KERNEL_VERSION(2, 6, 35)</span>
+ 		usb_buffer_free(IRP_WRAP_DEVICE(irp)-&gt;usb.udev,
+<span class="hl kwa">+                                urb-&gt;transfer_buffer_length,</span>
+<span class="hl kwa">+                                urb-&gt;transfer_buffer, urb-&gt;transfer_dma);</span>
+<span class="hl kwa">+#else</span>
+<span class="hl kwa">+		usb_free_coherent(IRP_WRAP_DEVICE(irp)-&gt;usb.udev,</span>
+ 				urb-&gt;transfer_buffer_length,
+ 				urb-&gt;transfer_buffer, urb-&gt;transfer_dma);
+<span class="hl kwa">+#endif</span>
+ 	}
+ 	if (urb-&gt;setup_packet)
+ 		kfree(urb-&gt;setup_packet);
+<span class="hl kwd">&#64;&#64; -303,9 +309,16 &#64;&#64;</span>
+ 			       || PageHighMem(virt_to_page(buf))
+ #endif
+ 		    )) {
+<span class="hl kwa">+</span>
+<span class="hl kwa">+#if LINUX_VERSION_CODE &lt; KERNEL_VERSION(2, 6, 35)</span>
+ 		urb-&gt;transfer_buffer =
+<span class="hl kwb">-			usb_buffer_alloc(wd-&gt;usb.udev, buf_len, alloc_flags,</span>
+<span class="hl kwa">+                        usb_buffer_alloc(wd-&gt;usb.udev, buf_len, alloc_flags,</span>
+<span class="hl kwa">+                                         &amp;urb-&gt;transfer_dma);</span>
+<span class="hl kwa">+#else</span>
+<span class="hl kwa">+		urb-&gt;transfer_buffer =</span>
+<span class="hl kwa">+			usb_alloc_coherent(wd-&gt;usb.udev, buf_len, alloc_flags,</span>
+ 					 &amp;urb-&gt;transfer_dma);
+<span class="hl kwa">+#endif</span>
+ 		if (!urb-&gt;transfer_buffer) {
+ 			WARNING(&quot;couldn't allocate dma buf&quot;);
+ 			IoAcquireCancelSpinLock(&amp;irp-&gt;cancel_irql);
+diff -uNr ndiswrapper-1.56.old/driver/wrapndis.c ndiswrapper-1.56/driver/wrapndis.c
+<span class="hl kwb">--- ndiswrapper-1.56.old/driver/wrapndis.c	2010-02-10 18:09:32.000000000 -0800</span>
+<span class="hl kwa">+++ ndiswrapper-1.56/driver/wrapndis.c	2010-07-25 02:06:13.184631757 -0700</span>
+<span class="hl kwd">&#64;&#64; -936,6 +936,10 &#64;&#64;</span>
+ 	EXIT2(return);
+ }
+ 
+<span class="hl kwa">+#ifndef netdev_mc_count</span>
+<span class="hl kwa">+#define netdev_mc_count(net_dev) net_dev-&gt;mc_count</span>
+<span class="hl kwa">+#endif</span>
+<span class="hl kwa">+</span>
+ static void set_multicast_list(struct ndis_device *wnd)
+ {
+ 	struct net_device *net_dev;
+<span class="hl kwd">&#64;&#64; -950,20 +954,26 &#64;&#64;</span>
+ 		packet_filter |= NDIS_PACKET_TYPE_PROMISCUOUS |
+ 			NDIS_PACKET_TYPE_ALL_LOCAL;
+ 	} else if (net_dev-&gt;flags &amp; IFF_ALLMULTI ||
+<span class="hl kwb">-		   net_dev-&gt;mc_count &gt; wnd-&gt;multicast_size) {</span>
+<span class="hl kwa">+		   netdev_mc_count(net_dev) &gt; wnd-&gt;multicast_size) {</span>
+ 		packet_filter |= NDIS_PACKET_TYPE_ALL_MULTICAST;
+ 		TRACE2(&quot;0x%08x&quot;, packet_filter);
+<span class="hl kwb">-	} else if (net_dev-&gt;mc_count &gt; 0) {</span>
+<span class="hl kwa">+	} else if (netdev_mc_count(net_dev) &gt; 0) {</span>
+ 		int i, size;
+ 		char *buf;
+<span class="hl kwa">+#ifndef netdev_for_each_mc_addr</span>
+ 		struct dev_mc_list *mclist;
+<span class="hl kwb">-		size = min(wnd-&gt;multicast_size, net_dev-&gt;mc_count);</span>
+<span class="hl kwb">-		TRACE2(&quot;%d, %d&quot;, wnd-&gt;multicast_size, net_dev-&gt;mc_count);</span>
+<span class="hl kwa">+#else</span>
+<span class="hl kwa">+		struct netdev_hw_addr *mclist;</span>
+<span class="hl kwa">+#endif</span>
+<span class="hl kwa">+</span>
+<span class="hl kwa">+		size = min(wnd-&gt;multicast_size, netdev_mc_count(net_dev));</span>
+<span class="hl kwa">+		TRACE2(&quot;%d, %d&quot;, wnd-&gt;multicast_size, netdev_mc_count(net_dev));</span>
+ 		buf = kmalloc(size * ETH_ALEN, GFP_KERNEL);
+ 		if (!buf) {
+ 			WARNING(&quot;couldn't allocate memory&quot;);
+ 			EXIT2(return);
+ 		}
+<span class="hl kwa">+#ifndef netdev_for_each_mc_addr</span>
+ 		mclist = net_dev-&gt;mc_list;
+ 		for (i = 0; i &lt; size &amp;&amp; mclist; mclist = mclist-&gt;next) {
+ 			if (mclist-&gt;dmi_addrlen != ETH_ALEN)
+<span class="hl kwd">&#64;&#64; -972,6 +982,15 &#64;&#64;</span>
+ 			TRACE2(MACSTRSEP, MAC2STR(mclist-&gt;dmi_addr));
+ 			i++;
+ 		}
+<span class="hl kwa">+#else</span>
+<span class="hl kwa">+		i = 0;</span>
+<span class="hl kwa">+		netdev_for_each_mc_addr(mclist, net_dev){</span>
+<span class="hl kwa">+                        memcpy(buf + i++ * ETH_ALEN,</span>
+<span class="hl kwa">+                               mclist-&gt;addr, ETH_ALEN);</span>
+<span class="hl kwa">+                        TRACE2(MACSTRSEP, MAC2STR(mclist-&gt;addr));</span>
+<span class="hl kwa">+</span>
+<span class="hl kwa">+		}</span>
+<span class="hl kwa">+#endif</span>
+ 		res = mp_set(wnd, OID_802_3_MULTICAST_LIST, buf, i * ETH_ALEN);
+ 		if (res == NDIS_STATUS_SUCCESS &amp;&amp; i &gt; 0)
+ 			packet_filter |= NDIS_PACKET_TYPE_MULTICAST;
+</code></pre></td></tr></table>
+</div> <!-- class=content -->
+</div>
+<div class="foot" style="padding-left:1em;padding-right:1em;">
+<p>Copyright &copy; 2002-2010 <a href="mailto:jvinet@zeroflux.org"
+title="contact Judd Vinet">Judd Vinet</a> and <a href="mailto:aaron@archlinux.org"
+title="contact Aaron Griffin">Aaron Griffin</a>. The Arch Linux name and logo
+are recognized trademarks. Some rights reserved. The registered trademark
+Linux&copy; is used pursuant to a sublicense from LMI, the exclusive licensee
+of Linus Torvalds, owner of the mark on a world-wide basis.</p>
+</div>
+</div> <!-- id=cgit -->
+</body>
+</html>
