@@ -43,7 +43,7 @@ if [ "$1" = "--usb" ]; then
 		syntaxerror
 	else
 		# Si le volume est en FAT/NTFS, on doit utiliser 'syslinux' :
-		if [ ! "$(blkid -s TYPE ${2}1 | grep -E 'fat|FAT|NTFS')" = "" ]; then
+		if [ ! "$(blkid -s TYPE ${2}1 | grep -E 'fat|FAT|ntfs|NTFS')" = "" ]; then
 			SYSLINUXDIR="syslinux"
 			SYSLINUXCMD="syslinux"
 		# Si le volume est en ext2/3/4, on doit utiliser 'extlinux'
