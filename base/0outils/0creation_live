@@ -87,12 +87,12 @@ rm -f ${ISODIR}/0linux-${VERSION}-DVD.iso
 mkdir -p ${LIVEOS} ${ISODIR} 
 mkdir -p ${MEDIAROOT}/{boot/${SYSLINUXDIR},0/paquets}
 
-# On installe les paquets pour le système temporaireLive :
+# On installe les paquets pour le système temporaire :
 echo "Installation du système temporaire en cours... "
 
 # base :
 echo -n "base... "
-for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*"); do
+for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*" | sort); do
 	spkadd --quiet --root=${LIVEOS} ${paq} &>/dev/null 2>&1
 done
 
@@ -146,7 +146,7 @@ done
 chroot ${LIVEOS} spkrm /var/log/paquets/{libX*,libxcb*,freetype*,x11-libs*,libSM*,libICE*} &>/dev/null 2>&1
 
 # base
-for paq in multiarch_wrapper* vim* bzip2* zlib* tar* gpm*\
+for paq in multiarch_wrapper* vim* bzip2* zlib* tar* gpm* \
 linux-headers* dhcp-* perl* infozip* gfxboot* dialog* libxml2* sgml-common* \
 linux-modules* popt* binutils* tree* vim*; do
 	
@@ -198,9 +198,6 @@ fi
 # On met à jour les liens des bibliothèques :
 chroot ${LIVEOS} /sbin/ldconfig
  
-# On met à jour les dépendances des modules du noyau :
-chroot ${LIVEOS} /usr/sbin/depmod -a
-
 # On évite le lancement du réseau : 
 chmod -x ${LIVEOS}/etc/rc.d/rc.reseau
 
@@ -227,8 +224,9 @@ cp -a ${INITRDGZ} ${NOYAU} ${MEDIAROOT}/boot/
 rsync -au --delete-after ${PAQUETS}/* ${MEDIAROOT}/0/paquets
 
 echo "Copie des paquets et du chargeur d'amorçage..."
+mkdir -p ${MEDIAROOT}/boot/${SYSLINUXDIR}
 # On copie tous les fichiers de ${SYSLINUXDIR}/ :
-cp -ar ${SOURCES}/installateur/${SYSLINUXDIR} ${MEDIAROOT}/boot/
+cp -ra ${SOURCES}/installateur/${SYSLINUXDIR}/* ${MEDIAROOT}/boot/${SYSLINUXDIR}/
 
 # On copie les modules binaires de 'syslinux' :
 cp -a /usr/share/syslinux/{{chain,config,hdt,kbdmap,linux,reboot,vesamenu}.c32,isolinux.bin} ${MEDIAROOT}/boot/${SYSLINUXDIR}/
@@ -266,8 +264,12 @@ elif [ "$1" = "--usb" ]; then
 	echo "Appuyez sur ENTRÉE pour confirmer la création de la clé"
 	echo "ou bien appuyez sur CTRL+C pour annuler maintenant."
 	read PLOP;
-	mount ${USBDEV}1 /mnt/tmp || true
+	
+	mount ${2}1 /mnt/tmp || exit 1
 	sleep 4
+	
+	# On copie tout ${MEDIAROOT} sur la clé :
+	rsynv -au --delete-after ${MEDIAROOT} /mnt/tmp
 
 	# On nettoie la clé et on dévérouille 'ldlinux.sys' :
 	echo -n "Nettoyage de la clé... "
@@ -275,10 +277,6 @@ elif [ "$1" = "--usb" ]; then
 		chattr -i ${f}
 		rm -f ${f}
 	done
-
-	rm -rf /mnt/tmp/boot/${SYSLINUXDIR}
-	mkdir -p /mnt/tmp/0/paquets
-	mkdir -p /mnt/tmp/boot/${SYSLINUXDIR}
 	echo "Terminé."
 	
 	echo "Installation du chargeur d'amorçage... "
