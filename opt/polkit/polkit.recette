@@ -7,14 +7,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-polkit}
-VERSION=${VERSION:-1_a2edcef}
+VERSION=${VERSION:-0.99}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-polkit}
 BUILD=${BUILD:-1}
@@ -89,6 +88,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--disable-introspection \
 	--enable-man-pages \
 	--with-authfw=shadow \
+	--with-os-type=Slackware \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -131,6 +131,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--disable-introspection \
 	--enable-man-pages \
 	--with-authfw=shadow \
+	--with-os-type=Slackware \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -190,9 +191,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
