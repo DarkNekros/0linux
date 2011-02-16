@@ -13,10 +13,10 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-Thunar}
-VERSION=${VERSION:-1.2.0}
+VERSION=${VERSION:-1.3.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-thunar}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -85,6 +85,12 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-dbus \
+	--enable-gio-unix \
+	--enable-gudev \
+	--enable-notifications \
+	--enable-pcre \
+	--enable-startup-notification \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -127,6 +133,12 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-dbus \
+	--enable-gio-unix \
+	--enable-gudev \
+	--enable-notifications \
+	--enable-pcre \
+	--enable-startup-notification \
 	--build=${TARGET64}
 
 make -j3 || make
