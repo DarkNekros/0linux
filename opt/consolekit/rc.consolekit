@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+start() {
+	/usr/sbin/console-kit-daemon
+}
+
+stop() {
+	kill -HUP $(cat /var/run/ConsoleKit/pid)
+	rm -f /var/run/ConsoleKit/pid	
+}
+
+case "$1" in
+	'start')
+		ck_start
+	;;
+	'stop')
+		ck_stop
+	;;
+	*)
+		echo "Utilisation  $0 start|stop"
+esac
