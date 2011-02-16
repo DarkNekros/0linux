@@ -64,6 +64,11 @@ if [ -x /etc/rc.d/rc.messagebus ]; then
 	. /etc/rc.d/rc.messagebus start
 fi
 
+# Lancement de ConsoleKit :
+if [ -x /etc/rc.d/rc.consolekit ]; then
+	. /etc/rc.d/rc.consolekit start
+fi
+
 # Lancement de wicd :
 if [ -x /etc/rc.d/rc.wicd ]; then
 	. /etc/rc.d/rc.wicd start

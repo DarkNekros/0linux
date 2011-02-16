@@ -53,11 +53,11 @@ if [ -r /etc/forcefsck ]; then
 	FORCEFSCK="-f"
 fi
 
-# On vérifie le système de fichiers racine:
+# On vérifie le système de fichiers racine :
 if [ ! $LECTURESEULE = non ]; then
 	VALEURRETOUR=0
 	if [ ! -r /etc/fastboot ]; then
-		echo "Vérification du système de fichiers racine :"
+		echo "Vérification du système de fichiers racine..."
 		fsck $FORCEFSCK -C -a /
 		VALEURRETOUR=$?
 	fi
@@ -138,10 +138,6 @@ rm -f /etc/mtab*
 # On remonte la partition racine pour générer un nouveau fichier /etc/mtab :
 mount -F -w -o remount /
 
-# On relie les paramètres de montage de la racine pour que 'mount' les affiche 
-# correctement et pour se débarrasser d'un petit bogue dans /etc/mtab :
-grep ' / ' /proc/mounts | grep -v "^rootfs" > /etc/mtab
-
 # On corrige /etc/mtab concernant les systèmes de fichiers sys and proc au cas où
 # ils ne seraient pas inscrits sur un système en lecture seule :
 if [ -d /proc/sys ]; then
@@ -152,16 +148,8 @@ if [ -d /sys/bus ]; then
 	mount -F -f sysfs /sys -t sysfs
 fi
 
-# On charge les modules trouvés dans le fichier /etc/rc.d/rc.modules.local en priorité, 
-# puis le fichier /etc/rc.d/rc.modules-$VERSION_DU_NOYAU s'il existe et enfin
-# le fichier /etc/rc.d/rc.modules. Si rc.modules.local existe, il sera LE SEUL exécuté :
-if [ -x /etc/rc.d/rc.modules.local -a -r /proc/modules ]; then
-	. /etc/rc.d/rc.modules.local
-elif [ -x /etc/rc.d/rc.modules-$(uname -r) -a -r /proc/modules ]; then
-	. /etc/rc.d/rc.modules-$(uname -r)
-elif [ -x /etc/rc.d/rc.modules -a -r /proc/modules -a -L /etc/rc.d/rc.modules ]; then
-	. /etc/rc.d/rc.modules
-elif [ -x /etc/rc.d/rc.modules -a -r /proc/modules ]; then
+# On charge les modules trouvés dans le fichier /etc/rc.d/rc.modules
+if [ -x /etc/rc.d/rc.modules ]; then
 	. /etc/rc.d/rc.modules
 fi
 
@@ -189,7 +177,7 @@ fi
 # n'est pas encore activé à ce stade). devpts est déjà monté par udev, sysfs et
 # et proc sont déjà montés aussi :
 echo "Montage des sytèmes de fichiers locaux..."
-mount -a -v -t nonfs,nosmbfs,nocifs,noproc,nosysfs,nodevpts
+mount -a -F -t nonfs,nosmbfs,nocifs,noproc,nosysfs,nodevpts
 
 # On réactive la partition d'échange au cas où :
 swapon -a
@@ -224,7 +212,7 @@ if [ -f /etc/random-seed ]; then
 	cat /etc/random-seed > /dev/urandom
 fi
 
-# Sinon, on utilise le fichier « poolsize » du noyau :
+# On utilise le fichier « poolsize » du noyau :
 dd if=/dev/urandom of=/etc/random-seed count=1 bs=$(cat /proc/sys/kernel/random/poolsize) 2> /dev/null
 chmod 600 /etc/random-seed
 
