@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-ConsoleKit}
 VERSION=${VERSION:-0.4.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-consolekit}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -136,6 +136,39 @@ unset USE_ARCH
 mkdir ${PKG}/etc/rc.d
 cp -a $CWD/rc.consolekit ${PKG}/etc/rc.d/rc.consolekit.new
 chmod 755 ${PKG}/etc/rc.d/rc.consolekit.new
+
+# On crée le fichier d'autorité pour 'polkit', afin de permettre au groupe 'power' d'éteindre/redémarrer :
+mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d
+cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/org.freedesktop.consolekit.pkla << "EOF"
+[Local restart]
+Identity=unix-group:power
+Action=org.freedesktop.consolekit.system.restart
+ResultAny=yes
+ResultInactive=no
+ResultActive=yes
+
+[Local shutdown]
+Identity=unix-group:power
+Action=org.freedesktop.consolekit.system.stop
+ResultAny=yes
+ResultInactive=no
+ResultActive=yes
+
+[Local restart - multiple]
+Identity=unix-group:power
+Action=org.freedesktop.consolekit.system.restart-multiple-users
+ResultAny=yes
+ResultInactive=no
+ResultActive=yes
+
+[Local shutdown - multiple]
+Identity=unix-group:power
+Action=org.freedesktop.consolekit.system.stop-multiple-users
+ResultAny=yes
+ResultInactive=no
+ResultActive=yes
+
+EOF
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
