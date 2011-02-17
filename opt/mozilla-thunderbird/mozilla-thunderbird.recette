@@ -7,16 +7,16 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
 NAMESRC=${NAMESRC:-thunderbird}
 VERSION=${VERSION:-3.1.7}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -67,109 +67,6 @@ tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
 
 # On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# On force 'thunderbird' à se conformer à la langue du système :
-cat $CWD/thunderbird.lang.patch | patch -p1
-
-# On corrige le processus de compilation en statique :
-cat $CWD/thunderbird.shared-error.patch | patch -p1
-
-# On positionne USE_ARCH :
-export USE_ARCH=32
-
-# Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
-LIBDIRSUFFIX=""
-
-MOZILLA_OFFICIAL="1" BUILD_OFFICIAL="1" MOZ_PHOENIX="1" \
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--with-default-mozilla-five-home=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION} \
-	--enable-application=mail \
-	--with-system-zlib \
-	--with-system-bz2 \
-	--with-system-jpeg \
-	--enable-system-cairo \
-	--enable-default-toolkit=cairo-gtk2 \
-	--enable-crypto \
-	--enable-svg \
-	--enable-canvas \
-	--enable-xft \
-	--enable-xinerama \
-	--enable-reorder \
-	--enable-strip \
-	--enable-system-cairo \
-	--enable-cpp-rtti \
-	--enable-single-profile \
-	--enable-faststart \
-	--enable-startup-notification \
-	--enable-optimize=-O2 \
-	--disable-ldap \
-	--disable-accessibility \
-	--disable-debug \
-	--disable-tests \
-	--disable-logging \
-	--disable-pedantic \
-	--disable-installer \
-	--disable-updater \
-	--disable-profilesharing \
-	--enable-official-branding \
-	--build=${TARGET32} \
-	--host=${TARGET32} 
-
-make -j3 || make
-fakeroot make install DESTDIR=${PKG}
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
-# On ne garde qu'un répertoire racine :
-rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-devel-${VERSION}
-
-# On crée le répertoire général pour les plugins :
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
-
-# On ajoute les types MIME supportés :
-cp -a $CWD/types-mime.patch ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/defaults/profile/mimeTypes.rdf
-
-# Comme Slackware, on va placer de faux fichiers pour la session root
-# au cas où ces fichiers n'existeraient pas pour éviter les erreurs de chargement :
-if [ -d ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/talkback\@mozilla.org ]; then
-	if [ ! -r ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/talkback\@mozilla.org/chrome.manifest ]; then
-		echo > ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/talkback\@mozilla.org/chrome.manifest
-	fi
-fi
-
-if [ ! -d ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/updates ]; then
-	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/updates/0
-fi
-
-# On installe les fichiers de localisation française :
-bsdtar xf $CWD/fr.xpi
-sed -i "s|jar:chrome/fr.jar|jar:fr.jar|" chrome.manifest
-cp -a chrome/fr.jar ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/
-cp -a chrome.manifest ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/fr.manifest
-find ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome -type f -exec chmod 644 {} \;
-
-# On renomme le binaire 32 bits pour l'envelopper :
-mv ${PKG}/usr/bin/thunderbird{,-32}
-
-# On re-déballe et on se re-place dans les sources :
-cd $TMP
-rm -rf ${NAME}
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
-
-# On re-vérifie les permissions des sources :
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
@@ -266,27 +163,6 @@ sed -i "s|jar:chrome/fr.jar|jar:fr.jar|" chrome.manifest
 cp -a chrome/fr.jar ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/
 cp -a chrome.manifest ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/fr.manifest
 find ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome -type f -exec chmod 644 {} \;
-
-# On renomme le binaire 64 bits pour l'envelopper :
-mv ${PKG}/usr/bin/thunderbird{,-64}
-
-# Le programme enveloppe ne suffisant pas dans le cas de Thunderbird (car utilisant
-# un script shell pour lancer le binaire), on en crée un, définissant le 64 bits
-# par défaut sauf si le 32 bits est expressément déclaré :
-rm -f ${PKG}/usr/bin/thunderbird
-cat > ${PKG}/usr/bin/thunderbird << "EOF"
-#!/bin/bash
-# Script shell pour Thunderbird en multilib :
-if [ "$USE_ARCH" = 32 -o "$BUILDENV" = 32 ]; then
-	${0}-32 "$@"
-else
-	${0}-64 "$@"
-fi
-
-EOF
-
-# On rend le script exécutable :
-chmod 755 ${PKG}/usr/bin/thunderbird
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
