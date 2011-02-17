@@ -284,9 +284,9 @@ elif [ "$1" = "--usb" ]; then
 	dd if=/usr/share/syslinux/mbr.bin of=${2}
 	
 	# On installe enfin 'syslinux/extlinux' :
-	if [ ${SYSLINUXCMD} = "extlinux" ]; then
+	if [ "${SYSLINUXCMD}" = "extlinux" ]; then
 		${SYSLINUXCMD} --install /mnt/tmp/boot/${SYSLINUXDIR}
-	elif [ ${SYSLINUXCMD} = "syslinux" ]; then
+	elif [ "${SYSLINUXCMD}" = "syslinux" ]; then
 		${SYSLINUXCMD} --install ${2}1 -d /boot/${SYSLINUXDIR}
 	fi
 	
