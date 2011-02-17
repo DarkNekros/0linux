@@ -211,6 +211,8 @@ config() {
 	fi
 }
 
+config etc/rc.d/rc.consolekit.new
+
 EOF
 
 # On "strippe" tout ce qu'on trouve :

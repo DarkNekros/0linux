@@ -16,6 +16,9 @@ case "$1" in
 	'stop')
 		stop
 	;;
+	'restart')
+		stop
+		start
 	*)
-		echo "Utilisation  $0 start|stop"
+		echo "Utilisation  $0 start|stop|restart"
 esac
