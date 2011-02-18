@@ -7,17 +7,17 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
 
-NAMESRC=${NAMESRC:-util-linux-ng}
-VERSION=${VERSION:-2.18}
+NAMESRC=${NAMESRC:-util-linux}
+VERSION=${VERSION:-2.19}
 EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-util-linux-ng}
-BUILD=${BUILD:-2}
+NAMETGZ=${NAMETGZ:-util-linux}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -108,7 +108,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-use-tty-group \
 	--build=${TARGET32}
 
-make
+make -j3 | make
 fakeroot make install DESTDIR=${PKG}
 
 # On re-déballe et on se re-place dans les sources :
@@ -154,7 +154,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-use-tty-group \
 	--build=${TARGET64}
 
-make
+make -j3 | make
 fakeroot make install DESTDIR=${PKG}
 
 # On crée un lien de /usr/bin vers /usr/sbin pour 'fdformat' pour les scripts de Slackware
@@ -222,9 +222,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
