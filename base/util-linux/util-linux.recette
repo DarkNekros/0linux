@@ -108,7 +108,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-use-tty-group \
 	--build=${TARGET32}
 
-make -j3 | make
+make
 fakeroot make install DESTDIR=${PKG}
 
 # On re-déballe et on se re-place dans les sources :
@@ -154,7 +154,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-use-tty-group \
 	--build=${TARGET64}
 
-make -j3 | make
+make
 fakeroot make install DESTDIR=${PKG}
 
 # On passe 'getopt' et 'setterm' dans /bin (/usr peut ne pas être montée),
