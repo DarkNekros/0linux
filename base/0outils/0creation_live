@@ -281,7 +281,7 @@ elif [ "$1" = "--usb" ]; then
 	
 	echo "Installation du chargeur d'amorçage... "
 	# On copie un MBR propre :
-	dd if=/usr/share/syslinux/mbr.bin of=${2}
+	cat /usr/share/syslinux/mbr.bin > ${2}
 	
 	# On installe enfin 'syslinux/extlinux' :
 	if [ "${SYSLINUXCMD}" = "extlinux" ]; then

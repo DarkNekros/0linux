@@ -24,7 +24,7 @@ cat $TMP/choix_partitions | while read LINE; do
 	MOUNTDIR="$(echo ${LINE} | crunch | cut -d' ' -f2)"
 	
 	# On va faire confiance à 'blkid' pour s'assurer du système de fichiers :
-	FSMOUNT=$(blkid -s TYPE ${MOUNTPART} | cut -d'=' -f2 | tr -d \")
+	FSMOUNT="$(blkid -s TYPE ${MOUNTPART} | cut -d'=' -f2 | crunch | tr -d \")"
 	
 	# On définit les options pour la racine système :
 	if [ "${MOUNTDIR}" = "/" ]; then
@@ -45,7 +45,7 @@ cat $TMP/choix_partitions | while read LINE; do
 	fi
 	
 	# On ajoute la ligne résultante au fichier 'fstab' :
-	echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}		${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
+	echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
 	
 	# On crée le point de montage :
 	mkdir -p ${SETUPROOT}/${MOUNTDIR}
@@ -65,21 +65,21 @@ cat $TMP/choix_partitions_fat | while read LINEDOS; do
 	MOUNTDIR="$(echo ${LINEDOS} | crunch | cut -d' ' -f2)"
 	
 	# On va faire confiance à 'blkid' pour s'assurer du système de fichiers :
-	FSMOUNT=$(blkid -s TYPE ${MOUNTPART} | cut -d'=' -f2 | tr -d \")
+	DOSFSMOUNT="$(blkid -s TYPE ${MOUNTPART} | cut -d'=' -f2 | crunch | tr -d \")"
 	
 	# On définit les options pour les FAT/NTFS :
-	if [ "${FSMOUNT}" = "ntfs" ]; then
+	if [ "${DOSFSMOUNT}" = "ntfs" ]; then
 		FSMOUNT="ntfs-3g"
 		MOUNTOPTIONS="umask=000"
 		MAJORMINOR="1 0"
-	elif [ "${FSMOUNT}" = "vfat" ]; then
+	elif [ "${DOSFSMOUNT}" = "vfat" ]; then
 		FSMOUNT="vfat"
 		MOUNTOPTIONS="defaults"
 		MAJORMINOR="1 0"
 	fi
 	
 	# On ajoute la ligne résultante au fichier 'fstab' :
-	echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}		${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
+	echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
 	
 	# On crée le point de montage :
 	mkdir -p ${SETUPROOT}/${MOUNTDIR}
@@ -101,9 +101,9 @@ fi
 
 # Puis les systèmes de fichiers spéciaux vitaux :
 echo "# Système de fichiers spéciaux :" >> ${SETUPROOT}/etc/fstab
-echo "devpts		/dev/pts		devpts		gid=5,mode=620		0 0" >> ${SETUPROOT}/etc/fstab
-echo "proc		/proc		proc		defaults		0 0" >> ${SETUPROOT}/etc/fstab
-echo "tmpfs		/dev/shm		tmpfs		defaults		0 0" >> ${SETUPROOT}/etc/fstab
+echo "devpts	/dev/pts	devpts	gid=5,mode=620		0 0" >> ${SETUPROOT}/etc/fstab
+echo "proc	/proc		proc	defaults		0 0" >> ${SETUPROOT}/etc/fstab
+echo "tmpfs	/dev/shm		tmpfs	defaults		0 0" >> ${SETUPROOT}/etc/fstab
 echo "" >> ${SETUPROOT}/etc/fstab
 
 # Puis le reste de notre 'fstab' temporaire :

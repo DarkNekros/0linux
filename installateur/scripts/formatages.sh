@@ -22,7 +22,7 @@ while [ 0 ]; do
 	echo "L'installateur s'apprête à exécuter les commandes de formatage suivantes."
 	echo "N.B.: toutes les données se trouvant sur ces partitions seront perdues !"
 	echo ""
-	cat $TMP/formatages
+	cat $TMP/formatages | sed 's@2> /dev/null@@'
 	echo ""
 	echo "Pour confirmer les formatages, tapez « oui »."
 	echo "Pour annuler et revenir au menu principal, appuyez sur ENTRÉE."

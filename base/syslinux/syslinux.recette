@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-syslinux}
-VERSION=${VERSION:-4.02}
+VERSION=${VERSION:-4.03}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-syslinux}
 BUILD=${BUILD:-1}
@@ -31,7 +31,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 WGET=${WGET:-http://www.kernel.org/pub/linux/utils/boot/syslinux/${NAMESRC}-${VERSION}.$EXT}
 DOC="COPYING NEWS README* com32/LICENCE doc/ sample/"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Les chargeurs d'amorçage ISOLINUX, PXELINUX et SYSLINUX"
+SLACKDESC="La collection de chargeurs d'amorçage SYSLINUX"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -85,6 +85,14 @@ unset USE_ARCH
 cp -a $(find . -name "syslinux-nomtools" -print) ${PKG}/usr/bin
 chmod 755 ${PKG}/usr/bin/syslinux-nomtools
 
+# On copie la configuration d'extlinux et les modules servant à amorcer le système :
+mkdir ${PKG}/boot
+cp -ra $CWD/extlinux ${PKG}/boot/
+cp -a ${PKG}/usr/share/syslinux/{{chain,config,hdt,kbdmap,linux,reboot,vesamenu}.c32} ${PKG}/boot/extlinux
+
+# On veille à ne rien écraser :
+mv ${PKG}/boot/extlinux/extlinux.conf{,.new}
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -125,6 +133,8 @@ config() {
 		mv $NEW $OLD
 	fi
 }
+
+config boot/extlinux/extlinux.conf.new
 
 EOF
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # On nettoie  :
-unset GRUBINST BLAHH GRUBTABLE WINBOOT WINDISK
+unset BOOTERINST BLAHH PARTTABLE WINBOOT WINDISK
 
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
@@ -9,24 +9,24 @@ crunch() {
 	echo $STRING;
 }
 
-# Boucle d'affichage pour les formatages et montages des partitions choisies : :
+# Boucle d'affichage pour l'installation du chargeur d'amorçage :
 while [ 0 ]; do
 	clear
-	echo -e "\033[1;32mInstallation du chargeur d'amorçage GRUB.\033[0;0m"
+	echo -e "\033[1;32mInstallation du chargeur d'amorçage Extlinux.\033[0;0m"
 	echo ""
-	echo "Voulez-vous installer le chargeur d'amorçage GRUB2 sur le bloc"
-	echo "d'amorçage principal (ou « MBR ») de votre premier disque dur ?"
-	echo "N.B.: Tout ancien MBR sera écrasé !"
+	echo "Voulez-vous installer le chargeur d'amorçage Extlinux sur votre"
+	echo "partition racine $(cat $TMP/partition_racine) ?"
+	echo "N.B.: ceci n'altèrera pas votre bloc d'amorçage principal (MBR)."
 	echo ""
-	echo "1 : Installer GRUB2 sur le MBR de $(cat $TMP/partition_racine | crunch | cut -b1-8)"
+	echo "1 : Installer Extlinux sur la partition racine  $(cat $TMP/partition_racine)"
 	echo "2 : Voir comment configurer d'autres chargeurs d'amorçage pour amorcer 0"
-	echo "3 : Ignorer l'installation de GRUB2 et revenir au menu principal"
+	echo "3 : Ignorer l'installation d'Extlinux et revenir au menu principal"
 	echo ""
 	echo -n "Votre choix : "
-	read GRUBINST;
-	if [ "$GRUBINST" = "3" ]; then
+	read BOOTERINST;
+	if [ "$BOOTERINST" = "3" ]; then
 		break
-	elif [ "$GRUBINST" = "2" ]; then
+	elif [ "$BOOTERINST" = "2" ]; then
 		clear
 		echo -e "\033[1;32mInformations pour la configuration de l'amorçage de 0.\033[0;0m"
 		echo ""
@@ -41,77 +41,99 @@ while [ 0 ]; do
 		echo ""
 		echo "Notez ces informations et appuyez sur ENTRÉE pour continuer."
 		read BLAHH;
-		break
-	elif [ "$GRUBINST" = "1" ]; then
-		# On remplace le '/dev/sda1' pour 0 par la racine dans le fichier de config' :
-		sed -i "s@/dev/sda1 ro vt.default_utf8=1@$(cat $TMP/partition_racine | crunch) ro vt.default_utf8=1@" \
-			${SETUPROOT}/etc/grub.d/40_custom
+		continue
+	elif [ "$BOOTERINST" = "1" ]; then
+		# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par la racine  :
+		sed -i "s@ROOTPART@$(cat $TMP/partition_racine | crunch)@" ${SETUPROOT}/boot/extlinux/extlinux.conf
 		
-		# On ajoute un éventuel système Windows :
-		if [ "$(fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' 2> /dev/null | wc -l)" -gt "0" ]; then
-			clear
-			echo -e "\033[1;32mPartitions DOS/Windows amorçables détectées.\033[0;0m"
-			echo ""
-			echo "Vous disposez de partitions amorçables de type DOS/Windows."
-			echo "Voulez-vous ajouter les informations concernant DOS/Windows à GRUB2"
-			echo "afin de pouvoir amorcer ce type de système ? Tapez la partition souhaitée"
-			echo "figurant dans la liste suivante ou appuyez sur ENTRÉE pour ignorer :"
-			echo ""
-			fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' | crunch | cut -d' ' -f1 2> /dev/null
-			echo ""
-			echo -n "Votre choix : "
-			read WINBOOT;
-			if [ "$WINBOOT" = "" ]; then
-				# On ne fait rien
-				break
-			else
-				# On fait confiance à la réponse de l'utilisateur et on détecte quel disque est
-				# utilisé. On en teste 6 :
-				if [ "$(echo WINBOOT | cut -b8)" = "a" ]; then
-					WINDISK="0"
-				elif [ "$(echo WINBOOT | cut -b8)" = "b" ]; then
-					WINDISK="1"
-				elif [ "$(echo WINBOOT | cut -b8)" = "c" ]; then
-					WINDISK="2"
-				elif [ "$(echo WINBOOT | cut -b8)" = "d" ]; then
-					WINDISK="3"
-				elif [ "$(echo WINBOOT | cut -b8)" = "e" ]; then
-					WINDISK="4"
-				elif [ "$(echo WINBOOT | cut -b8)" = "f" ]; then
-					WINDISK="5"
-				else
-					echo "Erreur. Réponse probablement erronée."
+		# On demande si l'on doit écraser le MBR :
+		clear
+		echo -e "\033[1;32mÉcrasement du bloc d'amorçage principal.\033[0;0m"
+		echo ""
+		echo "Voulez-vous écraser le bloc d'amorçage principal (ou « MBR »)"
+		echo "de votre premier disque dur afin qu'Extlinux prenne en charge"
+		echo "vos différents systèmes ?"
+		echo "N.B.: ceci écrasera votre ancien MBR de façon irréversible."
+		echo "Appuyez sur ENTRÉE pour ignorer cette étape."
+		echo ""
+		echo -n "Votre choix (oui/non) : "
+		read MBRINSTALL;
+		if [ ! "${MBRINSTALL}" = "oui" ]; then
+			break
+		else
+			# On écrase le MBR sans aucun scrupule :
+			cat /usr/share/syslinux/mbr.bin > $(cat $TMP/partition_racine | crunch | cut -b1-8)
+			
+			# Si le MBR est occupé par Extlinux, alors on en profite pour ajouter d'autres « OS » :
+			
+			# On ajoute un éventuel système Windows :
+			if [ "$(fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' | \
+				grep -v $(cat $TMP/choix_media) 2> /dev/null | wc -l)" -gt "0" ]; then
+				clear
+				echo -e "\033[1;32mPartitions DOS/Windows amorçables détectées.\033[0;0m"
+				echo ""
+				echo "Vous disposez de partitions amorçables de type DOS/Windows."
+				echo "Voulez-vous ajouter les informations concernant DOS/Windows à Extlinux"
+				echo "afin de pouvoir amorcer ce type de système ? Tapez la partition souhaitée"
+				echo "figurant dans la liste suivante ou appuyez sur ENTRÉE pour ignorer :"
+				echo "Exemples : /dev/sda2 ; /dev/sdb4 : /dev/sdf5 ; etc."
+				echo ""
+				# On affiche les partitions FAT/NTFS sauf l'éventuelle clé USB montée pour
+				# l'installation (donc amorçable) :
+				fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' \
+					| crunch | cut -d' ' -f1 | grep -v $(cat $TMP/choix_media) 2> /dev/null
+				echo ""
+				echo -n "Votre choix : "
+				read WINBOOT;
+				if [ "$WINBOOT" = "" ]; then
+					# On ne fait rien
 					break
+				else
+					# On fait confiance à la réponse de l'utilisateur et on détecte quel disque est
+					# utilisé. On en teste 6 :
+					if [ "$(echo WINBOOT | crunch | wc -m)" = "9" ]; then
+						if [ "$(echo WINBOOT | cut -b8)" = "a" ]; then
+							WINDISK="0"
+						elif [ "$(echo WINBOOT | cut -b8)" = "b" ]; then
+							WINDISK="1"
+						elif [ "$(echo WINBOOT | cut -b8)" = "c" ]; then
+							WINDISK="2"
+						elif [ "$(echo WINBOOT | cut -b8)" = "d" ]; then
+							WINDISK="3"
+						elif [ "$(echo WINBOOT | cut -b8)" = "e" ]; then
+							WINDISK="4"
+						elif [ "$(echo WINBOOT | cut -b8)" = "f" ]; then
+							WINDISK="5"
+						else
+							echo "Erreur. Réponse probablement erronée."
+							sleep 2
+							break
+						fi
+						
+						# On remplit le fichier de config' pour Windows:
+						echo "# Entrée pour Windows :" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+						echo "LABEL windows" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+						echo "	MENU LABEL Windows" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+						echo "	KERNEL chain.c32" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+						echo "	APPEND hd${WINDISK} $(echo ${WINBOOT} | cut -b9)" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+						echo "" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+					else
+						echo "Erreur. Réponse probablement erronée."
+						sleep 2
+						break
+					fi
 				fi
-				
-				# On remplit le fichier de config' pour Windows:
-				echo "# Entrée pour Windows :" >> ${SETUPROOT}/etc/grub.d/40_custom
-				echo "menuentry \"Windows\" {" >> ${SETUPROOT}/etc/grub.d/40_custom
-				echo "	set root=(hd${WINDISK},$(echo WINBOOT | cut -b9))" >> ${SETUPROOT}/etc/grub.d/40_custom
-				echo "	chainloader +1" >> ${SETUPROOT}/etc/grub.d/40_custom
-				echo "}" >> ${SETUPROOT}/etc/grub.d/40_custom
-				echo "" >> ${SETUPROOT}/etc/grub.d/40_custom
 			fi
+			
+			# Il est temps d'installer Extlinux :
+			echo "Installation de Extlinux..."
+			extlinux --install ${SETUPROOT}/boot/extlinux
+			break
 		fi
-		
-		# Il est temps d'installer GRUB2 en chrootant sur la racine :
-		echo "Installation de GRUB2..."
-		
-		# On génère le fichier de config' et on installe sur le MBR :
-		chroot ${SETUPROOT} grub-mkconfig -o /boot/grub/grub.cfg 2>/dev/null
-		
-		# On s'assure que 'grub.cfg' n'est pas renommé (ça sent le vécu) :
-		if [ -r ${SETUPROOT}/boot/grub/grub.cfg.new ]; then
-			mv ${SETUPROOT}/boot/grub/grub.cfg{.new,}
-		fi
-		
-		chroot ${SETUPROOT} grub-install $(cat $TMP/partition_racine | crunch | cut -b1-8) &>/dev/null 2>&1
-		chroot ${SETUPROOT} grub-setup $(cat $TMP/partition_racine | crunch | cut -b1-8) &>/dev/null 2>&1
-		break
 	else
 		echo "Veuillez entrer un chiffre entre 1 et 3 uniquement"
 		sleep 2
-		unset GRUBINST
+		unset BOOTERINST
 		continue
 	fi
 done
