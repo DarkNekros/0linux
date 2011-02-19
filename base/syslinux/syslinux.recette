@@ -88,7 +88,7 @@ chmod 755 ${PKG}/usr/bin/syslinux-nomtools
 # On copie la configuration d'extlinux et les modules servant à amorcer le système :
 mkdir ${PKG}/boot
 cp -ra $CWD/extlinux ${PKG}/boot/
-cp -a ${PKG}/usr/share/syslinux/{{chain,config,hdt,kbdmap,linux,reboot,vesamenu}.c32} ${PKG}/boot/extlinux
+cp -a ${PKG}/usr/share/syslinux/{chain,config,hdt,kbdmap,linux,reboot,vesamenu}.c32 ${PKG}/boot/extlinux
 
 # On veille à ne rien écraser :
 mv ${PKG}/boot/extlinux/extlinux.conf{,.new}
