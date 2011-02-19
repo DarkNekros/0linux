@@ -267,8 +267,3 @@ blacklist w83977f_wdt
 blacklist wafer5823wdt
 blacklist wdt
 blacklist wdt_pci
-
-# 'Nouveau' est encore expérimental.
-# Commentez cette ligne pour tester à vos risques et périls :
-blacklist nouveau
-

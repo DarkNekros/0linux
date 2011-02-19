@@ -7,14 +7,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-udev}
-VERSION=${VERSION:-164}
+VERSION=${VERSION:-166}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-udev}
 BUILD=${BUILD:-1}
@@ -152,7 +151,7 @@ find ${PKG}/etc -type f -exec chmod 644 {} \;
 find ${PKG}/etc -type d -exec chmod 755 {} \;
 chmod 755 ${PKG}/etc/rc.d/rc.udev.new
 
-# On ajoute les périphériques supplémentaires non pris en charge par udev :
+# On ajoute les périphériques supplémentaires non pris en charge :
 fakeroot tar xf $CWD/udev-fixed-devices.tar.gz -C ${PKG}
 
 # On ajoute le script de Slackware 'nethelper.sh' :
