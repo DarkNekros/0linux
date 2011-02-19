@@ -65,15 +65,15 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# Comme Slackware, les programmmes de connexion et d'initialisation système
-# ('login' et 'init') ne sont pas compilés car ils figurent déjà dans les paquets
+# Les programmmes de connexion et d'initialisation système ('login' et
+# 'init') ne sont pas compilés car ils figurent déjà dans les paquets
 # 'shadow' et 'sysvinit'.
 
-# On n'installe pas 'ziptool' - il peut très bien avoir son propre paquet si le besoin
-# s'en fait ressentir.
+# On n'installe pas 'ziptool' - il peut très bien avoir son propre paquet
+# si le besoin s'en fait ressentir.
 
-# On n'installe pas non plus 'strings' de BSD, seul 'strings' de GNU est présent ;
-# voir le paquet 'binutils'.
+# On n'installe pas non plus 'strings' de BSD, seul 'strings' de GNU est
+#  présent ; voir le paquet 'binutils'.
 
 # On n'installe pas non plus 'hostname' ; voir le paquet 'net-tools'
 
@@ -157,12 +157,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make -j3 | make
 fakeroot make install DESTDIR=${PKG}
 
-# On crée un lien de /usr/bin vers /usr/sbin pour 'fdformat' pour les scripts de Slackware
-# appelant ce programme :
-mkdir -p ${PKG}/usr/bin
-ln -sf ../sbin/fdformat ${PKG}/usr/bin/fdformat
-
-# Comme Slackware, on passe 'getopt' et 'setterm' dans /bin (/usr peut ne pas être montée),
+# On passe 'getopt' et 'setterm' dans /bin (/usr peut ne pas être montée),
 # et on les lie à /usr/bin :
 mkdir -p ${PKG}/bin
 mv ${PKG}/usr/bin/{getopt,setterm} ${PKG}/bin
