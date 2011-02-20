@@ -13,10 +13,10 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-MesaLib}
-VERSION=${VERSION:-7.9.1}
+VERSION=${VERSION:-7.10}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mesa}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
