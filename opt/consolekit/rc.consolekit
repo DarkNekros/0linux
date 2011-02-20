@@ -5,8 +5,10 @@ start() {
 }
 
 stop() {
-	kill -HUP $(cat /var/run/ConsoleKit/pid)
-	rm -f /var/run/ConsoleKit/pid
+	if [ -f /var/run/ConsoleKit/pid ]; then
+		kill -HUP $(cat /var/run/ConsoleKit/pid)
+		rm -f /var/run/ConsoleKit/pid
+	fi
 }
 
 case "$1" in
