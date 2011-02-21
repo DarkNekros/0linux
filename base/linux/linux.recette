@@ -23,7 +23,7 @@ NAMETGZ=${NAMETGZ:-linux}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -70,6 +70,10 @@ rm -rf ${NAME}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
+
+# On corrige un problème d'affichage génant avec le pilote 'nouveau' sur les puces
+# récentes :
+cat $CWD/linux.nouveau-corruption-fix.patch | patch -p1 || exit 1
 
 ### 1- On génère le paquet pour le noyau précompilé. ###
 
