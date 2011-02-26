@@ -66,9 +66,8 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On applique ces correctifs pour les noyaux récents :
-cat $CWD/ndiswrapper.linux-2.6.35.patch | patch -p1
-cat $CWD/ndiswrapper.linux-2.6.36.patch | patch -p1
+# On applique un correctif pour les noyaux récents :
+cat $CWD/ndiswrapper.linux-2.6.38.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
