@@ -17,13 +17,13 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-2.6.37.1}
+VERSION=${VERSION:-2.6.38_rc6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-linux}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -33,7 +33,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v2.6/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT}
 ##########
 SLACKDESC="Le noyau Linux"
 SLACKDESCHEADERS="Les fichiers d'en-tête du noyau Linux"
@@ -70,10 +70,6 @@ rm -rf ${NAME}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
-
-# On corrige un problème d'affichage génant avec le pilote 'nouveau' sur les puces
-# récentes :
-cat $CWD/linux.nouveau-corruption-fix.patch | patch -p1 || exit 1
 
 ### 1- On génère le paquet pour le noyau précompilé. ###
 
@@ -206,7 +202,7 @@ if [ -r etc/rc.d/rc.modules ]; then
 	if [ ! -L etc/rc.d/rc.modules ]; then
 		cp -a etc/rc.d/rc.modules etc/rc.d/rc.modules.bak
 	else
-		ln -sf rc.modules-${VERSION}_${RTVERSION} etc/rc.d/rc.modules
+		ln -sf rc.modules-${VERSION} etc/rc.d/rc.modules
 	fi
 fi
 
