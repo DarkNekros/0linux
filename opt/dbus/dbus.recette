@@ -7,17 +7,16 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-dbus}
-VERSION=${VERSION:-1.3.1}
+VERSION=${VERSION:-1.4.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-dbus}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -150,10 +149,6 @@ rm ${PKG}/etc/rc.d/*
 cp -a $CWD/rc.messagebus ${PKG}/etc/rc.d/rc.messagebus
 chmod 0755 ${PKG}/etc/rc.d/rc.messagebus
 
-# On veille à ne pas écraser de fichiers de configuration :
-mv ${PKG}/etc/dbus-1/session.conf{,.new}
-mv ${PKG}/etc/dbus-1/system.conf{,.new}
-
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -195,9 +190,6 @@ config() {
 	fi
 }
 
-config etc/dbus-1/session.conf.new
-config etc/dbus-1/system.conf.new
-
 EOF
 
 # On "strippe" tout ce qu'on trouve :
@@ -208,9 +200,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
