@@ -139,7 +139,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-pid-file=/var/run/ConsoleKit/pid \
-	--enable-docbook-docs \
 	--enable-pam-module=no \
 	--build=${TARGET64}
 
