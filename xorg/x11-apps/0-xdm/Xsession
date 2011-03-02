@@ -2,16 +2,16 @@
 
 # On rapatrie les paramètres système pour la session X :
 if [ -f /etc/profile ]; then
-	. /etc/profile
+	source /etc/profile
 fi
 
 # On rapatrie les paramètres utilisateur pour la session X :
 if [ -f $HOME/.bash_profile ]; then
-	. $HOME/.bash_profile
+	source $HOME/.bash_profile
 elif [ -f $HOME/.bash_login ]; then
-	. $HOME/.bash_login
+	source $HOME/.bash_login
 elif [ -f $HOME/.profile ]; then
-	. $HOME/.profile
+	source $HOME/.profile
 fi
 
 # Le script 'xinitrc' par défaut :
