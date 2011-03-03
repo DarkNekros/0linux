@@ -15,7 +15,7 @@ done
 VERSION=${VERSION:-7.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-apps}
-BUILD=${BUILD:-9}
+BUILD=${BUILD:-10}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -140,6 +140,9 @@ done
 mkdir -p ${PKG}/etc/X11/xinit
 cp -a $CWD/xinitrc.twm ${PKG}/etc/X11/xinit
 chmod 755 ${PKG}/etc/X11/xinit/xinitrc.twm
+
+# On supprime ces fichiers de démarrage qui ont la priorité sur '/etc' :
+rm -f ${PKG}/usr/lib{,64}/X11/xinit/xinitrc
 
 # On place nos fichiers personnalisés :
 mkdir -p ${PKG}/usr/lib{,64}/X11/xdm
