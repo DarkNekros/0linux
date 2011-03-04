@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-xfce-utils}
 VERSION=${VERSION:-4.8.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-utils}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -66,9 +66,6 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On ajoute ConsoleKit à l'ouverture de sessiosn d'Xfce :
-cat $CWD/xfce4-utils.consolekit-session.patch | patch -p1
-
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
@@ -95,6 +92,9 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On ajout le support de 'consolekit' au fichier de démarrage de session graphique : 
+sed -i -e 's@^xfce4-session$@exec ck-launch-session xfce4-session@' ${PKG}/etc/xfce/xdg/xfce4/xinitrc
 
 # On lie le fichier de démarrage graphique 'xinitrc' dans /etc/X11/xinit avec les autres :
 mkdir -p ${PKG}/etc/X11/xinit
