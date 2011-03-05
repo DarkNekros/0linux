@@ -66,12 +66,9 @@ else
 		echo "pour formater la partition ${ROOTSELECT} ou bien appuyez sur"
 		echo "ENTRÉE pour ignorer le formatage."
 		echo ""
-		echo "1 : EXT2     - système de fichiers traditionnel sous Linux"
-		echo "2 : EXT3     - version journalisée répandue de Ext2"
-		echo "3 : EXT4     - récent successeur de Ext3"
-		echo "4 : JFS      - système de fichiers journalisé d'IBM"
-		echo "5 : REISERFS - système journalisé performant"
-		echo "6 : XFS      - système de SGI performant sur les gros fichiers"
+		echo "1 : EXT2 - système de fichiers traditionnel sous Linux"
+		echo "2 : EXT3 - version journalisée de Ext2"
+		echo "3 : EXT4 - récent successeur de Ext3"
 		echo ""
 		echo -n "Votre choix : "
 		read BLAHFORMAT;
@@ -88,24 +85,12 @@ else
 			ROOTFORMAT="mkfs.ext4 ${ROOTSELECT} 2> /dev/null"
 			break
 		;;
-		"4")
-			ROOTFORMAT="mkfs.jfs -q ${ROOTSELECT} 2> /dev/null"
-			break
-		;;
-		"5")
-			ROOTFORMAT="echo \"y\" | mkreiserfs ${ROOTSELECT} 2> /dev/null"
-			break
-		;;
-		"6")
-			ROOTFORMAT="mkfs.xfs -f ${ROOTSELECT} 2> /dev/null"
-			break
-		;;
 		"")
 			ROOTFORMAT=""
 			break
 		;;
 		*)
-			echo "Veuillez entrer un numéro valide (entre 1 et 6) ou appuyez"
+			echo "Veuillez entrer un numéro valide (entre 1 et 3) ou appuyez"
 			echo "sur ENTRÉE."
 			sleep 2
 			unset ROOTFORMAT BLAHFORMAT
