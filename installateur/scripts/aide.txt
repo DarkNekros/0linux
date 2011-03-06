@@ -23,7 +23,7 @@ moment même est probablement la console virtuelle numéro 1 (« /dev/tty1 »
 en jargon Linux). Il y a habituellement plusieurs consoles virtuelles 
 disponibles. 
 
-Lorsque vous vous connectez via le  média d'installation, il y a plusieurs 
+Lorsque vous vous connectez via le média d'installation, il y a plusieurs 
 consoles activées par défaut. Pour basculer de l'une à l'autre, utilisez 
 les touches Alt+F1, Alt+F2, Alt+F3 et ainsi de suite pour choisir quelle 
 console utiliser. Pendant l'utilisation d'une console, une mémoire pour 
@@ -53,8 +53,8 @@ aisé de gérer un système partitionné de la facon suivante  :
 	+ l'espace dédié aux utilisateurs sur '/home' 
 	+ 1 partition « swap » (un peu plus que votre quantité de mémoire RAM)
 
-Faire une partition séparée pour /home est optionnel mais recommandé, celle-ci
-contenant entre autres les paramètres et préférences des utilisateurs.
+Faire une partition séparée pour /home est optionnel mais recommandé,
+celle-ci contenant entre autres les préférences des utilisateurs.
 
 Le partitionnement s'effectue avec un outil de partitionnement tel que 
 le programme 'cfdisk', ou bien avec sa version plus « vieille école », 
@@ -62,19 +62,18 @@ le programme 'cfdisk', ou bien avec sa version plus « vieille école »,
 disponible.
 
 Vous allez avoir besoin d'une partition de type 83 (type Linux par défaut) 
-et optionnnellement une de type 82 (la partition d'échange ou « swap ») afin 
-que l'installateur reconnaisse vos partitions comme exploitables.
+et optionnnellement une de type 82 (la partition d'échange ou « swap »)
+afin  que l'installateur reconnaisse vos partitions comme exploitables.
 
 	a) Si vous choisissez 'cfdisk', les menus vous guideront.
 
-	b) Si vous choisissez 'fdisk', utilisez la commande 't' pour choisir le 
-	   type des partitions puis finissez par la commande 'w' pour écrire la 
+	b) Si vous choisissez 'fdisk', utilisez la commande 't' pour choisir 
+	   le type des partitions puis finissez par 'w' pour écrire la
 	   nouvelle table de partitions avant de quitter.
 
 Par défaut, 'fdisk' et 'cfdisk' sélectionneront le premier lecteur de
-disque dur de votre machine. Sur les machines équipées en IDE, le disque
-sera /dev/hda. Pour celles équipées en SATA ou SCSI, ce sera /dev/sda. 
-Pour partitionner des disque durs supplémentaires, vous devrez les indiquer. 
+disque dur de votre machine, '/dev/sda'. 
+Pour partitionner des disque durs supplémentaires, il faut les indiquer. 
 
 Pour consulter la liste des disques détectés, tapez : 
 
@@ -84,16 +83,18 @@ Pour partitionner le second disque dur IDE avec 'cfdisk', tapez :
 
 	# cfdisk /dev/hdb
 
-Pour partitionner le second disque dur SATA ou SCSI avec 'cfdisk', tapez :
+Pour partitionner le second disque dur SATA ou SCSI (ou IDE sur le nouveau
+système de nommage de Linux) avec 'cfdisk', tapez :
 
 	# cfdisk /dev/sdb
 
 2- Lancement de l'installateur
 
-Après avoir tapé 'installateur', suivez simplement les rubriques à l'écran.
+Après avoir tapé 'installateur', suivez simplement les rubriques à l'écran,
+les unes après les autres.
 
-Espérons que les rubriques parlent d'elles-mêmes :). Lisez attentivement ce
-qui est inscrit à l'écran et tout devrait bien se passer.
+Espérons que les rubriques parlent d'elles-mêmes :). Lisez attentivement
+ce qui est inscrit à l'écran et tout devrait bien se passer.
 
 Quand l'installation et la configuration sont terminées, quittez le 
 programme d'installation pour redémarrer sous votre nouveau système Linux.
