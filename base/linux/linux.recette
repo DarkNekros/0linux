@@ -17,14 +17,14 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-2.6.38_rc6}
+VERSION=${VERSION:-2.6.38_rc7}
 SRCVERSION="$(echo ${VERSION} | sed 's/_/-/')"
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-linux}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -142,6 +142,9 @@ mkdir -p ${PKGMODULES}/etc/rc.d
 
 # On installe les modules noyau :
 make modules_install INSTALL_MOD_PATH=${PKGMODULES}
+
+# On compresse tous les modules :
+find ${PKGMODULES} -type f -name "*.ko" -exec gzip -9 {} \;
 
 # On copie le fichier rc.modules en prenant garde à ne rien écraser :
 cat $CWD/rc.modules.new > ${PKGMODULES}/etc/rc.d/rc.modules.new
