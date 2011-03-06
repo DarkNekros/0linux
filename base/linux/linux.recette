@@ -143,9 +143,6 @@ mkdir -p ${PKGMODULES}/etc/rc.d
 # On installe les modules noyau :
 make modules_install INSTALL_MOD_PATH=${PKGMODULES}
 
-# On compresse tous les modules :
-find ${PKGMODULES} -type f -name "*.ko" -exec gzip -9 {} \;
-
 # On copie le fichier rc.modules en prenant garde à ne rien écraser :
 cat $CWD/rc.modules.new > ${PKGMODULES}/etc/rc.d/rc.modules.new
 chmod 755 ${PKGMODULES}/etc/rc.d/rc.modules.new
