@@ -86,7 +86,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info
 
-make
+fakeroot make
 fakeroot make install DESTDIR=${PKG}
 
 # On renomme en .new les fichiers à na pas écraser lors de mises à niveau :
