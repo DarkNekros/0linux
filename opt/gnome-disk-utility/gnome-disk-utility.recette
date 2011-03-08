@@ -66,6 +66,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On corrige pour rendre la dépendance 'avahi' optionnelle :
+cat $CWD/gnome-disk-utility.optional-avahi.patch | patch -p1
+
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
@@ -84,6 +87,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-avahi \
 	--disable-gtk-doc \
 	--disable-nautilus \
 	--disable-scrollkeeper \
@@ -107,6 +111,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On corrige pour rendre la dépendance 'avahi' optionnelle :
+cat $CWD/gnome-disk-utility.optional-avahi.patch | patch -p1
+
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
@@ -125,6 +132,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-avahi \
 	--disable-gtk-doc \
 	--disable-nautilus \
 	--disable-scrollkeeper \
