@@ -29,6 +29,7 @@ rpc:x:32:
 sshd:x:33:sshd
 gdm:x:42:
 shadow:x:43:
+avahi:x:44:
 ftp:x:50:
 oprofile:x:51:
 apache:x:80:

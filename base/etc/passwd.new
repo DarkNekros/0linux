@@ -18,6 +18,7 @@ mysql:x:27:27:MySQL:/var/lib/mysql:/bin/false
 rpc:x:32:32:RPC portmap user:/:/bin/false
 sshd:x:33:33:sshd:/:/bin/false
 gdm:x:42:42:GDM:/var/state/gdm:/bin/bash
+avahi:x:44:44:User for AVAHI:/dev/null:/bin/false
 oprofile:x:51:51:oprofile:/:/bin/false
 apache:x:80:80:User for Apache:/srv/httpd:/bin/false
 messagebus:x:81:81:User for D-BUS:/var/run/dbus:/bin/false
