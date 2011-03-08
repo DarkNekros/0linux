@@ -69,6 +69,16 @@ if [ -x /etc/rc.d/rc.consolekit ]; then
 	. /etc/rc.d/rc.consolekit start
 fi
 
+# Lancement de Avahi :
+if [ -x /etc/rc.d/rc.avahidaemon ]; then
+	. /etc/rc.d/rc.avahidaemon start
+fi
+
+# Lancement de 'avahidnsconfd' : 
+if [ -x /etc/rc.d/rc.avahidnsconfd ]; then
+	. /etc/rc.d/rc.avahidnsconfd start
+fi
+
 # Lancement de wicd :
 if [ -x /etc/rc.d/rc.wicd ]; then
 	. /etc/rc.d/rc.wicd start

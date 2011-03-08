@@ -12,7 +12,7 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-VERSION=${VERSION:-0.97}
+VERSION=${VERSION:-0.98}
 NAMETGZ=${NAMETGZ:-sysvinit-scripts}
 BUILD=${BUILD:-1}
 
@@ -40,9 +40,12 @@ mkdir -p ${PKG}/sbin
 
 # On installe les scripts d'initialisation du système 0 :
 for script in rc.{4,6,K,M,S} rc.local rc.sysvinit; do
-	cp -a $CWD/scripts/${script} ${PKG}/etc/rc.d/${script}.new
-	chmod 755 ${PKG}/etc/rc.d/${script}.new
+	cp -a $CWD/scripts/${script} ${PKG}/etc/rc.d/
+	chmod 755 ${PKG}/etc/rc.d/${script}
 done
+
+# On prend garde à ne rien écraser :
+mv ${PKG}/etc/rc.d/rc.local{,.new}
 
 # Installation du fichier 'inittab' :
 cp -a $CWD/scripts/inittab ${PKG}/etc/inittab.new
@@ -70,13 +73,7 @@ config() {
 }
 
 config etc/inittab.new
-config etc/rc.d/rc.4.new
-config etc/rc.d/rc.6.new
-config etc/rc.d/rc.K.new
-config etc/rc.d/rc.M.new
-config etc/rc.d/rc.S.new
 config etc/rc.d/rc.local.new
-config etc/rc.d/rc.sysvinit.new
 
 EOF
 
