@@ -87,7 +87,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-avahi \
 	--disable-gtk-doc \
 	--disable-nautilus \
 	--disable-scrollkeeper \
@@ -132,7 +131,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-avahi \
 	--disable-gtk-doc \
 	--disable-nautilus \
 	--disable-scrollkeeper \
