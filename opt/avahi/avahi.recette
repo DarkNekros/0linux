@@ -87,10 +87,23 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--disable-autoipd \
 	--disable-mono \
 	--disable-monodoc \
+	--disable-gtk3 \
+	--disable-qt3 \
+	--enable-compat-howl \
+	--enable-compat-libdns_sd \
+	--enable-dbus \
+	--enable-glib \
+	--enable-gtk \
+	--enable-pygtk\
+	--enable-python \
+	--enable-python-dbus \
+	--enable-qt4 \
+	--with-dbus-sys=/etc/dbus-1/system.d \
+	--with-avahi-user=avahi \
+	--with-avahi-group=avahi \
+	--with-avahi-priv-access-group=netdev \
 	--with-distro=slackware \
-  --program-prefix= \
-  --program-suffix= \
---build=${TARGET32}
+	--build=${TARGET32}
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
@@ -128,6 +141,11 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-autoipd \
+	--disable-mono \
+	--disable-monodoc \
+	--disable-gtk3 \
+	--disable-qt3 \
 	--enable-compat-howl \
 	--enable-compat-libdns_sd \
 	--enable-dbus \
@@ -136,6 +154,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-pygtk\
 	--enable-python \
 	--enable-python-dbus \
+	--enable-qt4 \
 	--with-dbus-sys=/etc/dbus-1/system.d \
 	--with-avahi-user=avahi \
 	--with-avahi-group=avahi \
