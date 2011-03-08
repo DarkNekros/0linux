@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-gnome-disk-utility}
-VERSION=${VERSION:-2.32.1}
+VERSION=${VERSION:-2.32.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gnome-disk-utility}
 BUILD=${BUILD:-1}
