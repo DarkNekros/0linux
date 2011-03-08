@@ -86,8 +86,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info
 
-fakeroot make
-fakeroot make install DESTDIR=${PKG}
+fakeroot make install man_nopam="" DESTDIR=${PKG}
 
 # On renomme en .new les fichiers à na pas écraser lors de mises à niveau :
 mv ${PKG}/etc/login.defs{,.new}
