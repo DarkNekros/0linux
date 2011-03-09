@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-udisks}
 VERSION=${VERSION:-1.0.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-udisks}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -137,22 +137,15 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On crée le fichier d'autorité pour 'polkit', afin de permettre au groupe 'plugdev' de gérer des volumes :
-mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d
-cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/org.freedesktop.udisks.pkla << "EOF"
-[Local Users]
-Identity=unix-group:plugdev
-Action=org.freedesktop.udisks.*
-ResultAny=yes
-ResultInactive=no
-ResultActive=yes
-
-EOF
-
 # On déplace 'pkgconfig' où il faut :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
 mv ${PKG}/usr/share/pkgconfig/* ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
 rm -rf ${PKG}/usr/share/pkgconfig
+
+# On place notre fichier pour 'polkit' modifié afin de permettre aux
+# utilisateurs de monter/éjecter les volumes amovibles :
+mkdir -p ${PKG}/usr/share/polkit-1/actions
+cp -a $CWD/org.freedesktop.udisks.policy ${PKG}/usr/share/polkit-1/actions
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

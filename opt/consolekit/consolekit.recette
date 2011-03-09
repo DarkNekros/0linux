@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-ConsoleKit}
 VERSION=${VERSION:-0.4.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-consolekit}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-6}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -156,39 +156,6 @@ chmod 755 ${PKG}/etc/rc.d/rc.consolekit
 # On copie le fichier de compatibilité pour notre système, dépourvu de 'pam' :
 cp -a $CWD/pam-foreground-compat.ck ${PKG}/usr/lib${LIBDIRSUFFIX}/ConsoleKit/run-session.d/
 chmod 0755 ${PKG}/usr/lib${LIBDIRSUFFIX}/ConsoleKit/run-session.d/pam-foreground-compat.ck
-
-# On crée le fichier d'autorité pour 'polkit', afin de permettre au groupe 'power' d'éteindre/redémarrer :
-mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d
-cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/org.freedesktop.consolekit.pkla << "EOF"
-[Local restart]
-Identity=unix-group:power
-Action=org.freedesktop.consolekit.system.restart
-ResultAny=yes
-ResultInactive=no
-ResultActive=yes
-
-[Local shutdown]
-Identity=unix-group:power
-Action=org.freedesktop.consolekit.system.stop
-ResultAny=yes
-ResultInactive=no
-ResultActive=yes
-
-[Local restart - multiple]
-Identity=unix-group:power
-Action=org.freedesktop.consolekit.system.restart-multiple-users
-ResultAny=yes
-ResultInactive=no
-ResultActive=yes
-
-[Local shutdown - multiple]
-Identity=unix-group:power
-Action=org.freedesktop.consolekit.system.stop-multiple-users
-ResultAny=yes
-ResultInactive=no
-ResultActive=yes
-
-EOF
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

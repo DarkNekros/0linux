@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-upower}
 VERSION=${VERSION:-0.9.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-upower}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -135,18 +135,6 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On crée le fichier d'autorité pour 'polkit', afin de permettre au groupe 'power' de suspendre/hiberner :
-mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d
-cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/org.freedesktop.upower.pkla << "EOF"
-[Local Users]
-Identity=unix-group:power
-Action=org.freedesktop.upower.*
-ResultAny=yes
-ResultInactive=no
-ResultActive=yes
-
-EOF
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
