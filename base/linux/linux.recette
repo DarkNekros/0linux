@@ -17,7 +17,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-2.6.38_rc7}
+VERSION=${VERSION:-2.6.38_rc8}
 SRCVERSION="$(echo ${VERSION} | sed 's/_/-/')"
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-linux}
