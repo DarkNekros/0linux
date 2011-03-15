@@ -22,7 +22,7 @@ TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-noarch}
 
-WGET=${WGET:-https://alioth.debian.org/frs/download.php/3493/perkamon-fr-3.32-3.tar.$EXT} # Version différente !
+WGET=${WGET:-https://alioth.debian.org/frs/download.php/3493/man-pages-fr-3.32-3.$EXT} # Version différente !
 DOC="README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Manuels du système Linux"
