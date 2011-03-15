@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-# Positionnez la variable $MENUCONFIG à n'importe quelle valeur pour permettre
-# le 'make menuconfig' et personnaliser les options : 
+# Positionnez la variable $MENUCONFIG ou $NCONFIG à n'importe quelle valeur
+# pour permettre de personnaliser les options : 
 #		MENUCONFIG="pouet" ./linux.recette
+#		NCONFIG="pouet" ./linux.recette
 
 set -e
 umask 022
@@ -17,7 +18,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-2.6.38_rc8}
+VERSION=${VERSION:-2.6.38}
 SRCVERSION="$(echo ${VERSION} | sed 's/_/-/')"
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-linux}
@@ -34,7 +35,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/$NAMESRC-$SRCVERSION.$EXT}
+WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$SRCVERSION.$EXT}
 ##########
 SLACKDESC="Le noyau Linux"
 SLACKDESCHEADERS="Les fichiers d'en-tête du noyau Linux"
@@ -77,11 +78,6 @@ cd ${NAME}
 # On nettoie obligatoirement :
 make mrproper
 
-## On comble des vulnérabilités :
-#for patch in $CWD/*.diff.gz $CWD/linux.faille_rds.patch; do
-#	zcat ${PATCH} | patch -p1
-#done
-
 # On crée le seul répertoire nécessaire :
 mkdir -p ${PKG}/boot
 
@@ -94,9 +90,11 @@ cp -a $CWD/config{,-old}
 # Quoi de neuf ?
 make oldconfig
 
-# Configuration plus fine du noyau si $MENUCONFIG est positionnée :
+# Configuration plus fine du noyau si $MENUCONFIG ou $NCONFIG sont positionnées :
 if [ ! "X${MENUCONFIG}" = "X" ]; then
 	make menuconfig
+elif [ ! "X${NCONFIG}" = "X" ]; then
+	make nconfig
 fi
 
 # On compile le noyau :
