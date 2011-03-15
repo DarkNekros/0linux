@@ -15,14 +15,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-jdk}
-VERSION=${VERSION:-6u22}
+VERSION=${VERSION:-6u24}
 EXT=${EXT:-bin}
 NAMETGZ=${NAMETGZ:-jdk}
 BUILD=${BUILD:-1}
@@ -37,8 +36,8 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET32=${WGET32:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u22-linux-i586.bin?BundledLineItemUUID=d5GJ_hCyqOUAAAErETVKPqtL&OrderID=6DSJ_hCywxsAAAEr.TRKPqtL&ProductID=XUuJ_hCwWmcAAAErMVJuIQy3&FileName=/jdk-6u22-linux-i586.bin}
-WGET=${WGET:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u22-linux-x64.bin?BundledLineItemUUID=GM.J_hCycAgAAAEru49KPqtL&OrderID=9kGJ_hCymlMAAAErr49KPqtL&ProductID=w9aJ_hCw9PAAAAErNFJuIQy3&FileName=/jdk-6u22-linux-x64.bin}
+WGET32=${WGET32:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u24-linux-i586.bin?BundledLineItemUUID=9GiJ_hCw8WwAAAEuAGUAHLlF&OrderID=AE.J_hCwYD4AAAEu8WQAHLlF&ProductID=xpeJ_hCwsEQAAAEtAMoADqmS&FileName=/jdk-6u24-linux-i586.bin}
+WGET=${WGET:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u24-linux-x64.bin?BundledLineItemUUID=EGOJ_hCwyrQAAAEuFpEAHLlD&OrderID=FqWJ_hCwMv4AAAEu.5AAHLlD&ProductID=oSKJ_hCwOlYAAAEtBcoADqmS&FileName=/jdk-6u24-linux-x64.bin}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Environnements de développement et machines virtuelles pour Java"
 ########################################
@@ -171,9 +170,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
