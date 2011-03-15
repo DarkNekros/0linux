@@ -7,14 +7,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-man-pages-fr}
-VERSION=${VERSION:-3.29.1}
+VERSION=${VERSION:-3.32.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-man-pages-fr}
 BUILD=${BUILD:-1}
@@ -23,7 +22,7 @@ TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-noarch}
 
-WGET=${WGET:-https://alioth.debian.org/frs/download.php/3436/$NAMESRC-3.29-1.$EXT} # Version différente !
+WGET=${WGET:-https://alioth.debian.org/frs/download.php/3493/perkamon-fr-3.32-3.tar.$EXT} # Version différente !
 DOC="README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Manuels du système Linux"
