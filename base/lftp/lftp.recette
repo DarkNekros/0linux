@@ -14,8 +14,8 @@ done
 
 
 NAMESRC=${NAMESRC:-lftp}
-VERSION=${VERSION:-4.0.10}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-4.2.0}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-lftp}
 BUILD=${BUILD:-1}
 
@@ -29,7 +29,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://lftp.cybermirror.org/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://ftp.yars.free.net/pub/source/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="BUGS COPYING* FAQ FEATURES INSTALL MIRRORS NEWS README* THANKS TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Client HTTP et FTP en ligne de commande"
@@ -189,9 +189,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
