@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.imagemagick.org/pub/$NAMESRC/$NAMESRC-$(echo VERSION | cut -d'.' -f1-3)-4.$EXT} # Version différente !
+WGET=${WGET:-ftp://ftp.imagemagick.org/pub/$NAMESRC/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-3)-4.$EXT} # Version différente !
 DOC="ChangeLog LICENSE NOTICE *.txt"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de manipulation de fichiers graphiques"
