@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-subversion}
-VERSION=${VERSION:-1.6.15}
+VERSION=${VERSION:-1.6.16}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-subversion}
 BUILD=${BUILD:-1}
