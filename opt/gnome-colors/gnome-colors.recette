@@ -61,15 +61,6 @@ fi
 # On les vérifie :
 tar ft ${NAMESRC}-extras-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
-# On télécharge les icônes supplémentaires :
-if [ ! -r extra-gnome-colors-icons-20.$EXT ]; then
-	wget -vc $WGETEXTRAS2 -O extra-gnome-colors-icons-20.$EXT.part
-	mv extra-gnome-colors-icons-20.$EXT{.part,}
-fi
-
-# On les vérifie :
-tar ft extra-gnome-colors-icons-20.$EXT 1> /dev/null 2> /dev/null
-
 # On télécharge les thèmes Shiki :
 if [ ! -r shiki-colors-murrine-4.6.$EXT ]; then
 	wget -vc $WGETSHIKI -O shiki-colors-murrine-4.6.$EXT.part
