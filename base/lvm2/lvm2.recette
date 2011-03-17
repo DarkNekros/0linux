@@ -106,7 +106,7 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On met les fichiers .pc 32 bits de côté pour que le programme d'installation \
+# On met les fichiers .pc 32 bits de côté pour que le programme d'installation
 # ne les écrase pas avec les 64 bits :
 mv ${PKG}/usr/lib/pkgconfig{,-32}
 
@@ -177,6 +177,18 @@ rm -rf ${PKG}/usr/lib/pkgconfig-32
 mv ${PKG}/usr/lib/*.a ${PKG}/usr/lib64
 mv ${PKG}/usr/lib32/*.a ${PKG}/usr/lib
 rm -rf ${PKG}/usr/lib32
+
+# On met de l'ordre dans les liens en créant les '*.so' dans '/lib' et '/lib64'
+# et on lie ces mêmes '*.so' à '/usr/lib' et '/usr/lib64' :
+for lib32 in $(find ${PKG}/lib -type f -name "libdevmapper*.so.?.*"); do
+	ln -sf $(basename ${lib32}) ${PKG}/lib/$(echo basename ${lib32} | sed -e 's/so\..*$/so/')
+	ln -sf ../../lib/$(echo basename ${lib32} | sed -e 's/so\..*$/so/') ${PKG}/usr/lib/$(echo basename ${lib32} | sed -e 's/so\..*$/so/')
+done
+
+for lib64 in $(find ${PKG}/lib64 -type f -name "libdevmapper*.so.?.*"); do
+	ln -sf $(basename ${lib64}) ${PKG}/lib64/$(echo basename ${lib64} | sed -e 's/so\..*$/so/')
+	ln -sf ../../lib64/$(echo basename ${lib64} | sed -e 's/so\..*$/so/') ${PKG}/usr/lib64/$(echo basename ${lib32} | sed -e 's/so\..*$/so/')
+done
 
 # On veille à ne rien écraser :
 mv ${PKG}/etc/lvm/lvm.conf{,.new}
