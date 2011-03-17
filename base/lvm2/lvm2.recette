@@ -7,14 +7,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-LVM2}
-VERSION=${VERSION:-2.02.75}
+VERSION=${VERSION:-2.02.84}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-lvm2}
 BUILD=${BUILD:-1}
@@ -29,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://sources.redhat.com/pub/lvm2/${NAMESRC}.${VERSION}.$EXT}
+WGET=${WGET:-ftp://sources.redhat.com/pub/lvm2/releases/${NAMESRC}.${VERSION}.$EXT}
 DOC="COPYING* INSTALL README VERSION* WHATS_NEW*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de gestion des volumes logiques « LVM »"
@@ -81,7 +80,7 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CFLAGS="${BUILD32} ${SLKCFLAGS}" CXXFLAGS=" ${BUILD32} ${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDCONFIG_PATH="-L/usr/lib${LIBDIRSUFFIX}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -141,7 +140,7 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CFLAGS="${BUILD64} ${SLKCFLAGS}" CXXFLAGS="${BUILD64} ${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDCONFIG_PATH="-L/usr/lib${LIBDIRSUFFIX}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
