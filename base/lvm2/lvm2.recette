@@ -186,7 +186,7 @@ for lib32 in $(find ${PKG}/lib -type f -name "libdevmapper*.so.?.*"); do
 done
 
 for lib64 in $(find ${PKG}/lib64 -type f -name "libdevmapper*.so.?.*"); do
-	ln -sf $(basename ${lib64}) ${PKG}/lib64/$(echo basename ${lib64} | sed -e 's/so\..*$/so/')
+	ln -sf $(basename ${lib64}) ${PKG}/lib64/$(basename ${lib64} | sed -e 's/so\..*$/so/')
 	ln -sf ../../lib64/$(basename ${lib64} | sed -e 's/so\..*$/so/') ${PKG}/usr/lib64/$(basename ${lib32} | sed -e 's/so\..*$/so/')
 done
 
