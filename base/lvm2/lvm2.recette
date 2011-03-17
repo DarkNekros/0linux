@@ -181,13 +181,13 @@ rm -rf ${PKG}/usr/lib32
 # On met de l'ordre dans les liens en créant les '*.so' dans '/lib' et '/lib64'
 # et on lie ces mêmes '*.so' à '/usr/lib' et '/usr/lib64' :
 for lib32 in $(find ${PKG}/lib -type f -name "libdevmapper*.so.?.*"); do
-	ln -sf $(basename ${lib32}) ${PKG}/lib/$(echo basename ${lib32} | sed -e 's/so\..*$/so/')
-	ln -sf ../../lib/$(echo basename ${lib32} | sed -e 's/so\..*$/so/') ${PKG}/usr/lib/$(echo basename ${lib32} | sed -e 's/so\..*$/so/')
+	ln -sf $(basename ${lib32}) ${PKG}/lib/$(basename ${lib32} | sed -e 's/so\..*$/so/')
+	ln -sf ../../lib/$(echo basename ${lib32} | sed -e 's/so\..*$/so/') ${PKG}/usr/lib/$(basename ${lib32} | sed -e 's/so\..*$/so/')
 done
 
 for lib64 in $(find ${PKG}/lib64 -type f -name "libdevmapper*.so.?.*"); do
 	ln -sf $(basename ${lib64}) ${PKG}/lib64/$(echo basename ${lib64} | sed -e 's/so\..*$/so/')
-	ln -sf ../../lib64/$(echo basename ${lib64} | sed -e 's/so\..*$/so/') ${PKG}/usr/lib64/$(echo basename ${lib32} | sed -e 's/so\..*$/so/')
+	ln -sf ../../lib64/$(basename ${lib64} | sed -e 's/so\..*$/so/') ${PKG}/usr/lib64/$(basename ${lib32} | sed -e 's/so\..*$/so/')
 done
 
 # On veille à ne rien écraser :
