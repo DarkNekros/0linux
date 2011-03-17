@@ -81,7 +81,6 @@ cd $TMP/gnomecolors
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 tar xf $CWD/${NAMESRC}-extras-${VERSION}.$EXT
-cd ${NAME}
 
 # On vérifie les permissions des sources :
 find . \
