@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-gnome-colors}
 VERSION=${VERSION:-5.5.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-gnome-colors}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -105,6 +105,15 @@ find . \
 # On installe les thèmes Shiki :
 sed -i "s@usr/share/backgrounds@usr/share/wallpapers@" Makefile
 fakeroot make install DESTDIR=${PKG}
+
+# On lie une icône manquante pour le navigateur Web par défaut sous Xfce dans tous les thèmes Shiki :
+for shikirep in ${PKG}/usr/share/icons/gnome-*; do
+	ln -sf ../../../Tango/scalable/apps/web-browser.svg ${shikirep}/scalable/apps/web-brower.svg
+	
+	for sousrep in 16x16 22x22 24x24 32x32; do
+		ln -sf ../../../Tango/${sousrep}/apps/web-browser.png ${shikirep}/${sousrep}/apps/web-brower.png
+	done
+done
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
