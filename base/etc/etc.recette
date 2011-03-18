@@ -12,7 +12,7 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-VERSION=${VERSION:-0.74}
+VERSION=${VERSION:-0.75}
 NAMETGZ=${NAMETGZ:-etc}
 BUILD=${BUILD:-1}
 
@@ -58,9 +58,8 @@ chmod 664 ${PKG}/var/log/wtmp.new
 touch ${PKG}/var/run/utmp.new
 chmod 664 ${PKG}/var/run/utmp.new
 
-# On place le fichier de configuration du squelette de compte utilisateur :
-cp -a $CWD/xsession ${PKG}/etc/skel/.xsession
-chmod 755 ${PKG}/etc/skel/.xsession
+# On place les fichiers de configuration utilisateur (thèmes, .xsession, etc.) :
+cp -ra $CWD/skel ${PKG}/etc/
 
 # On restreint les permissions sur *shadow :
 chmod 640 ${PKG}/etc/{,g}shadow.new
