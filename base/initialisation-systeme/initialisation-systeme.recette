@@ -78,7 +78,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 make -C src
-fakeroot make -C src install MANDIR=${PKG}/usr/man ROOT=${PKG}
+fakeroot make -C src install MANDIR=/usr/man ROOT=${PKG}
 
 # On installe les scripts d'initialisation du système 0 :
 for script in rc.{4,6,K,M,S} rc.local rc.sysvinit; do
