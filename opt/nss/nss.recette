@@ -93,7 +93,7 @@ for rep in mozilla/security/{coreconf,dbm,nss}; do
 	LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	NSPR_INCLUDE_DIR="/usr/include/nspr" \
 	BUILD_OPT=1 NSS_USE_SYSTEM_SQLITE=1 FREEBL_NO_DEPEND=1 \
-	make -j3 -C ${rep}
+	make -C ${rep}
 done
 
 # On neutralise USE_ARCH :
@@ -148,7 +148,7 @@ for rep in mozilla/security/{coreconf,dbm,nss}; do
 	LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	NSPR_INCLUDE_DIR="/usr/include/nspr" USE_64=1 \
 	BUILD_OPT=1 NSS_USE_SYSTEM_SQLITE=1 FREEBL_NO_DEPEND=1 \
-	make -j3 -C ${rep}
+	make -C ${rep}
 done
 
 # On neutralise USE_ARCH :
