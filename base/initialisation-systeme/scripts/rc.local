@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# /etc/rc.d/rc.local : Initialisation locale du système.
+#
+# Placez ici les commandes à lancer à la fin de l'amorçage.
+# Pour exécuter des commandes à l'arrêt ou au redémarragede la machine,
+# vous pouvez créer un fichier /etc/rc.d/rc.local_shutdown et y placer
+# les commandes désirées.

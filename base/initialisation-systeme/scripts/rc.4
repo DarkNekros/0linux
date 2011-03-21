@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# /etc/rc.d/rc.4 : ce fichier est exécuté lors du passage en mode multi-
+# utilisateur avec X par init(8) (donc dans le niveau d'exécution 4).
+
+# D'abord GDM - s'il est présent, c'est qu'on veut l'utiliser par défaut :
+if [ -x /usr/bin/gdm -o -x /usr/sbin/gdm ]; then
+  gdm -nodaemon
+fi
+
+# Sinon, KDM. S'il y est, on veut sûrement l'utiliser par défaut :
+if [ -x /opt/kde/bin/kdm -o -x /usr/bin/kdm ]; then
+	kdm -nodaemon
+fi
+
+# Sinon, SliM :
+if [ -x /usr/bin/slim -o -x /usr/sbin/slim ]; then
+	slim
+fi
+
+# Sinon, XDM :
+if [ -x /usr/bin/xdm -o -x /usr/X11R6/bin/xdm ]; then
+	xdm -nodaemon -config /usr/lib64/X11/xdm/0-xdm/xdm-config
+fi
+
+# C'est fini !

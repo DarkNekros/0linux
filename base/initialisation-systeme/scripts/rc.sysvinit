@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# /etc/rc.d/rc.sysvinit : ce fichier permet de rester compatible avec le 
+# mécanisme d'initialisation système « à la System V ». Script 100 %
+# Slackware.
+
+# Pour lancer un script :
+startup() {
+	case "$1" in
+		*.sh)
+			sh "$@"
+		;;
+		*)
+			"$@"
+		;;
+	esac
+}
+
+# On évite l'effet d'escalier sur la console :
+stty onlcr 0>&1
+
+if [ "$runlevel" = "" ]; then
+	runlevel=$RUNLEVEL
+	export runlevel
+	prevlevel=$PREVLEVEL
+	export prevlevel
+fi
+
+# On lance les scripts d'arrêt du niveau d'exécution précédent s'il existe :
+if [ ! "$prevlevel" = "N" ]; then
+	for script in /etc/rc.d/rc$prevlevel.d/K* ; do
+		if [ -x $script ]; then
+			startup $script stop
+		fi
+	done
+fi
+
+# Puis on exécute les scripts du niveau actuel :
+for script in /etc/rc.d/rc$runlevel.d/S* ; do
+	if [ -x $script ]; then
+		startup $script start
+	fi
+done
+
+# C'est fini !
