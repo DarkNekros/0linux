@@ -13,10 +13,10 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-openssh}
-VERSION=${VERSION:-5.6p1}
+VERSION=${VERSION:-5.8p1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssh}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -69,15 +69,14 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-# On va se lier à la bibliothèque statique de 'openssl' :
-sed -i 's@-lcrypto@/usr/lib64/libcrypto.a -ldl@' configure
-
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
+
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc/ssh \
@@ -95,7 +94,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--libexecdir=/usr/sbin \
 	--build=${TARGET64}
 
-make
+make -j3 | make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -103,11 +102,6 @@ unset USE_ARCH
 
 # On crée le répertoire spécifié dans l'option « PrivilegeSeparation » :
 mkdir -p ${PKG}/var/empty
-
-# On installe aussi 'ssh-copy-id' et son manuel, comme Slackware :
-cp -a contrib/ssh-copy-id ${PKG}/usr/bin
-chmod 755 ${PKG}/usr/bin/ssh-copy-id
-cp -a contrib/ssh-copy-id.1 ${PKG}/usr/man/man1
 
 # On supprime les clés, elles sont uniques à chaque machine :
 rm -f ${PKG}/etc/ssh/ssh_host_dsa_key{,.pub}
@@ -120,8 +114,8 @@ mv ${PKG}/etc/ssh/sshd_config{,.new}
 
 # On installe le fichier de service et on le rend exécutable :
 mkdir -p ${PKG}/etc/rc.d
-cp -a $CWD/rc.sshd ${PKG}/etc/rc.d/rc.sshd.new
-chmod 755 ${PKG}/etc/rc.d/rc.sshd.new
+cp -a $CWD/rc.sshd ${PKG}/etc/rc.d/
+chmod 755 ${PKG}/etc/rc.d/rc.sshd
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -166,7 +160,6 @@ config() {
 
 config etc/ssh/ssh_config.new
 config etc/ssh/sshd_config.new
-config etc/rc.d/rc.sshd.new
 
 # On s'assure de la présence de 'btmp' :
 if [ ! -r var/log/btmp ]; then
