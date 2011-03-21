@@ -88,11 +88,13 @@ cat $TMP/choix_partitions_fat | while read LINEDOS; do
 	
 done
 
-# On écrit le fichier '/etc/fstab'. D'abord la partition swap :
+# On écrit notre 'fstab' temporaire :
+mkdir -p ${SETUPROOT}/etc
+touch ${SETUPROOT}/etc/fstab
+
+# On ajoute la section pour la swap :
 if [ ! -r $TMP/ignorer_swap ]; then
 	if [ -r $TMP/choix_swap ]; then
-		mkdir -p ${SETUPROOT}/etc
-		touch ${SETUPROOT}/etc/fstab
 		echo "# Partition d'échange « swap » :" >> ${SETUPROOT}/etc/fstab
 		cat $TMP/choix_swap >> ${SETUPROOT}/etc/fstab
 		echo "" >> ${SETUPROOT}/etc/fstab
@@ -106,7 +108,7 @@ echo "proc	/proc		proc	defaults		0 0" >> ${SETUPROOT}/etc/fstab
 echo "tmpfs	/dev/shm		tmpfs	defaults		0 0" >> ${SETUPROOT}/etc/fstab
 echo "" >> ${SETUPROOT}/etc/fstab
 
-# Puis le reste de notre 'fstab' temporaire :
+# Puis le reste des diférentes partitions :
 echo "# Partitions physiques :" >> ${SETUPROOT}/etc/fstab
 cat $TMP/fstab >> ${SETUPROOT}/etc/fstab
 echo "" >> ${SETUPROOT}/etc/fstab
