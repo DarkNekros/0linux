@@ -108,7 +108,7 @@ echo "proc	/proc		proc	defaults		0 0" >> ${SETUPROOT}/etc/fstab
 echo "tmpfs	/dev/shm		tmpfs	defaults		0 0" >> ${SETUPROOT}/etc/fstab
 echo "" >> ${SETUPROOT}/etc/fstab
 
-# Puis le reste des diférentes partitions :
+# Puis le reste des différentes partitions :
 echo "# Partitions physiques :" >> ${SETUPROOT}/etc/fstab
 cat $TMP/fstab >> ${SETUPROOT}/etc/fstab
 echo "" >> ${SETUPROOT}/etc/fstab
