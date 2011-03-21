@@ -139,9 +139,6 @@ rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-devel-${VERSION}
 # On crée le répertoire général pour les plugins :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 
-# On ajoute les types MIME supportés :
-cp -a $CWD/mimeTypes.rdf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/defaults/profile/
-
 # On corrige le chemin des plugins en ajoutant le nôtre aux chemins de recherche :
 cd ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}
 cat $CWD/mozilla-firefox.chemin-plugins.patch | sed -e "s@usr/lib@&${LIBDIRSUFFIX}@g" | patch -p1
