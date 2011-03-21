@@ -7,14 +7,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-nss}
-VERSION=${VERSION:-3.12.8}
+VERSION=${VERSION:-3.12.9}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-nss}
 BUILD=${BUILD:-1}
@@ -98,7 +97,7 @@ mv ${PKG}/usr/lib${LIBDIRSUFFIX}/libssl{,3}.a
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nss.pc << EOF
 prefix=/usr
 exec_prefix=/usr/bin
-libdir=/usr/lib
+libdir=/usr/lib${LIBDIRSUFFIX}
 includedir=/usr/include/nss3
 
 Name: NSS
@@ -160,7 +159,7 @@ mv ${PKG}/usr/lib${LIBDIRSUFFIX}/libssl{,3}.a
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nss.pc << EOF
 prefix=/usr
 exec_prefix=/usr/bin
-libdir=/usr/lib
+libdir=/usr/lib${LIBDIRSUFFIX}
 includedir=/usr/include/nss3
 
 Name: NSS
