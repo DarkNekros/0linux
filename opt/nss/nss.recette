@@ -68,11 +68,13 @@ find . \
 # On corrige la prise en charge des LDFLAGS :
 sed -i 's@\$(MKSHLIB) -o@\$(MKSHLIB) \$(LDFLAGS) -o@g' mozilla/security/coreconf/rules.mk
 
+# NSS needs NSPR:
+ln -s ../../nspr-$NSPR/mozilla/nsprpub mozilla/nsprpub
+
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
 # Compilation pour 32 bits :
-# Les CFLAGS plantent la compilation.
 LIBDIRSUFFIX=""
 for rep in mozilla/security/{coreconf,dbm,nss}; do
 	CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
@@ -80,7 +82,7 @@ for rep in mozilla/security/{coreconf,dbm,nss}; do
 	LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	NSPR_INCLUDE_DIR="/usr/include/nspr" \
 	BUILD_OPT=1 NSS_USE_SYSTEM_SQLITE=1 FREEBL_NO_DEPEND=1 \
-	make -C ${rep}
+	make -j3 -C ${rep}
 done
 
 # On neutralise USE_ARCH :
@@ -128,7 +130,6 @@ sed -i 's@\$(MKSHLIB) -o@\$(MKSHLIB) \$(LDFLAGS) -o@g' mozilla/security/coreconf
 export USE_ARCH=64
 
 # Compilation pour 64 bits :
-# Les CFLAGS plantent la compilation.
 LIBDIRSUFFIX="64"
 for rep in mozilla/security/{coreconf,dbm,nss}; do
 	CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
@@ -136,7 +137,7 @@ for rep in mozilla/security/{coreconf,dbm,nss}; do
 	LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	NSPR_INCLUDE_DIR="/usr/include/nspr" USE_64=1 \
 	BUILD_OPT=1 NSS_USE_SYSTEM_SQLITE=1 FREEBL_NO_DEPEND=1 \
-	make -C ${rep}
+	make -j3 -C ${rep}
 done
 
 # On neutralise USE_ARCH :
@@ -170,6 +171,11 @@ Libs: -L/usr/lib${LIBDIRSUFFIX} -lssl3 -lsmime3 -lnss3 -lnssutil3
 Cflags: -I/usr/include/nss
 
 EOF
+
+# On renomme les binaires, trop génériques :
+for binaire in ${PKG}/usr/bin/*; do
+	mv ${binaire} ${PKG}/usr/bin/nss-$(basename ${binaire})
+done
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
