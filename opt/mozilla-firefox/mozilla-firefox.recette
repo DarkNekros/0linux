@@ -29,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://ftp.mozilla.org/pub/firefox/releases/${VERSION}/source/${NAMESRC}-${VERSION}.source.${EXT}}
-WGETFRXPI=${WGETFRXPI:-ftp://ftp.mozilla.org/pub/mozilla.org/$NAMESRC/releases/$VERSION/linux-i686/xpi/fr.xpi}
+WGETFRXPI=${WGETFRXPI:-ftp://ftp.mozilla.org/pub/firefox/releases/${VERSION}/linux-$ARCH/xpi/fr.xpi}
 DOC="LEGAL LICENSE README*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Le navigateur Web de la fondation Mozilla"
@@ -74,9 +74,6 @@ find . \
 
 # On force 'firefox' à se conformer à la langue du système :
 cat $CWD/mozilla-firefox.lang.patch | patch -p1
-
-# On installe les fichiers de localisation française :
-bsdtar xf $CWD/fr.xpi
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -145,6 +142,10 @@ mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 # On corrige le chemin des plugins en ajoutant le nôtre aux chemins de recherche :
 cd ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}
 cat $CWD/mozilla-firefox.chemin-plugins.patch | sed -e "s@usr/lib@&${LIBDIRSUFFIX}@g" | patch -p1
+
+# On installe les fichiers de localisation française :
+bsdtar xf $CWD/fr.xpi
+
 cd -
 
 # On copie le logo et le fichier pour le bureau :
