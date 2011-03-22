@@ -33,9 +33,9 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 WGET=${WGET:-http://download.documentfoundation.org/libreoffice/stable/$VERSION/rpm/x86_64/${NAMESRC}_${VERSION}_Linux_x86_install-rpm_en-US.$EXT}
 WGETFR=${WGETFR:-http://download.documentfoundation.org/libreoffice/stable/$VERSION/rpm/x86_64/${NAMESRC}_${VERSION}_Linux_x86_langpack-rpm_fr.$EXT}
 WGETHELPFR=${WGETHELPFR:-http://download.documentfoundation.org/libreoffice/stable/$VERSION/rpm/x86_64/${NAMESRC}_${VERSION}_Linux_x86_helppack-rpm_fr.$EXT}
-DOC="CREDITS* *LICENSE* readmes"
+DOC="readmes"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Suite bureautique complète"
+SLACKDESC="Suite bureautique complète libre"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -94,10 +94,10 @@ find . \
 
 # On supprime tout ce qui concerne Java :
 rm -rf {JavaSetup.jar,installdata,setup}
-rm -rf RPMS/{userland,jre-*-linux-*.rpm}
+rm -rf {userland,jre-*-linux-*.rpm}
 
 # On ramène les menus à la Freedesktop avec les autres RPM :
-mv desktop-integration/libreoffice${VER}-freedesktop-menus-${VERSION}-${SUBVER}.noarch.rpm .
+mv desktop-integration/libreoffice3-freedesktop-menus-${VER}-${SUBVER}.noarch.rpm .
 
 # On extrait chaque RPM :
 for RPMPACK in *.rpm; do
@@ -115,12 +115,12 @@ cp -ar *freedesktop-menu*/usr/* ${PKG}/usr
 
 # On nettoie les RPM, un lien cassé, et les polices DejaVu et Liberation :
 rm -rf ${PKG}/{desktop-integration,*.rpm}
-rm -f ${PKG}/usr/share/applications/openoffice.org3-startcenter.desktop
-rm -f ${PKG}/usr/lib64/openoffice.org/basis${VER}/share/fonts/truetype/[DL]*.ttf
+rm -f ${PKG}/usr/share/applications/libreoffice3-startcenter.desktop
+rm -f ${PKG}/usr/lib64/libreoffice3/basis${VER}/share/fonts/truetype/[DL]*.ttf
 
 # On répare les raccourcis pour XFCE :
 for appli in base calc draw impress math writer; do
-	sed -i 's@Exec=libreoffice -@Exec=/usr/lib64/libreoffice/program/s@' ${PKG}/usr/lib64/libreoffice3/share/xdg/${appli}.desktop
+	sed -i 's@Exec=libreoffice -@Exec=/usr/lib64/libreoffice3/program/s@' ${PKG}/usr/lib64/libreoffice3/share/xdg/${appli}.desktop
 done
 
 # On installes les dictionnaires :
@@ -149,7 +149,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a $TMP/${NAME}/${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 ln -sf ../../../usr/lib64/libreoffice3 ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/doc
 
 # On installe le slack-desc :
