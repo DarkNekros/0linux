@@ -123,10 +123,6 @@ for appli in base calc draw impress math writer; do
 	sed -i 's@Exec=libreoffice -@Exec=/usr/lib64/libreoffice/program/s@' ${PKG}/usr/lib64/libreoffice/share/xdg/${appli}.desktop
 done
 
-# On installes les dictionnaires :
-find ${PKG}/usr/lib64/libreoffice/share/extension/install -type f -name "*.oxt" \
-	-exec ${PKG}/usr/lib64/libreoffice/program/unopkg add --shared {} "-env:UserInstallation=file:///$TMP" \;
-
 # On crée des liens symboliques standard vers les binaires :
 for binaire in sbase scalc sdraw simpress smath soffice spadmin swriter unopkg; do
 	ln -sf ../lib64/libreoffice/program/${binaire} ${PKG}/usr/bin/${binaire}
