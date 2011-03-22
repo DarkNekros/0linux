@@ -75,6 +75,9 @@ find . \
 # On force 'firefox' à se conformer à la langue du système :
 cat $CWD/mozilla-firefox.lang.patch | patch -p1
 
+# On installe les fichiers de localisation française :
+bsdtar xf $CWD/fr.xpi
+
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
@@ -166,13 +169,6 @@ mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/defaul
 cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons
 cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
 cp ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons/*.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
-
-# On installe les fichiers de localisation française :
-bsdtar xf $CWD/fr.xpi
-sed -i "s|jar:chrome/fr.jar|jar:fr.jar|" chrome.manifest
-cp -a chrome/fr.jar ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/
-cp -a chrome.manifest ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/fr.manifest
-find ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome -type f -exec chmod 644 {} \;
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
