@@ -29,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://download.transmissionbt.com/files/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README web/LICENCE"
+DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README web/LICENSE"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Clients et démon de partage BitTorrent"
 ########################################
