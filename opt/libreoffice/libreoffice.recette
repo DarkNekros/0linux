@@ -83,7 +83,9 @@ echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 tar xf $CWD/${NAMESRC}-${VERSION}-fr.$EXT
 tar xf $CWD/${NAMESRC}-${VERSION}-aide.$EXT
-cd ${NAME}
+mv *helppack*/RPMS/*.rpm ${NAME}/RPMS/
+mv *langpack*/RPMS/*.rpm ${NAME}/RPMS/
+cd ${NAME}/RPMS
 
 # On vérifie les permissions des sources :
 find . \
