@@ -97,7 +97,6 @@ rm -rf {JavaSetup.jar,installdata,setup}
 rm -rf RPMS/{userland,jre-*-linux-*.rpm}
 
 # On ramène les menus à la Freedesktop avec les autres RPM :
-cd RPMS
 mv desktop-integration/libreoffice${VER}-freedesktop-menus-${VER}-${SUBVER}.noarch.rpm .
 
 # On extrait chaque RPM :
