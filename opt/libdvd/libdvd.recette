@@ -63,87 +63,6 @@ tar ft ${NAMESRC}read-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
 
-# On déballe et on se place dans les sources de la navigation :
-NAMENAV=$(tar ft ${NAMESRC}nav-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
-cd $TMP
-rm -rf ${NAMENAV}
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}nav-${VERSION}.$EXT
-cd ${NAMENAV}
-
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# On positionne USE_ARCH :
-export USE_ARCH=32
-
-./autogen.sh
-
-# Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
-LIBDIRSUFFIX=""
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION}/${NAMESRC}nav \
-	--build=${TARGET32}
-
-make -j3 || make
-fakeroot make install DESTDIR=${PKG}
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
-# On re-déballe et on se re-place dans les sources :
-cd $TMP
-rm -rf ${NAMENAV}
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}nav-${VERSION}.$EXT
-cd ${NAMENAV}
-
-# On re-vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# On positionne USE_ARCH :
-export USE_ARCH=64
-
-./autogen.sh
-
-# Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe"
-LIBDIRSUFFIX="64"
-CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION}/${NAMESRC}nav \
-	--build=${TARGET64}
-
-make -j3 || make
-fakeroot make install DESTDIR=${PKG}
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
 # On déballe et on se place dans les sources de la lecture :
 NAMEREAD=$(tar ft ${NAMESRC}read-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
@@ -217,6 +136,88 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION}/${NAMESRC}read \
+	--build=${TARGET64}
+
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+
+# On déballe et on se place dans les sources de la navigation :
+NAMENAV=$(tar ft ${NAMESRC}nav-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+cd $TMP
+rm -rf ${NAMENAV}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}nav-${VERSION}.$EXT
+cd ${NAMENAV}
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=32
+
+./autogen.sh
+
+# Compilation pour 32 bits :
+SLKCFLAGS="-O2 -march=i686 -pipe"
+LIBDIRSUFFIX=""
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION}/${NAMESRC}nav \
+	--build=${TARGET32}
+
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On re-déballe et on se re-place dans les sources :
+cd $TMP
+rm -rf ${NAMENAV}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}nav-${VERSION}.$EXT
+cd ${NAMENAV}
+
+# On re-vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=64
+
+./autogen.sh
+
+# Compilation pour 64 bits :
+SLKCFLAGS="-O2 -fPIC -pipe"
+LIBDIRSUFFIX="64"
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION}/${NAMESRC}nav \
 	--build=${TARGET64}
 
 make -j3 || make
