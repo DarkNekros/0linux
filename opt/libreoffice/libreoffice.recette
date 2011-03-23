@@ -111,7 +111,7 @@ mv opt lib64
 cp -ar lib64 ${PKG}/usr
 
 # On copie tout ce qui se trouve sous 'usr/' (Freedesktop & Co.) :
-cp -ar *freedesktop-menu*/usr/* ${PKG}/usr
+cp -ar $TMP/*freedesktop-menu*/usr/* ${PKG}/usr
 
 # On nettoie les RPM, un lien cassé, et les polices DejaVu et Liberation :
 rm -rf ${PKG}/{desktop-integration,*.rpm}
