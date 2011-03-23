@@ -64,7 +64,7 @@ PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
 
 # On déballe et on se place dans les sources de la lecture :
-NAMEREAD=$(tar ft ${NAMESRC}read-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+NAMEREAD=$(tar ft $CWD/${NAMESRC}read-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAMEREAD}
 echo "Extraction en cours..."
@@ -144,9 +144,8 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-
 # On déballe et on se place dans les sources de la navigation :
-NAMENAV=$(tar ft ${NAMESRC}nav-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+NAMENAV=$(tar ft $CWD/${NAMESRC}nav-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAMENAV}
 echo "Extraction en cours..."
