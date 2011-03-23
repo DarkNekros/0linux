@@ -12,11 +12,11 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-}
-VERSION=${VERSION:-}
-EXT=${EXT:-tar.}
-NAMETGZ=${NAMETGZ:-}
-BUILD=${BUILD:-}
+NAMESRC=${NAMESRC:-libdvdnav}
+VERSION=${VERSION:-4.1.3}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-libdvdnav}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -28,10 +28,10 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+WGET=${WGET:-http://www.mplayerhq.hu/MPlayer/releases/dvdnav/${NAMESRC}-$VERSION.$EXT}
+DOC="AUTHORS ChangeLog COPYING DEVELOPMENT-POLICY.txt INSTALL NEWS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC=""
+SLACKDESC="Bibliothèques de navigation DVD"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -68,6 +68,8 @@ find . \
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
+
+./autogen.sh
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
@@ -106,6 +108,8 @@ find . \
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
+
+./autogen.sh
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
@@ -170,18 +174,6 @@ config() {
 		mv $NEW $OLD
 	fi
 }
-
-if [ -x usr/bin/update-desktop-database ]; then
-	chroot . /usr/bin/update-desktop-database &> /dev/null
-fi
-
-if [ -x /usr/bin/update-mime-database ]; then
-	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
-fi
-
-if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
-fi
 
 EOF
 
