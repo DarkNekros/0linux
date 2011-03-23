@@ -79,6 +79,8 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
+./autogen.sh
+
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
@@ -116,6 +118,8 @@ find . \
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
+
+./autogen.sh
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
@@ -156,6 +160,8 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
+./autogen.sh
+
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
@@ -193,6 +199,8 @@ find . \
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
+
+./autogen.sh
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
