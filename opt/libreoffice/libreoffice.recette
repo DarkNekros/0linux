@@ -121,7 +121,7 @@ rm -f ${PKG}/usr/lib64/libreoffice/basis${VER}/share/fonts/truetype/[DL]*.ttf
 # On répare les raccourcis pour XFCE et les les liens symboliques cassés pointaant vers '/opt' :
 for appli in base calc draw impress math writer; do
 	sed -i 's@Exec=libreoffice -@Exec=/usr/lib64/libreoffice/program/s@' ${PKG}/usr/lib64/libreoffice/share/xdg/${appli}.desktop
-	ln -sf ${PKG}/usr/lib64/libreoffice/share/xdg/${appli}.desktop ${PKG}/usr/share/applications/${appli}.desktop
+	ln -sf ../../lib64/libreoffice/share/xdg/${appli}.desktop ${PKG}/usr/share/applications/${appli}.desktop
 done
 
 # On crée des liens symboliques standard vers les binaires :
