@@ -96,8 +96,10 @@ find . \
 rm -rf {JavaSetup.jar,installdata,setup}
 rm -rf {userland,jre-*-linux-*.rpm}
 
-# On ramène les menus à la Freedesktop avec les autres RPM :
+# On ramène les menus à la Freedesktop avec les autres RPM et on se débarrasse
+# de la mise à jour en ligne :
 mv desktop-integration/libreoffice${VER}-freedesktop-menus-${VER}-${SUBVER}.noarch.rpm .
+rm -f *onlineupdate*.rpm
 
 # On extrait chaque RPM :
 for RPMPACK in *.rpm; do
