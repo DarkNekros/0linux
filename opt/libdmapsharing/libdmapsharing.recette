@@ -12,10 +12,10 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-libopendaap}
-VERSION=${VERSION:-0.4.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libopendaap}
+NAMESRC=${NAMESRC:-libdmapsharing}
+VERSION=${VERSION:-2.9.6}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-libdmapsharing}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://crazney.net/programs/itunes/files/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.flyn.org/projects/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README* TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques pour protocoles DMAP (DAAP et DPAP)"
@@ -170,18 +170,6 @@ config() {
 		mv $NEW $OLD
 	fi
 }
-
-if [ -x usr/bin/update-desktop-database ]; then
-	chroot . /usr/bin/update-desktop-database &> /dev/null
-fi
-
-if [ -x /usr/bin/update-mime-database ]; then
-	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
-fi
-
-if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
-fi
 
 EOF
 
