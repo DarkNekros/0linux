@@ -111,7 +111,7 @@ mv opt lib64
 cp -ar lib64 ${PKG}/usr
 
 # On copie tout ce qui se trouve sous 'usr/' (Freedesktop & Co.) :
-cp -ar libreoffice${VER}-freedesktop-menu-${VER}-${SUBVER}-noarch/usr/* ${PKG}/usr
+cp -ar libreoffice${VER}-freedesktop-menus-${VER}-${SUBVER}-noarch/usr/* ${PKG}/usr
 
 # On nettoie les RPM, un lien cassé, et les polices DejaVu et Liberation :
 rm -rf ${PKG}/{desktop-integration,*.rpm}
