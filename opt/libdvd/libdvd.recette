@@ -106,10 +106,10 @@ unset USE_ARCH
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
-rm -rf ${NAME}
+rm -rf ${NAMEREAD}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}read-${VERSION}.$EXT
-cd ${NAME}
+cd ${NAMEREAD}
 
 # On re-vérifie les permissions des sources :
 find . \
