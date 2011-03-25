@@ -72,11 +72,13 @@ export USE_ARCH=32
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
+
+sed -i "s@^POPT = @POPT = ${BUILD32} ${SLKCFLAGS} @" config/Makefile.linux
+
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-POPT="${BUILD32} ${SLKCFLAGS}" \
 make -j3
 
 fakeroot make install libdir="/usr/lib${LIBDIRSUFFIX}" GLEW_DEST=${PKG}/usr
@@ -102,11 +104,13 @@ export USE_ARCH=64
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
+
+sed -i "s@^POPT = @POPT = ${BUILD64} ${SLKCFLAGS} @" config/Makefile.linux
+
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-POPT="${BUILD64} ${SLKCFLAGS}" \
 make -j3
 
 fakeroot make install libdir="/usr/lib${LIBDIRSUFFIX}" GLEW_DEST=${PKG}/usr
