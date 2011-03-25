@@ -73,7 +73,9 @@ export USE_ARCH=32
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 
-sed -i "s@^POPT = @POPT = ${BUILD32} ${SLKCFLAGS} @" config/Makefile.linux
+sed -i -e "s@^POPT = @POPT = ${BUILD32} ${SLKCFLAGS} @" \
+	-e "s@64@@g" \
+	config/Makefile.linux
 
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
