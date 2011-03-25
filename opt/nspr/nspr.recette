@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-nspr}
 VERSION=${VERSION:-4.8.7}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-nspr}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -155,7 +155,7 @@ unset USE_ARCH
 mv ${PKG}/usr/bin/nspr-config{,-64}
 
 # On lie un faux binaire au programme enveloppe :
-ln -sf multiarch-wrapper ${PKG}/usr/bin/nspr-config
+ln -sf multiarch_wrapper ${PKG}/usr/bin/nspr-config
 
 # On crée le fichier pour 'pkg-config' :
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nspr.pc << EOF
