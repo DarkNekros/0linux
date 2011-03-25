@@ -76,11 +76,10 @@ CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-LIBDIR="/usr/lib${LIBDIRSUFFIX}" \
-OPT="$SLKCFLAGS" \
-make -j3
-fakeroot make install GLEW_DEST=${PKG}/usr
+libdir="/usr/lib${LIBDIRSUFFIX}" \
+OPT="${BUILD32} $SLKCFLAGS" make -j3
 
+fakeroot make install GLEW_DEST=${PKG}/usr
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -107,9 +106,9 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-LIBDIR="/usr/lib${LIBDIRSUFFIX}" \
-OPT="$SLKCFLAGS" \
-make -j3
+libdir="/usr/lib${LIBDIRSUFFIX}" \
+OPT="${BUILD64} ${SLKCFLAGS}" make -j3
+
 fakeroot make install GLEW_DEST=${PKG}/usr
 
 # On neutralise USE_ARCH :
