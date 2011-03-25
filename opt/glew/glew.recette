@@ -74,8 +74,8 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 
 sed -i -e "s@^POPT = @POPT = ${BUILD32} ${SLKCFLAGS} @" \
-	-e "s@^CC = @CC = gcc ${BUILD32}@" \
-	-e "s@^LD = @LD = gcc ${BUILD32}@" \
+	-e "s@^CC = @CC = gcc ${BUILD32} @" \
+	-e "s@^LD = @LD = gcc ${BUILD32} @" \
 	-e "s@64@@g" \
 	config/Makefile.linux
 
