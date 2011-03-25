@@ -12,10 +12,10 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-libggi}
-VERSION=${VERSION:-2.2.2}
+NAMESRC=${NAMESRC:-libgii}
+VERSION=${VERSION:-1.0.2}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libggi}
+NAMETGZ=${NAMETGZ:-libgii}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
