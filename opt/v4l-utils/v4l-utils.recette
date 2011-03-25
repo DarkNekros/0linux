@@ -12,10 +12,10 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-libv4l}
-VERSION=${VERSION:-0.6.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libv4l}
+NAMESRC=${NAMESRC:-v4l-utils}
+VERSION=${VERSION:-0.8.3}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-v4l-utils}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://people.atrpms.net/~hdegoede/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://linuxtv.org/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="COPYING* ChangeLog README* TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques d'abstraction Video4Linux"
