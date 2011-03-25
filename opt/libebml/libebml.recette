@@ -73,7 +73,7 @@ export USE_ARCH=32
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+CFLAGS="${BUILD32} ${SLKCFLAGS}" CXXFLAGS="${BUILD32} ${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make -C make/linux prefix=/usr libdir=/usr/lib${LIBDIRSUFFIX} sharedlib 
@@ -104,7 +104,7 @@ export USE_ARCH=64
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+CFLAGS="${BUILD64} ${SLKCFLAGS}" CXXFLAGS="${BUILD64} ${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make -C make/linux prefix=/usr libdir=/usr/lib${LIBDIRSUFFIX} sharedlib 
