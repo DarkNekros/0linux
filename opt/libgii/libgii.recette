@@ -172,7 +172,7 @@ config() {
 	fi
 }
 
-etc/ggi/libgii.conf.new
+config etc/ggi/libgii.conf.new
 
 EOF
 

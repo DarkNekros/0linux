@@ -173,8 +173,8 @@ config() {
 	fi
 }
 
-mv etc/ggi/libggi.conf.new
-mv etc/ggi/targets/fbdev.conf.new
+config mv etc/ggi/libggi.conf.new
+config mv etc/ggi/targets/fbdev.conf.new
 
 EOF
 
