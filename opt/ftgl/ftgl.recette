@@ -86,7 +86,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
-sed -i 's@share/doc@doc@g' $(find . type f -name "Makefile")
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
@@ -125,7 +124,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-sed -i 's@share/doc@doc@g' $(find . type f -name "Makefile")
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
@@ -150,6 +148,8 @@ fi
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+mv ${PKG}/usr/share/doc/${NAMESRC}/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+rm -rf ${PKG}/usr/share
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
