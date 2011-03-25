@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://www.ggi-project.org/ftp/ggi/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.src.$EXT}
+WGET=${WGET:-http://www.ggi-project.org/ftp/ggi/v2.2/$NAMESRC-$VERSION.src.$EXT}
 DOC="ChangeLog* FAQ  INSTALL* NEWS  README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques « General Graphics Interface »"
