@@ -128,6 +128,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On prend garde à ne rien écraser :
+mv ${PKG}/etc/ggi/libgii.conf{,.new}
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -168,6 +171,8 @@ config() {
 		mv $NEW $OLD
 	fi
 }
+
+etc/ggi/libgii.conf.new
 
 EOF
 
