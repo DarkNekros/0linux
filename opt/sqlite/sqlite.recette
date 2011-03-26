@@ -29,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.sqlite.org/$NAMESRC-src-3070500.$EXT} # Numéro de version différente !
-DOC="INSTALL README"
+DOC="README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Moteur de bases de données SQL autonome"
 ########################################
