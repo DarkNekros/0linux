@@ -122,6 +122,19 @@ Cflags: -I/usr/include/nss
 
 EOF
 
+# On crée le binaire 'nss-config-32 :'
+cat $CWD/nss-config > ${PKG}/usr/bin/nss-config-32
+sed -i -e "s,@libdir@,/usr/lib${LIBDIRSUFFIX},g" \
+	-e "s,@prefix@,/usr,g" \
+	-e "s,@exec_prefix@,/usr,g" \
+	-e "s,@includedir@,/usr/include/nss3,g" \
+	-e "s,@MOD_MAJOR_VERSION@,$(echo $VERSION | cut -d'.' -f1),g" \
+	-e "s,@MOD_MINOR_VERSION@,$(echo $VERSION | cut -d'.' -f2),g" \
+	-e "s,@MOD_PATCH_VERSION@,$(echo $VERSION | cut -d'.' -f3),g" \
+	${PKG}/usr/bin/nss-config-32
+
+chmod 755 ${PKG}/usr/bin/nss-config-32
+
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
 rm -rf ${NAME}
@@ -187,6 +200,22 @@ EOF
 for binaire in ${PKG}/usr/bin/*; do
 	mv ${binaire} ${PKG}/usr/bin/nss-$(basename ${binaire})
 done
+
+# On crée le binaire 'nss-config-64 :'
+cat $CWD/nss-config > ${PKG}/usr/bin/nss-config-64
+sed -i -e "s,@libdir@,/usr/lib${LIBDIRSUFFIX},g" \
+	-e "s,@prefix@,/usr,g" \
+	-e "s,@exec_prefix@,/usr,g" \
+	-e "s,@includedir@,/usr/include/nss3,g" \
+	-e "s,@MOD_MAJOR_VERSION@,$(echo $VERSION | cut -d'.' -f1),g" \
+	-e "s,@MOD_MINOR_VERSION@,$(echo $VERSION | cut -d'.' -f2),g" \
+	-e "s,@MOD_PATCH_VERSION@,$(echo $VERSION | cut -d'.' -f3),g" \
+	${PKG}/usr/bin/nss-config-64
+
+chmod 755 ${PKG}/usr/bin/nss-config-64
+
+# On lie un faux binaire au programme enveloppe :
+ln -sf multiarch_wrapper ${PKG}/usr/bin/nss-config
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
