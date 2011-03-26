@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://$NAMESRC.sourceforge.net/files/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS ChangeLog COPYING NEWS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques pour le format vidéo MPEG2"
