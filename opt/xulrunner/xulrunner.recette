@@ -104,8 +104,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -I/usr/include -I/usr/i
 	--with-system-jpeg \
 	--enable-system-lcms \
 	--enable-system-sqlite \
-	--with-system-nspr \
-	--with-system-nss \
 	--with-system-zlib \
 	--build=${TARGET32} \
 	--host=${TARGET32} \
@@ -167,8 +165,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -I/usr/include -I/usr/i
 	--with-system-jpeg \
 	--enable-system-lcms \
 	--enable-system-sqlite \
-	--with-system-nspr \
-	--with-system-nss \
 	--with-system-zlib \
 	--build=${TARGET64} \
 	--host=${TARGET64} \
