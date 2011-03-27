@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-libdc1394}
-VERSION=${VERSION:-2.1.2}
+VERSION=${VERSION:-2.1.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libdc1394}
 BUILD=${BUILD:-1}
