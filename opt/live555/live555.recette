@@ -78,14 +78,10 @@ LIBDIRSUFFIX=""
 # On corrige l'appel au compilateur en dur :
 sed -i -e "s@^C_COMPILER =.*\$@C_COMPILER = gcc ${BUILD32}@" \
 	-e "s@^CPLUSPLUS_COMPILER =.*\$@CPLUSPLUS_COMPILER = g++ ${BUILD32}@" \
-	-e "s@^COMPILE_OPTS =.*\$@& ${BUILD32} ${SLKCFLAGS}@" config.linux
+	-e "s@^COMPILE_OPTS =.*\$@& ${BUILD32} ${SLKCFLAGS}@" \
+	-e "s@^LINK_OPTS =.*\$@& -L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}@" config.linux
 
 ./genMakefiles linux
-
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 make -j3
 
 for i in BasicUsageEnvironment UsageEnvironment groupsock liveMedia; do
@@ -117,14 +113,10 @@ LIBDIRSUFFIX="64"
 # On corrige l'appel au compilateur en dur :
 sed -i -e "s@^C_COMPILER =.*\$@C_COMPILER = gcc ${BUILD64}@" \
 	-e "s@^CPLUSPLUS_COMPILER =.*\$@CPLUSPLUS_COMPILER = g++ ${BUILD64}@" \
-	-e "s@^COMPILE_OPTS =.*\$@& ${SLKCFLAGS}@" config.linux-64bit
+	-e "s@^COMPILE_OPTS =.*\$@& ${BUILD64} ${SLKCFLAGS}@" \
+	-e "s@^LINK_OPTS =.*\$@& -L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}@" config.linux-64bit
 
-./genMakefiles linux
-
-CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./genMakefiles linux-64bit
 make -j3
 
 for i in BasicUsageEnvironment UsageEnvironment groupsock liveMedia; do
