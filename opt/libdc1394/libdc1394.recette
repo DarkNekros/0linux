@@ -86,6 +86,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
+# On copie un script manquant :
+cp /usr/share/automake-*/missing .
+
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
@@ -123,6 +126,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
+
+# On copie un script manquant :
+cp /usr/share/automake-*/missing .
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
