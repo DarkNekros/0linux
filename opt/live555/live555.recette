@@ -123,7 +123,7 @@ make -j3
 
 for i in BasicUsageEnvironment UsageEnvironment groupsock liveMedia; do
 	cp -a ${i}/*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/live/${i}/
-	cp -a ${i}/*.h ${PKG}/usr/include/live/${i}/
+	cp -a ${i}/include/*.hh ${PKG}/usr/include/live/${i}/
 done
 
 find testProgs/ -perm -755 -exec cp -a {} ${PKG}/usr/bin/ \;
