@@ -12,10 +12,10 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-libmspack}
-VERSION=${VERSION:-0.0.20060920alpha}
+NAMESRC=${NAMESRC:-musepack_linux}
+VERSION=${VERSION:-2009_02_28}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libmspack}
+NAMETGZ=${NAMETGZ:-musepack}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -28,22 +28,22 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://www.cabextract.org.uk/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING* INSTALL NEWS README TODO"
+WGET=${WGET:-http://files.musepack.net/linux//$NAMESRC-$VERSION.$EXT}
+DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Bibliothèques de (dé)compression pour certains formats d'archives"
+SLACKDESC=""
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
-if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then # -1 pour l'UTF-8
-	echo "La description du slack-desc est trop longue (80 caractères max.) !"
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
+	echo "La description est trop longue (80 caractères max.) !"
 	exit 1
 fi
 
 # On télécharge les sources :
 if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
 	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
-	mv ${NAMESRC}-${VERSION}.$EXT.part ${NAMESRC}-${VERSION}.$EXT
+	mv ${NAMESRC}-${VERSION}.$EXT{.part,}
 fi
 
 # On les vérifie :
@@ -54,7 +54,7 @@ PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
 
 # On déballe et on se place dans les sources :
-NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
@@ -68,6 +68,8 @@ find . \
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
+
+autoreconf -vif
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
@@ -83,6 +85,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -106,6 +109,8 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
+autoreconf -vif
+
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
@@ -120,6 +125,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
 make -j3 || make
