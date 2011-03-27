@@ -51,7 +51,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée les répertoires d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}usr/{bin/live,lib{,64}}
+mkdir -p ${PKG}/usr/{bin/live,lib{,64}}
 mkdir -p ${PKG}/usr/include/live/{BasicUsageEnvironment,UsageEnvironment,groupsock,liveMedia}
 mkdir -p ${PKG}/usr/lib{,64}/live/{BasicUsageEnvironment,UsageEnvironment,groupsock,liveMedia}
 
@@ -126,8 +126,8 @@ for i in BasicUsageEnvironment UsageEnvironment groupsock liveMedia; do
 	cp -a ${i}/include/*.hh ${PKG}/usr/include/live/${i}/
 done
 
-find testProgs/ -perm -755 -exec cp -a {} ${PKG}/usr/bin/live \;
-find mediaServer/ -perm -755 -exec cp -a {} ${PKG}/usr/bin/live \;
+find testProgs/ -perm -755 -exec cp -a {} ${PKG}/usr/bin/live/ \;
+find mediaServer/ -perm -755 -exec cp -a {} ${PKG}/usr/bin/live/ \;
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
