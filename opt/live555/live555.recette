@@ -79,6 +79,7 @@ LIBDIRSUFFIX=""
 sed -i -e "s@^C_COMPILER =.*\$@C_COMPILER = gcc ${BUILD32}@" \
 	-e "s@^CPLUSPLUS_COMPILER =.*\$@CPLUSPLUS_COMPILER = g++ ${BUILD32}@" \
 	-e "s@^COMPILE_OPTS =.*\$@& ${BUILD32} ${SLKCFLAGS}@" \
+	-e "s@^LINK =.*\$@& ${BUILD32} @" \
 	-e "s@^LINK_OPTS =.*\$@& -L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}@" config.linux
 
 ./genMakefiles linux
@@ -114,6 +115,7 @@ LIBDIRSUFFIX="64"
 sed -i -e "s@^C_COMPILER =.*\$@C_COMPILER = gcc ${BUILD64}@" \
 	-e "s@^CPLUSPLUS_COMPILER =.*\$@CPLUSPLUS_COMPILER = g++ ${BUILD64}@" \
 	-e "s@^COMPILE_OPTS =.*\$@& ${BUILD64} ${SLKCFLAGS}@" \
+	-e "s@^LINK =.*\$@& ${BUILD64} @" \
 	-e "s@^LINK_OPTS =.*\$@& -L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}@" config.linux-64bit
 
 ./genMakefiles linux-64bit
