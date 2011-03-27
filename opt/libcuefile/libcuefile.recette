@@ -31,7 +31,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 WGET=${WGET:-http://files.musepack.net/source/${NAMESRC}_${VERSION}.$EXT}
 DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Outils et bibliothèques pour le format Musepack"
+SLACKDESC="Outils et bibliothèques Musepack pour les fichiers 'cue'"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -69,8 +69,6 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
-autoreconf -vif
-
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
@@ -78,17 +76,15 @@ CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${TARGET32}
+cmake \
+	-G "Unix Makefiles" \
+	-DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+	-DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX}
 
-make -j3 || make
+make -j3
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -106,10 +102,11 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On complète le fichier 'CMakeLists.txt' auquel il manque les entêtes... :
+echo 'INSTALL(FILES ${libcuefile_SOURCE_DIR}/include/cuetools/cuefile.h ${libcuefile_SOURCE_DIR}/include/cuetools/cd.h ${libcuefile_SOURCE_DIR}/include/cuetools/cdtext.h DESTINATION include/cuetools)' >> src/CMakeLists.txt
+
 # On positionne USE_ARCH :
 export USE_ARCH=64
-
-autoreconf -vif
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
@@ -118,17 +115,15 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${TARGET64}
+cmake \
+	-G "Unix Makefiles" \
+	-DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+	-DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX}
 
-make -j3 || make
+make -j3
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
