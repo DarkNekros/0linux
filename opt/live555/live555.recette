@@ -77,6 +77,9 @@ LIBDIRSUFFIX=""
 
 ./genMakefiles linux
 
+# On corrige l'appel au compilateur en dur :
+sed -i -e "s@^C_COMPILER =.*\$@C_COMPILER = gcc ${BUILD32}@" Makefile
+
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
