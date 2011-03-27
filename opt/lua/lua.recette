@@ -89,14 +89,14 @@ CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-make -j3 \
+make -j3 linux \
 	CFLAGS="${SLKCFLAGS}" \
 	INSTALL_TOP=${PKG}/usr \
 	INSTALL_LIB=${PKG}/usr/lib${LIBDIRSUFFIX} \
 	INSTALL_LMOD=${PKG}/usr/share/lua/$(echo $VERSION | cut -d'.' -f1-2) \
 	INSTALL_CMOD=${PKG}/usr/lib${LIBDIRSUFFIX}/lua/$(echo $VERSION | cut -d'.' -f1-2)
 
-fakeroot make install \
+fakeroot make linux install \
 	CFLAGS="${SLKCFLAGS}" \
 	INSTALL_TOP=${PKG}/usr \
 	INSTALL_LIB=${PKG}/usr/lib${LIBDIRSUFFIX} \
@@ -145,14 +145,14 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-make -j3 \
+make -j3 linux \
 	CFLAGS="${SLKCFLAGS}" \
 	INSTALL_TOP=${PKG}/usr \
 	INSTALL_LIB=${PKG}/usr/lib${LIBDIRSUFFIX} \
 	INSTALL_LMOD=${PKG}/usr/share/lua/$(echo $VERSION | cut -d'.' -f1-2) \
 	INSTALL_CMOD=${PKG}/usr/lib${LIBDIRSUFFIX}/lua/$(echo $VERSION | cut -d'.' -f1-2)
 
-fakeroot make install \
+fakeroot make linux install \
 	CFLAGS="${SLKCFLAGS}" \
 	INSTALL_TOP=${PKG}/usr \
 	INSTALL_LIB=${PKG}/usr/lib${LIBDIRSUFFIX} \
