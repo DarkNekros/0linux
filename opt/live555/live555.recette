@@ -75,12 +75,12 @@ export USE_ARCH=32
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 
-./genMakefiles linux
-
 # On corrige l'appel au compilateur en dur :
 sed -i -e "s@^C_COMPILER =.*\$@C_COMPILER = gcc ${BUILD32}@" \
 	-e "s@^CPLUSPLUS_COMPILER =.*\$@CPLUSPLUS_COMPILER = g++ ${BUILD32}@" \
-	-e "s@^COMPILE_OPTS =.*\$@& ${SLKCFLAGS}@" Makefile
+	-e "s@^COMPILE_OPTS =.*\$@& ${BUILD32} ${SLKCFLAGS}@" config.linux
+
+./genMakefiles linux
 
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
@@ -114,13 +114,13 @@ export USE_ARCH=64
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 
-./genMakefiles linux
-
 # On corrige l'appel au compilateur en dur :
 sed -i -e "s@^C_COMPILER =.*\$@C_COMPILER = gcc ${BUILD64}@" \
 	-e "s@^CPLUSPLUS_COMPILER =.*\$@CPLUSPLUS_COMPILER = g++ ${BUILD64}@" \
-	-e "s@^COMPILE_OPTS =.*\$@& ${SLKCFLAGS}@" Makefile
-	
+	-e "s@^COMPILE_OPTS =.*\$@& ${SLKCFLAGS}@" config.linux-64bit
+
+./genMakefiles linux
+
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
