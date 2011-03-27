@@ -12,8 +12,8 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-musepack_linux}
-VERSION=${VERSION:-2009_02_28}
+NAMESRC=${NAMESRC:-musepack_src}
+VERSION=${VERSION:-r435}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-musepack}
 BUILD=${BUILD:-1}
@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://files.musepack.net/linux/${NAMESRC}_${VERSION}.$EXT}
+WGET=${WGET:-http://files.musepack.net/source/${NAMESRC}_${VERSION}.$EXT}
 DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils et bibliothèques pour le format Musepack"
