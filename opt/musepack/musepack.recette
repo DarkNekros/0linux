@@ -29,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://files.musepack.net/source/${NAMESRC}_${VERSION}.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+#DOC=""
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils et bibliothèques pour le format Musepack"
 ########################################
@@ -149,9 +149,9 @@ if [ -d ${PKG}/usr/info ]; then
 	gzip -9 ${PKG}/usr/info/*.info*
 fi
 
-# Installation de la documentation :
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+## Installation de la documentation :
+#mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+#cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
