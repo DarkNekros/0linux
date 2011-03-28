@@ -136,6 +136,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On veille à ne rien écraser : 
+mv ${PKG}/etc/irssi.conf{,.new}
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -154,6 +157,8 @@ fi
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+mv ${PKG}/usr/share/doc/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+rm -rf ${PKG}/usr/share/doc
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -177,17 +182,7 @@ config() {
 	fi
 }
 
-if [ -x usr/bin/update-desktop-database ]; then
-	chroot . /usr/bin/update-desktop-database &> /dev/null
-fi
-
-if [ -x /usr/bin/update-mime-database ]; then
-	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
-fi
-
-if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
-fi
+config etc/irssi.conf.new
 
 EOF
 
