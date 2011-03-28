@@ -89,7 +89,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-libdirac \
 	--enable-libfaac \
 	--enable-libfaad \
-	--enable-libfaadbin
+	--enable-libfaadbin \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
@@ -154,7 +154,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-libdirac \
 	--enable-libfaac \
 	--enable-libfaad \
-	--enable-libfaadbin
+	--enable-libfaadbin \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
