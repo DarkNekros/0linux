@@ -91,6 +91,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On renomme le binaire 32 bits pour l'envelopper : 
+mv ${PKG}/usr/bin/libmikmod-config{,-32}
+
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
 rm -rf ${NAME}
@@ -127,6 +130,12 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On renomme le binaire 64 bits pour l'envelopper : 
+mv ${PKG}/usr/bin/libmikmod-config{,-64}
+
+# On lie un faux binaire au programme enveloppe : 
+ln -sf multiarch_wrapper ${PKG}/usr/bin/libmikmod-config
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
