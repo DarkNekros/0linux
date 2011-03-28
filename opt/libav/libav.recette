@@ -79,8 +79,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--build=${TARGET32}
+	--mandir=/usr/man
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
@@ -113,8 +112,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--build=${TARGET64}
+	--mandir=/usr/man
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
