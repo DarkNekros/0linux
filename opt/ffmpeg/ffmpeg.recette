@@ -83,7 +83,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--arch=i686 \
 	--enable-avfilter \
-	--enable-avisynth \
 	--enable-gpl \
 	--enable-libdc1394 \
 	--enable-libdirac \
@@ -148,7 +147,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--enable-avfilter \
-	--enable-avisynth \
 	--enable-gpl \
 	--enable-libdc1394 \
 	--enable-libdirac \
