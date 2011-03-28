@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-gst-plugins-base}
 VERSION=${VERSION:-0.10.31}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gst-plugins-base}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}

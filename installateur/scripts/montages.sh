@@ -31,24 +31,24 @@ cat $TMP/choix_partitions | while read LINE; do
 		MOUNTOPTIONS="defaults"
 		MAJORMINOR="1 1"
 		
-		# On note la partition racine pour plus tard :
-		echo ${MOUNTPART} > $TMP/partition_racine
-		
 		# On monte la racine au passage :
 		echo "Montage de la racine... "
 		mount ${MOUNTPART} ${SETUPROOT} 2>/dev/null
+		
+		# On note la partition racine pour plus tard :
+		echo ${MOUNTPART} > $TMP/partition_racine
 		
 	# On définit les options par défaut pour le reste :
 	else
 		MOUNTOPTIONS="defaults"
 		MAJORMINOR="1 2"
+		
+		# On crée le point de montage :
+		mkdir -p ${SETUPROOT}/${MOUNTDIR}
 	fi
 	
 	# On ajoute la ligne résultante au fichier 'fstab' :
 	echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
-	
-	# On crée le point de montage :
-	mkdir -p ${SETUPROOT}/${MOUNTDIR}
 	
 	# On monte la partition :
 	echo "Montage de ${MOUNTDIR}... "
