@@ -7,13 +7,15 @@ if [ ! "${SETUPROOT}" = "/" ]; then
 	mount --bind /dev ${SETUPROOT}/dev 1> /dev/null 2> /dev/null
 fi
 
-if [ -r $TMP/choix_clavier ]; then
-	# On définit le clavier à charger à chaque démarrage :
-	DISPOCLAVIER="$(cat $TMP/choix_clavier)"
-	echo "#!/usr/bin/env bash" > ${SETUPROOT}/etc/rc.d/rc.keymap
+# On définit le clavier à charger à chaque démarrage :
+DISPOCLAVIER="$(cat $TMP/choix_clavier)"
+if [ ! "${DISPOCLAVIER}" = "" ]; then
+	mkdir -p ${SETUPROOT}/etc/rc.d
+	touch ${SETUPROOT}/etc/rc.d/rc.keymap
+	echo "#!/usr/bin/env bash" >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "# Chargement de la disposition des touches du clavier." >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "# Les dispositions se trouvent dans '/lib/kbd/keymaps'." >> ${SETUPROOT}/etc/rc.d/rc.keymap
-	echo "	loadkeys --quiet ${DISPOCLAVIER}" >> ${SETUPROOT}/etc/rc.d/rc.keymap
+	echo "loadkeys --quiet ${DISPOCLAVIER}" >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	echo "" >> ${SETUPROOT}/etc/rc.d/rc.keymap
 	chmod 755 ${SETUPROOT}/etc/rc.d/rc.keymap
 fi

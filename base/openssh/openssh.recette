@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-openssh}
 VERSION=${VERSION:-5.8p1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssh}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -104,9 +104,7 @@ unset USE_ARCH
 mkdir -p ${PKG}/var/empty
 
 # On supprime les clés, elles sont uniques à chaque machine :
-rm -f ${PKG}/etc/ssh/ssh_host_dsa_key{,.pub}
-rm -f ${PKG}/etc/ssh/ssh_host_rsa_key{,.pub}
-rm -f ${PKG}/etc/ssh/ssh_host_key{,.pub}
+rm -f ${PKG}/etc/ssh/*_key*}
 
 # On installe le fichier de configuration :
 mv ${PKG}/etc/ssh/ssh_config{,.new}

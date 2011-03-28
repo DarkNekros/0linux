@@ -145,15 +145,6 @@ while [ 0 ]; do
 	esac
 done
 
-# L'installation est terminée !
-clear
-echo -e "\033[1;32mLa configuration du système est terminée.\033[0;0m"
-echo ""
-echo "L'installation et la configuration du système sont terminées. Vous pouvez"
-echo "à présent quitter l'installateur afin de redémarrer votre machine."
-echo ""
-echo -n "Appuyez sur ENTRÉE pour finaliser"
-
 # On synchronise les systèmes de fichiers :
 sync
 
@@ -181,7 +172,8 @@ clear
 echo -e "\033[1;32mL'installation de votre système Linux est terminée.\033[0;0m"
 echo ""
 echo "Vous pouvez maintenant appuyer sur CTRL+ALT+SUPPR ou bien taper"
-echo "'shutdown -r now' pour redémarrer la machine."
+echo "'reboot' ou 'shutdown -r now' pour redémarrer la machine."
+echo ""
 echo "Si un média d'installation est encore présent, retirez-le maintenant."
 echo ""
 echo "À bientôt !"
