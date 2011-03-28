@@ -29,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.libsdl.org/projects/$NAMESRC/release/$NAMESRC-$VERSION.$EXT}
-DOC="BUGS COPYING INSTALL CREDITS* README* TODO *.html docs/html/"
+DOC="CHANGES COPYING README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques graphiques « Simple DirectMedia Layer »"
 ########################################
