@@ -81,9 +81,14 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--{,sh}libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--arch=i686 \
+	--enable-avfilter \
+	--enable-avisynth \
 	--enable-gpl \
+	--enable-libdc1394 \
+	--enable-libdirac \
 	--enable-libfaac \
 	--enable-libfaad \
+	--enable-libfaadbin
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
@@ -140,9 +145,14 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--prefix=/usr \
 	--{,sh}libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
+	--enable-avfilter \
+	--enable-avisynth \
 	--enable-gpl \
+	--enable-libdc1394 \
+	--enable-libdirac \
 	--enable-libfaac \
 	--enable-libfaad \
+	--enable-libfaadbin
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
