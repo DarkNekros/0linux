@@ -87,6 +87,9 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-alsa-prefix=/usr/lib${LIBDIRSUFFIX} \
+	--enable-jpg-shared=no \
+	--enable-png-shared=no \
+	--enable-tif-shared=no \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -132,6 +135,9 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-alsa-prefix=/usr/lib${LIBDIRSUFFIX} \
+	--enable-jpg-shared=no \
+	--enable-png-shared=no \
+	--enable-tif-shared=no \
 	--build=${TARGET64}
 
 make -j3 || make
