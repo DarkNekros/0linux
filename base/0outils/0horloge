@@ -90,8 +90,6 @@ while [ 0 ]; do
 		echo -e "26 Togo"
 		echo -e "27 Tunisie"
 		echo -e ""
-		echo -e "0 Annuler"
-		echo -e ""
 		echo -n "Votre choix : "
 		read TZCODE;
 		# On remplit le tableau des fuseaux :

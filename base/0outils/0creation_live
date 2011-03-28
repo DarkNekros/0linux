@@ -136,6 +136,10 @@ libstdc++.so* libperl.so* libz.so* libxcb.so* libfreetype.so* libdb-5*.so*; do
 	
 done
 
+# On copie les modules réseau et les firmwares en lieu sûr :
+cp -ar ${LIVEOS}/lib/firmware ${LIVEOS}/conserver
+cp -ar ${LIVEOS}/lib/modules/$(uname -r)/kernel/net ${LIVEOS}/conserver
+
 # On récupère le minimum de l'éditeur 'vim' (on dispose aussi de 'nano') :
 cp -a ${LIVEOS}/usr/bin/vim ${LIVEOS}/conserver
 cp -ar ${LIVEOS}/usr/share/vim/lang/fr ${LIVEOS}/conserver
@@ -166,13 +170,22 @@ linux-modules* popt* binutils* tree* vim*; do
 	
 done
 
-# On ramène les bibliothèques et le nécesaire pour 'vim' : 
+# On ramène les bibliothèques :
 cp -a ${LIVEOS}/conserver/usr/lib64/* ${LIVEOS}/usr/lib64/
 cp -a ${LIVEOS}/conserver/lib64/* ${LIVEOS}/lib64/
+
+# On ramène le nécesaire pour 'vim' : 
 cp -a ${LIVEOS}/conserver/vim ${LIVEOS}/usr/bin/
 mkdir -p ${LIVEOS}/usr/share/vim/lang/
 cp -ar ${LIVEOS}/conserver/fr ${LIVEOS}/usr/share/vim/lang/
 cp -a ${LIVEOS}/conserver/vimrc ${LIVEOS}/etc/
+
+# On ramène les modules et les firmware : 
+mkdir -p ${LIVEOS}/lib/modules/$(uname -r)/kernel
+cp -ra ${LIVEOS}/conserver/firmware ${LIVEOS}/lib/
+cp -ra ${LIVEOS}/conserver/net ${LIVEOS}/lib/modules/$(uname -r)/kernel/
+
+# On peut supprimer notre sauvegarde :
 rm -rf ${LIVEOS}/conserver
 
 # On allège : les bibliothèques 32 bits sous '/lib' :

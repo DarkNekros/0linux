@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-0outils}
-VERSION=${VERSION:-0.5}
+VERSION=${VERSION:-0.51}
 NAMETGZ=${NAMETGZ:-0outils}
 BUILD=${BUILD:-1}
 
@@ -27,7 +27,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-DOC=""
+#DOC=""
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils « maison » pour la configuration du système"
 ########################################
