@@ -85,7 +85,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-avfilter \
 	--enable-gpl \
 	--enable-libdc1394 \
-	--enable-libdirac \
 	--enable-libfaac \
 	--enable-libfaad \
 	--enable-libfaadbin \
@@ -149,7 +148,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-avfilter \
 	--enable-gpl \
 	--enable-libdc1394 \
-	--enable-libdirac \
 	--enable-libfaac \
 	--enable-libfaad \
 	--enable-libfaadbin \
