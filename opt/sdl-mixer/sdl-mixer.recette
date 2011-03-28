@@ -12,11 +12,11 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-SDL}
-VERSION=${VERSION:-1.2.14}
+NAMESRC=${NAMESRC:-SDL_mixer}
+VERSION=${VERSION:-1.2.11}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-sdl}
-BUILD=${BUILD:-2}
+NAMETGZ=${NAMETGZ:-sdl-mixer}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -28,10 +28,10 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://www.libsdl.org/release/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.libsdl.org/projects/$NAMESRC/release/$NAMESRC-$VERSION.$EXT}
 DOC="BUGS COPYING INSTALL CREDITS* README* TODO *.html docs/html/"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Outils et bibliothèques « Simple DirectMedia Layer »"
+SLACKDESC="Bibliothèques audio « Simple DirectMedia Layer »"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
