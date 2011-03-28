@@ -69,9 +69,6 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
-# On corrige l'emplacement de X11 codé en dur :
-sed -i "s@/usr/X11R6@$/usr@g" $(grep -lr /usr/X11R6 *)
-
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
@@ -86,7 +83,6 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--with-alsa-prefix=/usr/lib${LIBDIRSUFFIX} \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -94,9 +90,6 @@ make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On renomme le binaire 32 bits pour l'envelopper :
-mv ${PKG}/usr/bin/sdl-config{,-32}
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -113,8 +106,6 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-# On corrige l'emplacement de X11 et des bibliothèques 64 bits :
-sed -i "s@/usr/X11R6@$/usr@g" $(grep -lr /usr/X11R6 *)
 sed -i "/-laudio/s:/lib:&64:g" configure
 
 # Compilation pour 64 bits :
@@ -131,7 +122,6 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--with-alsa-prefix=/usr/lib${LIBDIRSUFFIX} \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -139,12 +129,6 @@ make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On renomme le binaire 64 bits pour l'envelopper :
-mv ${PKG}/usr/bin/sdl-config{,-64}
-
-# On lie un faux binaire au programme enveloppe :
-ln -sf multiarch_wrapper ${PKG}/usr/bin/sdl-config
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
