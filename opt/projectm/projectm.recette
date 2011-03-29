@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-projectm}
 VERSION=${VERSION:-2.0.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-projectm}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -93,6 +93,9 @@ cd ..
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On répare ce fichier incorrect :
+sed -i -e "s@^libdir=@libdir=\${exec_prefix}/lib${LIBDIRSUFFIX}@" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libprojectM.pc
+
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
 rm -rf ${NAME}
@@ -131,6 +134,9 @@ cd ..
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On répare ce fichier incorrect :
+sed -i -e "s@^libdir=@libdir=\${exec_prefix}/lib${LIBDIRSUFFIX}@" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libprojectM.pc
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
