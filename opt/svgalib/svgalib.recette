@@ -69,6 +69,10 @@ find . \
 # On corrige la compilation avec des entêtes corrects :
 cat $CWD/svgalib.linux26.patch | patch -p1
 
+# On corrige une variable :
+sed -i 's@static double round(double v)@double round(double v) @' utils/gtf/gtfcalc.c
+
+# On modifie les paramètres pour le 'make install' :
 sed -i -e "s@^TOPDIR=@&${PKG}@" \
 	-e "s@^prefix = \$(TOPDIR)/usr/local@prefix = \$(TOPDIR)/usr@" \
 	-e "s@share/man@man@g" Makefile.cfg
@@ -104,6 +108,10 @@ find . \
 # On corrige la compilation avec des entêtes corrects :
 cat $CWD/svgalib.linux26.patch | patch -p1
 
+# On corrige une variable :
+sed -i 's@static double round(double v)@double round(double v) @' utils/gtf/gtfcalc.c
+
+# On modifie les paramètres pour le 'make install' :
 sed -i -e "s@^TOPDIR=@&${PKG}@" \
 	-e "s@^prefix = \$(TOPDIR)/usr/local@prefix = \$(TOPDIR)/usr@" \
 	-e "s@share/man@man@g" \
