@@ -29,7 +29,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://my.svgalib.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+DOC="*README* LICENSE README svgalib.lsm doc/0-INSTALL doc/CHANGES doc/DESIGN \
+doc/Driver-programming-HOWTO doc/*README* doc/TODO doc/dual-head-howto "
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques SVGA pour Linux"
 ########################################
@@ -75,6 +76,9 @@ cat $CWD/svgalib.linux26.patch | patch -p1
 # On corrige une variable :
 sed -i 's@static double round(double v)@double round(double v) @' utils/gtf/gtfcalc.c
 
+# On supprime la compilation d'un module problématique :
+sed -i -e 's@^# NoHelper@NoHelper@' src/config/libvga.config
+
 # On modifie les paramètres pour le 'make install' :
 sed -i -e "s@^TOPDIR=@&${PKG}@" \
 	-e "s@^prefix = \$(TOPDIR)/usr/local@prefix = \$(TOPDIR)/usr@" \
@@ -91,6 +95,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 LD="ld -A i686" \
+NO_HELPER=y \
 fakeroot make install
 
 # On neutralise USE_ARCH :
@@ -117,6 +122,9 @@ cat $CWD/svgalib.linux26.patch | patch -p1
 # On corrige une variable :
 sed -i 's@static double round(double v)@double round(double v) @' utils/gtf/gtfcalc.c
 
+# On supprime la compilation d'un module problématique :
+sed -i -e 's@^# NoHelper@NoHelper@' src/config/libvga.config
+
 # On modifie les paramètres pour le 'make install' :
 sed -i -e "s@^TOPDIR=@&${PKG}@" \
 	-e "s@^prefix = \$(TOPDIR)/usr/local@prefix = \$(TOPDIR)/usr@" \
@@ -134,6 +142,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 LD="ld -A x86_64" \
+NO_HELPER=y \
 fakeroot make install
 
 # On neutralise USE_ARCH :
