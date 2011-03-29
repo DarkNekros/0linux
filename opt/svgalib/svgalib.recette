@@ -67,7 +67,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige la compilation avec des entêtes corrects :
-cat $CWD/svgalib.buildfix.patch | patch -p1
+cat $CWD/svgalib.linux26.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
@@ -104,7 +104,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On corrige la compilation avec des entêtes corrects :
-cat $CWD/svgalib.buildfix.patch | patch -p1
+cat $CWD/svgalib.linux26.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
