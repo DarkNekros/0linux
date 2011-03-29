@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-live}
 VERSION=${VERSION:-2011_03_14}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-live555}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -52,8 +52,8 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 # On crée les répertoires d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/usr/{bin/live,lib{,64}}
-mkdir -p ${PKG}/usr/include/live/{BasicUsageEnvironment,UsageEnvironment,groupsock,liveMedia}
-mkdir -p ${PKG}/usr/lib{,64}/live/{BasicUsageEnvironment,UsageEnvironment,groupsock,liveMedia}
+mkdir -p ${PKG}/usr/include/{BasicUsageEnvironment,UsageEnvironment,groupsock,liveMedia}
+mkdir -p ${PKG}/usr/lib{,64}/{BasicUsageEnvironment,UsageEnvironment,groupsock,liveMedia}
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -86,7 +86,7 @@ sed -i -e "s@^C_COMPILER =.*\$@C_COMPILER = gcc ${BUILD32}@" \
 make -j3
 
 for i in BasicUsageEnvironment UsageEnvironment groupsock liveMedia; do
-	cp -a ${i}/*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/live/${i}/
+	cp -a ${i}/*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/${i}/
 done
 
 # On neutralise USE_ARCH :
@@ -122,8 +122,8 @@ sed -i -e "s@^C_COMPILER =.*\$@C_COMPILER = gcc ${BUILD64}@" \
 make -j3
 
 for i in BasicUsageEnvironment UsageEnvironment groupsock liveMedia; do
-	cp -a ${i}/*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/live/${i}/
-	cp -a ${i}/include/*.hh ${PKG}/usr/include/live/${i}/
+	cp -a ${i}/*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/${i}/
+	cp -a ${i}/include/*.hh ${PKG}/usr/include/${i}/
 done
 
 find testProgs/ -perm -755 -exec cp -a {} ${PKG}/usr/bin/live/ \;
