@@ -69,7 +69,7 @@ find . \
 # On corrige la compilation avec des entêtes corrects :
 cat $CWD/svgalib.linux26.patch | patch -p1
 
-sed -i -e "s@^TOPDIR =@& ${PKG}@" \
+sed -i -e "s@^TOPDIR=@&${PKG}@" \
 	-e "s@^prefix = \$(TOPDIR)/usr/local@prefix = \$(TOPDIR)/usr@" \
 	-e "s@share/man@man@g" Makefile.cfg
 	
@@ -104,7 +104,7 @@ find . \
 # On corrige la compilation avec des entêtes corrects :
 cat $CWD/svgalib.linux26.patch | patch -p1
 
-sed -i -e "s@^TOPDIR =@& ${PKG}@" \
+sed -i -e "s@^TOPDIR=@&${PKG}@" \
 	-e "s@^prefix = \$(TOPDIR)/usr/local@prefix = \$(TOPDIR)/usr@" \
 	-e "s@share/man@man@g" \
 	-e "s@/lib@&64@g" Makefile.cfg
