@@ -39,13 +39,17 @@ diff -Naur svgalib-1.9.25.orig/kernel/svgalib_helper/kernel26compat.h svgalib-1.
  }
  #endif
  
-@@ -161,3 +167,7 @@
+@@ -161,3 +171,11 @@
  #ifndef PCI_VENDOR_ID_RENDITION 
  #define PCI_VENDOR_ID_RENDITION               0x1163
  #endif
 +
 +#ifndef IRQF_SHARED
 +# define IRQF_SHARED SA_SHIRQ
++#endif
++
++#ifndef SA_SHIRQ
++# define SA_SHIRQ
 +#endif
 diff -Naur svgalib-1.9.25.orig/kernel/svgalib_helper/main.c svgalib-1.9.25/kernel/svgalib_helper/main.c
 --- svgalib-1.9.25.orig/kernel/svgalib_helper/main.c	2006-01-12 19:17:53.000000000 +0100
