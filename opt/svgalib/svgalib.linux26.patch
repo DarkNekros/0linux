@@ -51,21 +51,3 @@ diff -Naur svgalib-1.9.25.orig/kernel/svgalib_helper/kernel26compat.h svgalib-1.
 +#ifndef SA_SHIRQ
 +# define SA_SHIRQ
 +#endif
-diff -Naur svgalib-1.9.25.orig/kernel/svgalib_helper/main.c svgalib-1.9.25/kernel/svgalib_helper/main.c
---- svgalib-1.9.25.orig/kernel/svgalib_helper/main.c	2006-01-12 19:17:53.000000000 +0100
-+++ svgalib-1.9.25/kernel/svgalib_helper/main.c	2009-07-02 17:38:54.000000000 +0200
-@@ -1,4 +1,4 @@
--#include <linux/config.h>
-+
- 
- #if defined (CONFIG_MODVERSIONS) && !defined (MODVERSIONS)
- # define MODVERSIONS
-@@ -17,7 +17,7 @@
- #include <linux/ioport.h>
- #include <linux/interrupt.h>
- #include <linux/pci.h>
--#include <linux/devfs_fs_kernel.h>
-+
- #include <linux/mm.h>
- #include <linux/thread_info.h>
- #include <linux/smp.h>
