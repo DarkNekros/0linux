@@ -69,6 +69,10 @@ find . \
 # On corrige la compilation avec des entêtes corrects :
 cat $CWD/svgalib.linux26.patch | patch -p1
 
+sed -i -e "s@^TOPDIR =@& ${PKG}@" \
+	-e "s@^prefix = \$(TOPDIR)/usr/local@prefix = \$(TOPDIR)/usr@" \
+	-e "s@share/man@man@g" Makefile.cfg
+	
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
@@ -80,13 +84,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 LD="ld -A i686" \
-make lrmi shared static textutils
-
-fakeroot make prefix=${PKG}/usr \
-	bindir=${PKG}/usr/bin \
-	datadir=${PKG}/etc/vga \
-	sharedlibdir=${PKG}/usr/lib${LIBDIRSUFFIX} \
-	install{headers,{shared,static}lib,config,utils,man}
+fakeroot make install
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -106,6 +104,11 @@ find . \
 # On corrige la compilation avec des entêtes corrects :
 cat $CWD/svgalib.linux26.patch | patch -p1
 
+sed -i -e "s@^TOPDIR =@& ${PKG}@" \
+	-e "s@^prefix = \$(TOPDIR)/usr/local@prefix = \$(TOPDIR)/usr@" \
+	-e "s@share/man@man@g" \
+	-e "s@/lib@&64@g" Makefile.cfg
+	
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
@@ -117,13 +120,7 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 LD="ld -A x86_64" \
-make lrmi shared static textutils
-
-fakeroot make prefix=${PKG}/usr \
-	bindir=${PKG}/usr/bin \
-	datadir=${PKG}/etc/vga \
-	sharedlibdir=${PKG}/usr/lib${LIBDIRSUFFIX} \
-	install{headers,{shared,static}lib,config,utils,man}
+fakeroot make install
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
