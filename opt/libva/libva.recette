@@ -7,17 +7,16 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-libva}
-VERSION=${VERSION:-1.0.4}
+VERSION=${VERSION:-1.0.11}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-libva}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -32,7 +31,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 WGET=${WGET:-http://cgit.freedesktop.org/libva/snapshot/$NAMESRC-$VERSION.$EXT}
 DOC="COPYING*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Bibliothèques pour le codage vidéo avec accélération matérielle"
+SLACKDESC="Bibliothèques vidéo avec accélération matérielle"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -184,14 +183,6 @@ config() {
 	fi
 }
 
-if [ -x usr/bin/update-desktop-database ]; then
-	chroot . /usr/bin/update-desktop-database &> /dev/null
-fi
-
-if [ -x usr/bin/gtk-update-icon-cache ]; then
-	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
-fi
-
 EOF
 
 # On "strippe" tout ce qu'on trouve :
@@ -202,9 +193,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
