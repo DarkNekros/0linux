@@ -95,8 +95,16 @@ while [ ! -r $TMP/choix_clavier ]; do
 		read TESTCLAVIER;
 		# Si le choix est validé, on sort du script :
 		if [ "$TESTCLAVIER" = "1" ]; then
-			touch $TMP/choix_clavier
 			echo "${CHOIXCLAVIER}" > $TMP/choix_clavier
+			# On modifie le choix pour le claveir sous X, lequel ne correspond
+			# pas toujours au clavier console :
+			case "${CHOIXCLAVIER}" in
+				"uk") CHOIXCLAVIER="gb" ;;
+				"sv") CHOIXCLAVIER="se" ;;
+				"cf") CHOIXCLAVIER="ca" ;;
+				"fr_CH") CHOIXCLAVIER="ch" ;;
+			esac
+			echo "${CHOIXCLAVIER}" > $TMP/choix_clavier_xorg
 			break
 		# Sinon, on retourne au choix du clavier :
 		elif  [ "$TESTCLAVIER" = "2" ]; then

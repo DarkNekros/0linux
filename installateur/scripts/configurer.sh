@@ -20,6 +20,12 @@ if [ ! "${DISPOCLAVIER}" = "" ]; then
 	chmod 755 ${SETUPROOT}/etc/rc.d/rc.keymap
 fi
 
+# On modifie 'evdev.conf' pour y insérer le clavier à charger sous X :
+DISPOCLAVIERXORG="$(cat $TMP/choix_clavier_xorg)"
+if [ ! "${DISPOCLAVIERXORG}" = "" ]; then
+	sed -i "s@Option \"xkb_layout\" \"\"@Option \"xkb_layout\" \"${DISPOCLAVIERXORG}\"@" ${SETUPROOT}/etc/X11/xorg.conf.d/evdev.conf
+fi
+
 # On lance un à un les scripts de configuration pour finaliser l'installation :
 
 # '0horloge' gère seul la racine et $SETUPROOT :

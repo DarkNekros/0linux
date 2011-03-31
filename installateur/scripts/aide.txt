@@ -49,9 +49,12 @@ partition d'échange (ou partition « swap »).
 Si vous disposez de suffisamment d'espace disque, il est plus 
 aisé de gérer un système partitionné de la facon suivante  :
 
-	+ 5 giga-octets minimum pour la racine du système (« / ») 
-	+ l'espace dédié aux utilisateurs sur '/home' 
-	+ 1 partition « swap » (un peu plus que votre quantité de mémoire RAM)
+	- 5 giga-octets minimum pour la racine du système (« / ») 
+	- l'espace dédié aux utilisateurs sur '/home' 
+	- 1 partition « swap » éventuelle d'un peu plus que votre quantité de
+	  mémoire vive (RAM)
+
+La partition d'échange « swap » est facultative.
 
 Faire une partition séparée pour /home est optionnel mais recommandé,
 celle-ci contenant entre autres les préférences des utilisateurs.

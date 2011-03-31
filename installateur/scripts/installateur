@@ -14,8 +14,9 @@ crunch() {
 	echo ${STRING};
 }
 
-# On vide $TMP au cas où :
-rm -f $TMP/*
+# On vide $TMP, sans toucher au fichier 'choix_clavier' :
+rm -f $TMP/{choix_partitions,choix_partitions_fat,choix_media,choix_swap}
+rm -f $TMP/{fstab,formatages,partition_racine}
 
 # On nettoie tous les points de montage :
 if mount | grep /var/log/mount 1> /dev/null 2> /dev/null ; then
