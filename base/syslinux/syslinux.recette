@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-syslinux}
 VERSION=${VERSION:-4.03}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-syslinux}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}

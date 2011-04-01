@@ -127,6 +127,7 @@ while [ 0 ]; do
 			
 			# Il est temps d'installer Extlinux :
 			echo "Installation de Extlinux..."
+			chmod +x ${SETUPROOT}/boot/extlinux/*.c32
 			extlinux --install ${SETUPROOT}/boot/extlinux
 			break
 		fi
