@@ -174,7 +174,7 @@ PACKAGING="
 	chown root:shadow ${PKG}/usr/bin/xscreensaver
 	chmod 2751 ${PKG}/usr/bin/xscreensaver
 	
-	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
 		if [ -d $TMP/${NAME} ]; then

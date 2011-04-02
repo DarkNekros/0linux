@@ -150,7 +150,7 @@ PACKAGING="
 	chown root:utmp ${PKG}/var/log/wtmp.new
 	chown root:utmp ${PKG}/var/run/utmp.new
 	chown root:shadow ${PKG}/etc/{,g}shadow.new
-	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	"
 

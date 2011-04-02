@@ -163,7 +163,7 @@ find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || tru
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
-	/sbin/spkcpio . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
 		if [ -d $TMP/${NAME} ]; then
