@@ -201,7 +201,7 @@ PACKAGING="
 	chmod 4755 ${PKG}/usr/lib/polkit-agent-helper-1
 	chmod 4755 ${PKG}/usr/lib64/polkit-agent-helper-1
 	chmod 4755 ${PKG}/usr/bin/pkexec
-	spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
 		if [ -d $TMP/${NAME} ]; then

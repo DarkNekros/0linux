@@ -243,7 +243,7 @@ mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
 	
-	spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
 		if [ -d $TMP/${NAME} ]; then

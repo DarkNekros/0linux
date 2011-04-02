@@ -224,7 +224,7 @@ EOF
 cd ${PKG}
 PACKAGING="
 	chown root:root . -R
-	spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD"
+	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "$PACKAGING" | fakeroot
@@ -235,7 +235,7 @@ fi
 cd ${PKGHEADERS}
 PACKAGING="
 	chown root:root . -R
-	spackpkg . $OUT/${NAMETGZHEADERS}-${VERSION}-${ARCH}-$BUILD"
+	/sbin/spackpkg . $OUT/${NAMETGZHEADERS}-${VERSION}-${ARCH}-$BUILD"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "$PACKAGING" | fakeroot
@@ -246,7 +246,7 @@ fi
 cd ${PKGMODULES}
 PACKAGING="
 	chown root:root . -R
-	spackpkg . $OUT/${NAMETGZMODULES}-${VERSION}-${ARCH}-$BUILD"
+	/sbin/spackpkg . $OUT/${NAMETGZMODULES}-${VERSION}-${ARCH}-$BUILD"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "$PACKAGING" | fakeroot
@@ -257,7 +257,7 @@ fi
 cd ${PKGSOURCE}
 PACKAGING="
 	chown root:root . -R
-	spackpkg . $OUT/${NAMETGZSOURCE}-${VERSION}-${ARCH}-$BUILD
+	/sbin/spackpkg . $OUT/${NAMETGZSOURCE}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG} ${PKGHEADERS} ${PKGMODULES} ${PKGSOURCE}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
 		if [ -d $TMP/${NAME} ]; then

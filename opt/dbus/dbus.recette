@@ -208,7 +208,7 @@ PACKAGING="
 	chown root:messagebus ${PKG}/usr/lib{,64}/dbus-1.0/dbus-daemon-launch-helper
 	chmod 4750 ${PKG}/usr/lib{,64}/dbus-1.0/dbus-daemon-launch-helper
 	chown messagebus ${PKG}/var/lib/dbus
-	spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
 		if [ -d $TMP/${NAME} ]; then
