@@ -7,14 +7,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-spack}
-VERSION=${VERSION:-2.10}
+VERSION=${VERSION:-3.0rc1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-spack}
 BUILD=${BUILD:-1}
@@ -77,23 +76,14 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
-	prefix=${PKG}/usr \
-	bindir=${PKG}/bin \
-	sbindir=${PKG}/sbin \
-	sysconfdir=${PKG}/etc \
-	varlibdir=${PKG}/var/lib \
-	mandir=${PKG}/usr/man \
-	docdir=${PKG}/usr/doc/${NAMETGZ}-${VERSION} \
-	tar=$(tar --version | head -n 1 | cut -d' ' -f4)
+	prefix=/usr \
+	--bindir=/bin \
+	--sbindir=/sbin
 
-make -j3 || make
-fakeroot make install
+fakeroot make DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On crée ce répertoire absent :
-mkdir -p ${PKG}/var/lib/spkdb
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

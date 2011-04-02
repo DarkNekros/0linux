@@ -36,28 +36,28 @@ read BLURB;
 
 # On installe d'abord les paquets vitaux :
 for paq in base-systeme* etc* eglibc* sgml* ; do
-	spkadd --about ${DIR0}/base/${paq}
-	spkadd --root=${SETUPROOT} ${DIR0}/base/${paq} &>/dev/null 2>&1
+	spackadd --about ${DIR0}/base/${paq}
+	spackadd --root=${SETUPROOT} ${DIR0}/base/${paq} &>/dev/null 2>&1
 done
 
 # On installe tout le reste sauf linux-source-*, qu'on installe en dernier,
 # tout en ignorant le répertoire 'extra' :
 for subdir0 in base opt xorg xfce; do
 	for paquet in $(find ${DIR0}/${subdir0} -type f \( \
-		-name "*.cpio" \
+		-name "*.spack" \
 		-a \! -name "base-systeme*" \
 		-a \! -name "etc*" \
 		-a \! -name "eglibc*" \
 		-a \! -name "sgml*" \
 		-a \! -name "linux-source*" \) | sort) ; do
-		spkadd --about ${paquet}
-		spkadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
+		spackadd --about ${paquet}
+		spackadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
 	done
 done
 
 # Les sources de Linux (appel à 'make' en post-installation, donc de
 # nombreuses dépendances) :
-spkadd --about ${DIR0}/base/linux-source-*
-spkadd --root=${SETUPROOT} ${DIR0}/base/linux-source* &>/dev/null 2>&1
+spackadd --about ${DIR0}/base/linux-source-*
+spackadd --root=${SETUPROOT} ${DIR0}/base/linux-source* &>/dev/null 2>&1
 
 # C'est fini !

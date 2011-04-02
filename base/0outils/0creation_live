@@ -105,19 +105,19 @@ echo "Installation du système temporaire en cours... "
 # base :
 echo -n "base... "
 for paq in $(find ${PAQUETS}/base -type f \! -name "linux-source*" | sort); do
-	spkadd --quiet --root=${LIVEOS} ${paq} &>/dev/null 2>&1
+	spackadd --quiet --root=${LIVEOS} ${paq} &>/dev/null 2>&1
 done
 
 # xorg :
 echo -n "xorg... "
-spkadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{libxcb*,freetype*,libX*,x11-libs*,libSM*,libICE*}.cpio &>/dev/null 2>&1
+spackadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{libxcb*,freetype*,libX*,x11-libs*,libSM*,libICE*}.spack &>/dev/null 2>&1
 
 # opt :
 echo -n "opt... "
 for paq in bc-* berkeley-db* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
 libidn* libpng* libssh2* mpc* mpfr* popt* python-2* ruby*; do
 	
-	spkadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.cpio &>/dev/null 2>&1
+	spackadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.spack &>/dev/null 2>&1
 	
 done
 
@@ -154,19 +154,19 @@ sed -i "s@set mouse=a@\" &@g" ${LIVEOS}/conserver/vimrc
 for paq in bc-* dbus-1* expat* gcc* glib2* gmp* lesstif* libgcrypt* libgpg-error* \
 libidn* libpng* python-2* ruby* mpfr* mpc* libssh2* berkeley-db*; do
 	
-	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
+	chroot ${LIVEOS} spackrm /var/log/paquets/${paq} &>/dev/null 2>&1
 	
 done
 
 # xorg
-chroot ${LIVEOS} spkrm /var/log/paquets/{libX*,libxcb*,freetype*,x11-libs*,libSM*,libICE*} &>/dev/null 2>&1
+chroot ${LIVEOS} spackrm /var/log/paquets/{libX*,libxcb*,freetype*,x11-libs*,libSM*,libICE*} &>/dev/null 2>&1
 
 # base
 for paq in multiarch_wrapper* vim* bzip2* zlib* tar* gpm* \
 linux-headers* dhcp-* perl* infozip* gfxboot* dialog* libxml2* sgml-common* \
 linux-modules* popt* binutils* tree* vim*; do
 	
-	chroot ${LIVEOS} spkrm /var/log/paquets/${paq} &>/dev/null 2>&1
+	chroot ${LIVEOS} spackrm /var/log/paquets/${paq} &>/dev/null 2>&1
 	
 done
 

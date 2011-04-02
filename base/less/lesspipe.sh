@@ -28,9 +28,7 @@ lesspipe() {
 			rpm -qpvl "$1" 2>/dev/null
 		;;
 		*.rar)
-			if which rar 1> /dev/null ; then
-				`which rar` t "$1" 
-			fi
+			unrar l "$1" 2>/dev/null
 		;;
 		*.1|*.2|*.3|*.4|*.5|*.6|*.7|*.8|*.9|*.n|*.man)
 			if file -L "$1" | grep roff 1> /dev/null ; then
@@ -59,7 +57,7 @@ lesspipe() {
 		*.xz)
 			xz -dc "$1" 2>/dev/null
 		;;
-		*.cpio) 
+		*.spack) 
 			zip=$(cpio --quiet --list "files.?z" < "$1" | sed 's/.*xz$/xz/;s/.*gz/gzip/;/^\(gzip\|xz\)$/!d')
 			if [ "$zip" ]; then
 				cpio --quiet -i --to-stdout "files.?z"  < "$1" | $zip -d -c | cpio --quiet --list

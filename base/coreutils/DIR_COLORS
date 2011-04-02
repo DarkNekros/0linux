@@ -85,6 +85,7 @@ EXEC					01;32		# Fichiers exécutables
 .RAR	01;31
 .rpm	01;31
 .rz		01;31
+.spack	01;31
 .tar	01;31
 .taz	01;31
 .tb2	01;31
