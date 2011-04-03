@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-opera}
 VERSION=${VERSION:-11.01_1190}
 EXT=${EXT:-rpm}
 NAMETGZ=${NAMETGZ:-opera}
-BUILD=${BUILD:-}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
