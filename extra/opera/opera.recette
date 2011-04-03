@@ -90,6 +90,10 @@ fi
 mv ${PKG}/usr/share/doc ${PKG}/usr
 mv ${PKG}/usr/doc/opera ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 ln -sf ${NAMETGZ}-${VERSION} opera
+# On corrige les liens cassés :
+ln -sf ../../../../doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/defaults/license.txt
+ln -sf ../../../../doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/locale/en/license.txt
+ln -sf ../../../../doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/locale/ja/license.txt
 #cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
 # On installe le slack-desc :
