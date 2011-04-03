@@ -54,6 +54,7 @@ mkdir -p ${PKG}
 cd ${PKG}
 echo "Extraction en cours..."
 rpmunpack $CWD/${NAMESRC}-${VERSION}.$EXT
+mv ${NAMESRC}-${VERSION}/* ${PKG}
 
 # On vérifie les permissions des sources :
 find . \
