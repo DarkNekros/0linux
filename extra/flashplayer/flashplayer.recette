@@ -61,12 +61,12 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée les répertoires d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}//usr/lib{,64}/mozilla/plugins
+mkdir -p ${PKG}/usr/lib{,64}/mozilla/plugins
 
 # On décompacte les greffons où il faut :
-tar xf -C ${PKG}/usr/lib/mozilla/plugins ${NAMESRC}32-${VERSION}.$EXT
-tar xf -C ${PKG}/usr/lib64/mozilla/plugins ${NAMESRC}-${VERSION}.$EXT
-chmod 755 $PKG/usr/lib{,64}/mozilla/plugins/*.so
+tar xf ${NAMESRC}32-${VERSION}.$EXT -C ${PKG}/usr/lib/mozilla/plugins 
+tar xf ${NAMESRC}-${VERSION}.$EXT -C ${PKG}/usr/lib64/mozilla/plugins 
+chmod 755 ${PKG}/usr/lib{,64}/mozilla/plugins/*.so
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
