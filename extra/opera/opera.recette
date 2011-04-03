@@ -65,7 +65,7 @@ find . \
 mv ${PKG}/usr/lib{,64}
 
 # On répercute 'lib64' dans le script de lancement d''opera'
-sed "s@usr/lib@&64@" ${PKG}/usr/bin/opera
+sed -i "s@usr/lib@&64@" ${PKG}/usr/bin/opera
 
 # On déplace les manuels où il faut :
 mv ${PKG}/usr/share/man ${PKG}/usr
