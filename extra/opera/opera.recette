@@ -87,7 +87,6 @@ fi
 
 # Installation de la documentation :
 # On déplace et on renomme la doc et on la lie :
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 mv ${PKG}/usr/share/doc ${PKG}/usr
 mv ${PKG}/usr/doc/opera ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 ln -sf ${NAMETGZ}-${VERSION} opera
