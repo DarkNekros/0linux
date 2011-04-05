@@ -75,7 +75,7 @@ LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX} -m32 -L`pwd`/lib${LIBDIRSUFFIX} -Wl,-rpath,/lib${LIBDIRSUFFIX} -Wl,-rpath,/usr/lib${LIBDIRSUFFIX}" \
 LD="ld -A i686" \
 ./configure \
 	--prefix=/usr \
