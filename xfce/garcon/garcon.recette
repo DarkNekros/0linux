@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-garcon}
-VERSION=${VERSION:-0.1.5}
+VERSION=${VERSION:-0.1.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-garcon}
 BUILD=${BUILD:-1}
@@ -173,6 +173,10 @@ config() {
 
 if [ -x usr/bin/update-desktop-database ]; then
 	chroot . /usr/bin/update-desktop-database &> /dev/null
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
 fi
 
 if [ -x usr/bin/gtk-update-icon-cache ]; then
