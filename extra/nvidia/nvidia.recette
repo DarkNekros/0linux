@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+set -e
+umask 022
+CWD=$(pwd)
+
+# On définit la catégorie du paquet :
+for categ in base extra opt xfce xorg; do
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
+done
+
+NAMESRC=${NAMESRC:-NVIDIA}
+VERSION=${VERSION:-260.19.44}
+EXT=${EXT:-run}
+NAMETGZ=${NAMETGZ:-nvidia}
+BUILD=${BUILD:-1}
+
+TMP=${TMP:-/tmp}
+OUT=${OUT:-/usr/local/paquets/$PKGCAT}
+ARCH=${ARCH:-x86_64}
+TARGET32=${TARGET32:-i686-0-linux-gnu}
+TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
+BUILD32=${BUILD32:--m32}
+BUILD64=${BUILD64:--m64}
+PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
+PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
+
+WGET=${WGET:-ftp://download.nvidia.com/XFree86/Linux-$ARCH/$VERSION/$NAMESRC-Linux-$ARCH-$VERSION.$EXT}
+DOC="LICENSE README.txt html"
+########## |-----handy-ruler------------------------------------------------------|
+SLACKDESC="Pilotes et bibliothèques graphiques fermés de Nvidia"
+########################################
+
+SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
+	echo "La description est trop longue (80 caractères max.) !"
+	exit 1
+fi
+
+# On télécharge les « sources » :
+if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
+	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
+	mv ${NAMESRC}-${VERSION}.$EXT{.part,}
+fi
+
+# On crée les répertoires d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}/etc/OpenCL/vendors
+mkdir -p ${PKG}/etc/modprobe.d
+mkdir -p ${PKG}/etc/X11/xorg.conf.d
+mkdir -p ${PKG}/lib/module/$(uname -r)/kernel/drivers/video
+mkdir -p ${PKG}/usr/bin
+mkdir -p ${PKG}/usr/include/GL
+mkdir -p ${PKG}/usr/lib64/vdpau
+mkdir -p ${PKG}/usr/lib64/xorg/modules/{drivers,extensions}
+mkdir -p ${PKG}/usr/man/man1
+
+# On déballe et on se place dans les sources :
+cd $TMP
+rm -rf ${NAMESRC}-Linux-${ARCH}-${VERSION}
+echo "Extraction en cours..."
+sh ${NAMESRC}-${VERSION}.$EXT --extract-only
+cd ${NAMESRC}-Linux-${ARCH}-${VERSION}
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=64
+
+# On compile le module noyau :
+cd kernel
+SYSSRC=/lib/modules/$(uname -r)/build make module
+
+# On place le module où il faut :
+cp -a nvidia.ko ${PKG}/lib/module/$(uname -r)/kernel/drivers/video/
+
+# On copie les bibliothèques :
+cd $TMP/${NAMESRC}-Linux-${ARCH}-${VERSION}
+
+# On copie l'entête OpenGL :
+cp -a gl*.h ${PKG}/usr/include/GL
+
+# On copie l'extension GLX :
+cp -a libglx.so.* ${PKG}/usr/lib64/xorg/modules/extensions/
+
+# On copie le pilote pour X :
+cp -a nvidia_drv.so ${PKG}/usr/lib64/xorg/modules/drivers/
+chmod 755 ${PKG}/usr/lib64/xorg/modules/drivers/nvidia_drv.so
+
+# On copie les bibliothèques sans vergogne pour écraser celles du système... :
+cp -a libGL.{a,la,so.*} libnvidia-glcore.so.* libXvMCNVIDIA.so.* \
+	tls/libnvidia-tls.so.* libOpenCL.so.* libnvidia-compiler.so.* \
+	libcuda.so.* libnvidia-cfg.so.* \
+	${PKG}/usr/lib64
+
+# VDPAU :
+cp -a libvdpau_nvidia.so.* ${PKG}/usr/lib64/vdpau/
+
+# OpenCL :
+cp -a nvidia.icd ${PKG}/etc/OpenCL/vendors/
+
+# On copie les binaires et exécutables :
+cp -a nvidia-bug-report.sh ${PKG}/usr/bin/
+cp -a nvidia-smi ${PKG}/usr/bin/
+
+# On copie le manuel :
+cp -a nvidia-smi.1.gz ${PKG}/usr/man/man1/
+
+# On crée un fichier blacklist pour empêcher 'nouveau' de se charger :
+cat > ${PKG}/etc/modprobe.d/blacklist-nouveau.conf << "EOF"
+blacklist nouveau
+
+EOF
+
+# On crée une configuration pour charger le pilote Nvidia dans X et on
+# prend garde à ne rien écraser :
+cat > ${PKG}/etc/X11/xorg.conf.d/nvidia.conf.new << "EOF"
+Section "Device"
+	Identifier "nvidia Device"
+	Driver "nvidia"
+EndSection
+
+Section "ServerFlags"
+	Option  "IgnoreABI" "True"
+EndSection
+
+EOF
+
+# On crée tous les liens pour les bibliothèques et on espère chaleureusement
+# que Nvidia fera un jour un effort pour sa méthode d'installation :
+for lib in $(find ${PKG} -type f -name "*.so.*"); do
+	ln -sf $(basename ${lib}) $(echo ${lib} | sed -e 's@\.so.*$@\.so@')
+done
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On compresse les manuels :
+if [ -d ${PKG}/usr/man ]; then
+	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+	for manpage in $(find ${PKG}/usr/man -type l) ; do
+		ln -s $(readlink $manpage).gz ${manpage}.gz
+		rm -f ${manpage}
+	done
+fi
+
+# On compresse les pages info :
+if [ -d ${PKG}/usr/info ]; then
+	rm -f ${PKG}/usr/info/dir
+	gzip -9 ${PKG}/usr/info/*.info*
+fi
+
+# Installation de la documentation :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+# On installe le slack-desc :
+mkdir -p ${PKG}/install
+echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+# On installe le doinst.sh :
+cat > ${PKG}/install/doinst.sh << EOF
+#!/usr/bin/env bash
+if [ -x sbin/ldconfig ]; then
+	sbin/ldconfig -r .
+fi
+
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
+
+config etc/X11/xorg.conf.d/nvidia.conf.new
+chroot . depmod -a
+
+# On prévient l'utilisateur sur la nature intrusive du paquet :
+echo "***"
+echo "IMPORTANT : veuillez lire le fichier"
+echo "'/usr/doc/${NAMETGZ}-${VERSION}/0-LISEZMOI'"
+echo "si vous prévoyez de désinstaller le paquet 'nvidia' !"
+echo "***"
+
+EOF
+
+# On "strippe" tout ce qu'on trouve :
+find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
+# On vérifie enfin les droits de la doc, souvent problématiques :
+find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# Empaquetage !
+cd ${PKG}
+mkdir -p $OUT
+PACKAGING="
+	chown root:root . -R
+	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}_$(uname -r)-${ARCH}-$BUILD
+	rm -rf ${PKG}
+	if [ ! \"X${NAME}\" = \"X\" ]; then
+		if [ -d $TMP/${NAME} ]; then
+			rm -rf $TMP/${NAME}
+		fi
+	fi"
+
+if [ "$(which fakeroot 2> /dev/null)" ]; then
+	echo "${PACKAGING}" | fakeroot
+else
+	su -c "${PACKAGING}"
+fi
+
+exit 0
