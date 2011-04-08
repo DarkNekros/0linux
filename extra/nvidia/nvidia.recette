@@ -29,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://download.nvidia.com/XFree86/Linux-$ARCH/$VERSION/$NAMESRC-Linux-$ARCH-$VERSION.$EXT}
-DOC="LICENSE README.txt html"
+DOC="LICENSE README.txt html $CWD/0-LISEZMOI"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Pilotes et bibliothèques graphiques fermés de Nvidia"
 ########################################
@@ -62,7 +62,7 @@ mkdir -p ${PKG}/usr/man/man1
 cd $TMP
 rm -rf ${NAMESRC}-Linux-${ARCH}-${VERSION}
 echo "Extraction en cours..."
-sh ${NAMESRC}-${VERSION}.$EXT --extract-only
+sh $CWD/${NAMESRC}-${VERSION}.$EXT --extract-only
 cd ${NAMESRC}-Linux-${ARCH}-${VERSION}
 
 # On vérifie les permissions des sources :
