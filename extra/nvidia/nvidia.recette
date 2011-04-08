@@ -94,7 +94,7 @@ cp -a nvidia_drv.so ${PKG}/usr/lib64/xorg/modules/drivers/
 chmod 755 ${PKG}/usr/lib64/xorg/modules/drivers/nvidia_drv.so
 
 # On copie les bibliothèques sans vergogne pour écraser celles du système... :
-cp -a libGL.{a,la,so.*} libnvidia-glcore.so.* libXvMCNVIDIA.so.* \
+cp -a libGL.{la,so.*} libnvidia-glcore.so.* libXvMCNVIDIA.so.* \
 	tls/libnvidia-tls.so.* libOpenCL.so.* libnvidia-compiler.so.* \
 	libcuda.so.* libnvidia-cfg.so.* \
 	${PKG}/usr/lib64
