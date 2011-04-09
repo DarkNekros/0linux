@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-NVIDIA}
 VERSION=${VERSION:-260.19.44}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-nvidia}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -51,7 +51,7 @@ PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/etc/OpenCL/vendors
 mkdir -p ${PKG}/etc/modprobe.d
 mkdir -p ${PKG}/etc/X11/xorg.conf.d
-mkdir -p ${PKG}/lib/module/$(uname -r)/kernel/drivers/video
+mkdir -p ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video
 mkdir -p ${PKG}/usr/bin
 mkdir -p ${PKG}/usr/include/GL
 mkdir -p ${PKG}/usr/lib64/vdpau
@@ -78,7 +78,7 @@ cd kernel
 SYSSRC=/lib/modules/$(uname -r)/build make module
 
 # On place le module où il faut :
-cp -a nvidia.ko ${PKG}/lib/module/$(uname -r)/kernel/drivers/video/
+cp -a nvidia.ko ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video/
 
 # On copie les bibliothèques :
 cd $TMP/${NAMESRC}-Linux-${ARCH}-${VERSION}
