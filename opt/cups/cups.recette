@@ -87,7 +87,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET32}
 
 make -j3 || make
-fakeroot make install DESTDIR=${PKG}
+fakeroot make install BUILDROOT=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -128,7 +128,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64}
 
 make -j3 || make
-fakeroot make install DESTDIR=${PKG}
+fakeroot make install BUILDROOT=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
