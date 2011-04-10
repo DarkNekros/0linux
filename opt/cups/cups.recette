@@ -207,9 +207,11 @@ if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
 
-for fichierconfig in $(find ${PKG}/etc/cups -type f -name "*.new"); do
-	config $(echo ${fichierconfig} | sed "s@${PKG}@@")
-done
+config etc/cups/cupsd.conf.new
+config etc/cups/cupsd.conf.N.new
+config etc/cups/cupsd.conf.default.new
+config etc/cups/snmp.conf.new
+config etc/cups/snmp.conf.N.new
 
 EOF
 
