@@ -207,8 +207,8 @@ if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
 
-for fichierconfig in ${PKG}/etc/cups/*.new; do
-	config ${fichierconfig}
+for fichierconfig in $(find ${PKG}/etc/cups -type f -name "*.new"); do
+	config $(echo ${fichierconfig} | sed "s@${PKG}@@")
 done
 
 EOF
