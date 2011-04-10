@@ -84,6 +84,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-pam \
+	--enable-32bit \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -125,6 +127,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-pam \
+	--enable-64bit \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -142,6 +146,9 @@ ln -sf multiarch_wrapper ${PKG}/usr/bin/cups-config
 # On supprime tous les scripts de démarrage et on place le notre (traduit, qui plus est) :
 rm -rf ${PKG}/etc/rc.d/*
 cp -a $CWD/rc.cups ${PKG}/etc/rc.d/
+
+# On déplace 'usr/lib/cups' dans 'usr/lib64' :
+mv ${PKG}/usr/lib{,64}/cups
 
 # On prend garde à n'écraser aucun fichier de configuration :
 for fichierconfig in ${PKG}/etc/cups/*; do
