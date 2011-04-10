@@ -178,7 +178,7 @@ mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 
 # On installe le doinst.sh :
-cat > ${PKG}/install/doinst.sh << EOF
+cat > ${PKG}/install/doinst.sh << "EOF"
 #!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
