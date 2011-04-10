@@ -139,6 +139,15 @@ mv ${PKG}/usr/bin/cups-config{,-64}
 # On lie un faux binaire au programme enveloppe :
 ln -sf multiarch_wrapper ${PKG}/usr/bin/cups-config
 
+# On supprime tous les scripts de démarrage et on place le notre (traduit, qui plus est) :
+rm -rf ${PKG}/etc/rc.d/*
+cp -a $CWD/rc.cups ${PKG}/etc/rc.d/
+
+# On prend garde à n'écraser aucun fichier de configuration :
+for fichierconfig in ${PKG}/etc/cups/*; do
+	mv ${fichierconfig}{,.new}
+done
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -165,7 +174,7 @@ mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
 
 # On installe le doinst.sh :
-cat > ${PKG}/install/doinst.sh << "EOF"
+cat > ${PKG}/install/doinst.sh << EOF
 #!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
@@ -193,6 +202,10 @@ fi
 if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
+
+for fichierconfig in ${PKG}/etc/cups/*.new; do
+	config ${fichierconfig}
+done
 
 EOF
 
