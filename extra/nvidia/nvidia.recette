@@ -191,6 +191,8 @@ sed -i "s|__NVIDIA_SETTINGS_DESKTOP_CATEGORIES__|Application;Settings;|" ${PKG}/
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+cd $TMP/${NAMESRC}-Linux-${ARCH}-${VERSION}
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
