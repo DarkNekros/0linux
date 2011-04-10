@@ -169,9 +169,8 @@ if [ -d ${PKG}/usr/info ]; then
 fi
 
 # Installation de la documentation :
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 mv ${PKG}/usr/share/doc ${PKG}/usr/
-ln -sf cups ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+mv ${PKG}/usr/doc/{cups,${NAMETGZ}-${VERSION}}
 rm -rf ${PKG}/usr/share/doc
 
 # On installe le slack-desc :
