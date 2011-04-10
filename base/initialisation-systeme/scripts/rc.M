@@ -95,6 +95,11 @@ if [ -x /etc/rc.d/rc.gpm ]; then
 	. /etc/rc.d/rc.gpm start
 fi
 
+# Lancement de CUPS :
+if [ -x /etc/rc.d/rc.cups ]; then
+	. /etc/rc.d/rc.cups start
+fi
+
 # Lancement du script « local » personnel :
 if [ -x /etc/rc.d/rc.local ]; then
 	. /etc/rc.d/rc.local
