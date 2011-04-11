@@ -66,16 +66,13 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On corrige de nombreux problèmes :
+cat $CWD/a2ps.buildfix.patch | patch -p1
+
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
-# De nombreuses modifications sont nécessaires :
-cp /usr/share/libtool/config/config.sub auxdir
-cp /usr/share/libtool/config/config.guess auxdir
-sed -i "s|emacs||" contrib/Makefile.in
-sed -i 's/+0 -1/-k 1,2/' afm/make_fonts_map.sh
-sed -i "s|/usr/local/share|/usr/share|" configure
-sed -i "s|char \*malloc ();|/* & */|" lib/path-concat.c
+autoreconf -vif
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
@@ -114,16 +111,13 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On corrige de nombreux problèmes :
+cat $CWD/a2ps.buildfix.patch | patch -p1
+
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-# De nombreuses modifications sont nécessaires :
-cp /usr/share/libtool/config/config.sub auxdir
-cp /usr/share/libtool/config/config.guess auxdir
-sed -i "s|emacs||" contrib/Makefile.in
-sed -i 's/+0 -1/-k 1,2/' afm/make_fonts_map.sh
-sed -i "s|/usr/local/share|/usr/share|" configure
-sed -i "s|char \*malloc ();|/* & */|" lib/path-concat.c
+autoreconf -vif
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
