@@ -70,8 +70,8 @@ find . \
 export USE_ARCH=32
 
 # De nombreuses modifications sont nécessaires :
-cp /usr/share/libtool/config.sub auxdir
-cp /usr/share/libtool/config.guess auxdir
+cp /usr/share/libtool/config/config.sub auxdir
+cp /usr/share/libtool/config/config.guess auxdir
 sed -i "s|emacs||" contrib/Makefile.in
 sed -i 's/+0 -1/-k 1,2/' afm/make_fonts_map.sh
 sed -i "s|/usr/local/share|/usr/share|" configure
@@ -118,8 +118,8 @@ find . \
 export USE_ARCH=64
 
 # De nombreuses modifications sont nécessaires :
-cp /usr/share/libtool/config.sub auxdir
-cp /usr/share/libtool/config.guess auxdir
+cp /usr/share/libtool/config/config.sub auxdir
+cp /usr/share/libtool/config/config.guess auxdir
 sed -i "s|emacs||" contrib/Makefile.in
 sed -i 's/+0 -1/-k 1,2/' afm/make_fonts_map.sh
 sed -i "s|/usr/local/share|/usr/share|" configure
