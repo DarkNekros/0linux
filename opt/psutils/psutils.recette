@@ -69,7 +69,7 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-sed -i -e 's@^BINDIR = /usr/local/bin@BINDIR = /usr/bin@' Makefile.unix
+sed -i -e 's@/usr/local@/usr@g' Makefile.unix
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
