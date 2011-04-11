@@ -69,7 +69,12 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-sed -i -e 's@/usr/local@/usr@g' Makefile.unix
+# On corrige ce Makefile... :
+sed -i -e 's@/usr/local@/usr@g' \
+	-e 's@mkdir@mkdir -p@g' \
+	-e 's@^BINDIR = .*$@BINDIR = ${DESTDIR}/usr@' \
+	-e 's@^INCLUDEDIR = .*$@INCLUDEDIR = ${DESTDIR}/usr/share/psutils@' \
+	-e 's@^MANDIR = .*$@MANDIR = ${DESTDIR}/usr/man/man$(MANEXT)@' Makefile.unix
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
