@@ -86,6 +86,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-gtk-doc-html=no \
 	--disable-glibtest \
+	--disable-docs \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -126,6 +127,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-gtk-doc-html=no \
 	--disable-glibtest \
+	--disable-docs \
 	--build=${TARGET64}
 
 make -j3 || make
