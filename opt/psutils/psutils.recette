@@ -67,36 +67,9 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On positionne USE_ARCH :
-export USE_ARCH=32
-
-# Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
-LIBDIRSUFFIX=""
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-make -j3 -f Makefile.unix || make -f Makefile.unix 
-
-fakeroot make -f Makefile.unix install DESTDIR=${PKG}
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
-# On re-déballe et on se re-place dans les sources :
-cd $TMP
-rm -rf ${NAME}
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
-
-# On re-vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# On positionne USE_ARCH :
 export USE_ARCH=64
+
+sed -i -e 's@^BINDIR = /usr/local/bin@BINDIR = /usr/bin@' Makefile.unix
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
