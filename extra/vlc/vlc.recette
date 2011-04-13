@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-vlc}
-VERSION=${VERSION:-1.1.8}
+VERSION=${VERSION:-1.1.9}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-vlc}
 BUILD=${BUILD:-1}
