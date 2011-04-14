@@ -86,6 +86,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-gtkspell \
 	--disable-meanwhile \
+	--disable-nm \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -126,6 +127,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-gtkspell \
 	--disable-meanwhile \
+	--disable-nm \
 	--build=${TARGET64}
 
 make -j3 || make
