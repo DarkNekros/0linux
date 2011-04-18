@@ -82,7 +82,10 @@ CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-fakeroot make install libdir=/usr/lib${LIBDIRSUFFIX} mandir=/usr/share/man DESTDIR=${PKG}
+fakeroot make install \
+	libdir=/usr/lib${LIBDIRSUFFIX} \
+	mandir=/usr/share/man \
+	DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -116,7 +119,10 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-fakeroot make install libdir=/usr/lib${LIBDIRSUFFIX}  mandir=/usr/share/man DESTDIR=${PKG}
+fakeroot make install CPUFRQ_BENCH=true \
+	libdir=/usr/lib${LIBDIRSUFFIX} \
+	mandir=/usr/share/man \
+	DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
