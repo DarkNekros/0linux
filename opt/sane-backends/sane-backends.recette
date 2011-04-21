@@ -193,6 +193,10 @@ config() {
 	fi
 }
 
+for fichierconf in etc/sane.d/*.conf.new; do
+	config ${fichierconf}
+done
+
 if [ -x usr/bin/update-desktop-database ]; then
 	chroot . /usr/bin/update-desktop-database &> /dev/null
 fi
