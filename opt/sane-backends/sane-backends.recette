@@ -145,7 +145,7 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On place la règle pour 'udev' :
-cp -a tools/udev/libsane.rules > ${PKG}/lib/udev/rules.d/80-libsane.rules
+cp -a tools/udev/libsane.rules ${PKG}/lib/udev/rules.d/80-libsane.rules
 
 # On prend garde à ne rien écraser :
 for conf in ${PKG}/etc/sane.d/*.conf ; do
