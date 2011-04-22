@@ -53,8 +53,8 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/lib/udev/rules.d
 
-# On déballe et on se place dans les sources :
-NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+# On déballe et on se place dans les sources (l'archive montre le chemin './', d'où le 'sed'):
+NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }' | sed 's/\.\///')
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
