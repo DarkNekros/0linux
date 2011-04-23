@@ -92,7 +92,7 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On crée un lien pour permettre à 'gimp' d'accéder à 'xsane' :
-ln -sf ../../../../usr/bin/xsane ${PKG}/usr/lib${LIBDIRSUFFIX}/gimp/2.0/plug-ins/xsane
+ln -sf ../../../../../usr/bin/xsane ${PKG}/usr/lib${LIBDIRSUFFIX}/gimp/2.0/plug-ins/xsane
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -132,7 +132,7 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On crée un lien pour permettre à 'gimp' d'accéder à 'xsane' :
-ln -sf ../../../../usr/bin/xsane ${PKG}/usr/lib${LIBDIRSUFFIX}/gimp/2.0/plug-ins/xsane
+ln -sf ../../../../../usr/bin/xsane ${PKG}/usr/lib${LIBDIRSUFFIX}/gimp/2.0/plug-ins/xsane
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
