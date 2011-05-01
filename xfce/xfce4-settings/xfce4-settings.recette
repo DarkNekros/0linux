@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-xfce4-settings}
 VERSION=${VERSION:-4.8.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-settings}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -96,8 +96,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On active « Tango » par défaut :
-sed -i "s/Rodent/Tango/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+# On active le thème de 0 par défaut :
+sed -i "s/Xfce/Shiki-Wise/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+sed -i "s/Tango/gnome-wise/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
