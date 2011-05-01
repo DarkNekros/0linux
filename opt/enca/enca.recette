@@ -88,7 +88,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET32}
 
 # On force la création de liens symboliques :
-sed -i 's/ln -s/ln -sf/g' Makefile
+sed -i 's/ln -s/ln -sf/g' $(find . -type f -name "Makefile")
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
@@ -130,7 +130,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64}
 
 # On force la création de liens symboliques :
-sed -i 's/ln -s/ln -sf/g' Makefile
+sed -i 's/ln -s/ln -sf/g' $(find . -type f -name "Makefile")
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
