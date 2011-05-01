@@ -98,7 +98,7 @@ unset USE_ARCH
 
 # On active le thème de 0 par défaut :
 sed -i "s/Xfce/Shiki-Wise/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
-sed -i "s/Tango/gnome-wise/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+sed -i "s/Rodent/gnome-wise/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
