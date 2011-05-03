@@ -12,11 +12,11 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-}
-VERSION=${VERSION:-}
-EXT=${EXT:-tar.}
-NAMETGZ=${NAMETGZ:-}
-BUILD=${BUILD:-}
+NAMESRC=${NAMESRC:-boost-jam}
+VERSION=${VERSION:-3.1.18}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-boost-jam}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -28,10 +28,10 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/boost/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS BUGS ?hange?og* *COPYING* HACKING *INSTALL* MAINTAINERS NEWS* *README* TODO"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC=""
+SLACKDESC="Ensemble de bibliothèques C++ optimisées"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -51,7 +51,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}
+mkdir -p ${PKG}/usr/bin
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -66,28 +66,23 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+sed -i -e "s/gcc/& ${BUILD32}/" -e "s/g++/& ${BUILD32}/" Jambase
+
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
 # Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
+SLKCFLAGS="${BUILD32} -O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
+
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${TARGET32}
+./build.sh cc 
 
-make -j3 || make
-fakeroot make install DESTDIR=${PKG}
+# On renomme le binaire 32 bits pour l'envelopper :
+cp -a $(find . -type f -executable -name "bjam") ${PKG}/usr/bin/bjam-32
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -104,28 +99,26 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+sed -i -e "s/gcc/& ${BUILD64}/" -e "s/g++/& ${BUILD64}/" Jambase
+
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-# Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe"
-LIBDIRSUFFIX="64"
+# Compilation pour 32 bits :
+SLKCFLAGS="${BUILD64} -O2 -fPIC -pipe"
+LIBDIRSUFFIX=""
+
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${TARGET64}
+./build.sh cc 
 
-make -j3 || make
-fakeroot make install DESTDIR=${PKG}
+# On renomme le binaire 64 bits pour l'envelopper :
+cp -a $(find . -type f -executable -name "bjam") ${PKG}/usr/bin/bjam-64
+
+# On lie un faux binaire au programme enveloppe :
+ln -sf multiarch_wrapper ${PKG}/usr/bin/bjam
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
