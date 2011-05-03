@@ -67,6 +67,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 sed -i -e "s/gcc/& ${BUILD32}/" -e "s/g++/& ${BUILD32}/" Jambase
+rm -f jambase.c
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
@@ -100,6 +101,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 sed -i -e "s/gcc/& ${BUILD64}/" -e "s/g++/& ${BUILD64}/" Jambase
+rm -f jambase.c
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
