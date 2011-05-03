@@ -79,7 +79,7 @@ CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./build.sh cc 
+fakeroot ./build.sh cc 
 
 # On renomme le binaire 32 bits pour l'envelopper :
 cp -a $(find . -type f -executable -name "bjam") ${PKG}/usr/bin/bjam-32
@@ -112,7 +112,7 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./build.sh cc 
+fakeroot ./build.sh cc
 
 # On renomme le binaire 64 bits pour l'envelopper :
 cp -a $(find . -type f -executable -name "bjam") ${PKG}/usr/bin/bjam-64
