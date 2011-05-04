@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS BUGS ?hange?og* *COPYING* HACKING *INSTALL* MAINTAINERS NEWS* *README* THANKS TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques de prise en charge des flux MMST et MMSH"
