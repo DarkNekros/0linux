@@ -75,7 +75,7 @@ LIBDIRSUFFIX="64"
 
 ./bootstrap.sh \
 	--prefix=${PKG}/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libdir=${PKG}/usr/lib${LIBDIRSUFFIX}
 
 fakeroot ./bjam install
 
