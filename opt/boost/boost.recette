@@ -73,45 +73,11 @@ export USE_ARCH=64
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 
-CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-bjam \
-	release \
-	"-sNO_COMPRESSION=0" \
-	"-sZLIB_INCLUDE=/usr/include" \
-	"-sZLIB_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	"-sBZIP2_INCLUDE=/usr/include" \
-	"-sBZIP2_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	"-sEXPAT_INCLUDE=/usr/include" \
-	"-sEXPAT_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	--toolset=gcc \
-	--layout=system \
-	--prefix=/usr \
+./bootstrap.sh \
+	--prefix=${PKG}/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--build-type=minimal \
-	stage
 
-CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-fakerootbjam \
-	release \
-	"-sNO_COMPRESSION=0" \
-	"-sZLIB_INCLUDE=/usr/include" \
-	"-sZLIB_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	"-sBZIP2_INCLUDE=/usr/include" \
-	"-sBZIP2_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	"-sEXPAT_INCLUDE=/usr/include" \
-	"-sEXPAT_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	--toolset=gcc \
-	--layout=system \
-	--prefix=/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--build-type=minimal \
-	install
+fakeroot ./bjam install
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
