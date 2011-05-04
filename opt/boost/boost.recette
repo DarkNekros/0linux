@@ -67,68 +67,6 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On positionne USE_ARCH :
-export USE_ARCH=32
-
-# Compilation pour 32 bits :
-SLKCFLAGS=" -fno-strict-aliasing -O2 -march=i686 -pipe"
-LIBDIRSUFFIX=""
-
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-bjam \
-	release \
-	"-sNO_COMPRESSION=0" \
-	"-sZLIB_INCLUDE=/usr/include" \
-	"-sZLIB_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	"-sBZIP2_INCLUDE=/usr/include" \
-	"-sBZIP2_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	"-sEXPAT_INCLUDE=/usr/include" \
-	"-sEXPAT_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	--toolset=gcc \
-	--layout=system \
-	--prefix=/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--build-type=minimal \
-	stage
-
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-fakeroot bjam \
-	release \
-	"-sNO_COMPRESSION=0" \
-	"-sZLIB_INCLUDE=/usr/include" \
-	"-sZLIB_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	"-sBZIP2_INCLUDE=/usr/include" \
-	"-sBZIP2_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	"-sEXPAT_INCLUDE=/usr/include" \
-	"-sEXPAT_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
-	--toolset=gcc \
-	--layout=system \
-	--prefix=/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--build-type=minimal \
-	stage
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
-# On re-déballe et on se re-place dans les sources :
-cd $TMP
-rm -rf ${NAME}
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
-
-# On re-vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# On positionne USE_ARCH :
 export USE_ARCH=64
 
 # Compilation pour 64 bits :
