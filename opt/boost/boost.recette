@@ -70,17 +70,21 @@ find . \
 export USE_ARCH=32
 
 # Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
+SLKCFLAGS=" -fno-strict-aliasing -O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./bootstrap.sh \
+fakeroot bjam \
+	release debug-symbols=off threading=multi runtime-link=shared link=shared,static \
+	cflags=${SLKCFLAGS} \
+	toolset=gcc \
 	--prefix=${PKG}/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX}
-
-fakeroot ./bjam install
+	--libdir=usr/lib${LIBDIRSUFFIX} \
+	-sTOOLS=gcc \
+	--layout=system \
+	-j3 install
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -107,11 +111,15 @@ CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./bootstrap.sh \
+fakeroot bjam \
+	release debug-symbols=off threading=multi runtime-link=shared link=shared,static \
+	cflags=${SLKCFLAGS} \
+	toolset=gcc \
 	--prefix=${PKG}/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX}
-
-fakeroot ./bjam install
+	--libdir=usr/lib${LIBDIRSUFFIX} \
+	-sTOOLS=gcc \
+	--layout=system \
+	-j3 install
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
