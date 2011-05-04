@@ -51,7 +51,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}
+mkdir -p ${PKG}/usr/{include,lib{,64}}
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -72,19 +72,46 @@ export USE_ARCH=32
 # Compilation pour 32 bits :
 SLKCFLAGS=" -fno-strict-aliasing -O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
+
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+bjam \
+	release \
+	"-sNO_COMPRESSION=0" \
+	"-sZLIB_INCLUDE=/usr/include" \
+	"-sZLIB_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	"-sBZIP2_INCLUDE=/usr/include" \
+	"-sBZIP2_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	"-sEXPAT_INCLUDE=/usr/include" \
+	"-sEXPAT_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	--toolset=gcc \
+	--layout=system \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--build-type=minimal \
+	stage
+
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 fakeroot bjam \
-	release debug-symbols=off threading=multi runtime-link=shared link=shared,static \
-	cflags="${SLKCFLAGS}" \
-	toolset=gcc \
-	--prefix=${PKG}/usr \
-	--libdir=usr/lib${LIBDIRSUFFIX} \
-	-sTOOLS=gcc \
+	release \
+	"-sNO_COMPRESSION=0" \
+	"-sZLIB_INCLUDE=/usr/include" \
+	"-sZLIB_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	"-sBZIP2_INCLUDE=/usr/include" \
+	"-sBZIP2_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	"-sEXPAT_INCLUDE=/usr/include" \
+	"-sEXPAT_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	--toolset=gcc \
 	--layout=system \
-	-j3 install
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--build-type=minimal \
+	stage
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -107,19 +134,46 @@ export USE_ARCH=64
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
+
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-fakeroot bjam \
-	release debug-symbols=off threading=multi runtime-link=shared link=shared,static \
-	cflags="${SLKCFLAGS}" \
-	toolset=gcc \
-	--prefix=${PKG}/usr \
-	--libdir=usr/lib${LIBDIRSUFFIX} \
-	-sTOOLS=gcc \
+bjam \
+	release \
+	"-sNO_COMPRESSION=0" \
+	"-sZLIB_INCLUDE=/usr/include" \
+	"-sZLIB_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	"-sBZIP2_INCLUDE=/usr/include" \
+	"-sBZIP2_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	"-sEXPAT_INCLUDE=/usr/include" \
+	"-sEXPAT_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	--toolset=gcc \
 	--layout=system \
-	-j3 install
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--build-type=minimal \
+	stage
+
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+fakerootbjam \
+	release \
+	"-sNO_COMPRESSION=0" \
+	"-sZLIB_INCLUDE=/usr/include" \
+	"-sZLIB_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	"-sBZIP2_INCLUDE=/usr/include" \
+	"-sBZIP2_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	"-sEXPAT_INCLUDE=/usr/include" \
+	"-sEXPAT_LIBPATH=/usr/lib${LIBDIRSUFFIX}" \
+	--toolset=gcc \
+	--layout=system \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--build-type=minimal \
+	install
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
