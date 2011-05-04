@@ -78,7 +78,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 fakeroot bjam \
 	release debug-symbols=off threading=multi runtime-link=shared link=shared,static \
-	cflags=${SLKCFLAGS} \
+	cflags="${SLKCFLAGS}" \
 	toolset=gcc \
 	--prefix=${PKG}/usr \
 	--libdir=usr/lib${LIBDIRSUFFIX} \
@@ -113,7 +113,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 fakeroot bjam \
 	release debug-symbols=off threading=multi runtime-link=shared link=shared,static \
-	cflags=${SLKCFLAGS} \
+	cflags="${SLKCFLAGS}" \
 	toolset=gcc \
 	--prefix=${PKG}/usr \
 	--libdir=usr/lib${LIBDIRSUFFIX} \
