@@ -89,7 +89,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-asap-codec \
 	--disable-debug \
+	--disable-webserver \
 	--enable-ccache \
 	--enable-dvdcss \
 	--enable-faac \
