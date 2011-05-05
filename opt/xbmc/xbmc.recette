@@ -89,6 +89,16 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-debug \
+	--enable-ccache \
+	--enable-dvdcss \
+	--enable-faac \
+	--enable-gl \
+	--enable-goom \
+	--enable-joystick \
+	--enable-mid \
+	--enable-vdpau \
+	--enable-xrandr \
 	--build=${TARGET64}
 
 make -j3 || make
