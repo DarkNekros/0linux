@@ -116,8 +116,22 @@ unset USE_ARCH
 mv ${PKG}/usr/bin/mysql_config{,-32}
 
 # On lie les bibliothèques à l'emplacement standard :
-ln -sf mysql/libmysqlclient.so* ${PKG}/usr/lib${LIBDIRSUFFIX}
-ln -sf mysql/libmysqlclient_r.so* ${PKG}/usr/lib${LIBDIRSUFFIX}
+if [ -r $PKG/usr/lib${LIBDIRSUFFIX}/mysql/libmysqlclient.so.16 ]; then
+	(
+		cd $PKG/usr/lib${LIBDIRSUFFIX}
+		rm -f libmysqlclient.so libmysqlclient.so.16
+		ln -sf mysql/libmysqlclient.so .
+		ln -sf mysql/libmysqlclient.so.16 .
+	)
+fi
+if [ -r $PKG/usr/lib${LIBDIRSUFFIX}/mysql/libmysqlclient_r.so.16 ]; then
+	(
+		cd $PKG/usr/lib${LIBDIRSUFFIX}
+		rm -f libmysqlclient_r.so libmysqlclient_r.so.16
+		ln -sf mysql/libmysqlclient_r.so .
+		ln -sf mysql/libmysqlclient_r.so.16 .
+	)
+fi
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -183,8 +197,22 @@ mv ${PKG}/usr/bin/mysql_config{,-64}
 ln -sf multiarch_wrapper ${PKG}/usr/bin/mysql_config
 
 # On lie les bibliothèques à l'emplacement standard :
-ln -sf mysql/libmysqlclient.so* ${PKG}/usr/lib${LIBDIRSUFFIX}
-ln -sf mysql/libmysqlclient_r.so* ${PKG}/usr/lib${LIBDIRSUFFIX}
+if [ -r $PKG/usr/lib${LIBDIRSUFFIX}/mysql/libmysqlclient.so.16 ]; then
+	(
+		cd $PKG/usr/lib${LIBDIRSUFFIX}
+		rm -f libmysqlclient.so libmysqlclient.so.16
+		ln -sf mysql/libmysqlclient.so .
+		ln -sf mysql/libmysqlclient.so.16 .
+	)
+fi
+if [ -r $PKG/usr/lib${LIBDIRSUFFIX}/mysql/libmysqlclient_r.so.16 ]; then
+	(
+		cd $PKG/usr/lib${LIBDIRSUFFIX}
+		rm -f libmysqlclient_r.so libmysqlclient_r.so.16
+		ln -sf mysql/libmysqlclient_r.so .
+		ln -sf mysql/libmysqlclient_r.so.16 .
+	)
+fi
 
 # On installe tous les entêtes :
 for i in sql include regex; do
