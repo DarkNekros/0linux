@@ -93,7 +93,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-readline \
 	--with-fast-mutexes \
 	--with-geometry \
-	--with-innodb \
 	--with-ssl=/usr \
 	--with-client-ldflags=-lstdc++ \
 	--with-embedded-server \
@@ -105,7 +104,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-unix-socket-path=/var/run/mysql/mysql.sock \
 	--without-debug \
 	--without-docs \
-	--without-pstack \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -159,7 +157,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-readline \
 	--with-fast-mutexes \
 	--with-geometry \
-	--with-innodb \
 	--with-ssl=/usr \
 	--with-client-ldflags=-lstdc++ \
 	--with-embedded-server \
@@ -171,7 +168,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-unix-socket-path=/var/run/mysql/mysql.sock \
 	--without-debug \
 	--without-docs \
-	--without-pstack \
 	--build=${TARGET64}
 
 make -j3 || make
