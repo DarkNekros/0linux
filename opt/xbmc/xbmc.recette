@@ -92,7 +92,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--disable-asap-codec \
 	--disable-debug \
 	--disable-webserver \
-	--enable-ccache \
 	--enable-dvdcss \
 	--enable-faac \
 	--enable-gl \
