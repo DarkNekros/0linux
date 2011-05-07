@@ -94,7 +94,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-fast-mutexes \
 	--with-geometry \
 	--with-innodb \
-	--with-mysqld-ldflags=-all-static \
 	--with-ssl=/usr \
 	--with-client-ldflags=-lstdc++ \
 	--with-embedded-server \
@@ -161,7 +160,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-fast-mutexes \
 	--with-geometry \
 	--with-innodb \
-	--with-mysqld-ldflags=-all-static \
 	--with-ssl=/usr \
 	--with-client-ldflags=-lstdc++ \
 	--with-embedded-server \
