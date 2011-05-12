@@ -78,7 +78,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
-	--sysconfdir=/etc \
+	--sysconfdir=/etc/xfce \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX}/terminal \
