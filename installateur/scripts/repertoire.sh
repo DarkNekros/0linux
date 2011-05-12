@@ -2,10 +2,11 @@
 
 # On nettoie :
 rm -f $TMP/choix_media
-unset DETECTEDREPO DETECTSELECT DIRSELECT
+unset DETECTEDREPO NBDETECTEDREPO DETECTSELECT DIRSELECT
 
 # On cherche un répertoire 'paquets' :
-DETECTEDREPO="$(find / -type d -name "paquets" -print)"
+DETECTEDREPO=$(find / -type d -name "paquets" \! -name "/usr/local/paquets")
+NBDETECTEDREPO=$(find / -type d -name "paquets" \! -name "/usr/local/paquets" | wc -l)
 
 demander_choix_dir() {
 	while [ 0 ]; do
@@ -13,12 +14,11 @@ demander_choix_dir() {
 		echo -e "\033[1;32mSaisie du répertoire contenant les paquets.\033[0;0m"
 		echo ""
 		echo "Veuillez entrer ci-dessous le chemin du répertoire (préalablement monté)"
-		echo "contenant le dépôt de paquets (contenant donc base/, opt/, xorg/, etc.)"
-		echo "Le répertoire spécifié doit contenir le sous-répertoire 'paquets'."
+		echo "contenant un dépôt de paquets (contenant donc base/, opt/, xorg/, etc.)"
 		echo ""
 		echo "Exemples : /mnt/tmp/mes_fichiers/paquets"
 		echo "           /sauvegarde/0/paquets"
-		echo "           /paquets"
+		echo "           /mes_paquets"
 		echo ""
 		echo -n "Votre choix : "
 		read DIRSELECT;
@@ -27,8 +27,8 @@ demander_choix_dir() {
 			sleep 2
 			unset DIRSELECT
 			continue
-		elif [ "$(echo ${DIRSELECT} | grep paquets)" = "" ]; then
-			echo "Veuillez entrer un emplacement contenant le répertoire 'paquets'."
+		elif [ ! -d ${DIRSELECT} ]; then
+			echo "Veuillez entrer un emplacement valide."
 			sleep 2
 			unset DIRSELECT
 			continue
@@ -42,7 +42,7 @@ demander_choix_dir() {
 }
 
 # Si l'on trouve un seul répertoire 'paquets' :
-if [ "$(echo ${DETECTEDREPO} | wc -l)" -eq 1 ]; then
+if [ "${NBDETECTEDREPO}" = "1" ]; then
 	clear
 	echo -e "\033[1;32mUn dépôt de paquets a été détecté !\033[0;0m"
 	echo ""
@@ -51,7 +51,7 @@ if [ "$(echo ${DETECTEDREPO} | wc -l)" -eq 1 ]; then
 	echo ${DETECTEDREPO}
 	echo ""
 	echo "Si ce dépôt vous convient, tapez « oui », sinon appuyez sur ENTRÉE pour"
-	echo "ignorer cette étape."
+	echo "ignorer cette étape et le spécifier vous-même."
 	echo ""
 	echo -n "Votre choix : "
 	read DETECTSELECT;

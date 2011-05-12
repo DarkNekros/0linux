@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
 # On nettoie :
-unset BLURB
+unset BLURB BASEDIR DIR0
 
-DIR0=$(find /var/log/mount -type d -name "paquets" -print 2>/dev/null)
 # Quelques vérif' avant l'installation des paquets. '/var/log/mount' doit
-# à ce stade contenir le répertoire 'paquets' et les paquets résidents : 
-if [ "${DIR0}" = "" ]; then
+# à ce stade contenir les paquets résidents : 
+BASEDIR=$(find /var/log/mount -type d -name "base" 2>/dev/null)
+if [ "${BASEDIR}" = "" ]; then
 	echo "Erreur fatale : '/var/log/mount' ne contient pas les paquets !"
-	echo "Ce répertoire doit contenir un répertoire 'paquets'."
+	echo "Ce répertoire doit contenir les répertoires 'base', 'opt', 'xorg',"
+	echo "etc. peuplés des paquets logiciels."
 	echo "Je vais devoir abandonner..."
 	sleep 3
 	exit 1
@@ -24,6 +25,8 @@ elif [ ! -d ${SETUPROOT} ]; then
 	sleep 3
 	exit 1
 fi
+
+DIR0=$(dirname ${BASEDIR})
 
 clear
 echo -e "\033[1;32mInstallation des paquets.\033[0;0m"
