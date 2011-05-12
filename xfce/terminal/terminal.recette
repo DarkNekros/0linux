@@ -94,8 +94,9 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On copie le fichier de préférences globales (police, nombre de lignes pour
-# l'historique, shell non-interactif, mise en valeur des URL, etc.) :
-cp -a $CWD/terminalrc ${PKG}/etc/xfce/xdg/Terminal/
+# l'historique, shell non-interactif, mise en valeur des URL, etc.) en prenant
+# garde à ne rien écraser :
+cp -a $CWD/terminalrc ${PKG}/etc/xfce/xdg/Terminal/terminalrc.new
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
