@@ -23,13 +23,16 @@ syntaxerror() {
 	echo "Où PÉRIPHÉRIQUE ne doit pas désigner une partition mais bien un"
 	echo "périphérique, sans aucune numérotation (/dev/sdd et non /dev/sdd1 par ex.)."
 	echo ""
-	echo "Exemples d'invocation de ce script :"
-	echo ""
-	echo "Créer une image ISO de DVD portant la version \"alpha4\" :"
-	echo "	$0 --dvd alpha4"
-	echo "Créer une clé USB, déjà formatée en FAT ou FAT32 :"
+	echo "Créer une image ISO de DVD portant la version \"beta42\" :"
+	echo "	$0 --dvd beta42"
+	echo "Créer une clé USB, déjà formatée en FAT, FAT32, NTFS, ext2/3/4 ou btrfs :"
 	echo "	$0 --usb /dev/sdc"
+	echo "Créer une clé USB minimale, sans aucun paquet :"
+	echo "	$0 --usb /dev/sdc --mini"
+	echo "Créer un DVD minimal, sans aucun paquet, versionné \"beta42\" :"
+	echo "	$0 --dvd beta42 --mini"
 	echo ""
+	
 	exit 1
 }
 		
@@ -47,10 +50,10 @@ if [ "$1" = "--usb" ]; then
 		syntaxerror
 	else
 		# Si le volume est en FAT, on doit utiliser 'syslinux' :
-		if [ ! "$(blkid -s TYPE ${2}1 | grep -E 'fat|FAT')" = "" ]; then
+		if [ ! "$(blkid -s TYPE ${2}1 | grep -E 'fat|FAT|NTFS')" = "" ]; then
 			SYSLINUXDIR="syslinux"
 			SYSLINUXCMD="syslinux-nomtools --install"
-		# Si le volume est en ext2/3/4, on doit utiliser 'extlinux'
+		# Si le volume est en ext2/3/4 ou btrfs, on doit utiliser 'extlinux'
 		elif [ ! "$(blkid -s TYPE ${2}1 | grep -E 'ext2|ext3|ext4|btrfs')" = "" ]; then
 			SYSLINUXDIR="extlinux"
 			SYSLINUXCMD="extlinux --install"
@@ -72,8 +75,29 @@ else
 	syntaxerror
 fi
 
+# On analyse la présence de "--mini" :
+if [ ! "$3" = "" ]; then
+	if [ ! "$3" = "--mini" ]; then
+		syntaxerror
+	else
+		# On vérifie que le répertoire $PAQUETS existe :
+		if [ ! -d ${PAQUETS} ]; then
+			echo "'${dir}' est introuvable. Arrêt."
+			exit 1
+		else
+			MINI="oui"
+		fi
+	fi
+fi
+		
+# On quitte si le réperoire des sources n'existe pas :
+if [ ! -d "${SOURCES}" ]; then
+		echo "'${SOURCES}' est introuvable. Arrêt."
+		exit 1
+	fi
+done
+
 SOURCES=${SOURCES:-/0/sources}
-PAQUETS=${PAQUETS:-/0/paquets}
 TMP=${TMP:-/usr/local/temp}
 
 LIVEOS=${LIVEOS:-$TMP/liveos}
@@ -84,14 +108,6 @@ NOYAU=${NOYAU:-$TMP/noyau}
 
 rm -rf $TMP/*
 mkdir -p $TMP
-
-# On quitte si les réperoires des sources ou des paquets n'existent pas :
-for dir in ${SOURCES} ${PAQUETS}; do
-	if [ ! -d ${dir} ]; then
-		echo "'${dir}' est introuvable. Arrêt."
-		exit 1
-	fi
-done
 
 # On crée et on vide les répertoires d'accueil :
 rm -rf ${MEDIAROOT} ${LIVEOS} ${NOYAU} ${INITRDGZ}
@@ -138,7 +154,7 @@ done
 
 # On copie les modules réseau et les firmwares en lieu sûr :
 cp -ar ${LIVEOS}/lib/firmware ${LIVEOS}/conserver
-cp -ar ${LIVEOS}/lib/modules/$(uname -r)/kernel/net ${LIVEOS}/conserver
+cp -ar ${LIVEOS}/lib/modules/$(uname -r)/kernel ${LIVEOS}/conserver
 
 # On récupère le minimum de l'éditeur 'vim' (on dispose aussi de 'nano') :
 cp -a ${LIVEOS}/usr/bin/vim ${LIVEOS}/conserver
@@ -181,9 +197,9 @@ cp -ar ${LIVEOS}/conserver/fr ${LIVEOS}/usr/share/vim/lang/
 cp -a ${LIVEOS}/conserver/vimrc ${LIVEOS}/etc/
 
 # On ramène les modules et les firmware : 
-mkdir -p ${LIVEOS}/lib/modules/$(uname -r)/kernel
+mkdir -p ${LIVEOS}/lib/modules/$(uname -r)
 cp -ra ${LIVEOS}/conserver/firmware ${LIVEOS}/lib/
-cp -ra ${LIVEOS}/conserver/net ${LIVEOS}/lib/modules/$(uname -r)/kernel/
+cp -ra ${LIVEOS}/conserver/kernel ${LIVEOS}/lib/modules/$(uname -r)/
 
 # On peut supprimer notre sauvegarde :
 rm -rf ${LIVEOS}/conserver
@@ -241,14 +257,16 @@ cd ${LIVEOS}
 find . | cpio -o -H newc | gzip -9 > ${INITRDGZ}
 echo "Terminé."
 
-echo "Copie des paquets, du noyau et de l'initrd..."
+echo "Copie du noyau, de l'initrd et des paquets éventuels..."
 # On copie le noyau et l'initrd :
 cp -a ${INITRDGZ} ${NOYAU} ${MEDIAROOT}/boot/
 
-# On copie tous les paquets :
-rsync -au --delete-after ${PAQUETS}/* ${MEDIAROOT}/0/paquets
+# On copie tous les paquets sauf si on génère un support minimal :
+if [ ! "${MINI}" = "oui" ]; then
+	rsync -au --delete-after ${PAQUETS}/* ${MEDIAROOT}/0/paquets
+fi
 
-echo "Copie des paquets et du chargeur d'amorçage..."
+echo "Copie du chargeur d'amorçage..."
 mkdir -p ${MEDIAROOT}/boot/${SYSLINUXDIR}
 # On copie tous les fichiers de ${SYSLINUXDIR}/ :
 cp -ra ${SOURCES}/installateur/${SYSLINUXDIR}/* ${MEDIAROOT}/boot/${SYSLINUXDIR}/
@@ -271,7 +289,7 @@ if [ "$1" = "--dvd" ]; then
 		-l \
 		-N \
 		-R \
-		-V "DVD0linux" \
+		-V "0linux" \
 		-boot-load-size 4 \
 		-boot-info-table \
 		-hide-rr-moved \
