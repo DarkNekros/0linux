@@ -92,10 +92,9 @@ fi
 		
 # On quitte si le réperoire des sources n'existe pas :
 if [ ! -d "${SOURCES}" ]; then
-		echo "'${SOURCES}' est introuvable. Arrêt."
-		exit 1
-	fi
-done
+	echo "'${SOURCES}' est introuvable. Arrêt."
+	exit 1
+fi
 
 SOURCES=${SOURCES:-/0/sources}
 TMP=${TMP:-/usr/local/temp}
