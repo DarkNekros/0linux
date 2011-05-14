@@ -237,7 +237,10 @@ fi
 
 # On met à jour les liens des bibliothèques :
 chroot ${LIVEOS} /sbin/ldconfig
- 
+
+# On met à jour les dépendances des modules :
+chroot ${LIVEOS} depmod -a
+
 # On évite le lancement du réseau : 
 chmod -x ${LIVEOS}/etc/rc.d/rc.reseau
 
