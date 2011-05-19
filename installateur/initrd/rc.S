@@ -5,27 +5,25 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 export PATH
 
-# On supprime tout 'mtab' superflu :
-rm -f /etc/mtab* /etc/nologin 1> /dev/null 2> /dev/null
-
 # On monte /proc :
 mount /proc 1> /dev/null 2> /dev/null
-
-# On règle l'horloge système selon l'horloge matérielle :
-if grep -wq "^UTC" /etc/hardwareclock ; then
-	hwclock --utc --hctosys 2>/dev/null
-else
-	hwclock --localtime --hctosys 2>/dev/null
-fi
 
 # On monte tout notre 'fstab' :
 mount -a 2> /dev/null
 
+# On met à jour les dépendances des modules noyau :
+depmod -a &
+
 # On lance 'udev' :
 . /etc/rc.d/rc.udev start
 
-# On donne un nom à notre hôte :
-hostname --file /etc/HOSTNAME
+# On spécifie le nom de l'hôte si celui-ci n'existe pas :
+if [ -r /etc/HOSTNAME ]; then
+	hostname $(cat /etc/HOSTNAME | cut -f1 -d .)
+else
+	echo "pingouin.exemple.net" > /etc/HOSTNAME
+	hostname pingouin
+fi
 
 # On charge la police :
 . /etc/rc.d/rc.font

@@ -7,18 +7,16 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
-
 
 NAMESRC=${NAMESRC:-sysklogd}
 VERSION=${VERSION:-1.5}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sysklogd}
-BUILD=${BUILD:-1}
-
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -89,14 +87,13 @@ cp -a *.5 ${PKG}/usr/man/man5
 cp -a *.8 ${PKG}/usr/man/man8
 
 # On crée tous les fichiers journaux :
-touch ${PKG}/var/log/{cron,debug,maillog,messages,secure,spooler,syslog}.new
+touch ${PKG}/var/log/{cron,debug,maillog,messages,secure,syslog}.new
 
 # On place les scripts aux emplacements appropriés :
 cp -a $CWD/syslog.conf.new ${PKG}/etc
-cp -a $CWD/rc.syslog.new ${PKG}/etc/rc.d
-chmod 755 ${PKG}/etc/rc.d/rc.syslog.new
+cp -a $CWD/rc.syslog.new ${PKG}/etc/rc.d/rc.syslog
+chmod 755 ${PKG}/etc/rc.d/rc.syslog
 cp -a $CWD/syslog.new ${PKG}/etc/logrotate.d
-chmod 755 ${PKG}/etc/logrotate.d/syslog.new
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -139,15 +136,12 @@ config() {
 	fi
 }
 
-config etc/logrotate.d/syslog.new
 config etc/syslog.conf.new
-config etc/rc.d/rc.syslog.new
 config var/log/cron.new
 config var/log/debug.new
 config var/log/maillog.new
 config var/log/messages.new
 config var/log/secure.new
-config var/log/spooler.new
 config var/log/syslog.new
 
 EOF
@@ -160,9 +154,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}

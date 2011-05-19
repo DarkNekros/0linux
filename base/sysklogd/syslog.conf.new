@@ -1,42 +1,28 @@
-# /etc/syslog.conf
+# /etc/syslog.conf - configuration des journaux système.
 #
 # Voyez 'man syslog.conf' pour plus d'informations sur ce fichier
-# ou bien la documentation dans /usr/doc/sysklogd/README.linux. 
+# ou bien la documentation dans '/usr/doc/sysklogd'. 
 
-# On va polluer sciemment 2 terminaux, le 11 et le 12, avec les messages
-# système et ceux du noyau. On commentera ces lignes si elles ne nous
-# intéressent pas :
-*.info;*.!warn;                                         /dev/tty11
-kern.*                                                  /dev/tty12
+# Tous les messages du noyau vont sur le terminal 12 :
+kern.* /dev/tty12
 
-# Ce qui suit reste le comportement par défaut de Slackware :
+# On journalise un maximum d'infos :
+*.info;*.!warn;authpriv.none;cron.none;mail.none -/var/log/messages
 
-# Log anything 'info' or higher, but lower than 'warn'.
-# Exclude authpriv, cron, mail, and news.  These are logged elsewhere.
-*.info;*.!warn;\
-	authpriv.none;cron.none;mail.none;news.none	-/var/log/messages
+# Les avertissements et erreurs vont dans 'syslog' :
+*.warn;authpriv.none;cron.none;mail.none -/var/log/syslog
 
-# Log anything 'warn' or higher.
-# Exclude authpriv, cron, mail, and news.  These are logged elsewhere.
-*.warn;\
-	authpriv.none;cron.none;mail.none;news.none	-/var/log/syslog
+# Le débogage va dans 'debug' :
+*.=debug -/var/log/debug
 
-# Debugging information is logged here.
-*.=debug						-/var/log/debug
+# Les messages d'authentification :
+authpriv.* -/var/log/secure
 
-# Private authentication message logging:
-authpriv.*						-/var/log/secure
+# Tout ce qui concerne 'cron' :
+cron.* -/var/log/cron
 
-# Cron related logs:
-cron.*							-/var/log/cron
+# Le courriel système :
+mail.* -/var/log/maillog
 
-# Mail related logs:
-mail.*							-/var/log/maillog
-
-# Emergency level messages go to all users:
-*.emerg							*
-
-# This log is for news and uucp errors:
-uucp,news.crit						-/var/log/spooler
-
-
+# Les messages urgents sont affichés à tous les utilisateurs :
+*.emerg *

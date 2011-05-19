@@ -87,7 +87,7 @@ fi
 # Lancement de dcron :
 echo "Lancement de dcron..."
 if [ -x /usr/sbin/crond ]; then
-	. /usr/sbin/crond -l10 >> /var/log/cron 2>&1
+	/usr/sbin/crond -l10 >> /var/log/cron 2>&1
 fi
 
 # Lancement du serveur de pointage GPM :
