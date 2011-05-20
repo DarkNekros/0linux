@@ -8,12 +8,12 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 export PATH
 
 # On monte /proc :
-mount -F proc /proc -n -t proc
+mount proc /proc -n -t proc
 
 # On monte sysfs:
 if grep -wq sysfs /proc/filesystems ; then
 	if ! grep -wq sysfs /proc/mounts ; then
-		mount -F sysfs /sys -n -t sysfs
+		mount sysfs /sys -n -t sysfs
 	fi
 fi
 
@@ -81,14 +81,14 @@ if [ ! $LECTURESEULE = non ]; then
 		# On démonte tout et on redémarre :
 		echo "Démontage des systèmes de fichiers..."
 		umount -a -r
-		mount -F -n -o remount,ro /
+		mount -n -o remount,ro /
 		echo "Redémarrage du système."
 		reboot -f
 	fi
 
 	# On remonte le système de fichiers racine en lecture-écriture :
 	echo "Remontage du système de fichiers racine en mode lecture-écriture."
-	mount -F -w -n -o remount /
+	mount -w -n -o remount /
 
 	# Traitement des erreurs de montage :
 	if [ $? -gt 0 ] ; then
@@ -124,16 +124,16 @@ fi
 rm -f /etc/mtab*
 
 # On remonte la partition racine pour générer un nouveau fichier /etc/mtab :
-mount -F -w -o remount /
+mount -w -o remount /
 
 # On corrige /etc/mtab concernant les systèmes de fichiers sys and proc au cas où
 # ils ne seraient pas inscrits sur un système en lecture seule :
 if [ -d /proc/sys ]; then
-	mount -F -f proc /proc -t proc
+	mount -f proc /proc -t proc
 fi
 
 if [ -d /sys/bus ]; then
-	mount -F -f sysfs /sys -t sysfs
+	mount -f sysfs /sys -t sysfs
 fi
 
 # On charge les modules trouvés dans le fichier /etc/rc.d/rc.modules
@@ -154,9 +154,9 @@ fsck $FORCEFSCK -C -R -A -a
 if grep -wq usbfs /proc/filesystems; then
 	if ! grep -wq usbfs /proc/mounts ; then
 		if ! grep -wq usbfs /etc/fstab; then
-			mount -F usbfs /proc/bus/usb -t usbfs
+			mount usbfs /proc/bus/usb -t usbfs
 		else
-			mount -F /proc/bus/usb
+			mount /proc/bus/usb
 		fi
 	fi
 fi
@@ -166,9 +166,6 @@ fi
 # et proc sont déjà montés aussi :
 echo "Montage des sytèmes de fichiers locaux..."
 mount -a -F -t nonfs,nosmbfs,nocifs,noproc,nosysfs,nodevpts
-
-# On réactive la partition d'échange au cas où :
-swapon -a
 
 # Un peu de nettoyage :
 find /var/run -type f -delete
