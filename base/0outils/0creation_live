@@ -59,7 +59,7 @@ if [ "$1" = "--usb" ]; then
 			SYSLINUXCMD="extlinux --install"
 		else
 			echo "Erreur : le périphérique $2 n'est pas formaté correctement."
-			echo "Celui-ci doit être formaté en FAT ou FAT32."
+			echo "Celui-ci doit être formaté en FAT, FAT32, NTFS, ext2/3/4 ou btrfs.."
 			exit 1
 		fi
 	fi
@@ -310,19 +310,21 @@ elif [ "$1" = "--usb" ]; then
 	echo "ou bien appuyez sur CTRL+C pour annuler maintenant."
 	read PLOP;
 		
-	mount ${2}1 /mnt/tmp || exit 1
+	mount ${2}1 /mnt/tmp 2>&1 || exit 1
 	sleep 4
 	
 	# On copie tout ${MEDIAROOT} sur la clé :
+	echo -n "Création du volume... "
 	rsync -au --delete-after ${MEDIAROOT}/* /mnt/tmp
+	echo "terminée. "
 
 	# On nettoie la clé et on dévérouille 'ldlinux.sys' :
-	echo -n "Nettoyage de la clé... "
+	echo -n "Nettoyage du volume... "
 	for f in $(find /mnt/tmp -name "ldlinux.sys" -print); do
 		chattr -i ${f}
 		rm -f ${f}
 	done
-	echo "Terminé."
+	echo "terminé."
 	
 	echo "Installation du chargeur d'amorçage... "
 	# On copie un MBR propre :
@@ -336,6 +338,7 @@ elif [ "$1" = "--usb" ]; then
 	fi
 	
 	# On démonte la clé :
+	echo -n "Démontage du volume... "
 	umount /mnt/tmp
-	echo "Terminé. Clé USB autonome créée."
+	echo "OK. Volume USB créé sur ${2}."
 fi
