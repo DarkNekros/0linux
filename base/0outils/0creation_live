@@ -4,7 +4,7 @@
 set -e
 umask 022
 
-unset PLOP
+unset PLOP MNTTYPE
 
 # En cas d'erreur dans la ligne de commande :
 syntaxerror() {
@@ -310,7 +310,12 @@ elif [ "$1" = "--usb" ]; then
 	echo "ou bien appuyez sur CTRL+C pour annuler maintenant."
 	read PLOP;
 		
-	mount ${2}1 /mnt/tmp 2>&1 || exit 1
+	# On doit monter explicitement en lecture-écriture pour NTFS :
+	if [ ! "$(blkid -s TYPE ${2}1 | grep -i -E 'ntfs')" = "" ]; then
+		MNTTYPE="-t ntfs-3g -o rw"
+	fi
+	
+	mount ${MNTTYPE} ${2}1 /mnt/tmp 2>&1 || exit 1
 	sleep 4
 	
 	# On copie tout ${MEDIAROOT} sur la clé :
