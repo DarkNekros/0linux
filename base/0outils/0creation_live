@@ -50,11 +50,11 @@ if [ "$1" = "--usb" ]; then
 		syntaxerror
 	else
 		# Si le volume est en FAT, on doit utiliser 'syslinux' :
-		if [ ! "$(blkid -s TYPE ${2}1 | grep -E 'fat|FAT|NTFS')" = "" ]; then
+		if [ ! "$(blkid -s TYPE ${2}1 | grep -i -E 'fat|ntfs')" = "" ]; then
 			SYSLINUXDIR="syslinux"
 			SYSLINUXCMD="syslinux-nomtools --install"
 		# Si le volume est en ext2/3/4 ou btrfs, on doit utiliser 'extlinux'
-		elif [ ! "$(blkid -s TYPE ${2}1 | grep -E 'ext2|ext3|ext4|btrfs')" = "" ]; then
+		elif [ ! "$(blkid -s TYPE ${2}1 | grep -i -E 'ext2|ext3|ext4|btrfs')" = "" ]; then
 			SYSLINUXDIR="extlinux"
 			SYSLINUXCMD="extlinux --install"
 		else
