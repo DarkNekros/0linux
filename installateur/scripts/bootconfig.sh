@@ -85,24 +85,24 @@ while [ 0 ]; do
 				echo ""
 				echo -n "Votre choix : "
 				read WINBOOT;
-				if [ "$WINBOOT" = "" ]; then
+				if [ "${WINBOOT}" = "" ]; then
 					# On ne fait rien
 					break
 				else
 					# On fait confiance à la réponse de l'utilisateur et on détecte quel disque est
 					# utilisé. On en teste 6 :
-					if [ "$(echo WINBOOT | crunch | wc -m)" = "9" ]; then
+					if [ "$(echo $WINBOOT | crunch | wc -m)" = "9" ]; then
 						if [ "$(echo WINBOOT | cut -b8)" = "a" ]; then
 							WINDISK="0"
-						elif [ "$(echo WINBOOT | cut -b8)" = "b" ]; then
+						elif [ "$(echo ${WINBOOT} | cut -b8)" = "b" ]; then
 							WINDISK="1"
-						elif [ "$(echo WINBOOT | cut -b8)" = "c" ]; then
+						elif [ "$(echo ${WINBOOT} | cut -b8)" = "c" ]; then
 							WINDISK="2"
-						elif [ "$(echo WINBOOT | cut -b8)" = "d" ]; then
+						elif [ "$(echo ${WINBOOT} | cut -b8)" = "d" ]; then
 							WINDISK="3"
-						elif [ "$(echo WINBOOT | cut -b8)" = "e" ]; then
+						elif [ "$(echo ${WINBOOT} | cut -b8)" = "e" ]; then
 							WINDISK="4"
-						elif [ "$(echo WINBOOT | cut -b8)" = "f" ]; then
+						elif [ "$(echo ${WINBOOT} | cut -b8)" = "f" ]; then
 							WINDISK="5"
 						else
 							echo "Erreur. Réponse probablement erronée."
