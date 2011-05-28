@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-opera}
-VERSION=${VERSION:-11.01_1190}
+VERSION=${VERSION:-11.11_2109}
 EXT=${EXT:-rpm}
 NAMETGZ=${NAMETGZ:-opera}
 BUILD=${BUILD:-1}
@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.opera.com/pub/opera/linux/$(echo $VERSION | cut -d'_' -f1 | tr -d'.')1101/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$ARCH.$EXT}
+WGET=${WGET:-ftp://ftp.opera.com/pub/opera/linux/$(echo $VERSION | cut -d'_' -f1 | tr -d '.')/$NAMESRC-$(echo $VERSION | sed 's/_/-/').${ARCH}.$EXT}
 #DOC=""
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Le navigateur Web Opera"
