@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-gnome-colors}
 VERSION=${VERSION:-5.5.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-gnome-colors}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -30,7 +30,7 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://gnome-colors.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
 WGETEXTRAS=${WGETEXTRAS:-http://gnome-colors.googlecode.com/files/$NAMESRC-extras-$VERSION.$EXT}
-WGETSHIKI=${WGETSHIKI:-http://gnome-colors.googlecode.com/files/shiki-colors-murrine-4.6.$EXT}
+WGETSHIKI=${WGETSHIKI:-http://gnome-colors.googlecode.com/files/shiki-colors-4.6.$EXT}
 
 DOC="AUTHORS ChangeLog COPYING README"
 ########## |-----handy-ruler------------------------------------------------------|
@@ -62,13 +62,13 @@ fi
 tar ft ${NAMESRC}-extras-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On télécharge les thèmes Shiki :
-if [ ! -r shiki-colors-murrine-4.6.$EXT ]; then
-	wget -vc $WGETSHIKI -O shiki-colors-murrine-4.6.$EXT.part
-	mv shiki-colors-murrine-4.6.$EXT{.part,}
+if [ ! -r shiki-colors-4.6.$EXT ]; then
+	wget -vc $WGETSHIKI -O shiki-colors-4.6.$EXT.part
+	mv shiki-colors-4.6.$EXT{.part,}
 fi
 
 # On les vérifie :
-tar ft shiki-colors-murrine-4.6.$EXT 1> /dev/null 2> /dev/null
+tar ft shiki-colors-4.6.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
@@ -95,7 +95,7 @@ cd $TMP
 mkdir -p $TMP/shiki
 cd $TMP/shiki
 echo "Extraction en cours..."
-tar xf $CWD/shiki-colors-murrine-4.6.$EXT
+tar xf $CWD/shiki-colors-4.6.$EXT
 
 # On vérifie les permissions des sources :
 find . \
@@ -105,14 +105,6 @@ find . \
 # On installe les thèmes Shiki :
 sed -i "s@usr/share/backgrounds@usr/share/wallpapers@" Makefile
 fakeroot make install DESTDIR=${PKG}
-
-# On lie une icône manquante pour le navigateur Web par défaut sous Xfce dans tous les thèmes Shiki :
-for fichier in $(find ${PKG}/usr/share/icons/gnome-* -type f -name "*xfce-internet*"); do
-	if [ ! -e $(dirname ${fichier})/web-browser.* ]; then
-		ln -sf $(basename ${fichier} .svg) $(dirname ${fichier})/web-browser.svg
-		ln -sf $(basename ${fichier} .png) $(dirname ${fichier})/web-browser.png
-	fi
-done
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

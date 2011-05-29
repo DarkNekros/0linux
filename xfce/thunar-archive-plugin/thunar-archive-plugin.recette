@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-thunar-archive-plugin}
 VERSION=${VERSION:-0.3.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-thunar-archive-plugin}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -78,12 +78,13 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
-	--sysconfdir=/etc \
+	--sysconfdir=/etc/xfce \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-shared \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -116,12 +117,13 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
-	--sysconfdir=/etc \
+	--sysconfdir=/etc/xfce \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-shared \
 	--build=${TARGET64}
 
 make -j3 || make
