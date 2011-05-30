@@ -13,10 +13,10 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-xfce4-settings}
-VERSION=${VERSION:-4.8.1}
+VERSION=${VERSION:-4.8.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-settings}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -98,7 +98,7 @@ unset USE_ARCH
 
 # On active le thème de 0 par défaut :
 sed -i "s/Xfce/Shiki-Wise/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
-sed -i "s/Rodent/gnome-wise/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+sed -i "s/Rodent/Tango/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
