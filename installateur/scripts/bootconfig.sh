@@ -67,7 +67,7 @@ while [ 0 ]; do
 			# Si le MBR est occupé par Extlinux, alors on en profite pour ajouter d'autres « OS » :
 			
 			# On ajoute un éventuel système Windows :
-			if [ "$(fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' | \
+			if [ "$(fdisk -l | grep -i -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' | \
 				grep -v $(cat $TMP/choix_media) 2> /dev/null | wc -l)" -gt "0" ]; then
 				clear
 				echo -e "\033[1;32mPartitions DOS/Windows amorçables détectées.\033[0;0m"
@@ -80,7 +80,7 @@ while [ 0 ]; do
 				echo ""
 				# On affiche les partitions FAT/NTFS sauf l'éventuelle clé USB montée pour
 				# l'installation (donc amorçable) :
-				fdisk -l | grep -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' \
+				fdisk -l | grep -i -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | grep '*' \
 					| crunch | cut -d' ' -f1 | grep -v $(cat $TMP/choix_media) 2> /dev/null
 				echo ""
 				echo -n "Votre choix : "
@@ -91,36 +91,32 @@ while [ 0 ]; do
 				else
 					# On fait confiance à la réponse de l'utilisateur et on détecte quel disque est
 					# utilisé. On en teste 6 :
-					if [ "$(echo $WINBOOT | crunch | wc -m)" = "9" ]; then
-						if [ "$(echo WINBOOT | cut -b8)" = "a" ]; then
-							WINDISK="0"
-						elif [ "$(echo ${WINBOOT} | cut -b8)" = "b" ]; then
-							WINDISK="1"
-						elif [ "$(echo ${WINBOOT} | cut -b8)" = "c" ]; then
-							WINDISK="2"
-						elif [ "$(echo ${WINBOOT} | cut -b8)" = "d" ]; then
-							WINDISK="3"
-						elif [ "$(echo ${WINBOOT} | cut -b8)" = "e" ]; then
-							WINDISK="4"
-						elif [ "$(echo ${WINBOOT} | cut -b8)" = "f" ]; then
-							WINDISK="5"
-						else
-							echo "Erreur. Réponse probablement erronée."
-							sleep 2
-							break
-						fi
+					if [ "$(echo WINBOOT | cut -b8)" = "a" ]; then
+						WINDISK="0"
+					elif [ "$(echo ${WINBOOT} | cut -b8)" = "b" ]; then
+						WINDISK="1"
+					elif [ "$(echo ${WINBOOT} | cut -b8)" = "c" ]; then
+						WINDISK="2"
+					elif [ "$(echo ${WINBOOT} | cut -b8)" = "d" ]; then
+						WINDISK="3"
+					elif [ "$(echo ${WINBOOT} | cut -b8)" = "e" ]; then
+						WINDISK="4"
+					elif [ "$(echo ${WINBOOT} | cut -b8)" = "f" ]; then
+						WINDISK="5"
+					else
+						WINDISK=""
+						echo "Réponse probablement erronée. La prise en charge de DOS/Windows sera ignorée."
+						sleep 2
+					fi
 						
-						# On remplit le fichier de config' pour Windows:
+					# On remplit le fichier de config' pour Windows:
+					if [ ! "${WINDISK}" = "" ]; then
 						echo "# Entrée pour Windows :" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
 						echo "LABEL windows" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
 						echo "	MENU LABEL Windows" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
 						echo "	KERNEL chain.c32" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
 						echo "	APPEND hd${WINDISK} $(echo ${WINBOOT} | cut -b9)" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
 						echo "" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
-					else
-						echo "Erreur. Réponse probablement erronée."
-						sleep 2
-						break
 					fi
 				fi
 			fi
