@@ -13,10 +13,10 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-NVIDIA}
-VERSION=${VERSION:-260.19.44}
+VERSION=${VERSION:-270.41.19}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-nvidia}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
