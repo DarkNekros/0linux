@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-gnome-colors}
 VERSION=${VERSION:-5.5.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-gnome-colors}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-7}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -124,6 +124,7 @@ fi
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a $TMP/shiki/userChrome.css ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -146,6 +147,17 @@ config() {
 		mv $NEW $OLD
 	fi
 }
+
+# On corrige l'apparence des applications Mozilla en copiant le fichier 
+# CSS de Shiki directement dans les préférences utilisateur, si aucun fichier
+# ne s'y trouve déjà :
+for rep in $(find /home/*/.mozilla -type d -name "*.default"); do
+	if [ -d ${rep}/chrome ]; then
+		if [ ! -e ${rep}/chrome/userChrome.css ]; then
+			cp -a /usr/doc/gnome-colors-*/userChrome.css ${rep}/chrome/
+		fi
+	fi
+done
 
 if [ -x usr/bin/update-desktop-database ]; then
 	chroot . /usr/bin/update-desktop-database &> /dev/null
