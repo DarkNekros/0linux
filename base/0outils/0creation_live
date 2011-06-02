@@ -102,7 +102,7 @@ TMP=${TMP:-/usr/local/temp}
 LIVEOS=${LIVEOS:-$TMP/liveos}
 MEDIAROOT=${MEDIAROOT:-$TMP/mediaroot}
 ISODIR=${ISODIR:-$TMP/iso}
-INITRDGZ=${INITRDGZ:-$TMP/initrd.gz}
+INITRDGZ=${INITRDGZ:-$TMP/initrd}
 NOYAU=${NOYAU:-$TMP/noyau}
 
 rm -rf $TMP/*
@@ -256,7 +256,7 @@ ln -sf ../usr/share/zoneinfo/Europe/Paris ${LIVEOS}/etc/localtime
 echo -n "Création de l'initrd... "
 rm -f ${INITRDGZ}
 cd ${LIVEOS}
-find . | cpio -o -H newc | gzip -9 > ${INITRDGZ}
+find . | cpio -o -H newc | xz --check=crc32 > ${INITRDGZ}
 echo "Terminé."
 
 echo "Copie du noyau, de l'initrd et des paquets éventuels..."
