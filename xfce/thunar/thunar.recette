@@ -13,10 +13,10 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-Thunar}
-VERSION=${VERSION:-1.3.0}
+VERSION=${VERSION:-1.2.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-thunar}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -29,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.xfce.org/archive/src/xfce/thunar/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING* FAQ HACKING INSTALL NEWS README THANKS TODO"
+DOC="AUTHORS BUGS ?hange?og* *COPYING* HACKING *INSTALL* MAINTAINERS NEWS* *README* THANKS TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Gestionnaire de fichiers d'XFCE"
 ########################################
@@ -164,7 +164,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install

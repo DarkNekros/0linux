@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-exo}
-VERSION=${VERSION:-0.6.0}
+VERSION=${VERSION:-0.6.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-exo}
 BUILD=${BUILD:-1}
@@ -29,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.xfce.org/archive/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING* INSTALL NEWS README THANKS TODO"
+DOC="AUTHORS BUGS ?hange?og* *COPYING* HACKING *INSTALL* MAINTAINERS NEWS* *README* THANKS TODO"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques d'extension à XFCE"
 ########################################
@@ -149,7 +149,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
