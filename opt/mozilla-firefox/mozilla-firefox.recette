@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-4.0}
+VERSION=${VERSION:-4.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
 BUILD=${BUILD:-1}
@@ -127,7 +127,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64} \
 	--host=${TARGET64} 
 
-make -j3 || make
+make -j6 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
