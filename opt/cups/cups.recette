@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-cups}
 VERSION=${VERSION:-1.4.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-cups}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -66,6 +66,11 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On corrige CUPS pour qu'il utilise au choix la libusb ou usblp :
+cat $CWD/cups.libusb-usblp.patch | patch -p1
+
+sed -i -e 's#$exec_prefix/lib#$libdir#g' configure
+
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
@@ -85,6 +90,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-pam \
+	--enable-openssl \
+	--without-php \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -108,6 +115,11 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On corrige CUPS pour qu'il utilise au choix la libusb ou usblp :
+cat $CWD/cups.libusb-usblp.patch | patch -p1
+
+sed -i -e 's#$exec_prefix/lib#$libdir#g' configure
+
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
@@ -127,6 +139,8 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-pam \
+	--enable-openssl \
+	--without-php \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -141,15 +155,12 @@ mv ${PKG}/usr/bin/cups-config{,-64}
 # On lie un faux binaire au programme enveloppe :
 ln -sf multiarch_wrapper ${PKG}/usr/bin/cups-config
 
-# On supprime tous les scripts de démarrage et on place le notre (traduit, qui plus est) :
-rm -rf ${PKG}/etc/rc.d/*
-cp -a $CWD/rc.cups ${PKG}/etc/rc.d/
-
-# On déplace 'usr/lib/cups' dans 'usr/lib64' :
-mv ${PKG}/usr/lib{,64}/cups
+# On copie le script d'initialisation au bon endroit et on nettoie :
+mv ${PKG}/etc/rc.d/init.d/cups ${PKG}/etc/rc.d/rc.cups
+rm -rf ${PKG}/etc/rc.d/init.d 
 
 # On prend garde à n'écraser aucun fichier de configuration :
-for fichierconfig in ${PKG}/etc/cups/*; do
+for fichierconfig in $(find ${PKG}/etc/cups/ -type f); do
 	mv ${fichierconfig}{,.new}
 done
 
@@ -171,6 +182,7 @@ fi
 # Installation de la documentation :
 mv ${PKG}/usr/share/doc ${PKG}/usr/
 mv ${PKG}/usr/doc/{cups,${NAMETGZ}-${VERSION}}
+ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/cups
 rm -rf ${PKG}/usr/share/doc
 
 # On installe le slack-desc :
