@@ -25,7 +25,7 @@
     <message>Authentication is required to mount the device</message>
     <message xml:lang="da">Autorisering er påkrævet for at montere et fil system</message>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>yes</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
@@ -61,7 +61,7 @@
     <message>Authentication is required to unmount devices mounted by another user</message>
     <message xml:lang="da">Autorisering er påkrævet for at afmontere enheder monteret af en anden bruger</message>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>yes</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin</allow_active>
     </defaults>
@@ -178,7 +178,7 @@
     <message>Authentication is required to unlock an encrypted device</message>
     <message xml:lang="da">Autorisering er påkrævet for at åbne en krypteret enhed</message>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>yes</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
@@ -190,7 +190,7 @@
     <message>Authentication is required to lock an encrypted device unlocked by another user</message>
     <message xml:lang="da">Autorisering er påkrævet for at låse en krypteret enhed åbnet af en anden bruger</message>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>yes</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin</allow_active>
     </defaults>
@@ -202,7 +202,7 @@
     <message>Authentication is required to configure Linux Software RAID devices</message>
     <message xml:lang="da">Autorisering er påkrævet for at konfigurere RAID enheder</message>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>yes</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
@@ -212,7 +212,7 @@
     <description>Configure Linux LVM2</description>
     <message>Authentication is required to configure Linux LVM2</message>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>yes</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
@@ -224,7 +224,7 @@
     <message>Authentication is required to cancel a job initiated by another user</message>
     <message xml:lang="da">Autorisering er påkrævet for at afbryde et job påbegyndt af en anden bruger</message>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>yes</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin</allow_active>
     </defaults>
@@ -236,7 +236,7 @@
     <message>Authentication is required to inhibit media detection</message>
     <message xml:lang="da">Autorisering er påkrævet for at undertrykke medie detektion</message>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>yes</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
@@ -246,9 +246,9 @@
     <description>Set drive spindown timeout</description>
     <message>Authentication is required to configure drive spindown timeout</message>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>yes</allow_any>
       <allow_inactive>no</allow_inactive>
-      <allow_active>yes</allow_active>
+      <allow_active>auth_admin</allow_active>
     </defaults>
   </action>
 
