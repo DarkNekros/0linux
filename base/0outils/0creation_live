@@ -256,7 +256,7 @@ ln -sf ../usr/share/zoneinfo/Europe/Paris ${LIVEOS}/etc/localtime
 echo -n "Création de l'initrd... "
 rm -f ${INITRDGZ}
 cd ${LIVEOS}
-find . | cpio -o -H newc | xz --check=crc32 > ${INITRDGZ}
+find . | cpio -o -H newc | xz --x86 --check=crc32 --lzma2=dict=32MiB > ${INITRDGZ}
 echo "Terminé."
 
 echo "Copie du noyau, de l'initrd et des paquets éventuels..."
