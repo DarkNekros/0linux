@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-xfdesktop}
 VERSION=${VERSION:-4.8.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfdesktop}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -69,9 +69,6 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
-# On corrige une icône manquante :
-cat $CWD/xfdesktop.education-icon.patch | patch -p1
-
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
@@ -88,10 +85,14 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-gen-doc \
 	--build=${TARGET32}
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
+
+# On supprime la doc, qui plante la construction en 64 bits :
+rm -rf ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/html
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -111,9 +112,6 @@ find . \
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
-# On corrige une icône manquante :
-cat $CWD/xfdesktop.education-icon.patch | patch -p1
-
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
@@ -130,6 +128,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-gen-doc \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -154,9 +153,6 @@ export XDG_CONFIG_DIRS
 EOF
 
 chmod 755 ${PKG}/etc/profile.d/xfce.sh
-
-# On copie le papier peint par défaut :
-cp -a $CWD/0-background.png ${PKG}/usr/share/wallpapers
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

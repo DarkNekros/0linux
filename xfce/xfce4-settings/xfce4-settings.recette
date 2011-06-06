@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-xfce4-settings}
 VERSION=${VERSION:-4.8.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-settings}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -97,8 +97,13 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On active le thème de 0 par défaut :
-sed -i "s/Xfce/Shiki-Wise/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
-sed -i "s/Rodent/Tango/" ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+cp -a $CWD/*.xml ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/
+chmod 644 ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/*.xml
+
+# On prend garde à ne rien écraser :
+for fichierxml in {xfce4-desktop,xfwm4,xsettings}.xml; do
+	mv ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/${fichierxml}{,.new}
+done
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -152,6 +157,10 @@ fi
 if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
+
+config etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml.new
+config etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml.new
+config etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml.new
 
 EOF
 
