@@ -13,8 +13,8 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-polkit}
-VERSION=${VERSION:-0.99}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-0.101}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-polkit}
 BUILD=${BUILD:-1}
 
@@ -28,7 +28,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.slackware.at/slackware64-current/source/l/${NAMESRC}/${NAMESRC}-${VERSION}.$EXT}
+WGET=${WGET:-http://hal.freedesktop.org/releases/${NAMESRC}-${VERSION}.$EXT}
 DOC="AUTHORS ChangeLog COPYING HACKING INSTALL NEWS README"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Ensemble de supervision système"
