@@ -21,7 +21,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-jdk}
-VERSION=${VERSION:-6u24}
+VERSION=${VERSION:-6u26}
 EXT=${EXT:-bin}
 NAMETGZ=${NAMETGZ:-jdk}
 BUILD=${BUILD:-1}
@@ -36,8 +36,8 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET32=${WGET32:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u24-linux-i586.bin?BundledLineItemUUID=9GiJ_hCw8WwAAAEuAGUAHLlF&OrderID=AE.J_hCwYD4AAAEu8WQAHLlF&ProductID=xpeJ_hCwsEQAAAEtAMoADqmS&FileName=/jdk-6u24-linux-i586.bin}
-WGET=${WGET:-http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/jdk-6u24-linux-x64.bin?BundledLineItemUUID=EGOJ_hCwyrQAAAEuFpEAHLlD&OrderID=FqWJ_hCwMv4AAAEu.5AAHLlD&ProductID=oSKJ_hCwOlYAAAEtBcoADqmS&FileName=/jdk-6u24-linux-x64.bin}
+WGET32=${WGET32:-http://download.oracle.com/otn-pub/java/jdk/6u26-b03/jdk-6u26-linux-i586.bin}
+WGET=${WGET:-http://download.oracle.com/otn-pub/java/jdk/6u26-b03/jdk-6u26-linux-x64.bin}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Environnements de développement et machines virtuelles pour Java"
 ########################################
