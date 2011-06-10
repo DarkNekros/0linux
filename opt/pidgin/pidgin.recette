@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-pidgin}
-VERSION=${VERSION:-2.7.11}
+VERSION=${VERSION:-2.8.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-pidgin}
 BUILD=${BUILD:-1}
