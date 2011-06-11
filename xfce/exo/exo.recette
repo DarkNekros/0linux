@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-exo}
-VERSION=${VERSION:-0.6.1}
+VERSION=${VERSION:-0.6.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-exo}
 BUILD=${BUILD:-1}
