@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-midori}
-VERSION=${VERSION:-0.2.9}
+VERSION=${VERSION:-0.3.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-midori}
 BUILD=${BUILD:-1}
@@ -89,7 +89,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-unique \
 	--enable-nls \
 	--enable-docs \
-	--enable-userdocs \
 	--disable-vala \
 	--build=${TARGET32}
 
@@ -134,7 +133,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-unique \
 	--enable-nls \
 	--enable-docs \
-	--enable-userdocs \
 	--disable-vala \
 	--build=${TARGET64}
 
