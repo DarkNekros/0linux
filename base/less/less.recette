@@ -13,10 +13,10 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-less}
-VERSION=${VERSION:-436}
+VERSION=${VERSION:-444}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-less}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
