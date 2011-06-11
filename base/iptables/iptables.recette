@@ -7,14 +7,13 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-iptables}
-VERSION=${VERSION:-1.4.10}
+VERSION=${VERSION:-1.4.11.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-iptables}
 BUILD=${BUILD:-1}
@@ -30,7 +29,7 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ftp.netfilter.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="COMMIT_NOTES COPYING INCOMPATIBILITIES INSTALL"
+DOC="COMMIT_NOTES *COPYING* *INSTALL* INCOMPATIBILITIES"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de filtrage de paquets pour Linux"
 ########################################
@@ -76,6 +75,7 @@ LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -117,7 +117,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
