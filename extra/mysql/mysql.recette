@@ -1,0 +1,279 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+set -e
+umask 022
+CWD=$(pwd)
+
+# On définit la catégorie du paquet :
+for categ in base extra opt xfce xorg; do
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
+done
+
+NAMESRC=${NAMESRC:-mysql}
+VERSION=${VERSION:-5.1.57}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-mysql}
+BUILD=${BUILD:-1}
+
+TMP=${TMP:-/tmp}
+OUT=${OUT:-/usr/local/paquets/$PKGCAT}
+ARCH=${ARCH:-x86_64}
+TARGET32=${TARGET32:-i686-0-linux-gnu}
+TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
+BUILD32=${BUILD32:--m32}
+BUILD64=${BUILD64:--m64}
+PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
+PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
+
+WGET=${WGET:-ftp://mirrors.ircam.fr/pub/mysql/Downloads/MySQL-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* EXCEPTIONS* HACKING *INSTALL* \
+	*LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
+########## |-----handy-ruler------------------------------------------------------|
+SLACKDESC="Le serveur de bases de données MySQL"
+########################################
+
+SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
+	echo "La description est trop longue (80 caractères max.) !"
+	exit 1
+fi
+
+# On télécharge les sources :
+if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
+	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
+	mv ${NAMESRC}-${VERSION}.$EXT{.part,}
+fi
+
+# On les vérifie :
+tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
+
+# On crée le répertoire d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}/etc/rc.d
+mkdir -p ${PKG}/srv/mysql
+mkdir -p ${PKG}/var/{log,run/mysql}
+
+# On déballe et on se place dans les sources :
+NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=32
+
+# Compilation pour 32 bits :
+SLKCFLAGS="-O2 -march=i686 -pipe"
+LIBDIRSUFFIX=""
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/srv/mysql \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-assembler \
+	--enable-largefile \
+	--enable-thread-safe-client \
+	--with-embedded-privilege-control \
+	--with-embedded-server \
+	--with-extra-charsets=complex \
+	--with-mysqld-user=mysql \
+	--with-plugins=csv,myisam,myisammrg,heap,innobase \
+	--with-unix-socket-path=/var/run/mysql/mysql.sock \
+	--with-readline \
+	--with-ssl=/usr \
+	--without-debug \
+	--build=${TARGET32}
+
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On lie les bibliothèques à l'emplacement standard :
+for lien in $(find ${PKG}/usr/lib${LIBDIRSUFFIX}/ -type f -name "libmysqlclient*.so"); do
+	ln -sf mysql/$(basename ${lien}) ${PKG}/usr/lib${LIBDIRSUFFIX}/$(basename ${lien})
+done
+
+# On renomme le binaire 32 bits pour l'envelopper :
+mv ${PKG}/usr/bin/mysql_config{,-32}
+
+# On re-déballe et on se re-place dans les sources :
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On re-vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=64
+
+# Compilation pour 64 bits :
+SLKCFLAGS="-O2 -fPIC -pipe"
+LIBDIRSUFFIX="64"
+CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/srv/mysql \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-assembler \
+	--enable-largefile \
+	--enable-thread-safe-client \
+	--with-embedded-privilege-control \
+	--with-embedded-server \
+	--with-extra-charsets=complex \
+	--with-mysqld-user=mysql \
+	--with-plugins=csv,myisam,myisammrg,heap,innobase \
+	--with-unix-socket-path=/var/run/mysql/mysql.sock \
+	--with-readline \
+	--with-ssl=/usr \
+	--without-debug \
+	--build=${TARGET64}
+
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On lie les bibliothèques à l'emplacement standard :
+for lien in $(find ${PKG}/usr/lib${LIBDIRSUFFIX}/ -type f -name "libmysqlclient*.so"); do
+	ln -sf mysql/$(basename ${lien}) ${PKG}/usr/lib${LIBDIRSUFFIX}/$(basename ${lien})
+done
+
+# On renomme le binaire 64 bits pour l'envelopper :
+mv ${PKG}/usr/bin/mysql_config{,-64}
+
+# On lie un faux binare au programme enveloppe :
+ln -sf multiarch_wrapper ${PKG}/usr/bin/mysql_config
+
+# On crée les différents liens utiles vers le binaire 'mysqlcheck' :
+ln -sf mysqlcheck ${PKG}/usr/bin/mysqlanalyze
+ln -sf mysqlcheck ${PKG}/usr/bin/mysqloptimize
+ln -sf mysqlcheck ${PKG}/usr/bin/mysqlrepair
+
+# On ajoute les entêtes :
+for entete in $(find {include,regex,sql} -type f); do
+	cp ${entete} ${PKG}/usr/include/mysql/
+done
+
+# On nettoie les répertoire de tests :
+rm -rf ${PKG}/usr/{mysql-test,sql-bench}
+
+# On place le fichier service :
+cp -a $CWD/rc.mysqld ${PKG}/etc/rc.d/
+
+# On place une configuration par défaut pour serveur de taille « moyenne » :
+cp ${PKG}/usr/share/mysql/my-medium.cnf ${PKG}/etc/my.cnf
+
+# On compresse les manuels :
+if [ -d ${PKG}/usr/man ]; then
+	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+	for manpage in $(find ${PKG}/usr/man -type l) ; do
+		ln -s $(readlink $manpage).gz ${manpage}.gz
+		rm -f ${manpage}
+	done
+fi
+
+# On compresse les pages info :
+if [ -d ${PKG}/usr/info ]; then
+	rm -f ${PKG}/usr/info/dir
+	gzip -9 ${PKG}/usr/info/*.info*
+fi
+
+# Installation de la documentation :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
+
+# On installe le slack-desc :
+mkdir -p ${PKG}/install
+echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+# On installe le doinst.sh :
+cat > ${PKG}/install/doinst.sh << "EOF"
+#!/usr/bin/env bash
+if [ -x sbin/ldconfig ]; then
+	sbin/ldconfig -r .
+fi
+
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
+
+# On crée les bases si rien n'est déjà là :
+if [ "$(find srv/mysql/)" = "" ]; then
+	touch var/log/mysql/mysql.{err,log}
+	mysql_secure_installation --user=mysql
+	chgrp mysql srv/mysql/{,test,mysql}
+fi
+
+EOF
+
+# On "strippe" tout ce qu'on trouve :
+find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
+# On vérifie enfin les droits de la doc, souvent problématiques :
+find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# Empaquetage !
+cd ${PKG}
+mkdir -p $OUT
+PACKAGING="
+	chown root:root . -R
+	chown -R mysql:mysql var/{log,run}/mysql
+	chown mysql:mysql var/log/mysql/mysql*
+	chmod 0660 var/log/mysql/mysql*
+	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
+	rm -rf ${PKG}
+	if [ ! \"X${NAME}\" = \"X\" ]; then
+		if [ -d $TMP/${NAME} ]; then
+			rm -rf $TMP/${NAME}
+		fi
+	fi"
+
+if [ "$(which fakeroot 2> /dev/null)" ]; then
+	echo "${PACKAGING}" | fakeroot
+else
+	su -c "${PACKAGING}"
+fi
+
+exit 0
