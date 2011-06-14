@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-NVIDIA}
-VERSION=${VERSION:-270.41.19}
+VERSION=${VERSION:-275.09.07}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-nvidia}
 BUILD=${BUILD:-1}
