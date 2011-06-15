@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-firefox}
 VERSION=${VERSION:-4.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -138,11 +138,6 @@ unset USE_ARCH
 
 # On ne garde qu'un répertoire racine :
 rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-devel-${VERSION}
-
-# On copie nos types MIME (URL en "about:", "mailto:", etc.) :
-if [ -d ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/defaults/profile ]; then
-	cp -a $CWD/mimeTypes.rdf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/defaults/profile/
-fi
 
 # On crée le répertoire général pour les plugins :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
