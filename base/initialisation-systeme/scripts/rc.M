@@ -90,6 +90,21 @@ if [ -x /usr/sbin/crond ]; then
 	/usr/sbin/crond -l10 >> /var/log/cron 2>&1
 fi
 
+# Lancement de MySQL :
+if [ -x /etc/rc.d/rc.mysqld ]; then
+	. /etc/rc.d/rc.mysqld start
+fi
+
+# Lancement d'Apache :
+if [ -x /etc/rc.d/rc.httpd ]; then
+	. /etc/rc.d/rc.httpd start
+fi
+
+# Lancement de Samba :
+if [ -x /etc/rc.d/rc.samba ]; then
+	. /etc/rc.d/rc.samba start
+fi
+
 # Lancement du serveur de pointage GPM :
 if [ -x /etc/rc.d/rc.gpm ]; then
 	. /etc/rc.d/rc.gpm start
