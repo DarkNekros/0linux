@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-mysql}
 VERSION=${VERSION:-5.1.57}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-mysql}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -166,7 +166,7 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On lie les bibliothèques à l'emplacement standard :
-for lien in $(find ${PKG}/usr/lib${LIBDIRSUFFIX}/ -type f -name "libmysqlclient*.so"); do
+for lien in $(find ${PKG}/usr/lib${LIBDIRSUFFIX}/mysql -type f -name "libmysqlclient*.so"); do
 	ln -sf mysql/$(basename ${lien}) ${PKG}/usr/lib${LIBDIRSUFFIX}/$(basename ${lien})
 done
 
