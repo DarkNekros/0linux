@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-mysql}
 VERSION=${VERSION:-5.1.57}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-mysql}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -108,9 +108,11 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On lie les bibliothèques à l'emplacement standard :
-for lien in $(find ${PKG}/usr/lib${LIBDIRSUFFIX}/ -type f -name "libmysqlclient*.so"); do
-	ln -sf mysql/$(basename ${lien}) ${PKG}/usr/lib${LIBDIRSUFFIX}/$(basename ${lien})
-done
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/libmysqlclient*so*
+ln -sf mysql/libmysqlclient.so ${PKG}/usr/lib${LIBDIRSUFFIX}/
+ln -sf mysql/libmysqlclient.so.16 ${PKG}/usr/lib${LIBDIRSUFFIX}/
+ln -sf mysql/libmysqlclient_r.so ${PKG}/usr/lib${LIBDIRSUFFIX}/
+ln -sf mysql/libmysqlclient_r.so.16 ${PKG}/usr/lib${LIBDIRSUFFIX}/
 
 # On renomme le binaire 32 bits pour l'envelopper :
 mv ${PKG}/usr/bin/mysql_config{,-32}
@@ -166,9 +168,11 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On lie les bibliothèques à l'emplacement standard :
-for lien in $(find ${PKG}/usr/lib${LIBDIRSUFFIX}/mysql -type f -name "libmysqlclient*.so"); do
-	ln -sf mysql/$(basename ${lien}) ${PKG}/usr/lib${LIBDIRSUFFIX}/$(basename ${lien})
-done
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/libmysqlclient*so*
+ln -sf mysql/libmysqlclient.so ${PKG}/usr/lib${LIBDIRSUFFIX}/
+ln -sf mysql/libmysqlclient.so.16 ${PKG}/usr/lib${LIBDIRSUFFIX}/
+ln -sf mysql/libmysqlclient_r.so ${PKG}/usr/lib${LIBDIRSUFFIX}/
+ln -sf mysql/libmysqlclient_r.so.16 ${PKG}/usr/lib${LIBDIRSUFFIX}/
 
 # On renomme le binaire 64 bits pour l'envelopper :
 mv ${PKG}/usr/bin/mysql_config{,-64}
