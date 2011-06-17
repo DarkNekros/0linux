@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-firefox}
 VERSION=${VERSION:-4.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -110,17 +110,26 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--disable-installer \
 	--disable-mailnews \
 	--disable-necko-wifi \
+	--disable-updater \
 	--enable-canvas \
+	--enable-canvas3d \
 	--enable-cpp-rtti \
 	--enable-crypto \
 	--enable-default-toolkit=cairo-gtk2 \
 	--enable-faststart \
+	--enable-gconf \
+	--enable-gio \
+	--enable-libnotify \
 	--enable-official-branding \
 	--enable-optimize=-O2 \
+	--enable-pango \
+	--enable-places \
+	--enable-printing \
 	--enable-reorder \
 	--enable-safe-browsing \
 	--enable-single-profile \
 	--enable-startup-notification \
+	--enable-smil \
 	--enable-strip \
 	--enable-svg \
 	--enable-system-cairo \
