@@ -13,10 +13,10 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-4.0.1}
+VERSION=${VERSION:-5.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
