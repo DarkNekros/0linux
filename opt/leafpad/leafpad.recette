@@ -12,11 +12,11 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-mousepad}
-VERSION=${VERSION:-0.2.16}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-mousepad}
-BUILD=${BUILD:-3}
+NAMESRC=${NAMESRC:-leafpad}
+VERSION=${VERSION:-0.8.18.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-leafpad}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -28,10 +28,11 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://www.xfce.org/archive/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+WGET=${WGET:-http://savannah.nongnu.org/download/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Éditeur de texte pour XFCE"
+SLACKDESC="Éditeur texte simple en GTK+"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -43,7 +44,7 @@ fi
 # On télécharge les sources :
 if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
 	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
-	mv ${NAMESRC}-${VERSION}.$EXT.part ${NAMESRC}-${VERSION}.$EXT
+	mv ${NAMESRC}-${VERSION}.$EXT{.part,}
 fi
 
 # On les vérifie :
@@ -54,7 +55,7 @@ PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
 
 # On déballe et on se place dans les sources :
-NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
@@ -109,7 +110,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
