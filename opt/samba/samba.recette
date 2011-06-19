@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-samba}
-VERSION=${VERSION:-3.5.8}
+VERSION=${VERSION:-3.5.9}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-samba}
 BUILD=${BUILD:-1}
