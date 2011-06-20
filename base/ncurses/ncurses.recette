@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-ncurses}
 VERSION=${VERSION:-5.7}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-ncurses}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -27,7 +27,9 @@ BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
 WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="ANNOUNCE INSTALL MANIFEST NEWS README* TO-DO"
+DOC="ANNOUNCE AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* \
+	*LEGAL* *LICENSE* MAINTAINERS MANIFEST *NEWS* *README* THANKS TODO TO-DO \
+	*license* *readme* doc/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèque d'affichage « new curses »"
 ########################################
@@ -72,6 +74,8 @@ SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure --prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
@@ -140,6 +144,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
@@ -222,9 +228,8 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/c++
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 cp -a c++/{NEWS,PROBLEMS,README-first} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/c++
-cp -a doc/ ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
