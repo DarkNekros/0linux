@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-mesa-demos}
 VERSION=${VERSION:-8.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mesa-demos}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -92,6 +92,10 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On renomme ces 2 binaires aux noms beaucoup trop génériques :
+mv ${PKG}/usr/bin/{,glx}clear
+mv ${PKG}/usr/bin/{,glx}line
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
