@@ -12,9 +12,8 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-
 NAMESRC=${NAMESRC:-util-linux}
-VERSION=${VERSION:-2.19}
+VERSION=${VERSION:-2.19.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-util-linux}
 BUILD=${BUILD:-1}
@@ -28,7 +27,8 @@ BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
 WGET=${WGET:-http://www.kernel.org/pub/linux/utils/$NAMESRC/v$(echo ${VERSION} | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="ABOUT-NLS AUTHORS COPYING DEPRECATED INSTALL NEWS README* TODO docs/*"
+DOC="ABOUT-NLS AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* DEPRECATED HACKING *INSTALL* \
+	*LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Ensemble d'outils système vitaux"
 ########################################
@@ -194,7 +194,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
