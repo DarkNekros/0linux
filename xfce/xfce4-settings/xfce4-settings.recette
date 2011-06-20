@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-xfce4-settings}
 VERSION=${VERSION:-4.8.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-settings}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -29,7 +29,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.xfce.org/archive/src/xfce/$NAMESRC/$(echo $VERSION | cut -d '.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README TODO"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Paramètres d'XFCE"
 ########################################
@@ -122,7 +123,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install

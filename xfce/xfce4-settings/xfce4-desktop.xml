@@ -4,9 +4,9 @@
   <property name="backdrop" type="empty">
     <property name="screen0" type="empty">
       <property name="monitor0" type="empty">
-        <property name="image-path" type="string" value="/usr/share/papiers_peints/tyrry04-1600*1200.png"/>
-        <property name="last-image" type="string" value="/usr/share/papiers_peints/tyrry02-1600*1200.png"/>
-        <property name="last-single-image" type="string" value="/usr/share/papiers_peints/tyrry01-1600*1200.png"/>
+        <property name="image-path" type="string" value="/usr/share/papiers_peints/tyrry02-1600*1200.png"/>
+        <property name="last-image" type="string" value="/usr/share/papiers_peints/tyrry01-1600*1200.png"/>
+        <property name="last-single-image" type="string" value="/usr/share/papiers_peints/tyrry04-1600*1200.png"/>
         <property name="image-show" type="bool" value="true"/>
       </property>
     </property>
