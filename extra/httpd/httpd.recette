@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-httpd}
 VERSION=${VERSION:-2.2.19}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-httpd}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -65,84 +65,6 @@ tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
 cd ${NAME}
 
 # On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# Les emplacements à la Slackware restent les plus cohérents (et mes préférés) :
-cat >> config.layout << "EOF"
-# Slackware FHS :
-<Layout Slackware>
-    prefix:          /usr
-    exec_prefix:     ${prefix}
-    bindir:          ${prefix}/bin
-    sbindir:         ${prefix}/sbin
-    libdir:          ${prefix}/lib/httpd
-    libexecdir:      ${prefix}/lib/httpd/modules
-    installbuilddir: ${prefix}/lib/httpd/build
-    mandir:          ${prefix}/man
-    sysconfdir:      /etc/httpd
-    datadir:         /srv/httpd
-    iconsdir:        ${datadir}/icons
-    htdocsdir:       ${datadir}/htdocs
-    manualdir:       ${htdocsdir}/manual
-    cgidir:          ${datadir}/cgi-bin
-    errordir:        ${datadir}/error
-    includedir:      ${prefix}/include/httpd
-    localstatedir:   /var
-    runtimedir:      ${localstatedir}/run/httpd
-    logfiledir:      ${localstatedir}/log/httpd
-    proxycachedir:   ${localstatedir}/cache/httpd
-</Layout>
-
-EOF
-
-# On positionne USE_ARCH :
-export USE_ARCH=32
-
-# Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
-LIBDIRSUFFIX=""
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc/httpd \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-cgi \
-	--enable-layout=Slackware \
-	--enable-mods-shared=all \
-	--enable-pie \
-	--enable-ssl \
-	--enable-so \
-	--enable-rewrite \
-	--enable-vhost-alias \
-	--with-apr=/usr \
-	--with-apr-util=/usr \
-	--with-mpm=prefork \
-	--with-pcre \
-	--build=${TARGET32}
-
-make -j3 || make
-fakeroot make install DESTDIR=${PKG}
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
-# On re-déballe et on se re-place dans les sources :
-cd $TMP
-rm -rf ${NAME}
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
-
-# On re-vérifie les permissions des sources :
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
@@ -213,15 +135,8 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On exécute Apache en tant que 'apaxche' et non 'daemon' :
-sed -i -e 's/^User daemon/User apache/' -e 's/^Group daemon/Group apache/' ${PKG}/etc/httpd/httpd.conf
-
-# On ajoute le module PHP à Apache :
-cat >> ${PKG}/etc/httpd/httpd.conf << EOF
-# Module pour activer PHP :
-Include /etc/httpd/mod_php.conf
-
-EOF
+# On place notre 'httpd.conf' traduit sans rien écraser :
+cp -a $CWD/httpd.conf ${PKG}/etc/httpd/httpd.conf.new
 
 # On place le fichier service, sans le rendre exécutable :
 cp -a $CWD/rc.httpd ${PKG}/etc/rc.d/
@@ -244,11 +159,14 @@ cat > ${PKG}/etc/logrotate.d/httpd.new << "EOF"
 EOF
 
 # On veille à n'écraser aucun fichier de configuration :
-mv ${PKG}/etc/httpd/httpd.conf{,.new}
 for fichierconfig in ${PKG}/etc/httpd/extra/*; do
 	mv ${fichierconfig}{,.new}
 done
-  
+
+# On traduit le fichier contenant « It works! » sans rien écraser :
+sed -i 's@It works!@Ça marche\&nbsp;!@' ${PKG}/srv/httpd/htdocs/index.html
+mv ${PKG}/srv/httpd/htdocs/index.html{,.new}
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -304,6 +222,7 @@ fi
 
 config etc/httpd/httpd.conf.new
 config etc/logrotate.d/httpd.new
+config srv/httpd/htdocs/index.html.new
 
 for fichier in etc/httpd/extra/*.new; do
 	config $fichier
