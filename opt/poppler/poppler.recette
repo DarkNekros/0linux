@@ -7,17 +7,18 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-poppler}
+NAMESRCDATA=${NAMESRCDATA:-poppler-data}
 VERSION=${VERSION:-0.14.4}
+VERSIONDATA=${VERSIONDATA:-0.4.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-poppler}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -52,18 +53,13 @@ fi
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On télécharge l'archive « data » :
-if [ ! -r poppler-data-0.4.0.tar.gz ]; then
-	wget -vc $WGETDATA -O poppler-data-0.4.0.tar.gz.part
-	mv poppler-data-0.4.0.tar.gz.part poppler-data-0.4.0.tar.gz
+if [ ! -r ${NAMESRCDATA}-${VERSIONDATA}.$EXT ]; then
+	wget -vc $WGETDATA -O ${NAMESRCDATA}-${VERSIONDATA}.$EXT.part
+	mv ${NAMESRCDATA}-${VERSIONDATA}.$EXT{.part,}
 fi
 
 # On la vérifie :
-tar ft poppler-data-0.4.0.tar.gz 1> /dev/null 2> /dev/null
-TARERROR=$?
-if [ ! "$TARERROR" = "0" ]; then
-	echo "Erreur à la lecture de l'archive source. Celle-ci semble corrompue (Erreur $TARERROR)."
-	exit 1
-fi
+tar ft ${NAMESRCDATA}-${VERSIONDATA}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
@@ -75,7 +71,7 @@ cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-tar xf $CWD/poppler-data-0.4.0.tar.gz
+tar xf $CWD/${NAMESRCDATA}-${VERSIONDATA}.$EXT
 cd $TMP/${NAME}
 
 # On vérifie les permissions des sources :
@@ -83,13 +79,13 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On installe avant toute chose les «data » :
-cd $TMP/poppler-data-0.4.0
-make install prefix=/usr DESTDIR=${PKG}
-cd $TMP/${NAME}
-
 # On positionne USE_ARCH :
 export USE_ARCH=32
+
+# On installe avant toute chose les «data » :
+cd $TMP/${NAMESRCDATA}-${VERSIONDATA}
+fakeroot make install prefix=/usr DESTDIR=${PKG}
+cd $TMP/${NAME}
 
 # Compilation pour 32 bits :
 SLKCFLAGS="-O2 -march=i686 -pipe"
@@ -120,6 +116,7 @@ cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+tar xf $CWD/${NAMESRCDATA}-${VERSIONDATA}.$EXT
 cd ${NAME}
 
 # On re-vérifie les permissions des sources :
@@ -129,6 +126,11 @@ find . \
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
+
+# On installe avant toute chose les «data » :
+cd $TMP/${NAMESRCDATA}-${VERSIONDATA}
+fakeroot make install prefix=/usr DESTDIR=${PKG}
+cd $TMP/${NAME}
 
 # Compilation pour 64 bits :
 SLKCFLAGS="-O2 -fPIC -pipe"
