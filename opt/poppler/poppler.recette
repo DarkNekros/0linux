@@ -14,11 +14,11 @@ done
 
 NAMESRC=${NAMESRC:-poppler}
 NAMESRCDATA=${NAMESRCDATA:-poppler-data}
-VERSION=${VERSION:-0.14.4}
-VERSIONDATA=${VERSIONDATA:-0.4.0}
+VERSION=${VERSION:-0.16.7}
+VERSIONDATA=${VERSIONDATA:-0.4.4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-poppler}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -32,7 +32,8 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://poppler.freedesktop.org/$NAMESRC-$VERSION.$EXT}
 WGETDATA=${WGETDATA:-http://poppler.freedesktop.org/poppler-data-0.4.0.tar.gz}
-DOC="AUTHORS ChangeLog COPYING INSTALL NEWS README* TODO"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèque de rendu PDF"
 ########################################
@@ -83,7 +84,7 @@ find . \
 export USE_ARCH=32
 
 # On installe avant toute chose les «data » :
-cd $TMP/${NAMESRCDATA}-${VERSIONDATA}
+cd $TMP/${NAMESRCDATA}-0.4.0
 fakeroot make install prefix=/usr DESTDIR=${PKG}
 cd $TMP/${NAME}
 
@@ -102,6 +103,11 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-cairo-output \
+	--enable-libjpeg \
+	--enable-poppler-glib \
+	--enable-poppler-qt4 \
+	--enable-xpdf-headers \
 	--enable-zlib \
 	--build=${TARGET32}
 
@@ -128,7 +134,7 @@ find . \
 export USE_ARCH=64
 
 # On installe avant toute chose les «data » :
-cd $TMP/${NAMESRCDATA}-${VERSIONDATA}
+cd $TMP/${NAMESRCDATA}-0.4.0
 fakeroot make install prefix=/usr DESTDIR=${PKG}
 cd $TMP/${NAME}
 
@@ -147,6 +153,11 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-cairo-output \
+	--enable-libjpeg \
+	--enable-poppler-glib \
+	--enable-poppler-qt4 \
+	--enable-xpdf-headers \
 	--enable-zlib \
 	--build=${TARGET64}
 
@@ -173,7 +184,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
