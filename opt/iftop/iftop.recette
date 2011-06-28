@@ -12,10 +12,10 @@ for categ in base extra opt xfce xorg; do
 	fi
 done
 
-NAMESRC=${NAMESRC:-libpcap}
-VERSION=${VERSION:-1.1.1}
+NAMESRC=${NAMESRC:-iftop}
+VERSION=${VERSION:-0.17}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libpcap}
+NAMETGZ=${NAMETGZ:-iftop}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -28,11 +28,11 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://www.tcpdump.org/release/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.ex-parrot.com/pdw/$NAMESRC/download/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
 	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Bibliothèque de capture du trafic réseau"
+SLACKDESC="Outil de visualisation réseau"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -68,6 +68,43 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On positionne USE_ARCH :
+export USE_ARCH=32
+
+# Compilation pour 32 bits :
+SLKCFLAGS="-O2 -march=i686 -pipe"
+LIBDIRSUFFIX=""
+CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
+CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${TARGET32}
+
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On re-déballe et on se re-place dans les sources :
+cd $TMP
+rm -rf ${NAME}
+echo "Extraction en cours..."
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
+
+# On re-vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
 export USE_ARCH=64
 
 # Compilation pour 64 bits :
@@ -84,7 +121,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -92,12 +128,6 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On renomme le binaire 64 bits pour l'envelopper :
-mv ${PKG}/usr/bin/pcap-config{,-64}
-
-# On lie un faux binaire au programme enveloppe :
-ln -sf multiarch_wrapper ${PKG}/usr/bin/pcap-config
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
