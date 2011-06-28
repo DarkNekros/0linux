@@ -14,7 +14,7 @@ done
 
 VERSION=${VERSION:-0.9}
 NAMETGZ=${NAMETGZ:-base-systeme}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -45,9 +45,9 @@ mkdir -p ${PKG}/var/{cache,empty,local,lock,mail,opt,run,spool,tmp}
 mkdir -p ${PKG}/var/log/{packages,removed_packages,removed_scripts,setup,scripts}
 
 # On spécifie certaines permissions :
-chmod 0710 ${PKG}/root
+chmod 1710 ${PKG}/root
 chmod 1777 ${PKG}/tmp
-chmod 1777 ${PKG}/usr/local/paquets
+chmod -R 777 ${PKG}/usr/local/paquets
 
 # Le lien très important pour 'bash' :
 ln -sf bash $PKG/bin/sh
