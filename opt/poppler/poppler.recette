@@ -18,7 +18,7 @@ VERSION=${VERSION:-0.16.7}
 VERSIONDATA=${VERSIONDATA:-0.4.4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-poppler}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
