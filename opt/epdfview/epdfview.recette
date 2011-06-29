@@ -7,17 +7,16 @@ CWD=$(pwd)
 
 # On définit la catégorie du paquet :
 for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
+	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
+		PKGCAT="$categ"
+	fi
 done
 
-
 NAMESRC=${NAMESRC:-epdfview}
-VERSION=${VERSION:-0.1.7}
+VERSION=${VERSION:-0.1.8}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-epdfview}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -30,7 +29,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://trac.emma-soft.com/$NAMESRC/chrome/site/releases/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS COPYING INSTALL NEWS README"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Visionneuse de documents PDF"
 ########################################
@@ -119,7 +119,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -147,10 +147,13 @@ if [ -x usr/bin/update-desktop-database ]; then
 	chroot . /usr/bin/update-desktop-database &> /dev/null
 fi
 
+if [ -x /usr/bin/update-mime-database ]; then
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
+fi
+
 if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
-
 EOF
 
 # On "strippe" tout ce qu'on trouve :
