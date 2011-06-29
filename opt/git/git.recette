@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-git}
-VERSION=${VERSION:-1.7.5.3}
+VERSION=${VERSION:-1.7.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-git}
 BUILD=${BUILD:-1}
