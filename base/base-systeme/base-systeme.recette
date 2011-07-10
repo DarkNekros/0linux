@@ -14,7 +14,7 @@ done
 
 VERSION=${VERSION:-0.9}
 NAMETGZ=${NAMETGZ:-base-systeme}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -38,7 +38,7 @@ mkdir -p ${PKG}/{bin,boot,dev,home,lib,lib64,opt,proc,root,sbin,srv,sys,tmp}
 mkdir -p ${PKG}/etc/X11
 mkdir -p ${PKG}/media/{cdrecorder0,cdrecorder1,cdrom0,cdrom1,dvd0,dvd1,floppy0,floppy1,hd0,hd1,memory0,memory1,zip0,zip1}
 mkdir -p ${PKG}/mnt/{cdrecorder,cdrom,dvd,floppy,hd,memory,tmp,zip}
-mkdir -p ${PKG}/usr/{bin,dict,doc,include,info,lib,lib64,local/paquets/{base,extra,opt,xfce,xorg},sbin,src}
+mkdir -p ${PKG}/usr/{bin,dict,doc,include,info,lib,lib64,local/{logs,paquets/{base,extra,opt,xfce,xorg}},sbin,src}
 mkdir -p ${PKG}/usr/man/man{1,2,3,4,5,6,7,8,9,n}
 mkdir -p ${PKG}/usr/share/{games,wallpapers}
 mkdir -p ${PKG}/var/{cache,empty,local,lock,mail,opt,run,spool,tmp}
@@ -47,7 +47,7 @@ mkdir -p ${PKG}/var/log/{packages,removed_packages,removed_scripts,setup,scripts
 # On spécifie certaines permissions :
 chmod 1710 ${PKG}/root
 chmod 1777 ${PKG}/tmp
-chmod -R 777 ${PKG}/usr/local/paquets
+chmod -R 777 ${PKG}/usr/local/{logs,paquets}
 
 # Le lien très important pour 'bash' :
 ln -sf bash $PKG/bin/sh
