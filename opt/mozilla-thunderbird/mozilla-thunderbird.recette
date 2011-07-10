@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-3.1.9}
+VERSION=${VERSION:-5.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
 BUILD=${BUILD:-1}
@@ -71,11 +71,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On force 'thunderbird' à se conformer à la langue du système :
+# On force 'thunderbird' à se conformer à la langue du système et on corrige les bibliothèque spartagées :
 cat $CWD/thunderbird.lang.patch | patch -p1
-
-# On corrige le processus de compilation en statique :
-cat $CWD/thunderbird.shared-error.patch | patch -p1
+cat $CWD/thunderbird.shared-error.patch | patch -p0
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -84,9 +82,10 @@ export USE_ARCH=64
 SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 
-MOZILLA_OFFICIAL="1" BUILD_OFFICIAL="1" MOZ_PHOENIX="1" \
+MOZILLA_OFFICIAL="1" BUILD_OFFICIAL="1" MOZ_PHOENIX="1" MOZ_CO_PROJECT=mail \
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+MOZ_MAKE_FLAGS="${SLKCFLAGS}" \
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
@@ -111,12 +110,12 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-single-profile \
 	--enable-faststart \
 	--enable-startup-notification \
-	--enable-optimize=-O2 \
 	--disable-ldap \
 	--disable-accessibility \
 	--disable-debug \
 	--disable-tests \
 	--disable-logging \
+	--disable-optimize \
 	--disable-pedantic \
 	--disable-installer \
 	--disable-updater \
@@ -125,7 +124,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64} \
 	--host=${TARGET64} 
 
-make -j3 || make
+make -j6 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :

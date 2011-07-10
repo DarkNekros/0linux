@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-firefox}
 VERSION=${VERSION:-5.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -74,9 +74,6 @@ find . \
 
 # On force 'firefox' à se conformer à la langue du système :
 cat $CWD/mozilla-firefox.lang.patch | patch -p1
-
-# On corrige les types MIME avec les nôtres :
-cat $CWD/mozilla-firefox.mime.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -182,6 +179,10 @@ mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/defaul
 cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons
 cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
 cp ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons/*.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
+
+# On ajoute le fichier corrigeant la CSS pour les thèmes GTK sombres :
+mkdir -p ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/chrome
+cp -a $CWD/userChrome.css ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/chrome/
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
