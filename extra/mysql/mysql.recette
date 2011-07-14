@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-mysql}
 VERSION=${VERSION:-5.1.57}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-mysql}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -54,7 +54,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/etc/rc.d
 mkdir -p ${PKG}/srv/mysql
-mkdir -p ${PKG}/var/{log,run/mysql}
+mkdir -p ${PKG}/var/{lib/mysql,log,run/mysql}
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
