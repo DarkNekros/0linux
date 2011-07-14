@@ -32,6 +32,7 @@ shadow:x:43:
 avahi:x:44:
 ftp:x:50:
 oprofile:x:51:
+tomcat:x:66:
 apache:x:80:
 messagebus:x:81:
 haldaemon:x:82:
