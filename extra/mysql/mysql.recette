@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-mysql}
 VERSION=${VERSION:-5.1.57}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-mysql}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -265,6 +265,7 @@ PACKAGING="
 	chown root:root . -R
 	chown -R mysql:mysql var/{log,run}/mysql
 	chown mysql:mysql var/log/mysql/mysql*
+	chown mysql:mysql srv/mysql
 	chmod 0660 var/log/mysql/mysql*
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
