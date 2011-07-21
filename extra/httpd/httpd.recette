@@ -16,7 +16,7 @@ NAMESRC=${NAMESRC:-httpd}
 VERSION=${VERSION:-2.2.19}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-httpd}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -164,7 +164,7 @@ for fichierconfig in ${PKG}/etc/httpd/extra/*; do
 done
 
 # On traduit le fichier contenant « It works! » sans rien écraser :
-sed -i 's@It works!@Ça marche\&nbsp;!@' ${PKG}/srv/httpd/htdocs/index.html
+sed -i 's@It works!@\&Ccedil;a marche\&nbsp;!@' ${PKG}/srv/httpd/htdocs/index.html
 mv ${PKG}/srv/httpd/htdocs/index.html{,.new}
 
 # On compresse les manuels :
