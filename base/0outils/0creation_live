@@ -178,7 +178,7 @@ chroot ${LIVEOS} spackrm /var/log/paquets/{libX*,libxcb*,freetype*,x11-libs*,lib
 
 # base
 for paq in multiarch_wrapper* vim* bzip2* zlib* tar* gpm* \
-linux-headers* dhcp-* perl* infozip* gfxboot* dialog* libxml2* sgml-common* \
+linux-entetes* dhcp-* perl* infozip* gfxboot* dialog* libxml2* sgml-common* \
 linux-modules* popt* binutils* tree* vim*; do
 	
 	chroot ${LIVEOS} spackrm /var/log/paquets/${paq} &>/dev/null 2>&1
