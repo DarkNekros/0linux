@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-enlightenment}
 VERSION=${VERSION:-0.16.999.55225}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-enlightenment}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -129,6 +129,7 @@ cat > ${PKG}/etc/X11/xinit/xinitrc.e << "EOF"
 exec ck-launch-session enlightenment_start
 
 EOF
+chmod 755 ${PKG}/etc/X11/xinit/xinitrc.e
 
 # On veille à ne rien écraser :
 mv ${PKG}/etc/enlightenment/sysactions.conf{,.new}
