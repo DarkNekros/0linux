@@ -9,20 +9,12 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=base
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-2.6.39}
-SRCVERSION="$(echo ${VERSION} | sed 's/_/-/')"
+VERSION=${VERSION:-3.0} # Attention à '/lib/modules/x.x.x' !!
 EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-linux}
-NAMETGZHEADERS=${NAMETGZHEADERS:-linux-headers}
+NAMETGZ=${NAMETGZ:-linux-noyau}
+NAMETGZHEADERS=${NAMETGZHEADERS:-linux-entetes}
 NAMETGZMODULES=${NAMETGZMODULES:-linux-modules}
 NAMETGZSOURCE=${NAMETGZSOURCE:-linux-source}
 BUILD=${BUILD:-1}
@@ -35,7 +27,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$SRCVERSION.$EXT}
+WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v${VERSION}/$NAMESRC-$VERSION.$EXT}
 ##########
 SLACKDESC="Le noyau Linux"
 SLACKDESCHEADERS="Les fichiers d'en-tête du noyau Linux"
@@ -100,23 +92,23 @@ fi
 # On compile le noyau :
 SLKCFLAGS="-pipe"
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-make -j3
+make -j6
 
 # On copie le noyau fraîchement compilé, le fichier System.map et le .config
 # dans /boot, agrémentés de leur version et on récupère le '.config' pour nos
 # prochains paquets :
-cp -a arch/x86/boot/bzImage ${PKG}/boot/noyau-${SRCVERSION}
-cp -a System.map ${PKG}/boot/System.map-${SRCVERSION}
-cp -a .config ${PKG}/boot/config-${SRCVERSION}
+cp -a arch/x86/boot/bzImage ${PKG}/boot/noyau-${VERSION}
+cp -a System.map ${PKG}/boot/System.map-${VERSION}
+cp -a .config ${PKG}/boot/config-${VERSION}
 cat .config > $CWD/config
 
 # Puis on crée un lien 'vmlinuz' pour l'intérêt historique (et pour ne pas casser
 # de scripts utilisant le nom de fichier « vmlinuz ») :
-ln -sf noyau-${SRCVERSION} ${PKG}/boot/vmlinuz
+ln -sf noyau-${VERSION} ${PKG}/boot/vmlinuz
 
 # On relie l'ensemble des fichiers par défaut à « *-$VERSION » :
-ln -sf System.map-${SRCVERSION} ${PKG}/boot/System.map
-ln -sf config-${SRCVERSION} ${PKG}/boot/config
+ln -sf System.map-${VERSION} ${PKG}/boot/System.map
+ln -sf config-${VERSION} ${PKG}/boot/config
 
 ### 2- On génère le paquet pour les entêtes du noyau. ###
 
@@ -146,10 +138,10 @@ cat $CWD/rc.modules.new > ${PKGMODULES}/etc/rc.d/rc.modules.new
 chmod 755 ${PKGMODULES}/etc/rc.d/rc.modules.new
 
 # On relie enfin les répertoires 'build' et 'source' des modules aux sources du noyau :
-rm -rf ${PKGMODULES}/lib/modules/${SRCVERSION}/build
-rm -rf ${PKGMODULES}/lib/modules/${SRCVERSION}/source
-ln -sf ../../../usr/src/linux-${SRCVERSION} ${PKGMODULES}/lib/modules/${SRCVERSION}/build
-ln -sf ../../../usr/src/linux-${SRCVERSION} ${PKGMODULES}/lib/modules/${SRCVERSION}/source
+rm -rf ${PKGMODULES}/lib/modules/${VERSION}.0/build # !!
+rm -rf ${PKGMODULES}/lib/modules/${VERSION}.0/source # !!
+ln -sf ../../../usr/src/linux-${VERSION} ${PKGMODULES}/lib/modules/${VERSION}.0/build # !!
+ln -sf ../../../usr/src/linux-${VERSION} ${PKGMODULES}/lib/modules/${VERSION}.0/source # !!
 
 ### 3- On génère le paquet des sources du noyau ###
 
@@ -168,7 +160,7 @@ cat $CWD/config > ${PKGSOURCE}/usr/src/${NAME}/.config
 
 # Installation de la documentation (on crée simplement un lien) :
 mkdir -p ${PKGSOURCE}/usr/doc/${NAMETGZSOURCE}-${VERSION}
-ln -sf ../../src/${NAMESRC}-${SRCVERSION}/Documentation ${PKGSOURCE}/usr/doc/${NAMETGZSOURCE}-${VERSION}/Documentation
+ln -sf ../../src/${NAMESRC}-${VERSION}/Documentation ${PKGSOURCE}/usr/doc/${NAMETGZSOURCE}-${VERSION}/Documentation
 # Il y a un peu de doc pour les firmwares :
 mkdir -p ${PKGMODULES}/usr/doc/${NAMETGZMODULES}-${VERSION}
 cp -a $TMP/${NAME}/firmware/{README*,WHENCE} ${PKGMODULES}/usr/doc/${NAMETGZMODULES}-${VERSION}
@@ -201,7 +193,7 @@ if [ -r etc/rc.d/rc.modules ]; then
 	if [ ! -L etc/rc.d/rc.modules ]; then
 		cp -a etc/rc.d/rc.modules etc/rc.d/rc.modules.bak
 	else
-		ln -sf rc.modules-${SRCVERSION} etc/rc.d/rc.modules
+		ln -sf rc.modules-${VERSION} etc/rc.d/rc.modules
 	fi
 fi
 
@@ -215,8 +207,8 @@ EOF
 # On installe le doinst.sh des sources :
 cat > ${PKGSOURCE}/install/doinst.sh << EOF
 #!/usr/bin/env bash
-chroot . make -C /usr/src/linux-${SRCVERSION} clean oldconfig prepare scripts
-rm -f usr/src/linux-${SRCVERSION}/.version
+chroot . make -C /usr/src/linux-${VERSION} clean oldconfig prepare scripts
+rm -f usr/src/linux-${VERSION}/.version
 
 EOF
 
