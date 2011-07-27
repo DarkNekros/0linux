@@ -246,7 +246,7 @@ chmod -x ${LIVEOS}/etc/rc.d/rc.reseau
 
 # On déplace et on renomme le nouveau noyau sans sa version :
 rm -f ${NOYAU}
-mv ${LIVEOS}/boot/noyau-2* ${NOYAU}
+mv ${LIVEOS}/boot/noyau-* ${NOYAU}
 
 # On positionne le fuseau à Paris car on est franco-français et chauvin :
 echo "localtime" > ${LIVEOS}/etc/hardwareclock
