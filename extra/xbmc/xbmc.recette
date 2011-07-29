@@ -4,19 +4,12 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=extra
 NAMESRC=${NAMESRC:-xbmc}
 VERSION=${VERSION:-10.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-xbmc}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -52,7 +45,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}
+mkdir -p ${PKG}/etc/X11/xinit
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -107,6 +100,13 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
+# On crée un fichier de démarrage pour lancer uniquement 'xbmc' en tant que « bureau » :
+cat > ${PKG}/etc/X11/xinit/xinitrc.xbmc << "EOF"
+exec ck-launch-session xbmc --standalone
+
+EOF
+chmod 755 ${PKG}/etc/X11/xinit/xinitrc.xbmc
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -124,7 +124,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
