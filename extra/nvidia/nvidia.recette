@@ -4,16 +4,9 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=extra
 NAMESRC=${NAMESRC:-NVIDIA}
-VERSION=${VERSION:-275.09.07}
+VERSION=${VERSION:-275.19}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-nvidia}
 BUILD=${BUILD:-1}
