@@ -4,16 +4,9 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=base
 NAMESRC=${NAMESRC:-iptables}
-VERSION=${VERSION:-1.4.11.1}
+VERSION=${VERSION:-1.4.12}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-iptables}
 BUILD=${BUILD:-1}
@@ -29,7 +22,9 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ftp.netfilter.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="COMMIT_NOTES *COPYING* *INSTALL* INCOMPATIBILITIES"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* COMMIT_NOTES *COPYING* HACKING *INSTALL* \
+	INCOMPATIBILITIES *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
+	*license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de filtrage de paquets pour Linux"
 ########################################
@@ -117,7 +112,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
