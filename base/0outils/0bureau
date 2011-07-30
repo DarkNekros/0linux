@@ -41,9 +41,10 @@ if [ ! "$(grep 'id:4:initdefault' /etc/inittab)" = "" ]; then
 		echo "liste ci-dessous. Xfce est l'environnement par défaut."
 		echo "Appuyez sur ENTRÉE pour ignorer cette étape."
 		echo ""
-		echo "1 : XFCE - environnement de bureau léger en GTK+ (par défaut)"
-		echo "2 : E    - l'environnement graphique « Enlightenement »"
-		echo "3 : TWM  - gestionnaire de fenêtres basique, fourni avec X11"
+		echo "1 : XFCE - Environnement de bureau léger en GTK+ (par défaut)"
+		echo "2 : E    - Environnement graphique « Enlightenement »"
+		echo "3 : XBMC - Centre multimédia autonome XBMC"
+		echo "4 : TWM  - Gestionnaire de fenêtres basique fourni avec X11"
 		echo ""
 		echo -n "Votre choix : "
 		read XDE;
@@ -61,11 +62,15 @@ if [ ! "$(grep 'id:4:initdefault' /etc/inittab)" = "" ]; then
 			break
 		;;
 		"3")
+			XINITRC="xinitrc.xbmc"
+			break
+		;;
+		"4")
 			XINITRC="xinitrc.twm"
 			break
 		;;
 		*)
-			echo "Veuillez entrer un numéro valide (entre 1 et 3) ou appuyez"
+			echo "Veuillez entrer un numéro valide (entre 1 et 4) ou appuyez"
 			echo "sur ENTRÉE."
 			unset XDE
 			sleep 2
