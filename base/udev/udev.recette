@@ -4,16 +4,9 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=base
 NAMESRC=${NAMESRC:-udev}
-VERSION=${VERSION:-171}
+VERSION=${VERSION:-172}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-udev}
 BUILD=${BUILD:-1}
@@ -49,7 +42,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}/{dev,lib/{firmware,udev}}
+mkdir -p ${PKG}/{dev,lib/{firmware,udev},run}
 mkdir -p ${PKG}/lib/udev/devices/{pts,shm}
 
 # On déballe et on se place dans les sources :
