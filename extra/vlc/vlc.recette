@@ -4,16 +4,9 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=extra
 NAMESRC=${NAMESRC:-vlc}
-VERSION=${VERSION:-1.1.10}
+VERSION=${VERSION:-1.1.11}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-vlc}
 BUILD=${BUILD:-1}
@@ -29,7 +22,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
-DOC="ABOUT-NLS AUTHORS COPYING HACKING INSTALL NEWS README THANKS"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Le lecteur multimédia polyvalent VLC"
 ########################################
@@ -230,7 +224,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/vlc
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 if [ -d ${PKG}/usr/share/doc]; then
 	mv ${PKG}/usr/share/doc/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/vlc
 	rm -rf ${PKG}/usr/share/doc
