@@ -4,16 +4,9 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=base
 NAMESRC=${NAMESRC:-LVM2}
-VERSION=${VERSION:-2.02.84}
+VERSION=${VERSION:-2.02.86}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-lvm2}
 BUILD=${BUILD:-1}
@@ -29,7 +22,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://sources.redhat.com/pub/lvm2/releases/${NAMESRC}.${VERSION}.$EXT}
-DOC="COPYING* INSTALL README VERSION* WHATS_NEW*"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO WHATS_NEW* *license* *readme* "
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de gestion des volumes logiques « LVM »"
 ########################################
@@ -215,7 +209,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
