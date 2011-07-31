@@ -12,17 +12,10 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=opt
 NAMESRC=${NAMESRC:-jdk}
-VERSION=${VERSION:-6u26}
-EXT=${EXT:-bin}
+VERSION=${VERSION:-7}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-jdk}
 BUILD=${BUILD:-1}
 
@@ -36,8 +29,8 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET32=${WGET32:-http://download.oracle.com/otn-pub/java/jdk/6u26-b03/jdk-6u26-linux-i586.bin}
-WGET=${WGET:-http://download.oracle.com/otn-pub/java/jdk/6u26-b03/jdk-6u26-linux-x64.bin}
+WGET32=${WGET32:-http://download.oracle.com/otn-pub/java/$NAMESRC/$VERSION/$NAMESRC-$VERSION-linux-i586.$EXT}
+WGET=${WGET:-http://download.oracle.com/otn-pub/java/$NAMESRC/$VERSION/$NAMESRC-$VERSION-linux-x64.$EXT}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Environnements de développement et machines virtuelles pour Java"
 ########################################
@@ -54,28 +47,37 @@ if [ ! -r ${NAMESRC}-${VERSION}-linux-i586.$EXT ]; then
 	mv ${NAMESRC}-${VERSION}-linux-i586.$EXT.part ${NAMESRC}-${VERSION}-linux-i586.$EXT
 fi
 
+# On les vérifie :
+tar ft ${NAMESRC}-${VERSION}-linux-i586.$EXT 1> /dev/null 2> /dev/null
+
 # On télécharge les sources 64 bits :
 if [ ! -r ${NAMESRC}-${VERSION}-linux-x64.$EXT ]; then
 	wget -vc $WGET -O ${NAMESRC}-${VERSION}-linux-x64.$EXT.part
 	mv ${NAMESRC}-${VERSION}-linux-x64.$EXT.part ${NAMESRC}-${VERSION}-linux-x64.$EXT
 fi
 
+# On les vérifie :
+tar ft ${NAMESRC}-${VERSION}-linux-x64.$EXT 1> /dev/null 2> /dev/null
+
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/usr/lib{,64}/mozilla/plugins
 
 # On déballe l'archive 32 bits en se plaçant dans le répertoire d'accueil :
+NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 LIBDIRSUFFIX=""
-LIB_ARCH=i386
+LIB_ARCH="i386"
+
+# On extrait tout au bon endroit :
 cd ${PKG}/usr/lib${LIBDIRSUFFIX}
-chmod +x $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT
-rm -rf jdk1*
 echo "Extraction en cours..."
-yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT --accept-license
-mv jdk1.6.0_* jdk
+tar xf $CWD/${NAMESRC}-${VERSION}-linux-i586.$EXT
+
+# On renomme sans la version :
+mv ${NAME} ${NAMESRC}
 
 # On vérifie les permissions des sources :
-find jdk \
+find ${NAMESRC} \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
@@ -84,20 +86,23 @@ ln -sf ../../../../usr/lib${LIBDIRSUFFIX}/jdk/jre/lib/${LIB_ARCH}/libnpjp2.so \
 	${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins/libnpjp2.so
 
 # On crée un lien pour la machine virtuelle dans le répertoire standard des bibliothèques :
-ln -sf ./jdk/jre/lib/${LIB_ARCH}/server/libjvm.so $PKG/usr/lib${LIBDIRSUFFIX}/libjvm.so
+ln -sf ./jdk/jre/lib/${LIB_ARCH}/server/libjvm.so ${PKG}/usr/lib${LIBDIRSUFFIX}/libjvm.so
 
 # On déballe l'archive 64 bits en se plaçant dans le répertoire d'accueil :
+NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 LIBDIRSUFFIX="64"
-LIB_ARCH=amd64
+LIB_ARCH="amd64"
+
+# On extrait tout au bon endroit :
 cd ${PKG}/usr/lib${LIBDIRSUFFIX}
-chmod +x $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT
-rm -rf jdk1*
 echo "Extraction en cours..."
-yes yes | sh $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT --accept-license
-mv jdk1.6.0_* jdk
+tar xf $CWD/${NAMESRC}-${VERSION}-linux-x64.$EXT
+
+# On renomme sans la version :
+mv ${NAME} ${NAMESRC}
 
 # On vérifie les permissions des sources :
-find jdk \
+find ${NAMESRC} \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
@@ -106,7 +111,7 @@ ln -sf ../../../../usr/lib${LIBDIRSUFFIX}/jdk/jre/lib/${LIB_ARCH}/libnpjp2.so \
 	${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins/libnpjp2.so
 
 # On crée un lien pour la machine virtuelle dans le répertoire standard des bibliothèques :
-ln -sf ./jdk/jre/lib/${LIB_ARCH}/server/libjvm.so $PKG/usr/lib${LIBDIRSUFFIX}/libjvm.so
+ln -sf ./jdk/jre/lib/${LIB_ARCH}/server/libjvm.so ${PKG}/usr/lib${LIBDIRSUFFIX}/libjvm.so
 
 # On installe le fichier profil pour 'jdk' :
 mkdir -p ${PKG}/etc/profile.d
