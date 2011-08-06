@@ -69,6 +69,11 @@ if [ -x /etc/rc.d/rc.consolekit ]; then
 	. /etc/rc.d/rc.consolekit start
 fi
 
+# Restauration de ALSA :
+if [ -x /etc/rc.d/rc.alsa ]; then
+	. /etc/rc.d/rc.alsa
+fi
+
 # Lancement de Avahi :
 if [ -x /etc/rc.d/rc.avahidaemon ]; then
 	. /etc/rc.d/rc.avahidaemon start

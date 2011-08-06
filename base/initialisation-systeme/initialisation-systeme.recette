@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-sysvinit}
 VERSION=${VERSION:-2.88dsf}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-initialisation-systeme}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-6}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
