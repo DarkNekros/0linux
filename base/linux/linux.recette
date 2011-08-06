@@ -11,7 +11,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-3.0} # Attention à '/lib/modules/x.x.x' !!
+VERSION=${VERSION:-3.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-linux-noyau}
 NAMETGZHEADERS=${NAMETGZHEADERS:-linux-entetes}
@@ -27,7 +27,7 @@ TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
-WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v${VERSION}/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.kernel.org/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 ##########
 SLACKDESC="Le noyau Linux"
 SLACKDESCHEADERS="Les fichiers d'en-tête du noyau Linux"
@@ -138,10 +138,10 @@ cat $CWD/rc.modules.new > ${PKGMODULES}/etc/rc.d/rc.modules.new
 chmod 755 ${PKGMODULES}/etc/rc.d/rc.modules.new
 
 # On relie enfin les répertoires 'build' et 'source' des modules aux sources du noyau :
-rm -rf ${PKGMODULES}/lib/modules/${VERSION}.0/build # !!
-rm -rf ${PKGMODULES}/lib/modules/${VERSION}.0/source # !!
-ln -sf ../../../usr/src/linux-${VERSION} ${PKGMODULES}/lib/modules/${VERSION}.0/build # !!
-ln -sf ../../../usr/src/linux-${VERSION} ${PKGMODULES}/lib/modules/${VERSION}.0/source # !!
+rm -rf ${PKGMODULES}/lib/modules/${VERSION}/build
+rm -rf ${PKGMODULES}/lib/modules/${VERSION}/source
+ln -sf ../../../usr/src/linux-${VERSION} ${PKGMODULES}/lib/modules/${VERSION}/build
+ln -sf ../../../usr/src/linux-${VERSION} ${PKGMODULES}/lib/modules/${VERSION}/source
 
 ### 3- On génère le paquet des sources du noyau ###
 
