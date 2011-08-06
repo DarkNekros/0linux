@@ -4,15 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
-done
-
-
+PKGCAT=opt
 NAMESRC=${NAMESRC:-xdg-utils}
 VERSION=${VERSION:-20100506}
 EXT=${EXT:-tar.bz2}

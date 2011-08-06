@@ -4,20 +4,10 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
-done
-
-
+PKGCAT=base
 VERSION=${VERSION:-6.0}
 NAMETGZ=${NAMETGZ:-infozip}
 BUILD=${BUILD:-1}
-
-
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-x86_64}
@@ -25,7 +15,6 @@ TARGET32=${TARGET32:-i686-0-linux-gnu}
 TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
-
 WGET=${WGET:-ftp://ftp.info-zip.org/pub/infozip/src/zip30.tgz}
 WGETUNZIP=${WGETUNZIP:-ftp://ftp.info-zip.org/pub/infozip/src/unzip60.tgz}
 ZIPDOC="zip30/Betas_Readme.txt zip30/BUGS zip30/CHANGES zip30/INSTALL \
@@ -35,55 +24,44 @@ UNZIPDOC="unzip60/BUGS unzip60/COPYING.OLD unzip60/INSTALL unzip60/LICENSE \
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de compression 'zip' et 'unzip' d'Info-ZIP"
 ########################################
-
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
 if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then # -1 pour l'UTF-8
 	echo "La description du slack-desc est trop longue (80 caractères max.) !"
 	exit 1
 fi
-
 # On télécharge les sources de 'zip' :
 if [ ! -r zip30.tgz ]; then
 	wget -vc $WGET -O zip30.tgz.part
 	mv zip30.tgz.part zip30.tgz
 fi
-
 # On les vérifie :
 tar ft $CWD/zip30.tgz 1> /dev/null 2> /dev/null
-
 # On télécharge aussi les sources de 'unzip' :
 if [ ! -r unzip60.tgz ]; then
 	wget -vc $WGETUNZIP -O unzip60.tgz.part
 	mv unzip60.tgz.part unzip60.tgz
 fi
-
 # On les vérifie aussi :
 tar ft $CWD/unzip60.tgz 1> /dev/null 2> /dev/null
-
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
-
 # Le 'Makefile' a ses propres optimisations.
-
 # Compilation pour 64 bits :
 cd $TMP
 echo "Extraction en cours..."
 tar xf $CWD/zip30.tgz
 tar xf $CWD/unzip60.tgz
-
 (
 	cd $TMP/zip30
 	make -f unix/Makefile generic CC="gcc ${BUILD64} -DUSE_BZIP2 -lbz2"
 	make -f unix/Makefile install prefix=${PKG}/usr
 )
-
 (
 	cd $TMP/unzip60
 	make -f unix/Makefile generic CC="gcc ${BUILD64} -DUSE_BZIP2 -lbz2"
 	make -f unix/Makefile install prefix=${PKG}/usr
 )
-
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -92,43 +70,32 @@ if [ -d ${PKG}/usr/man ]; then
 		rm -f ${manpage}
 	done
 fi
-
 # On compresse les pages info :
 if [ -d ${PKG}/usr/info ]; then
 	rm -f ${PKG}/usr/info/dir
 	gzip -9 ${PKG}/usr/info/*.info*
 fi
-
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/${NAMETGZ}/{zip-3.0,unzip-6.0}
 cp -a ${ZIPDOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/${NAMETGZ}/zip-3.0
 cp -a ${UNZIPDOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/${NAMETGZ}/unzip-6.0
-
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
-
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
 #!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
-
 EOF
-
 # On "strippe" tout ce qu'on trouve :
 find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
-
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
@@ -139,11 +106,9 @@ PACKAGING="
 	rm -rf ${PKG}
 	rm -rf $TMP/zip30
 	rm -rf $TMP/unzip60"
-
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot
 else
 	su -c "${PACKAGING}"
 fi
-
 exit 0

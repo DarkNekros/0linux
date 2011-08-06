@@ -4,14 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=base
 NAMESRC=${NAMESRC:-ncurses}
 VERSION=${VERSION:-5.7}
 EXT=${EXT:-tar.gz}
@@ -228,7 +221,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/c++
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 cp -a c++/{NEWS,PROBLEMS,README-first} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/c++
 
 # On installe le slack-desc :

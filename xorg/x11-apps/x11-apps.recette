@@ -4,19 +4,11 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=xorg
 VERSION=${VERSION:-7.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-apps}
 BUILD=${BUILD:-10}
-
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-x86_64}
@@ -26,7 +18,6 @@ BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
-
 XLIBS="bdftopcf-1.0.3 iceauth-1.0.4 luit-1.1.0 \
 mkfontdir-1.0.6 mkfontscale-1.0.8 sessreg-1.0.6 \
 setxkbmap-1.2.0 smproxy-1.0.4 twm-1.0.5 x11perf-1.5.2 \
@@ -42,17 +33,14 @@ WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/app/}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Applications natives de X11"
 ########################################
-
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
 if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then # -1 pour l'UTF-8
 	echo "La description du slack-desc est trop longue (80 caractères max.) !"
 	exit 1
 fi
-
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
-
 # On télécharge les sources :
 for archive in ${XLIBS}; do
 	
@@ -133,23 +121,18 @@ for archive in ${XLIBS}; do
 	
 	cd $CWD
 	rm -rf $TMP/${NAME}
-
 done
-
 # On place la configuration du dmarrage de 'twm' :
 mkdir -p ${PKG}/etc/X11/xinit
 cp -a $CWD/xinitrc.twm ${PKG}/etc/X11/xinit
 chmod 755 ${PKG}/etc/X11/xinit/xinitrc.twm
-
 # On supprime ces fichiers de démarrage qui ont la priorité sur '/etc' :
 rm -f ${PKG}/usr/lib{,64}/X11/xinit/xinitrc
-
 # On place nos fichiers personnalisés :
 mkdir -p ${PKG}/usr/lib{,64}/X11/xdm
 cp -a $CWD/0-xdm ${PKG}/usr/lib/X11/xdm
 cp -a $CWD/0-xdm ${PKG}/usr/lib64/X11/xdm
 chmod 755 ${PKG}/usr/lib{,64}/X11/xdm/0-xdm/{buttons,Xsession,Xsetup,Xstartup}
-
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -158,25 +141,20 @@ if [ -d ${PKG}/usr/man ]; then
 		rm -f ${manpage}
 	done
 fi
-
 # On compresse les pages info :
 if [ -d ${PKG}/usr/info ]; then
 	rm -f ${PKG}/usr/info/dir
 	gzip -9 ${PKG}/usr/info/*.info*
 fi
-
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
-
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
 #!/usr/bin/env bash
-
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
-
 config() {
 	NEW="$1"
 	OLD="$(dirname $NEW)/$(basename $NEW .new)"
@@ -187,22 +165,17 @@ config() {
 		mv $NEW $OLD
 	fi
 }
-
 if [ -x usr/bin/fc-cache ]; then
 	chroot . fc-cache -f 1>/dev/null 2>&1
 fi
-
 EOF
-
 # On "strippe" tout ce qu'on trouve :
 find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
-
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
@@ -210,11 +183,9 @@ PACKAGING="
 	chown root:root . -R
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}"
-
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot
 else
 	su -c "${PACKAGING}"
 fi
-
 exit 0

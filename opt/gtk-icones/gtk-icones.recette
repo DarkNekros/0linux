@@ -4,23 +4,13 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
-done
-
-
+PKGCAT=opt
 VERSION=${VERSION:-0.1}
 NAMETGZ=${NAMETGZ:-gtk-icones}
 BUILD=${BUILD:-1}
-
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-noarch}
-
 WGET="1002/ICON-BlankOn.tar.gz 1049/ICON-DroplineEtiquette.tar.bz2 1100/ICON-DroplineNeu.tar.bz2 \
 	1112/ICON-DroplineNuovo.tar.bz2 1281/ICON-GFlatSVG.tar.gz 1001/ICON-Gartoon.tar.gz \
 	1340/ICON-Gion.tar.bz2 1352/ICON-Gnome218IconTheme.tar.bz2 1376/ICON-GNOMEAlternatives.tar.gz \
@@ -32,13 +22,11 @@ WGET="1002/ICON-BlankOn.tar.gz 1049/ICON-DroplineEtiquette.tar.bz2 1100/ICON-Dro
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Ensemble d'icônes pour GTK+"
 ########################################
-
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
 if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
 	echo "La description est trop longue (80 caractères max.) !"
 	exit 1
 fi
-
 # On télécharge les sources :
 for archive in ${WGET}; do
 	if [ ! -r $(basename ${archive}) ]; then
@@ -48,25 +36,20 @@ for archive in ${WGET}; do
 	# On les vérifie :
 	tar ft $(basename ${archive}) 1> /dev/null 2> /dev/null
 done
-
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/usr/share/icons
-
 # On déballe les sources :
 cd ${PKG}/usr/share/icons/
 echo "Extractions en cours..."
 for tarball in $CWD/*.tar.{gz,bz2}; do
 	tar xf ${tarball}
 done
-
 cd ${PKG}
-
 # On vérifie les permissions :
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
 # On copie les sous-répertoires dans la doc :
 for srcdir in $(find * -type d -maxdepth 0); do
 	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/${srcdir}
@@ -80,33 +63,26 @@ for srcdir in $(find * -type d -maxdepth 0); do
 	find ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/${srcdir} -type f -iname "\(index.theme|icon-theme.cache|iconrc\)" \
 		-exec mv {} ${PKG}/usr/share/icons/${srcdir} \;
 done
-
 # On nettoie cette poubelle :
 rm -f ${PKG}/usr/share/icons/*/*~
 rm -f ${PKG}/usr/share/icons/Jini{Brown,Orange,YellowishGreen}/ChangeLog
 rm -f ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/*/*~
-
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
-
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
 if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
-
 EOF
-
 # On "strippe" tout ce qu'on trouve :
 find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
-
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
@@ -114,11 +90,9 @@ PACKAGING="
 	chown root:root . -R
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}"
-
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot
 else
 	su -c "${PACKAGING}"
 fi
-
 exit 0

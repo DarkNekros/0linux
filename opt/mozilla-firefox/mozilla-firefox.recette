@@ -4,19 +4,12 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=opt
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-5.0}
+VERSION=${VERSION:-5.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -136,7 +129,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64} \
 	--host=${TARGET64} 
 
-make -j6 || make
+make -j6 MOZ_MAKE_FLAGS="-j6" || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -181,8 +174,11 @@ cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUF
 cp ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons/*.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
 
 # On ajoute le fichier corrigeant la CSS pour les thèmes GTK sombres :
-mkdir -p ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/chrome
-cp -a $CWD/userChrome.css ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/chrome/
+mkdir -p ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/profile
+cp -a $CWD/userChrome.css ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/profile/
+
+# On copie nos types MIME :
+cp -a $CWD/mimeTypes.rdf ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/profile/
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then

@@ -4,19 +4,11 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-	if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-		PKGCAT="$categ"
-	fi
-done
-
+PKGCAT=xorg
 VERSION=${VERSION:-7.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x11-utils}
 BUILD=${BUILD:-1}
-
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-x86_64}
@@ -26,23 +18,19 @@ BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
-
 XUTILS="lndir-1.0.2 makedepend-1.0.3 util-macros-1.11.0"
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/util/}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils natifs de X11"
 ########################################
-
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
 if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then # -1 pour l'UTF-8
 	echo "La description du slack-desc est trop longue (80 caractères max.) !"
 	exit 1
 fi
-
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
-
 # On télécharge les sources :
 for archive in ${XUTILS}; do
 	
@@ -135,9 +123,7 @@ for archive in ${XUTILS}; do
 	
 	cd $CWD
 	rm -rf $TMP/${NAME}
-
 done
-
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -146,35 +132,28 @@ if [ -d ${PKG}/usr/man ]; then
 		rm -f ${manpage}
 	done
 fi
-
 # On compresse les pages info :
 if [ -d ${PKG}/usr/info ]; then
 	rm -f ${PKG}/usr/info/dir
 	gzip -9 ${PKG}/usr/info/*.info*
 fi
-
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
-
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
 #!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
-
 EOF
-
 # On "strippe" tout ce qu'on trouve :
 find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
-
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
@@ -182,11 +161,9 @@ PACKAGING="
 	chown root:root . -R
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}"
-
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot
 else
 	su -c "${PACKAGING}"
 fi
-
 exit 0

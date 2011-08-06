@@ -9,15 +9,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-
-# On définit la catégorie du paquet :
-for categ in base extra opt xfce xorg; do
-if [ ! "$(echo $(dirname $CWD) | grep $categ)" = "" ]; then
-PKGCAT="$categ"
-fi
-done
-
-
+PKGCAT=opt
 NAMESRC=${NAMESRC:-qt-everywhere-opensource-src}
 VERSION=${VERSION:-4.6.2}
 EXT=${EXT:-tar.gz}
