@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-udev}
-VERSION=${VERSION:-172}
+VERSION=${VERSION:-173}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-udev}
 BUILD=${BUILD:-1}
@@ -144,9 +144,6 @@ find ${PKG}/etc -type f -exec chmod 644 {} \;
 find ${PKG}/etc -type d -exec chmod 755 {} \;
 chmod 755 ${PKG}/etc/rc.d/rc.udev.new
 
-# On ajoute les périphériques supplémentaires non pris en charge :
-fakeroot tar xf $CWD/udev-fixed-devices.tar.gz -C ${PKG}
-
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -201,16 +198,6 @@ mknod -m 666 lib/udev/devices/null c 1 3
 mknod -m 660 lib/udev/devices/ppp c 0 108
 mknod -m 666 lib/udev/devices/urandom c 9 1
 mknod -m 666 lib/udev/devices/zero c 1 5
-
-# Le script de Slackware, permettant de créer des fichiers en .conf sous
-# /etc/modprobe.d (y compris les fichiers .bak, .orig et .new) :
-for modfile in $(ls etc/modprobe.d/ | grep -v "\.\(conf\|bak\|orig\|new\)"); do
-	if [ -e etc/modprobe.d/$modfile -a ! -e etc/modprobe.d/$modfile.conf ]; then
-		mv etc/modprobe.d/$modfile etc/modprobe.d/$modfile.conf
-	elif [ -e etc/modprobe.d/$modfile -a -e etc/modprobe.d/$modfile.conf ]; then
-		mv etc/modprobe.d/$modfile etc/modprobe.d/$modfile.bak
-	fi
-done
 
 config etc/modprobe.d/blacklist.conf.new
 config etc/modprobe.d/isapnp.conf.new
