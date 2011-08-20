@@ -5,38 +5,46 @@ set -e
 umask 022
 CWD=$(pwd)
 PKGCAT=base
-VERSION=${VERSION:-0.9}
+VERSION=${VERSION:-0.91}
 NAMETGZ=${NAMETGZ:-base-systeme}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-x86_64}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Structure de base du système"
 ########################################
+
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
 if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
 	echo "La description est trop longue (80 caractères max.) !"
 	exit 1
 fi
-PKG=$TMP/build/$NAMETGZ
-# On crée toute la structure de base :
-mkdir -p ${PKG}/{bin,boot,dev,home,lib,lib64,opt,proc,root,sbin,srv,sys,tmp}
+
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}
+
+# On crée toute la structure de base : '/0' accueillera les paquets et sources officielles
+# et les paquets compilés localement se trouveront dans '/usr/local/paquets' :
+mkdir -p ${PKG}/{0,bin,boot,dev,home,lib,lib64,opt,proc,root,sbin,srv,sys,tmp}
 # Et les sous-répertoires :
 mkdir -p ${PKG}/etc/X11
 mkdir -p ${PKG}/media/{cdrecorder0,cdrecorder1,cdrom0,cdrom1,dvd0,dvd1,floppy0,floppy1,hd0,hd1,memory0,memory1,zip0,zip1}
 mkdir -p ${PKG}/mnt/{cdrecorder,cdrom,dvd,floppy,hd,memory,tmp,zip}
-mkdir -p ${PKG}/usr/{bin,dict,doc,include,info,lib,lib64,local/{logs,paquets/{base,extra,opt,xfce,xorg}},sbin,src}
+mkdir -p ${PKG}/usr/{bin,dict,doc,include,info,lib,lib64,local/{logs,paquets},sbin,src}
 mkdir -p ${PKG}/usr/man/man{1,2,3,4,5,6,7,8,9,n}
 mkdir -p ${PKG}/usr/share/{games,wallpapers}
 mkdir -p ${PKG}/var/{cache,empty,local,lock,mail,opt,run,spool,tmp}
 mkdir -p ${PKG}/var/log/{packages,removed_packages,removed_scripts,setup,scripts}
+
 # On spécifie certaines permissions :
 chmod 1710 ${PKG}/root
 chmod 1777 ${PKG}/tmp
-chmod -R 777 ${PKG}/usr/local/{logs,paquets}
+chmod -R 777 ${PKG}/{0,usr/local/{logs,paquets}}
+
 # Le lien très important pour 'bash' :
-ln -sf bash $PKG/bin/sh
+ln -sf bash ${PKG}/bin/sh
+
 # On crée des liens pour contenter tout le monde... :
 ln -sf ../var/tmp ${PKG}/usr/tmp
 ln -sf ../var/adm ${PKG}/usr/adm
@@ -44,10 +52,12 @@ ln -sf ../var/log ${PKG}/var/adm
 ln -sf ../var/spool ${PKG}/usr/spool
 ln -sf ../var/spool/rwho ${PKG}/var/rwho
 ln -sf ../../var/mail ${PKG}/var/spool/mail
+
 # Un peu de francophonie !
 # Dans les journaux :
 ln -sf packages ${PKG}/var/log/paquets
 ln -sf setup ${PKG}/var/log/installation
+
 # Dans /media :
 ln -sf cdrecorder0 ${PKG}/media/cdrecorder
 ln -sf cdrecorder ${PKG}/media/graveur_cd
@@ -59,19 +69,23 @@ ln -sf cdrom0 ${PKG}/media/cdrom
 ln -sf dvd0 ${PKG}/media/dvd
 ln -sf memory0 ${PKG}/media/memory
 ln -sf zip0 ${PKG}/media/zip
+
 # Dans /mnt :
 ln -sf cdrecorder ${PKG}/mnt/graveur_cd
 ln -sf floppy ${PKG}/mnt/disquette
 ln -sf hd ${PKG}/mnt/disque_dur
 ln -sf wallpapers ${PKG}/usr/share/papiers_peints
 ln -sf games ${PKG}/usr/share/jeux
+
 # Quelques liens standard :
 ln -sf ../doc ${PKG}/usr/share/doc
 ln -sf ../info ${PKG}/usr/share/info
 ln -sf ../man ${PKG}/usr/share/man
+
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
 # Empaquetage !
 cd $PKG
 mkdir -p $OUT
