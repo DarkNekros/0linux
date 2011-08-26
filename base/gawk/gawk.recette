@@ -11,7 +11,6 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gawk}
 BUILD=${BUILD:-1}
 
-
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-x86_64}
@@ -72,8 +71,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--libexecdir=/usr/lib64 \
 	--disable-libsigsegv
 
-make
-make install DESTDIR=${PKG}
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
 
 # On crée des liens symboliques (plutôt qu'en dur) :
 ln -sf pgawk-${VERSION} ${PKG}/usr/bin/pgawk
@@ -130,15 +129,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
@@ -151,62 +146,6 @@ if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot
 else
 	su -c "${PACKAGING}"
-fi
-
-exit 0
-
-
-
-
-# On compresse les manuels :
-if [ -d $PKG/usr/man ]; then
-	find $PKG/usr/man -type f -name "*.?" -exec gzip -9 {} \;
-	for manpage in $(find $PKG/usr/man -type l) ; do
-		ln -s $(readlink $manpage).gz $manpage.gz
-		rm -f $manpage
-	done
-fi
-
-# On compresse les pages info :
-if [ -d $PKG/usr/info ]; then
-	rm -f $PKG/usr/info/dir
-	gzip -9 $PKG/usr/info/*.info*
-fi
-
-# Installation de la documentation :
-mkdir -p $PKG/usr/doc/$NAMETGZ-$VERSION
-cp -a $DOC $PKG/usr/doc/$NAMETGZ-$VERSION
-
-# On installe le slack-desc :
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-
-# On installe le doinst.sh s'il existe :
-if [ -r $CWD/doinst.sh ]; then
-	cat $CWD/doinst.sh > $PKG/install/doinst.sh
-fi
-
-# On "strippe" tout ce qu'on trouve :
-find $PKG -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null \
-	|| echo "Aucun binaire traité."
-find $PKG -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null \
-	|| echo "Aucune bibliothèque traitée."
-find $PKG -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null \
-	|| echo "Aucune archive traitée."
-
-# Empaquetage !
-cd $PKG
-mkdir -p $OUT
-PACKAGING="
-	chown root:root . -R
-	
-	rm -rf $PKG
-	rm -rf $TMP/$NAME"
-
-if [ "$(which fakeroot 2> /dev/null)" ]; then
-	echo "$PACKAGING" | fakeroot
-else
-	su -c "$PACKAGING"
 fi
 
 exit 0

@@ -127,11 +127,21 @@ while [ 0 ]; do
 			echo "Appuyez sur ENTRÉE pour retourner au menu principal."
 			echo ""
 			read BLAH;
-			continue
 			unset CHOIXMENUPRINCIPAL
+			continue
 		else
 			. installer.sh
-			. configurer.sh
+			
+			# Si le fichier 'mediapasok' n'existe pas, on est bon pour continuer et configurer
+			# le système :
+			if [ ! -e $TMP/mediapasok ]; then
+				. configurer.sh
+			
+			# Sinon, on doit choisir un support, donc on revient dans 'installateur' :
+			else
+				unset CHOIXMENUPRINCIPAL
+				continue
+			fi
 		fi
 		unset CHOIXMENUPRINCIPAL
 		break
