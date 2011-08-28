@@ -304,6 +304,9 @@ if [ "$1" = "--dvd" ]; then
 # Si l'on crée une clé USB :
 elif [ "$1" = "--usb" ]; then
 	
+	# On s'assure que la clé est bien démontée :
+	umount ${2}1 2>/dev/null
+	
 	# On monte la clé, sans la presser :
 	echo "La clé utilisée sera ${2}."
 	echo "Appuyez sur ENTRÉE pour confirmer la création de la clé"
