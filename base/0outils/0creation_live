@@ -339,10 +339,10 @@ elif [ "$1" = "--usb" ]; then
 	cat /usr/share/syslinux/mbr.bin > ${2}
 	
 	# On installe enfin 'syslinux/extlinux' :
-	if [ "${SYSLINUXCMD}" = "extlinux" ]; then
-		${SYSLINUXCMD} --install /mnt/tmp/boot/${SYSLINUXDIR}
-	elif [ "${SYSLINUXCMD}" = "syslinux" ]; then
-		${SYSLINUXCMD} --install ${2}1 -d /boot/${SYSLINUXDIR}
+	if [ "${SYSLINUXDIR}" = "extlinux" ]; then
+		${SYSLINUXCMD} /mnt/tmp/boot/${SYSLINUXDIR}
+	elif [ "${SYSLINUXDIR}" = "syslinux" ]; then
+		${SYSLINUXCMD} ${2}1 -d /boot/${SYSLINUXDIR}
 	fi
 	
 	# On démonte la clé :
