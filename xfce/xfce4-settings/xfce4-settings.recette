@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-xfce4-settings}
 VERSION=${VERSION:-4.8.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-settings}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -94,11 +94,6 @@ unset USE_ARCH
 cp -a $CWD/*.xml ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/
 chmod 644 ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/*.xml
 
-# On prend garde à ne rien écraser :
-for fichierxml in {xfce4-desktop,xfwm4,xsettings}.xml; do
-	mv ${PKG}/etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/${fichierxml}{,.new}
-done
-
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -151,10 +146,6 @@ fi
 if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
-
-config etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml.new
-config etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml.new
-config etc/xfce/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml.new
 
 EOF
 
