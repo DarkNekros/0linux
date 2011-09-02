@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-5.0.1}
+VERSION=${VERSION:-6.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
 BUILD=${BUILD:-1}
@@ -65,8 +65,10 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On force 'firefox' à se conformer à la langue du système :
+# On force 'firefox' à se conformer à la langue du système et on corrige
+# la compilation sour Linux 3.x :
 cat $CWD/mozilla-firefox.lang.patch | patch -p1
+cat $CWD/mozilla-firefox.linux3.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -155,30 +157,15 @@ mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 cp -a $CWD/mozilla-firefox.desktop ${PKG}/usr/share/applications
 cp -a $CWD/firefox.png ${PKG}/usr/share/pixmaps
 
-# Comme Slackware, on va placer de faux fichiers pour la session root
-# au cas où ces fichiers n'existeraient pas pour éviter les erreurs de chargement :
-if [ -d ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/talkback\@mozilla.org ]; then
-	if [ ! -r ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/talkback\@mozilla.org/chrome.manifest ]; then
-		echo > ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/talkback\@mozilla.org/chrome.manifest
-	fi
-fi
-
-if [ ! -d ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/updates ]; then
-	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/updates/0
-fi
-
 # On n'oublie pas de copier les icônes :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
-cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons
-cp -a other-licenses/branding/${NAMESRC}/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
-cp ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/icons/*.png ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
+for i in 16x16 22x22 24x24 32x32 48x48 256x256; do
+	install -Dm644 browser/branding/official/default${i/x*/}.png ${PKG}/usr/share/icons/hicolor/$i/apps/firefox.png
+done
 
 # On ajoute le fichier corrigeant la CSS pour les thèmes GTK sombres :
 mkdir -p ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/profile
 cp -a $CWD/userChrome.css ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/profile/
-
-# On copie nos types MIME :
-cp -a $CWD/mimeTypes.rdf ${PKG}/usr/lib64/${NAMESRC}-${VERSION}/defaults/profile/
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
