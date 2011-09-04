@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-nss}
 VERSION=${VERSION:-3.12.9}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-nss}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -159,6 +159,7 @@ for rep in mozilla/security/{coreconf,dbm,nss}; do
 	NSDISTMODE=copy \
 	NSS_USE_SYSTEM_SQLITE=1 \
 	BUILD_OPT=1 \
+	USE_64=1 \
 	make -C ${rep}
 done
 
