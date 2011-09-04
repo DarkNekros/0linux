@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-5.0}
+VERSION=${VERSION:-6.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
 BUILD=${BUILD:-1}
@@ -64,9 +64,10 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On force 'thunderbird' à se conformer à la langue du système et on corrige les bibliothèque spartagées :
+# On force 'thunderbird' à se conformer à la langue du système 
+# et on corrige la compilation avec Linux 3.x : :
 cat $CWD/thunderbird.lang.patch | patch -p1
-cat $CWD/thunderbird.shared-error.patch | patch -p0
+cat $CWD/mozilla-thunderbird.linux3.patch | patch -p0
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -85,39 +86,41 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--with-default-mozilla-five-home=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION} \
+	--disable-accessibility \
+	--disable-crashreporter \
+	--disable-debug \
+	--disable-logging \
+	--disable-tests \
+	--disable-installer \
+	--disable-pedantic \
+	--disable-profilesharing \
+	--disable-updater \
 	--enable-application=mail \
-	--with-system-zlib \
-	--with-system-bz2 \
-	--with-system-jpeg \
-	--enable-system-cairo \
-	--enable-default-toolkit=cairo-gtk2 \
-	--enable-crypto \
-	--enable-svg \
 	--enable-canvas \
+	--enable-cpp-rtti \
+	--enable-crypto \
+	--enable-default-toolkit=cairo-gtk2 \
+	--enable-faststart \
+	--enable-gio \
+	--enable-gconf \
+	--enable-libnotify \
+	--enable-official-branding \
+	--enable-optimize \
+	--enable-reorder \
+	--enable-single-profile \
+	--enable-startup-notification \
+	--enable-strip \
+	--enable-svg \
+	--enable-system-cairo \
 	--enable-xft \
 	--enable-xinerama \
-	--enable-reorder \
-	--enable-strip \
-	--enable-system-cairo \
-	--enable-cpp-rtti \
-	--enable-single-profile \
-	--enable-faststart \
-	--enable-startup-notification \
-	--disable-ldap \
-	--disable-accessibility \
-	--disable-debug \
-	--disable-tests \
-	--disable-logging \
-	--disable-optimize \
-	--disable-pedantic \
-	--disable-installer \
-	--disable-updater \
-	--disable-profilesharing \
-	--enable-official-branding \
+	--with-system-bz2 \
+	--with-system-jpeg \
+	--with-system-zlib \
 	--build=${TARGET64} \
 	--host=${TARGET64} 
 
-make -j6 || make
+make -j6 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -129,32 +132,16 @@ rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-devel-${VERSION}
 # On crée le répertoire général pour les plugins :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 
-# On ajoute les types MIME supportés :
-cp -a $CWD/types-mime.patch ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/defaults/profile/mimeTypes.rdf
-
 # On copie le logo et le fichier pour le bureau :
 mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 cp -a $CWD/mozilla-thunderbird.desktop ${PKG}/usr/share/applications
 cp -a $CWD/thunderbird.png ${PKG}/usr/share/pixmaps
 
-# Comme Slackware, on va placer de faux fichiers pour la session root
-# au cas où ces fichiers n'existeraient pas pour éviter les erreurs de chargement :
-if [ -d ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/talkback\@mozilla.org ]; then
-	if [ ! -r ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/talkback\@mozilla.org/chrome.manifest ]; then
-		echo > ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/talkback\@mozilla.org/chrome.manifest
-	fi
-fi
-
-if [ ! -d ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/updates ]; then
-	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/updates/0
-fi
-
 # On installe les fichiers de localisation française :
+cd ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}
 bsdtar xf $CWD/fr.xpi
-sed -i "s|jar:chrome/fr.jar|jar:fr.jar|" chrome.manifest
-cp -a chrome/fr.jar ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/
-cp -a chrome.manifest ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/fr.manifest
 find ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome -type f -exec chmod 644 {} \;
+cd -
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
