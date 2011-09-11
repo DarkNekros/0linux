@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-nss}
-VERSION=${VERSION:-3.12.9}
+VERSION=${VERSION:-3.12.11}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-nss}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -57,10 +57,6 @@ cd ${NAME}
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# On corrige la prise en charge des LDFLAGS  et la compilation avec Linux 3.x :
-sed -i 's@\$(MKSHLIB) -o@\$(MKSHLIB) \$(LDFLAGS) -o@g' mozilla/security/coreconf/rules.mk
-cat $CWD/nss.linux3.patch | patch -p0
 
 # On positionne USE_ARCH :
 export USE_ARCH=32
@@ -134,10 +130,6 @@ cd ${NAME}
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# On corrige la prise en charge des LDFLAGS  et la compilation avec Linux 3.x :
-sed -i 's@\$(MKSHLIB) -o@\$(MKSHLIB) \$(LDFLAGS) -o@g' mozilla/security/coreconf/rules.mk
-cat $CWD/nss.linux3.patch | patch -p0
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
