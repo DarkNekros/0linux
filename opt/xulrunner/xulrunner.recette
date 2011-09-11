@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-xulrunner}
-VERSION=${VERSION:-2.0}
+VERSION=${VERSION:-6.0.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xulrunner}
 BUILD=${BUILD:-1}
@@ -59,6 +59,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On corrige la compilation avec Linux 3.x :
+cat $CWD/xulrunner.linux3.patch | patch -p1
+
 # On positionne USE_ARCH :
 export USE_ARCH=32
 
@@ -99,10 +102,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-system-sqlite \
 	--with-system-zlib \
 	--build=${TARGET32} \
-	--host=${TARGET32} \
-	--target=${TARGET32}
+	--host=${TARGET32}
 
-make -j3 || make
+make -j6 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
@@ -119,6 +121,9 @@ cd ${NAME}
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On corrige la compilation avec Linux 3.x :
+cat $CWD/xulrunner.linux3.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -160,10 +165,9 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-system-sqlite \
 	--with-system-zlib \
 	--build=${TARGET64} \
-	--host=${TARGET64} \
-	--target=${TARGET64}
+	--host=${TARGET64}
 
-make -j3 || make
+make -j6 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
