@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-jack-audio-connection-kit}
-VERSION=${VERSION:-0.118.0}
+VERSION=${VERSION:-0.120.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-jack}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -23,7 +22,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://jackaudio.org/downloads/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS COPYING* README TODO"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Le serveur de son « Jack Audio Connection Kit »"
 ########################################
@@ -141,7 +141,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -165,15 +165,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
