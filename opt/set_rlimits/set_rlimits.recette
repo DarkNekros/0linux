@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-set_rlimits}
 VERSION=${VERSION:-1.3.0}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-set_rlimits}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-6}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -79,6 +79,9 @@ fakeroot make install PREFIX=/usr DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On place notre fichier de configuration :
+cp -a $CWD/set_rlimits.conf ${PKG}/etc/
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
