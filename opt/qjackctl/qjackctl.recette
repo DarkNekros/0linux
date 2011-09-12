@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-qjackctl}
-VERSION=${VERSION:-0.3.6}
+VERSION=${VERSION:-0.3.8}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qjackctl}
 BUILD=${BUILD:-1}
@@ -22,7 +22,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING INSTALL README TRANSLATORS TODO"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Interace graphique en QT pour le serveur JACK"
 ########################################
@@ -80,7 +81,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64}
 
 make -j3 || make
-fakeroot make install prefix=${PKG}/usr
+fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
@@ -106,7 +107,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -134,6 +135,10 @@ if [ -x usr/bin/update-desktop-database ]; then
 	chroot . /usr/bin/update-desktop-database &> /dev/null
 fi
 
+if [ -x /usr/bin/update-mime-database ]; then
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
+fi
+
 if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
@@ -148,9 +153,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
