@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=xfce
 NAMESRC=${NAMESRC:-garcon}
-VERSION=${VERSION:-0.1.8}
+VERSION=${VERSION:-0.1.9}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-garcon}
 BUILD=${BUILD:-1}
