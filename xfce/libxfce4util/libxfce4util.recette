@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=xfce
 NAMESRC=${NAMESRC:-libxfce4util}
-VERSION=${VERSION:-4.8.1}
+VERSION=${VERSION:-4.8.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-libxfce4util}
 BUILD=${BUILD:-1}
