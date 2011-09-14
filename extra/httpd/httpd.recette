@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=extra
 NAMESRC=${NAMESRC:-httpd}
-VERSION=${VERSION:-2.2.19}
+VERSION=${VERSION:-2.2.21}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-httpd}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -128,8 +128,9 @@ fakeroot make install DESTDIR=${PKG}
 # On neutralise USE_ARCH :
 unset USE_ARCH
 
-# On place notre 'httpd.conf' traduit sans rien écraser :
-cp -a $CWD/httpd.conf ${PKG}/etc/httpd/httpd.conf.new
+# On écrase 'httpd.conf' avec le nôtre et on veille à ne rien écraser :
+cp -a $CWD/httpd.conf ${PKG}/etc/httpd/
+mv ${PKG}/etc/httpd/httpd.conf{,.new}
 
 # On place le fichier service, sans le rendre exécutable :
 cp -a $CWD/rc.httpd ${PKG}/etc/rc.d/
