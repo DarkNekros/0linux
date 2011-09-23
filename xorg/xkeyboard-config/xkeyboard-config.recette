@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-xkeyboard-config}
 VERSION=${VERSION:-2.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xkeyboard-config}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -80,7 +80,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--with-xkb-base=/etc/X11/xkb \
 	--with-xkb-rules-symlink=xfree86,xorg \
 	--enable-compat-rules \
-	--enable-xkbcomp-symlink \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -90,7 +89,8 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On crée un lien de /usr/share/X11/xkb vers /etc/X11/xkb :
-ln -sf ../../../usr/share/X11/xkb ${PKG}/etc/X11/xkb
+mkdir -p ${PKG}/usr/share/X11
+ln -sf ../../../../etc/X11/xkb ${PKG}/usr/share/X11/xkb 
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
