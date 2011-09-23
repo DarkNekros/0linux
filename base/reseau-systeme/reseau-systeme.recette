@@ -5,34 +5,41 @@ set -e
 umask 022
 CWD=$(pwd)
 PKGCAT=base
-VERSION=${VERSION:-0.2}
+VERSION=${VERSION:-0.3}
 NAMETGZ=${NAMETGZ:-reseau-systeme}
 BUILD=${BUILD:-1}
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-noarch}
+
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Configuration et scripts réseau"
 ########################################
+
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
 if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then # -1 pour l'UTF-8
 	echo "La description du slack-desc est trop longue (80 caractères max.) !"
 	exit 1
 fi
+
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
+
 # On crée les différents répertoires pour les scripts :
 mkdir -p ${PKG}/etc/rc.d
 mkdir -p ${PKG}/sbin
+
 # On copie les scripts réseau en veillant à ne rien écraser :
 cp -a $CWD/rc.ip_forward ${PKG}/etc/rc.d/rc.ip_forward.new
-cp -a $CWD/rc.reseau ${PKG}/etc/rc.d/rc.reseau.new
+cp -a $CWD/rc.reseau ${PKG}/etc/rc.d/
 chmod 755 ${PKG}/etc/rc.d/rc.*
+
 for script in HOSTNAME host.conf hosts.allow hosts.deny hosts.equiv hosts networks protocols resolv.conf; do
 	cp -a $CWD/${script} ${PKG}/etc/${script}.new
 	chmod 644 ${PKG}/etc/${script}.new
 done
+
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
 	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
@@ -41,20 +48,24 @@ if [ -d ${PKG}/usr/man ]; then
 		rm -f ${manpage}
 	done
 fi
+
 # On compresse les pages info :
 if [ -d ${PKG}/usr/info ]; then
 	rm -f ${PKG}/usr/info/dir
 	gzip -9 ${PKG}/usr/info/*.info*
 fi
+
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
 # On installe le doinst.sh :
 cat > ${PKG}/install/doinst.sh << "EOF"
 #!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
+
 config() {
 	NEW="$1"
 	OLD="$(dirname $NEW)/$(basename $NEW .new)"
@@ -64,8 +75,8 @@ config() {
 		mv $NEW $OLD
 	fi
 }
+
 config etc/rc.d/rc.ip_forward.new
-config etc/rc.d/rc.reseau.new
 config etc/hosts.deny.new
 config etc/hosts.equiv.new
 config etc/networks.new
@@ -73,17 +84,22 @@ config etc/resolv.conf.new
 config etc/host.conf.new
 config etc/hosts.allow.new
 config etc/protocols.new
+
 # Inutiles, et sûrement déjà configurés :
 rm -f etc/HOSTNAME.new
 rm -f etc/hosts.new
+
 EOF
+
 # On "strippe" tout ce qu'on trouve :
 find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
@@ -91,9 +107,11 @@ PACKAGING="
 	chown root:root . -R
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}"
+
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot
 else
 	su -c "${PACKAGING}"
 fi
+
 exit 0
