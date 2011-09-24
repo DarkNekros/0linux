@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=xfce
 NAMESRC=${NAMESRC:-Thunar}
-VERSION=${VERSION:-1.2.2}
+VERSION=${VERSION:-1.2.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-thunar}
 BUILD=${BUILD:-1}
@@ -22,7 +22,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.xfce.org/archive/src/xfce/thunar/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS BUGS ?hange?og* *COPYING* HACKING *INSTALL* MAINTAINERS NEWS* *README* THANKS TODO"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Gestionnaire de fichiers d'XFCE"
 ########################################
