@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=xfce
 NAMESRC=${NAMESRC:-xfce4-settings}
-VERSION=${VERSION:-4.8.2}
+VERSION=${VERSION:-4.8.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-settings}
-BUILD=${BUILD:-4}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
