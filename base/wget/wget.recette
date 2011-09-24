@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-wget}
-VERSION=${VERSION:-1.12}
-EXT=${EXT:-tar.lzma}
+VERSION=${VERSION:-1.13.4}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-wget}
-BUILD=${BUILD:-2}
-
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -23,7 +22,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="ABOUT-NLS AUTHORS COPYING ChangeLog* INSTALL MAILING-LIST NEWS README"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAILING-LIST MAINTAINERS *NEWS* *README* THANKS TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outil de téléchargement en ligne de commande"
 ########################################
@@ -65,6 +65,8 @@ SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -74,8 +76,8 @@ CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${TARGET64}
 
-make
-make install DESTDIR=$PKG
+make -j3 || make
+fakeroot make install DESTDIR=$PKG
 
 # On renomme le fichier de configuration pour ne pas en écraser un ancien :
 mv ${PKG}/etc/wgetrc{,.new}
@@ -97,7 +99,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -134,15 +136,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
