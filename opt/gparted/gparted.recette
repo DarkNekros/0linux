@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-gparted}
-VERSION=${VERSION:-0.9.0}
+VERSION=${VERSION:-0.9.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gparted}
 BUILD=${BUILD:-1}
