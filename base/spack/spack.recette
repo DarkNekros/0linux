@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-spack}
-VERSION=${VERSION:-3.1}
+VERSION=${VERSION:-3.5}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-spack}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -59,8 +59,8 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On applique les traductions françaises à 'spackadd' et 'spackpkg' :
-cat $CWD/spackadd.fr.patch | patch -p2
-cat $CWD/spackpkg.fr.patch | patch -p2
+cat $CWD/spackadd.patch | patch -p2
+cat $CWD/spackpkg.patch | patch -p2
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
