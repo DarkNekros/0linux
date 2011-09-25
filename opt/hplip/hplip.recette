@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-hplip}
-VERSION=${VERSION:-3.11.5}
+VERSION=${VERSION:-3.11.7}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-hplip}
 BUILD=${BUILD:-1}
@@ -83,14 +83,23 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-cups-ppd-install \
-	--enable-hpijs-install \
+	--enable-fax-build \
 	--enable-foomatic-drv-install \
 	--enable-foomatic-ppd-install \
 	--enable-foomatic-rip-hplip-install \
+	--enable-gui-build \
+	--enable-hpijs-install \
+	--enable-network-build=yes \
 	--enable-new-hpcups \
 	--enable-policykit \
 	--enable-pp-build \
+	--enable-qt4 \
+	--enable-scan-build \
 	--enable-shadow-build \
+	--with-cupsbackenddir=/usr/lib${LIBDIRSUFFIX}/cups/backend \
+	--with-cupsfilterdir=/usr/lib${LIBDIRSUFFIX}/cups/filter \
+	--with-drvdir=/usr/share/cups/drv/hp \
+	--with-hpppddir=/usr/share/cups/model/HP \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -135,14 +144,23 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-cups-ppd-install \
-	--enable-hpijs-install \
+	--enable-fax-build \
 	--enable-foomatic-drv-install \
 	--enable-foomatic-ppd-install \
 	--enable-foomatic-rip-hplip-install \
+	--enable-gui-build \
+	--enable-hpijs-install \
+	--enable-network-build=yes \
 	--enable-new-hpcups \
 	--enable-policykit \
 	--enable-pp-build \
+	--enable-qt4 \
+	--enable-scan-build \
 	--enable-shadow-build \
+	--with-cupsbackenddir=/usr/lib${LIBDIRSUFFIX}/cups/backend \
+	--with-cupsfilterdir=/usr/lib${LIBDIRSUFFIX}/cups/filter \
+	--with-drvdir=/usr/share/cups/drv/hp \
+	--with-hpppddir=/usr/share/cups/model/HP \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -150,6 +168,9 @@ fakeroot make install rulesdir=/lib/udev/rules.d DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On empêche le démarrage automatique en barre des tâches :
+rm -rf ${PKG}/etc/xdg
 
 # Ce répertoire écrase le contenu d'autres paquets, on supprime :
 rm -rf ${PKG}/etc/sane.d
