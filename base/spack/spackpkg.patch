@@ -232,9 +232,9 @@
 -echo "Generating the \"$target\" package..." >&3
 -rm -fr "$target" || growl 1 "\"$target\" already exists and can't be removed."
 -tmpdir=$(mktemp -d "$tmpdir/pkg-$$-XXXXXX" 2>/dev/null) || growl 1 "Can't create a secure temporary directory."
-++echo "Création du paquet \"$target\"..." >&3
-++rm -fr "$target" || growl 1 "\"$target\" existe déjà et ne peut pas être supprimé."
-++tmpdir=$(mktemp -d "$tmpdir/pkg-$$-XXXXXX" 2>/dev/null) || growl 1 "Impossible de créer un répertoire temporaire sécurisé."
++echo "Création du paquet \"$target\"..." >&3
++rm -fr "$target" || growl 1 "\"$target\" existe déjà et ne peut pas être supprimé."
++tmpdir=$(mktemp -d "$tmpdir/pkg-$$-XXXXXX" 2>/dev/null) || growl 1 "Impossible de créer un répertoire temporaire sécurisé."
  cd "$source" || exit 1
  if [ $reset -ne 0 ]; then
 -    echo "Forcing general root ownership..." >&3
