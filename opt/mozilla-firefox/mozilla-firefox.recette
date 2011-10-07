@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-6.0.2}
+VERSION=${VERSION:-7.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
 BUILD=${BUILD:-1}
@@ -143,14 +143,8 @@ rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-devel-${VERSION}
 # On crée le répertoire général pour les plugins :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 
-# On corrige le chemin des plugins en ajoutant le nôtre aux chemins de recherche :
-cd ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}
-cat $CWD/mozilla-firefox.chemin-plugins.patch | sed -e "s@usr/lib@&${LIBDIRSUFFIX}@g" | patch -p1
-
 # On installe les fichiers de localisation française :
-bsdtar xf $CWD/fr.xpi
-
-cd -
+cp -a $CWD/fr.xpi ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/langpack-fr@firefox.mozilla.org.xpi
 
 # On copie le logo et le fichier pour le bureau :
 mkdir -p ${PKG}/usr/share/{applications,pixmaps}
@@ -159,7 +153,7 @@ cp -a $CWD/firefox.png ${PKG}/usr/share/pixmaps
 
 # On n'oublie pas de copier les icônes :
 for i in 16x16 22x22 24x24 32x32 48x48 256x256; do
-	install -Dm644 browser/branding/official/default${i/x*/}.png ${PKG}/usr/share/icons/hicolor/$i/apps/firefox.png
+	install -Dm644 browser/branding/official/default${i/x*/}.png ${PKG}/usr/share/icons/hicolor/$i/apps/firefox.png || true
 done
 
 # On ajoute le fichier corrigeant la CSS pour les thèmes GTK sombres et les types MIME pour Thunderbird :
@@ -184,7 +178,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
