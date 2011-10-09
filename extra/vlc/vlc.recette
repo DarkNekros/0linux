@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=extra
 NAMESRC=${NAMESRC:-vlc}
-VERSION=${VERSION:-1.1.11}
+VERSION=${VERSION:-1.1.12}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-vlc}
 BUILD=${BUILD:-1}
