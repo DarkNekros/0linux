@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-openssh}
-VERSION=${VERSION:-5.8p1}
+VERSION=${VERSION:-5.9p1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssh}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -125,7 +125,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
