@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-iptables}
-VERSION=${VERSION:-1.4.12}
+VERSION=${VERSION:-1.4.12.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-iptables}
 BUILD=${BUILD:-1}
