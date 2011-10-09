@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=e
 NAMESRC=${NAMESRC:-eeze}
-VERSION=${VERSION:-1.0.1}
+VERSION=${VERSION:-1.0.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-eeze}
 BUILD=${BUILD:-1}
