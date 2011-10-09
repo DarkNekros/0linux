@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-openssl}
-VERSION=${VERSION:-1.0.0d}
+VERSION=${VERSION:-1.0.0e}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssl}
 BUILD=${BUILD:-1}
@@ -20,7 +20,8 @@ BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
 
 WGET=${WGET:-http://www.openssl.org/source/$NAMESRC-$VERSION.$EXT}
-DOC="CHANGES* FAQ* INSTALL* LICENSE NEWS* PROBLEMS README* VMS doc/"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO TRANSLATORS VMS *license* *readme* doc/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Protocoles et algorithmes de cryptage OpenSSL"
 ########################################
@@ -128,7 +129,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
