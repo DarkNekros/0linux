@@ -130,17 +130,32 @@ while [ 0 ]; do
 			unset CHOIXMENUPRINCIPAL
 			continue
 		else
-			. installer.sh
 			
-			# Si le fichier 'mediapasok' n'existe pas, on est bon pour continuer et configurer
-			# le système :
-			if [ ! -e $TMP/mediapasok ]; then
-				. configurer.sh
-			
-			# Sinon, on doit choisir un support, donc on revient dans 'installateur' :
-			else
-				unset CHOIXMENUPRINCIPAL
+			# Quelques vérif' avant l'installation des paquets. '/var/log/mount' doit
+			# à ce stade contenir les paquets résidents : 
+			BASEDIR=$(find -L /var/log/mount -type d -name "base" 2>/dev/null)
+			if [ "${BASEDIR}" = "" ]; then
+				echo "Erreur fatale : '/var/log/mount' ne contient pas les paquets !"
+				echo "Ce répertoire doit contenir les répertoires 'base', 'opt', 'xorg',"
+				echo "etc. peuplés des paquets logiciels."
+				sleep 3
+				unset BASEDIR
 				continue
+			elif [ "${SETUPROOT}" = "" ]; then
+				echo "Erreur fatale : la racine système n'est pas positionnée !"
+				echo "Retour au menu principal..."
+				sleep 3
+				continue
+			elif [ ! -d ${SETUPROOT} ]; then
+				echo "Erreur fatale : le répertoire accueillant la future racine système,"
+				echo "'${SETUPROOT}', est introuvable !"
+				echo "Ce répertoire devrait normalement exister. Retour au menu principal..."
+				sleep 3
+				continue
+			else
+				DIR0=$(dirname ${BASEDIR})
+				. installer.sh
+				. configurer.sh
 			fi
 		fi
 		unset CHOIXMENUPRINCIPAL
