@@ -5,8 +5,8 @@ rm -f $TMP/choix_media
 unset DETECTEDREPO NBDETECTEDREPO DETECTSELECT DIRSELECT
 
 # On cherche un répertoire 'paquets' :
-DETECTEDREPO=$(find / -type d -name "paquets" \! -name "/usr/local/paquets")
-NBDETECTEDREPO=$(find / -type d -name "paquets" \! -name "/usr/local/paquets" | wc -l)
+DETECTEDREPO=$(find / -type d -name "paquets" 2>/dev/null | grep -v 'usr/local')
+NBDETECTEDREPO=$(find / -type d -name "paquets" 2>/dev/null | grep -v 'usr/local' | wc -l)
 
 demander_choix_dir() {
 	while [ 0 ]; do
