@@ -5,7 +5,7 @@ unset BLURB BASEDIR DIR0
 
 # Quelques vérif' avant l'installation des paquets. '/var/log/mount' doit
 # à ce stade contenir les paquets résidents : 
-BASEDIR=$(find /var/log/mount -type d -name "base" 2>/dev/null)
+BASEDIR=$(find -L /var/log/mount -type d -name "base" 2>/dev/null)
 if [ "${BASEDIR}" = "" ]; then
 	echo "Erreur fatale : '/var/log/mount' ne contient pas les paquets !"
 	echo "Ce répertoire doit contenir les répertoires 'base', 'opt', 'xorg',"
