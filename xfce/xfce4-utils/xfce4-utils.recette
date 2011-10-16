@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-xfce-utils}
 VERSION=${VERSION:-4.8.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-utils}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -116,6 +116,10 @@ fi
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
+
+# On crée un lien générique vers la doc pour que le raccourci « Aide » du
+# menu fonctionne correctement :
+ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/xfce-utils
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
