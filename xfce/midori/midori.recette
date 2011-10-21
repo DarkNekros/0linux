@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=xfce
 NAMESRC=${NAMESRC:-midori}
-VERSION=${VERSION:-0.3.6}
+VERSION=${VERSION:-0.4.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-midori}
 BUILD=${BUILD:-1}
@@ -22,7 +22,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING EXPAT HACKING INSTALL README TRANSLATE TODO"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* EXPAT HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Navigateur Web léger pour XFCE"
 ########################################
@@ -82,7 +83,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-unique \
 	--enable-nls \
 	--enable-docs \
-	--disable-vala \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -126,7 +126,6 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-unique \
 	--enable-nls \
 	--enable-docs \
-	--disable-vala \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -152,7 +151,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
