@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=xfce
 NAMESRC=${NAMESRC:-xfce4-dev-tools}
-VERSION=${VERSION:-4.8.0}
+VERSION=${VERSION:-4.9.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-dev-tools}
 BUILD=${BUILD:-1}
@@ -22,7 +22,8 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://www.xfce.org/archive/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog COPYING HACKING INSTALL NEWS README"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils de développement pour XFCE"
 ########################################
@@ -102,7 +103,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -113,6 +114,18 @@ cat > ${PKG}/install/doinst.sh << "EOF"
 #!/usr/bin/env bash
 if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
+fi
+
+if [ -x usr/bin/update-desktop-database ]; then
+	chroot . /usr/bin/update-desktop-database &> /dev/null
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -x usr/bin/gtk-update-icon-cache ]; then
+	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
 
 EOF
