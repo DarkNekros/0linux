@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-transmission}
-VERSION=${VERSION:-2.33}
+VERSION=${VERSION:-2.41}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-transmission}
 BUILD=${BUILD:-1}
