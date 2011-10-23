@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-b43-fwcutter}
-VERSION=${VERSION:-015}
+VERSION=${VERSION:-014}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-b43-fwcutter}
 BUILD=${BUILD:-1}
@@ -32,7 +32,7 @@ WGET=${WGET:-http://bu3sch.de/b43/fwcutter/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
 	MAINTAINERS *NEWS* *README* THANKS TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Outil d'extraction de firmwares"
+SLACKDESC="Outil d'extraction de firmware"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
