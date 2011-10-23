@@ -13,7 +13,7 @@ for categ in base extra opt xfce xorg; do
 done
 
 NAMESRC=${NAMESRC:-broadcom-wl}
-VERSION=${VERSION:-5.100.138}
+VERSION=${VERSION:-5.10.56.27.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-b43-firmware}
 BUILD=${BUILD:-1}
@@ -28,11 +28,11 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://www.lwfinger.com/b43-firmware/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://mirror2.openwrt.org/sources/$NAMESRC-${VERSION}_mipsel.$EXT}
 DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
 	MAINTAINERS *NEWS* *README* THANKS TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Firmware pour cartes réseau sans fil Broadcom B43"
+SLACKDESC="Firmware pour cartes réseau sans fil Broadcom"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -68,7 +68,7 @@ find . \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On copie le firmware :
-b43-fwcutter -w ${PKG}/lib/firmware $(find . -type f -name "wl_apsta.o")
+b43-fwcutter -w ${PKG}/lib/firmware $(find . -type f -name "wl_prebuilt.o")
 chmod 0755 ${PKG}/lib/firmware/b43*
 
 # On compresse les manuels :
