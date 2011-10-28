@@ -41,79 +41,79 @@ set smarthome
 set speller "aspell -x -c --lang=fr_FR"
 
 # Les fichiers de coloration syntaxique spécifiques aux langages :
-include "@PKGDATADIR@/nanorc.nanorc"
+include "/usr/share/nano/nanorc.nanorc"
 
 # C/C++
- include "@PKGDATADIR@/c.nanorc"
+ include "/usr/share/nano/c.nanorc"
 
 # Fichiers Makefile
-include "@PKGDATADIR@/makefile.nanorc"
+include "/usr/share/nano/makefile.nanorc"
 
 # CSS
-include "@PKGDATADIR@/css.nanorc"
+include "/usr/share/nano/css.nanorc"
 
 # Debian
-include "@PKGDATADIR@/debian.nanorc"
+include "/usr/share/nano/debian.nanorc"
 
 # Gentoo
-include "@PKGDATADIR@/gentoo.nanorc"
+include "/usr/share/nano/gentoo.nanorc"
 
 # HTML
-include "@PKGDATADIR@/html.nanorc"
+include "/usr/share/nano/html.nanorc"
 
 # PHP
-include "@PKGDATADIR@/php.nanorc"
+include "/usr/share/nano/php.nanorc"
 
 # TCL
-include "@PKGDATADIR@/tcl.nanorc"
+include "/usr/share/nano/tcl.nanorc"
 
 # TeX
-include "@PKGDATADIR@/tex.nanorc"
+include "/usr/share/nano/tex.nanorc"
 
 # Courriels en citation (sous 'mutt' par exemple)
-include "@PKGDATADIR@/mutt.nanorc"
+include "/usr/share/nano/mutt.nanorc"
 
 # Correctifs/patches
-include "@PKGDATADIR@/patch.nanorc"
+include "/usr/share/nano/patch.nanorc"
 
 # Manuels
-include "@PKGDATADIR@/man.nanorc"
+include "/usr/share/nano/man.nanorc"
 
 # Groff
-include "@PKGDATADIR@/groff.nanorc"
+include "/usr/share/nano/groff.nanorc"
 
 # Perl
-include "@PKGDATADIR@/perl.nanorc"
+include "/usr/share/nano/perl.nanorc"
 
 # Python
-include "@PKGDATADIR@/python.nanorc"
+include "/usr/share/nano/python.nanorc"
 
 # Ruby
-include "@PKGDATADIR@/ruby.nanorc"
+include "/usr/share/nano/ruby.nanorc"
 
 # Java
-include "@PKGDATADIR@/java.nanorc"
+include "/usr/share/nano/java.nanorc"
 
 # Fortran
-include "@PKGDATADIR@/fortran.nanorc"
+include "/usr/share/nano/fortran.nanorc"
 
 # Objective-C
-include "@PKGDATADIR@/objc.nanorc"
+include "/usr/share/nano/objc.nanorc"
 
 # OCaml
-include "@PKGDATADIR@/ocaml.nanorc"
+include "/usr/share/nano/ocaml.nanorc"
 
 # AWK
-include "@PKGDATADIR@/awk.nanorc"
+include "/usr/share/nano/awk.nanorc"
 
 # Assembleur
-include "@PKGDATADIR@/asm.nanorc"
+include "/usr/share/nano/asm.nanorc"
 
 # Scripts shell
-include "@PKGDATADIR@/sh.nanorc"
+include "/usr/share/nano/sh.nanorc"
 
 # POV-Ray
-include "@PKGDATADIR@/pov.nanorc"
+include "/usr/share/nano/pov.nanorc"
 
 # Fichiers XML
-include "@PKGDATADIR@/xml.nanorc"
+include "/usr/share/nano/xml.nanorc"
