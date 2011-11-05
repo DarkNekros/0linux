@@ -234,7 +234,7 @@ chroot . depmod -a
 echo "***"
 echo "IMPORTANT : veuillez lire le fichier"
 echo "'/usr/doc/${NAMETGZ}-${VERSION}/0-LISEZMOI'"
-echo "si vous prévoyez de désinstaller le paquet 'nvidia' !"
+echo "si vous prévoyez de désinstaller le paquet '${NAMETGZ}' !"
 echo "***"
 
 EOF

@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-6.0.2}
+VERSION=${VERSION:-7.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
 BUILD=${BUILD:-1}

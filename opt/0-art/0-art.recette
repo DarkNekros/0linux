@@ -5,35 +5,43 @@ set -e
 umask 022
 CWD=$(pwd)
 PKGCAT=opt
-VERSION=${VERSION:-0.2}
+VERSION=${VERSION:-0.3}
 NAMETGZ=${NAMETGZ:-0-art}
 BUILD=${BUILD:-1}
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
 ARCH=${ARCH:-noarch}
+
 DOC="$CWD/LISEZMOI*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Créations graphiques originales pour 0"
+SLACKDESC="Créations originales de contributeurs pour 0"
 ########################################
+
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
 if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
 	echo "La description est trop longue (80 caractères max.) !"
 	exit 1
 fi
+
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/usr/share/wallpapers
+
 # On copie tous les papiers peints :
 cp -a *.png ${PKG}/usr/share/wallpapers/
+
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
+
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
 echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
