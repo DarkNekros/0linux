@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=extra
 NAMESRC=${NAMESRC:-ati-driver-installer}
-VERSION=${VERSION:-11.9}
+VERSION=${VERSION:-11.10}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-catalyst}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -48,7 +48,7 @@ mkdir -p ${PKG}/etc/X11/xorg.conf.d
 mkdir -p ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video
 mkdir -p ${PKG}/usr/bin
 mkdir -p ${PKG}/usr/include/GL
-mkdir -p ${PKG}/usr/lib64/xorg/modules/{drivers,extensions}
+mkdir -p ${PKG}/usr/lib64/xorg/modules/{drivers,extensions/fglrx}
 mkdir -p ${PKG}/usr/man/man1
 mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 
@@ -97,6 +97,11 @@ rm -rf ${PKG}/usr/lib64/modules
 for lib in $(find ${PKG} -type f -name "*.so.*"); do
 	ln -sf $(basename ${lib}) $(echo ${lib} | sed -e 's@\.so.*$@\.so@')
 done
+
+# On copie la libGLX d'AMD dans son répertoire et on fait un lien, en écrasant 
+# allègrement la libGLX de Xorg... :
+cp -a $(find xpic_64* -type f -name "fglrx-libglx.so") ${PKG}/usr/lib64/xorg/modules/extensions/fglrx/
+ln -sf fglrx/fglrx-libglx.so ${PKG}/usr/lib64/xorg/modules/extensions/libglx.so
 
 # On s'assure que les manuels soient bien placés :
 cp -ar ${PKG}/usr/share/man/* ${PKG}/usr/man/
@@ -167,6 +172,13 @@ config() {
 
 config etc/X11/xorg.conf.d/fglrx.conf.new
 chroot . depmod -a
+
+# On prévient l'utilisateur sur la nature intrusive du paquet :
+echo "***"
+echo "IMPORTANT : veuillez lire le fichier"
+echo "'/usr/doc/${NAMETGZ}-${VERSION}/0-LISEZMOI'"
+echo "si vous prévoyez de désinstaller le paquet '${NAMETGZ}' !"
+echo "***"
 
 EOF
 
