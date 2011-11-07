@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-opera}
 VERSION=${VERSION:-11.52_1100}
 EXT=${EXT:-rpm}
 NAMETGZ=${NAMETGZ:-opera}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -58,7 +58,7 @@ find . \
 mv ${PKG}/usr/share/man ${PKG}/usr
 
 # On ne touche pas à ma racine, merci... :
-rm -rf ${PKG}/opera*
+rm -r ${PKG}/opera*
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -79,7 +79,8 @@ fi
 # On déplace et on renomme la doc et on la lie :
 mv ${PKG}/usr/share/doc ${PKG}/usr
 mv ${PKG}/usr/doc/opera ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-ln -sf ${NAMETGZ}-${VERSION} opera
+ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/opera
+
 # On corrige les liens cassés :
 ln -sf ../../../doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/defaults/license.txt
 ln -sf ../../../../doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/locale/en/license.txt
