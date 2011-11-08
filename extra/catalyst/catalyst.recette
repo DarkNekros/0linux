@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-ati-driver-installer}
 VERSION=${VERSION:-11.10}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-catalyst}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-5}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -48,7 +48,7 @@ mkdir -p ${PKG}/etc/X11/xorg.conf.d
 mkdir -p ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video
 mkdir -p ${PKG}/usr/bin
 mkdir -p ${PKG}/usr/include/GL
-mkdir -p ${PKG}/usr/lib64/xorg/modules/{drivers,extensions/fglrx}
+mkdir -p ${PKG}/usr/lib64/{dri,xorg}
 mkdir -p ${PKG}/usr/man/man1
 mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 
@@ -78,7 +78,7 @@ cd -
 find . -type f -name "fglrx.ko" -exec mv {} ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video/ \;
 
 # On copie maintenant toute l'arborescence 64 bits dans 'usr/' :
-cp -ar {arch/x86_64,common}/usr/* ${PKG}/usr
+cp -ar {{arch/x86_64,common},xpic_64*}/usr/* ${PKG}/usr
 
 # On copie toute la configuration ATI. Déposez une plainte si la config' a besoin
 # d'être renommée en '.new' pour les mises à niveau :) :
@@ -89,8 +89,10 @@ cp -ar ${PKG}/usr/X11R6/* ${PKG}/usr
 rm -rf ${PKG}/usr/X11R6
 
 # On déplace les modules de X dans le bon répertoire :
-cp -ar ${PKG}/usr/lib64/modules/* ${PKG}/usr/lib64/xorg/modules/
+cp -ar ${PKG}/usr/lib64/modules ${PKG}/usr/lib64/xorg/
 rm -rf ${PKG}/usr/lib64/modules
+mv ${PKG}/usr/lib64/xorg/modules/dri/fglrx_dri.so ${PKG}/usr/lib64/dri/
+rm -rf ${PKG}/usr/lib64/xorg/modules/dri/
 
 # On crée tous les liens pour les bibliothèques et on espère chaleureusement
 # que AMD (tout comme Nvidia) fera un jour un effort pour sa méthode d'installation :
@@ -100,8 +102,13 @@ done
 
 # On copie la libGLX d'AMD dans son répertoire et on fait un lien, en écrasant 
 # allègrement la libGLX de Xorg... :
+mkdir -p ${PKG}/usr/lib64/xorg/modules/extensions/fglrx
 cp -a $(find xpic_64* -type f -name "fglrx-libglx.so") ${PKG}/usr/lib64/xorg/modules/extensions/fglrx/
 ln -sf fglrx/fglrx-libglx.so ${PKG}/usr/lib64/xorg/modules/extensions/libglx.so
+
+# On s'assure de quelques permissions :
+chmod 755 ${PKG}/usr/bin/*
+find ${PKG} -type f -name "*.so*" -exec chmod 755 {} \;
 
 # On s'assure que les manuels soient bien placés :
 cp -ar ${PKG}/usr/share/man/* ${PKG}/usr/man/
@@ -176,8 +183,8 @@ chroot . depmod -a
 # On prévient l'utilisateur sur la nature intrusive du paquet :
 echo "***"
 echo "IMPORTANT : veuillez lire le fichier"
-echo "'/usr/doc/${NAMETGZ}-${VERSION}/0-LISEZMOI'"
-echo "si vous prévoyez de désinstaller le paquet '${NAMETGZ}' !"
+echo "'/usr/doc/catalyst-<version>/0-LISEZMOI'"
+echo "si vous prévoyez de désinstaller le paquet 'catalyst' !"
 echo "***"
 
 EOF
