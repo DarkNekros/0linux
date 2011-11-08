@@ -140,11 +140,12 @@ echo -n "Nettoyage... "
 # On copie les bibliothèques requises en dépendances pour les isoler :
 mkdir -p ${LIVEOS}/conserver/{,usr/}lib64
 
-for libbb in libICE.so* libSM.so* libX11.so* libXaw*.so* libXmu.so* libXt.so* \
+for libbb in libICE.so* libSM.so* libX*.so* \
 libbz2.so* libdb-*.so* libdbus-1.so* libexpat.so* libfreetype.so* libgcc_s.so* \
-libgcj.so* libglib-2.0.so* libgmp.so* libgobject-2.0.so* libgomp.so* libgpm.so*\
-libgthread-2.0.so* libidn.so* libpopt.so* libpython*.so* libmpc.so* libmpfr.so* libssh2.so* \
-libstdc++.so* libperl.so* libz.so* libxcb.so* libfreetype.so* libdb-5*.so*; do
+libgcj.so* libgcrypt.so* libglib-2.0.so* libgmp.so* libgnutls.so* libgobject-2.0.so* \
+libgomp.so* libgpg-error.so* libgpm.so* libgthread-2.0.so* libidn.so* libperl.so* libpopt.so* \
+libpython*.so* libmpc.so* libmpfr.so* libssh2.so* libstdc++.so* libtasn1.so* \
+libxcb.so* libxml2.so* libxtables.so* libz.so*; do
 	
 	find ${LIVEOS}/lib64 -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/lib64 \;
 	find ${LIVEOS}/usr/lib64 -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/usr/lib64 \;
@@ -156,13 +157,7 @@ cp -ar ${LIVEOS}/lib/firmware ${LIVEOS}/conserver
 cp -ar ${LIVEOS}/lib/modules/$(uname -r)/kernel ${LIVEOS}/conserver
 
 # On récupère le minimum de l'éditeur 'vim' (on dispose aussi de 'nano') :
-cp -a ${LIVEOS}/usr/bin/vim ${LIVEOS}/conserver
-cp -ar ${LIVEOS}/usr/share/vim/lang/fr ${LIVEOS}/conserver
-cp -a ${LIVEOS}/etc/vimrc ${LIVEOS}/conserver
-
-# On supprime la vérification orthographique et GPM de 'vim' :
-sed -i "s@set spell@\" &@g" ${LIVEOS}/conserver/vimrc
-sed -i "s@set mouse=a@\" &@g" ${LIVEOS}/conserver/vimrc
+cp -a ${LIVEOS}/usr/bin/minivim ${LIVEOS}/conserver
 
 # On désinstalle les paquets superflus, maintenant qu'on a les bibliothèques en lieu sûr :
 # opt
@@ -189,11 +184,10 @@ done
 cp -a ${LIVEOS}/conserver/usr/lib64/* ${LIVEOS}/usr/lib64/
 cp -a ${LIVEOS}/conserver/lib64/* ${LIVEOS}/lib64/
 
-# On ramène le nécesaire pour 'vim' : 
-cp -a ${LIVEOS}/conserver/vim ${LIVEOS}/usr/bin/
-mkdir -p ${LIVEOS}/usr/share/vim/lang/
-cp -ar ${LIVEOS}/conserver/fr ${LIVEOS}/usr/share/vim/lang/
-cp -a ${LIVEOS}/conserver/vimrc ${LIVEOS}/etc/
+# On ramène et on crée le nécesaire pour 'vim' : 
+cp -a ${LIVEOS}/conserver/minivim ${LIVEOS}/usr/bin/
+ln -sf minivim ${PKG}/usr/bin/vim
+ln -sf minivim ${PKG}/usr/bin/vi
 
 # On ramène les modules et les firmware : 
 mkdir -p ${LIVEOS}/lib/modules/$(uname -r)
