@@ -1,0 +1,217 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+set -e
+umask 022
+CWD=$(pwd)
+PKGCAT=extra
+NAMESRC=${NAMESRC:-ati-driver-installer}
+VERSION=${VERSION:-11.10}
+EXT=${EXT:-run}
+NAMETGZ=${NAMETGZ:-catalyst}
+BUILD=${BUILD:-5}
+
+TMP=${TMP:-/tmp}
+OUT=${OUT:-/usr/local/paquets/$PKGCAT}
+ARCH=${ARCH:-x86_64}
+TARGET32=${TARGET32:-i686-0-linux-gnu}
+TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
+BUILD32=${BUILD32:--m32}
+BUILD64=${BUILD64:--m64}
+PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
+PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
+
+WGET=${WGET:-http://www2.ati.com/drivers/linux/$NAMESRC-$(echo $VERSION | sed 's/\./-/')-x86.$ARCH.$EXT}
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO TRANSLATORS *license* *readme* $CWD/0-LISEZMOI"
+########## |-----handy-ruler------------------------------------------------------|
+SLACKDESC="Pilotes et bibliothèques graphiques fermés de AMD"
+########################################
+
+SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
+if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
+	echo "La description est trop longue (80 caractères max.) !"
+	exit 1
+fi
+
+# On télécharge les « sources » :
+if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
+	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
+	mv ${NAMESRC}-${VERSION}.$EXT{.part,}
+fi
+
+# On crée les répertoires d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}/etc/ati
+mkdir -p ${PKG}/etc/modprobe.d
+mkdir -p ${PKG}/etc/X11/xorg.conf.d
+mkdir -p ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video
+mkdir -p ${PKG}/usr/bin
+mkdir -p ${PKG}/usr/include/GL
+mkdir -p ${PKG}/usr/lib64/{dri,xorg}
+mkdir -p ${PKG}/usr/man/man1
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+
+# On déballe et on se place dans les sources :
+cd $TMP
+echo "Extraction en cours..."
+sh $CWD/${NAMESRC}-${VERSION}.$EXT --extract ${NAMESRC}
+cd ${NAMESRC}
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On positionne USE_ARCH :
+export USE_ARCH=64
+
+# On copie de quoi compiler le module :
+cp -ar arch/x86_64/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod/
+
+# On se déplace pour compiler le module et on revient à notre place :
+cd common/lib/modules/fglrx/build_mod
+fakeroot make.sh
+cd -
+
+# On place le module où il faut :
+find . -type f -name "fglrx.ko" -exec mv {} ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video/ \;
+
+# On copie maintenant toute l'arborescence 64 bits dans 'usr/' :
+cp -ar {{arch/x86_64,common},xpic_64*}/usr/* ${PKG}/usr
+
+# On copie toute la configuration ATI. Déposez une plainte si la config' a besoin
+# d'être renommée en '.new' pour les mises à niveau :) :
+cp -a common/etc/ati/* ${PKG}/etc/ati
+
+# On copie correctement l'arborescence pour X :
+cp -ar ${PKG}/usr/X11R6/* ${PKG}/usr
+rm -rf ${PKG}/usr/X11R6
+
+# On déplace les modules de X dans le bon répertoire :
+cp -ar ${PKG}/usr/lib64/modules ${PKG}/usr/lib64/xorg/
+rm -rf ${PKG}/usr/lib64/modules
+mv ${PKG}/usr/lib64/xorg/modules/dri/fglrx_dri.so ${PKG}/usr/lib64/dri/
+rm -rf ${PKG}/usr/lib64/xorg/modules/dri/
+
+# On crée tous les liens pour les bibliothèques et on espère chaleureusement
+# que AMD (tout comme Nvidia) fera un jour un effort pour sa méthode d'installation :
+for lib in $(find ${PKG} -type f -name "*.so.*"); do
+	ln -sf $(basename ${lib}) $(echo ${lib} | sed -e 's@\.so.*$@\.so@')
+done
+
+# On copie la libGLX d'AMD dans son répertoire et on fait un lien, en écrasant 
+# allègrement la libGLX de Xorg... :
+mkdir -p ${PKG}/usr/lib64/xorg/modules/extensions/fglrx
+cp -a $(find xpic_64* -type f -name "fglrx-libglx.so") ${PKG}/usr/lib64/xorg/modules/extensions/fglrx/
+ln -sf fglrx/fglrx-libglx.so ${PKG}/usr/lib64/xorg/modules/extensions/libglx.so
+
+# On s'assure de quelques permissions :
+find ${PKG} \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On s'assure que les manuels soient bien placés :
+cp -ar ${PKG}/usr/share/man/* ${PKG}/usr/man/
+rm -rf ${PKG}/usr/share/man
+
+# On crée un fichier blacklist pour empêcher 'ati' ou 'radeon' de se charger :
+cat > ${PKG}/etc/modprobe.d/blacklist-ati-radeon.conf << "EOF"
+blacklist ati
+blacklist radeon
+
+EOF
+
+# On crée une configuration pour charger le pilote fglrx dans X et on
+# prend garde à ne rien écraser :
+cat > ${PKG}/etc/X11/xorg.conf.d/fglrx.conf.new << "EOF"
+Section "Device"
+	Identifier "AMD Device"
+	Driver "fglrx"
+EndSection
+
+EOF
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# On compresse les manuels :
+if [ -d ${PKG}/usr/man ]; then
+	find ${PKG}/usr/man -type f -name "*.*" -exec gzip -9 {} \;
+	for manpage in $(find ${PKG}/usr/man -type l) ; do
+		ln -s $(readlink $manpage).gz ${manpage}.gz
+		rm -f ${manpage}
+	done
+fi
+
+# On compresse les pages info :
+if [ -d ${PKG}/usr/info ]; then
+	rm -f ${PKG}/usr/info/dir
+	gzip -9 ${PKG}/usr/info/*.info*
+fi
+
+# Installation de la documentation :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -ar ${PKG}/usr/share/doc/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
+rm -rf ${PKG}/usr/share/doc
+
+# On installe le slack-desc :
+mkdir -p ${PKG}/install
+echo "${NAMETGZ}: ${NAMETGZ} (${SLACKDESC})" > ${PKG}/install/slack-desc
+
+# On installe le doinst.sh :
+cat > ${PKG}/install/doinst.sh << "EOF"
+#!/usr/bin/env bash
+if [ -x sbin/ldconfig ]; then
+	sbin/ldconfig -r .
+fi
+
+config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD
+	fi
+}
+
+config etc/X11/xorg.conf.d/fglrx.conf.new
+chroot . depmod -a
+
+# On prévient l'utilisateur sur la nature intrusive du paquet :
+echo "***"
+echo "IMPORTANT : veuillez lire le fichier"
+echo "'/usr/doc/catalyst-<version>/0-LISEZMOI'"
+echo "si vous prévoyez de désinstaller le paquet 'catalyst' !"
+echo "***"
+
+EOF
+
+# On "strippe" tout ce qu'on trouve :
+find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
+
+# On vérifie enfin les droits de la doc, souvent problématiques :
+find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
+find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
+
+# Empaquetage !
+cd ${PKG}
+mkdir -p $OUT
+PACKAGING="
+	chown root:root . -R
+	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}_$(uname -r)-${ARCH}-$BUILD
+	rm -rf ${PKG}
+	rm -rf $TMP/${NAMESRC}"
+
+if [ "$(which fakeroot 2> /dev/null)" ]; then
+	echo "${PACKAGING}" | fakeroot
+else
+	su -c "${PACKAGING}"
+fi
+
+exit 0

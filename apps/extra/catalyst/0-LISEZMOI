@@ -1,0 +1,18 @@
+0-LISEZMOI : merci de me lire !
+
+Le paquet 'catalyst' a une nature hautement intrusive  : pour son bon
+fonctionnement, il doit écraser des fichiers vitaux du système avec les
+siens et pose donc un problème d'intégrité du système s'il vient un jour
+à être désinstallé ou mis à niveau.
+
+En cas de désinstallation, il faudrait donc impérativement :
+
+1) réinstaller les paquets suivants :
+	spackadd -f mesa glew x11-proto x11-libs xorg-server
+
+2) Modifier ou supprimer le fichier /etc/X11/xorg.conf.d/fglrx.conf
+
+3) Mettre à jour les dépendances des modules :
+	depmod -a
+
+4) Rédemarrer ;)

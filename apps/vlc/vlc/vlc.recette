@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
-# L'archive nécessaire, tirée du dépôt SVN, se trouve sur le serveur
-# FTP de 0, dans le répertoire 'archives_sources'.
 
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=base
-NAMESRC=${NAMESRC:-eglibc}
-VERSION=${VERSION:-2.11_20102010}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-eglibc}
-BUILD=${BUILD:-3}
+PKGCAT=extra
+NAMESRC=${NAMESRC:-vlc}
+VERSION=${VERSION:-1.1.12}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-vlc}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -20,12 +18,14 @@ TARGET32=${TARGET32:-i686-0-linux-gnu}
 TARGET64=${TARGET64:-$ARCH-0-linux-gnu}
 BUILD32=${BUILD32:--m32}
 BUILD64=${BUILD64:--m64}
+PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
+PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-DOC="BUGS CANCEL* ChangeLog* CONFORMANCE COPYING COPYING.LIB EGLIBC* FAQ* \
-	 INSTALL LICENSES NAMESPACE NEWS NOTES PROJECTS README*"
+WGET=${WGET:-http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Bibliothèques système vitales et internationalisation"
-SLACKDESCLIBS="Jeu minimal de bibliothèques système vitales"
+SLACKDESC="Le lecteur multimédia polyvalent VLC"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -36,60 +36,19 @@ fi
 
 # On télécharge les sources :
 if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
-	echo "Synchronisation SVN..."
-	svn co svn://svn.eglibc.org/trunk ${NAMESRC}-${VERSION}
-	rm -rf $(find . -type d -name ".svn")
-	echo "Création de l'archive source en cours..."
-	tar cfJ ${NAMESRC}-${VERSION}.$EXT ${NAMESRC}-${VERSION}
+	wget -vc $WGET -O ${NAMESRC}-${VERSION}.$EXT.part
+	mv ${NAMESRC}-${VERSION}.$EXT{.part,}
 fi
 
 # On les vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
-# On télécharge les données sur les fuseaux horaires :
-rm -f $CWD/tz*.tar.gz
-wget 'ftp://ftp.iana.org/tz/tzcode-latest.tar.gz'
-wget 'ftp://ftp.iana.org/tz/tzdata-latest.tar.gz'
-
-# On crée les répertoires d'accueil :
+# On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}/var/{db,run}/nscd
-
-# On nettoie par le vide pour que rien ne traîne :
-if [ -d ${PKG} ]; then
-	rm -rf ${PKG}
-fi
-
-if [ -d $TMP/${NAMESRC}-${VERSION} ]; then
-	rm -rf $TMP/${NAMESRC}-${VERSION}
-fi
-
-if [ -d $TMP/${NAMESRC}-build ]; then
-  rm -rf $TMP/${NAMESRC}-build
-fi
-
-# Fonctions pour appliquer les correctifs et les fuseaux horaires :
-correctifs() {
-	# Ajout de la locale ru_RU.CP1251, toujours absente :
-	cat $CWD/glibc.ru_RU.CP1251.diff | patch -p1
-	
-	# Mise à jour des fuseaux horaires :
-	(
-		cd timezone
-		tar xf $CWD/tzdata*.tar.gz
-		mv yearistype.sh yearistype
-		chmod 644 *
-		chmod 755 yearistype
-		mkdir tzcode
-		cd tzcode
-		tar xf $CWD/tzcode*.tar.gz
-		chmod 644 *
-		cp -a *.c *.h ..
-	)
-}
+mkdir -p ${PKG}
 
 # On déballe et on se place dans les sources :
-NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
@@ -101,38 +60,72 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On applique tous les correctifs ; on quitte si quelque chose ne va pas :
-cd $TMP/${NAME}/libc
-correctifs
-if [ ! $? = 0 ]; then
-	echo "Erreur lors de l'application d'un correctif. Arrêt."
-	exit 1
-fi
+sed -i -e "s#SDL_image.h#SDL/&#" -e "s#SDL.h#SDL/&#" $(grep -lr "SDL*.h" .)
 
-# On crée un répertoire séparé pour la compilation :
-rm -rf $TMP/${NAMESRC}-build
-mkdir -p $TMP/${NAMESRC}-build
-cd $TMP/${NAMESRC}-build
+# On positionne USE_ARCH :
+export USE_ARCH=32
 
 # Compilation pour 32 bits :
-SLKCFLAGS="-g -O3 -march=i686 -pipe"
+SLKCFLAGS="-O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-$TMP/${NAME}/libc/configure \
+./configure \
 	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--disable-profile \
-	--enable-add-ons \
-	--enable-kernel=2.6.33 \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/eglibc \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-debug \
+	--enable-a52 \
+	--enable-aa \
+	--enable-avcodec \
+	--enable-avformat \
+	--enable-dc1394 \
+	--enable-dv \
+	--enable-dvbpsi \
+	--enable-dvdnav \
+	--enable-faad \
+	--enable-flac \
+	--enable-id3tag \
+	--enable-libass \
+	--enable-libcddb \
+	--enable-live555 \
+	--enable-lua \
+	--enable-mozilla \
+	--enable-ncurses \
+	--enable-ogg \
+	--enable-pvr \
+	--enable-qt4 \
+	--enable-real \
+	--enable-realrtsp \
+	--enable-run-as-root \
+	--enable-schroedinger \
+	--enable-shared \
+	--enable-shout \
+	--enable-speex \
+	--enable-svg \
+	--enable-svgalib \
+	--enable-switcher \
+	--enable-telx \
+	--enable-theora \
+	--enable-twolame \
+	--enable-upnp \
+	--enable-v4l \
+	--enable-vcdx \
+	--enable-vorbis \
+	--enable-x264 \
 	--build=${TARGET32}
 
 make -j3 || make
-fakeroot make install install_root=${PKG}
+fakeroot make install DESTDIR=${PKG}
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
 
 # On re-déballe et on se re-place dans les sources :
 cd $TMP
@@ -146,46 +139,73 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On réapplique tous les correctifs ; on quitte si quelque chose ne va pas :
-cd $TMP/${NAME}/libc
-correctifs
-if [ ! $? = 0 ]; then
-	echo "Erreur lors de l'appplication d'un correctif. Arrêt."
-	exit 1
-fi
+sed -i -e 's#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g' vlc-config.in.in configure*
+sed -i -e "s#SDL_image.h#SDL/&#" -e "s#SDL.h#SDL/&#" $(grep -lr "SDL*.h" .)
 
-# On recrée un répertoire séparé pour la compilation :
-rm -rf $TMP/${NAMESRC}-build
-mkdir -p $TMP/${NAMESRC}-build
-cd $TMP/${NAMESRC}-build
+# On positionne USE_ARCH :
+export USE_ARCH=64
 
 # Compilation pour 64 bits :
-SLKCFLAGS="-g -O3 -fPIC -pipe"
+SLKCFLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-$TMP/${NAME}/libc/configure \
+./configure \
 	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--disable-profile \
-	--enable-add-ons \
-	--enable-kernel=2.6.33 \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/eglibc \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-debug \
+	--enable-a52 \
+	--enable-aa \
+	--enable-avcodec \
+	--enable-avformat \
+	--enable-dc1394 \
+	--enable-dv \
+	--enable-dvbpsi \
+	--enable-dvdnav \
+	--enable-faad \
+	--enable-flac \
+	--enable-id3tag \
+	--enable-libass \
+	--enable-libcddb \
+	--enable-live555 \
+	--enable-lua \
+	--enable-mozilla \
+	--enable-ncurses \
+	--enable-ogg \
+	--enable-pvr \
+	--enable-qt4 \
+	--enable-real \
+	--enable-realrtsp \
+	--enable-run-as-root \
+	--enable-schroedinger \
+	--enable-shared \
+	--enable-shout \
+	--enable-speex \
+	--enable-svg \
+	--enable-svgalib \
+	--enable-switcher \
+	--enable-telx \
+	--enable-theora \
+	--enable-twolame \
+	--enable-upnp \
+	--enable-v4l \
+	--enable-vcdx \
+	--enable-vorbis \
+	--enable-x264 \
 	--build=${TARGET64}
 
 make -j3 || make
-fakeroot make install install_root=${PKG}
-fakeroot make localedata/install-locales install_root=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
-# On place la configuration de nscd :
-cat $TMP/${NAME}/libc/nscd/nscd.conf > ${PKG}/etc/nscd.conf.new
-
-# On nettoie :
-rm -f ${PKG}/etc/ld.so.cache
-find ${PKG} -name "*.orig" -delete
+# On neutralise USE_ARCH :
+unset USE_ARCH
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -203,10 +223,12 @@ if [ -d ${PKG}/usr/info ]; then
 fi
 
 # Installation de la documentation :
-cd $TMP/${NAME}/libc
-mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cd -
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/vlc
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
+if [ -d ${PKG}/usr/share/doc]; then
+	mv ${PKG}/usr/share/doc/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/vlc
+	rm -rf ${PKG}/usr/share/doc
+fi
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -230,7 +252,17 @@ config() {
 	fi
 }
 
-config etc/nscd.conf.new
+if [ -x usr/bin/update-desktop-database ]; then
+	chroot . /usr/bin/update-desktop-database &> /dev/null
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -x usr/bin/gtk-update-icon-cache ]; then
+	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
+fi
 
 EOF
 
@@ -254,9 +286,7 @@ PACKAGING="
 		if [ -d $TMP/${NAME} ]; then
 			rm -rf $TMP/${NAME}
 		fi
-	fi
-	rm -rf $TMP/${NAMESRC}-build"
-	
+	fi"
 
 if [ "$(which fakeroot 2> /dev/null)" ]; then
 	echo "${PACKAGING}" | fakeroot
@@ -265,4 +295,3 @@ else
 fi
 
 exit 0
-
