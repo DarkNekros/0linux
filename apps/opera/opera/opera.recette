@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=extra
+PKGCAT=apps/$(basename $(dirname $CWD))
 NAMESRC=${NAMESRC:-opera}
 VERSION=${VERSION:-11.52_1100}
 EXT=${EXT:-rpm}

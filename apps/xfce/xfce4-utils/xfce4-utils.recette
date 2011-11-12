@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=xfce
+PKGCAT=apps/$(basename $(dirname $CWD))
 NAMESRC=${NAMESRC:-xfce-utils}
 VERSION=${VERSION:-4.8.3}
 EXT=${EXT:-tar.bz2}

@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=opt
+PKGCAT=apps/$(basename $(dirname $CWD))
 NAMESRC=${NAMESRC:-fluidsynth}
 VERSION=${VERSION:-1.1.3}
 EXT=${EXT:-tar.bz2}

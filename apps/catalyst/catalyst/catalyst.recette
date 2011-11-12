@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=extra
+PKGCAT=apps/$(basename $(dirname $CWD))
 NAMESRC=${NAMESRC:-ati-driver-installer}
 VERSION=${VERSION:-11.10}
 EXT=${EXT:-run}

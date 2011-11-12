@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=xfce
+PKGCAT=apps/$(basename $(dirname $CWD))
 NAMESRC=${NAMESRC:-xfce4-screenshooter}
 VERSION=${VERSION:-1.7.9}
 EXT=${EXT:-tar.bz2}

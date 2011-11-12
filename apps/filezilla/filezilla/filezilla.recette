@@ -4,13 +4,12 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=opt
+PKGCAT=apps/$(basename $(dirname $CWD))
 NAMESRC=${NAMESRC:-FileZilla}
 VERSION=${VERSION:-3.3.2.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-filezilla}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}

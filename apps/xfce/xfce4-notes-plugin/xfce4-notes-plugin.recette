@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=xfce
+PKGCAT=apps/$(basename $(dirname $CWD))
 NAMESRC=${NAMESRC:-xfce4-notes-plugin}
 VERSION=${VERSION:-1.7.7}
 EXT=${EXT:-tar.bz2}
