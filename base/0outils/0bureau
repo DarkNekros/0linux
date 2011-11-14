@@ -29,8 +29,7 @@ if [ "$(whoami)" = "root" ]; then
 	done
 fi
 
-# Si le niveau d'exécution par défaut est 4, on propose un bureau (l'offre
-# est plutôt maigre pour le moment) :
+# Si le niveau d'exécution par défaut est 4, on propose un bureau :
 if [ ! "$(grep 'id:4:initdefault' /etc/inittab)" = "" ]; then
 	while [ 0 ]; do
 		clear
@@ -41,10 +40,19 @@ if [ ! "$(grep 'id:4:initdefault' /etc/inittab)" = "" ]; then
 		echo "liste ci-dessous. Xfce est l'environnement par défaut."
 		echo "Appuyez sur ENTRÉE pour ignorer cette étape."
 		echo ""
-		echo "1 : XFCE - Environnement de bureau léger en GTK+ (par défaut)"
-		echo "2 : E    - Environnement graphique « Enlightenement »"
-		echo "3 : XBMC - Centre multimédia autonome XBMC"
-		echo "4 : TWM  - Gestionnaire de fenêtres basique fourni avec X11"
+		# On teste la présence de fichier de démarrage X pour chaque bureau :
+		if [ -e /etc/X11/xinit/xinitrc.xfce ]; then
+			echo "1 : XFCE - Environnement de bureau léger en GTK+"
+		fi
+		if [ -e /etc/X11/xinit/xinitrc.e ]; then
+			echo "2 : E    - Environnement graphique « Enlightenment »"
+		fi
+		if [ -e /etc/X11/xinit/xinitrc.xbmc ]; then
+			echo "3 : XBMC - Centre multimédia autonome XBMC"
+		fi
+		if [ -e /etc/X11/xinit/xinitrc.twm ]; then
+			echo "4 : TWM  - Gestionnaire de fenêtres basique fourni avec X11"
+		fi
 		echo ""
 		echo -n "Votre choix : "
 		read XDE;
