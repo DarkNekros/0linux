@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
-# Note : les variables contiennent « USB » car ce script n'était destiné
-# à l'origine qu'à l'installation via clés USB ;)
-
 # On nettoie :
 rm -f $TMP/choix_media
-unset USBSELECT BLAH
+unset MEDIASELECT DIRBASE DIR0
 
 # Boucle d'affichage du menu :
 while [ 0 ]; do
@@ -22,31 +19,33 @@ while [ 0 ]; do
 	echo "Exemples : /dev/sdc4 ; /dev/sdd1 ; /dev/hdb2 ; etc."
 	echo ""
 	echo -n "Votre choix : "
-	read USBSELECT;
+	read MEDIASELECT;
 	# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
-	if [ "$(echo ${USBSELECT} | sed -e 's/\(\/dev\/\).*$/\1/')" = "" ]; then
+	if [ "$(echo ${MEDIASELECT} | sed -e 's/\(\/dev\/\).*$/\1/')" = "" ]; then
 		echo "Veuillez entrer un périphérique de la forme « /dev/xxxx »."
 		sleep 2
-		unset USBSELECT
+		unset MEDIASELECT
 		continue
 	else
-		echo "Montage en cours du périphérique ${USBSELECT} dans /var/log/mount..."
-		mount ${USBSELECT} /var/log/mount 1> /dev/null 2> /dev/null
-		# Si le volume contient un répertoire 'paquets/base', alors on
-		# considère qu'on tient là notre support d'installation :
-		DIR0=$(find /var/log/mount -type d -name "paquets" -print 2>/dev/null)
-		if [ ! "${DIR0}" = "" ]; then
-			if [ -d ${DIR0}/base ]; then
-				LECTEUR_USB=${USBSELECT}
-				echo ${USBSELECT} > $TMP/choix_media
+		# On monte le périphérique :
+		echo "Montage en cours du périphérique ${MEDIASELECT} dans /var/log/mount..."
+		mount ${MEDIASELECT} /var/log/mount 1> /dev/null 2> /dev/null
+		
+		# Si le volume contient un répertoire 'base/', lequel contient un paquet
+		# 'eglibc' alors on considère qu'on tient là notre support d'installation :
+		DIRBASE=$(find /var/log/mount -type d -name "base" -print 2>/dev/null)
+		if [ ! "${DIRBASE}" = "" ]; then
+			DIR0=$(basename $(dirname ${DIRBASE}))
+			if [ ! "$(find ${DIR0}/base -type f -name 'eglibc-*')" = "" ]; then
+				echo ${MEDIASELECT} > $TMP/choix_media
 				echo "Un dépôt de paquets a été trouvé sur ce volume !"
 				sleep 2
 				break
 			fi
 		else
 			echo "Ce périphérique ne contient pas de dépôt des paquets : j'ai recherché"
-			echo "le répertoire contenant 'paquets/base', en vain. Démontage..."
-			sleep 2
+			echo "le répertoire 'base/' et son paquet 'eglibc-*', en vain. Démontage..."
+			sleep 4
 			umount /var/log/mount 1> /dev/null 2> /dev/null
 			continue
 		fi

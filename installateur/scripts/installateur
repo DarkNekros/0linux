@@ -131,17 +131,8 @@ while [ 0 ]; do
 			continue
 		else
 			
-			# Quelques vérif' avant l'installation des paquets. '/var/log/mount' doit
-			# à ce stade contenir les paquets résidents : 
-			BASEDIR=$(find -L /var/log/mount -type d -name "base" 2>/dev/null)
-			if [ "${BASEDIR}" = "" ]; then
-				echo "Erreur fatale : '/var/log/mount' ne contient pas les paquets !"
-				echo "Ce répertoire doit contenir les répertoires 'base', 'opt', 'xorg',"
-				echo "etc. peuplés des paquets logiciels."
-				sleep 3
-				unset BASEDIR
-				continue
-			elif [ "${SETUPROOT}" = "" ]; then
+			# Quelques vérif' avant l'installation des paquets :
+			if [ "${SETUPROOT}" = "" ]; then
 				echo "Erreur fatale : la racine système n'est pas positionnée !"
 				echo "Retour au menu principal..."
 				sleep 3
@@ -153,8 +144,10 @@ while [ 0 ]; do
 				sleep 3
 				continue
 			else
-				DIR0=$(dirname ${BASEDIR})
+				# Tout semble OK, on lance l'installation des paquets, on damnde quel dépôts
+				# supplémentaires installer puis on appelle la configuration :
 				. installer.sh
+				. apps.sh
 				. configurer.sh
 			fi
 		fi

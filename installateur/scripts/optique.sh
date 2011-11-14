@@ -2,7 +2,7 @@
 
 # On nettoie :
 rm -f $TMP/choix_media
-unset METHODE DISKSELECT BLAH 
+unset METHODE DIR BASE DIR0 DISKSELECT BLAH 
 
 # Boucle d'affichage du menu :
 while [ ! -r $TMP/choix_media ]; do
@@ -71,21 +71,25 @@ while [ ! -r $TMP/choix_media ]; do
 				unset DISKSELECT
 				continue
 			else
+				# On monte le périphérique :
 				echo "Montage en cours du périphérique ${DISKSELECT} dans /var/log/mount..."
 				mount -o ro ${DISKSELECT} /var/log/mount 2> /dev/null
-				# Si le volume contient le répertoire '0/paquets/base', alors on
-				# considère qu'on tient là notre support d'installation :
-				if [ -d /var/log/mount/0/paquets/base ]; then
-					echo ${DISKSELECT} > $TMP/choix_media
-					echo "Un dépôt de paquets a été trouvé sur ce volume !"
-					sleep 2
+				
+				# Si le volume contient un répertoire 'base/', lequel contient un paquet
+				# 'eglibc' alors on considère qu'on tient là notre support d'installation :
+				DIRBASE=$(find /var/log/mount -type d -name "base" -print 2>/dev/null)
+				if [ ! "${DIRBASE}" = "" ]; then
+					DIR0=$(basename $(dirname ${DIRBASE}))
+					if [ ! "$(find ${DIR0}/base -type f -name 'eglibc-*')" = "" ]; then
+						echo ${DISKSELECT} > $TMP/choix_media
+						echo "Un dépôt de paquets a été trouvé sur ce volume !"
+						sleep 2
 					break
-				# Sinon, on a affaire à une simple partition :
 				else
 					echo "Ce périphérique ne contient pas de dépôt des paquets : j'ai recherché"
-					echo "le répertoire /var/log/mount/0/paquets/base, en vain. Démontage..."
-					sleep 2
-					umount /var/log/mount 2> /dev/null
+					echo "le répertoire 'base/' et son paquet 'eglibc-*', en vain. Démontage..."
+					sleep 4
+					umount /var/log/mount 1> /dev/null 2> /dev/null
 					continue
 				fi
 			fi

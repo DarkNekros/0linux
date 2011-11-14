@@ -4,11 +4,11 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=opt
-NAMESRC=${NAMESRC:-qemu}
-VERSION=${VERSION:-0.13.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-qemu}
+PKGCAT=apps/$(basename $(dirname $CWD))
+NAMESRC=${NAMESRC:-transmission}
+VERSION=${VERSION:-2.41}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-transmission}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -21,10 +21,11 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://download.savannah.gnu.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="COPYING* LICENSE MAINTAINERS README TODO"
+WGET=${WGET:-http://download.transmissionbt.com/files/$NAMESRC-$VERSION.$EXT}
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
+	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Émulateur de processeurs et systèmes multiples"
+SLACKDESC="Clients et démon de partage BitTorrent"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -71,22 +72,19 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
 LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
-	--enable-system
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${TARGET64}
 
-make -j3 OS_CFLAGS="$SLKCFLAGS" || make OS_CFLAGS="$SLKCFLAGS"
+make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
-
-# On crée une règle 'udev' afin que que tous les utilisateurs aient accès à kvm :
-mkdir -p ${PKG}/lib/udev/rules.d
-echo "KERNEL==\"kvm\", GROUP=\"users\", MODE=\"0660\"" > ${PKG}/lib/udev/rules.d/65-kvm.rules
-
-# On déplace les manuels :
-if [ -d ${PKG}/usr/share/man ]; then
-	mv ${PKG}/usr/share/man ${PKG}/usr
-fi
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -105,13 +103,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-
-# On déplace la doc :
-if [ -d ${PKG}/usr/share/doc ]; then
-	mv ${PKG}/usr/share/doc/qemu/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-	rm -rf ${PKG}/usr/share/doc
-fi
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -134,6 +126,18 @@ config() {
 		mv $NEW $OLD
 	fi
 }
+
+if [ -x usr/bin/update-desktop-database ]; then
+	chroot . /usr/bin/update-desktop-database &> /dev/null
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -x usr/bin/gtk-update-icon-cache ]; then
+	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
+fi
 
 EOF
 

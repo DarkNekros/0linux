@@ -2,19 +2,20 @@
 
 # On nettoie :
 rm -f $TMP/choix_media
-unset DETECTEDREPO NBDETECTEDREPO DETECTSELECT DIRSELECT
+unset DETECTEDREPO NBDETECTEDREPO DETECTSELECT DIRSELECT DIRBASE DIR0
 
-# On cherche un répertoire 'paquets' :
-DETECTEDREPO=$(find / -type d -name "paquets" 2>/dev/null | grep -v 'usr/local')
-NBDETECTEDREPO=$(find / -type d -name "paquets" 2>/dev/null | grep -v 'usr/local' | wc -l)
+# On cherche un répertoire 'base' contenant le paquet 'eglibc-*' et on ignore '/usr/local' :
+DETECTEDREPO=$(find / -type d -name "base" 2>/dev/null | grep -v 'usr/local')
+NBDETECTEDREPO=$(find / -type d -name "base" 2>/dev/null | grep -v 'usr/local' | wc -l)
 
 demander_choix_dir() {
 	while [ 0 ]; do
 		clear
-		echo -e "\033[1;32mSaisie du répertoire contenant les paquets.\033[0;0m"
+		echo -e "\033[1;32mSaisie de l'emplacement contenant les paquets.\033[0;0m"
 		echo ""
 		echo "Veuillez entrer ci-dessous le chemin du répertoire (préalablement monté)"
 		echo "contenant un dépôt de paquets (contenant donc base/, opt/, xorg/, etc.)"
+		echo "ou appuyez sur ENTRÉE pour annuler."
 		echo ""
 		echo "Exemples : /mnt/tmp/mes_fichiers/paquets"
 		echo "           /sauvegarde/0/paquets"
@@ -23,20 +24,35 @@ demander_choix_dir() {
 		echo -n "Votre choix : "
 		read DIRSELECT;
 		if [ "${DIRSELECT}" = "" ]; then
-			echo "Veuillez entrer un emplacement valide."
-			sleep 2
 			unset DIRSELECT
-			continue
+			break
 		elif [ ! -d ${DIRSELECT} ]; then
 			echo "Veuillez entrer un emplacement valide."
 			sleep 2
 			unset DIRSELECT
 			continue
 		else
-			# On crée un lien et un fichier 'choix_media' vide si le choix est accepté :
-			ln -sf ${DIRSELECT} /var/log/mount
-			touch $TMP/choix_media
-			break
+			# Si le volume contient un répertoire 'base/', lequel contient un paquet
+			# 'eglibc' alors on considère qu'on tient là notre support d'installation :
+			DIRBASE=$(find ${DIRSELECT} -type d -name "base" -print 2>/dev/null)
+			if [ ! "${DIRBASE}" = "" ]; then
+				DIR0=$(basename $(dirname ${DIRBASE}))
+				if [ ! "$(find ${DIR0}/base -type f -name 'eglibc-*')" = "" ]; then
+					# On crée un lien vers le répertoire spécifié et on crée un fichier vide
+					# qui valide le choix du média :
+					ln -sf ${DIRSELECT} /var/log/mount
+					touch $TMP/choix_media
+					echo "Un dépôt de paquets a été trouvé sur ce volume !"
+					sleep 2
+					break
+				else
+					echo "Ce périphérique ne contient pas de dépôt des paquets : j'ai recherché"
+					echo "le répertoire 'base/' et son paquet 'eglibc-*', en vain. Retour..."
+					sleep 4
+					continue
+				fi
+			fi
+			
 		fi
 	done
 }

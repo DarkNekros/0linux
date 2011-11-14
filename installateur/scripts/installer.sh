@@ -12,15 +12,14 @@ echo ""
 echo -n "Appuyez sur ENTRÉE pour continuer."
 read BLURB;
 
-# On installe d'abord les paquets vitaux :
+# On installe d'abord les paquets vitaux de 'base/':
 for paq in base-systeme* etc* eglibc* sgml* ; do
 	spackadd --about ${DIR0}/base/${paq}
 	spackadd --root=${SETUPROOT} ${DIR0}/base/${paq} &>/dev/null 2>&1
 done
 
-# On installe tout le reste sauf linux-source-*, qu'on installe en dernier,
-# tout en ignorant le répertoire 'extra' :
-for subdir0 in base opt xorg xfce; do
+# On installe tout le reste de 'base/' 'opt/' et xorg/  sauf linux-source*, qu'on installe en dernier :
+for subdir0 in base opt xorg; do
 	for paquet in $(find ${DIR0}/${subdir0} -type f \( \
 		-name "*.spack" \
 		-a \! -name "base-systeme*" \
