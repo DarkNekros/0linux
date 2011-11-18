@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=apps/$(basename $(dirname $CWD))
 NAMESRC=${NAMESRC:-geany}
-VERSION=${VERSION:-0.19.1}
+VERSION=${VERSION:-0.21}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-geany}
 BUILD=${BUILD:-1}
@@ -140,7 +140,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
