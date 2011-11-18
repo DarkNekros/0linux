@@ -36,7 +36,7 @@ PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/{etc,{,s}bin}
 
 # On place les scripts réservés à root :
-for script in 0creation_live 0horloge 0locale 0nouvel_utilisateur 0police 0reseau; do
+for script in 0creation_live 0horloge 0installer 0locale 0nouvel_utilisateur 0police 0reseau; do
 	cp -a ${script} ${PKG}/sbin
 done
 chmod 755 ${PKG}/sbin/*
