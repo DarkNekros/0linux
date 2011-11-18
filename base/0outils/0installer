@@ -41,8 +41,8 @@ else
 		# Si un dépôt a été trouvé :
 		if [ ! "$(grep -E "^${param}$" $TMP/distant.log)" = "" ]; then
 			echo "Installation de $param :"
-			mkdir -p /0/paquets/apps
-			rsync -uv ${LINUXREPO}/${param}/ /0/paquets/apps
+			mkdir -p /0/paquets/apps/${param}
+			rsync -uv ${LINUXREPO}/${param}/* /0/paquets/apps/${param}
 			spackadd /0/paquets/apps/${param}/*
 		else
 			echo "$param : ce dépôt est introuvable. Ignoré."
