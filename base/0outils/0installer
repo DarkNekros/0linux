@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -e
+TMP=/tmp
+
+# On nettoie :
+rm -rf $TMP/distant.log
+
+# L'URL précise du dépôt 'apps' : chemin contenant les dépôts de paquets
+# avec ou sans la barre oblique de fin :
+LINUXREPO=${LINUXREPO:-rsync://ftp.igh.cnrs.fr/0linux/0/paquets/apps}
+
+# Seul root peut lancer '0installer' :
+if [ ! "$(whoami)" = "root" ]; then
+	echo "Seul root peut lancer '$0'."
+	exit 1
+fi
+
+# On synchronise en se créant une liste des dépôts distants qu'on découpe :
+rsync -d ${LINUXREPO}/* > $TMP/distant.log
+sed -i -e 's/\(^.*\) \(.*$\)/\2/p' -n $TMP/distant.log
+	
+# Si aucun paramètre n'est entré, on liste les dépôts disponibles :
+if [ "$1" = "" ]; then
+	echo "'$0' se contente d'installer à la demande un dépôt distant. Il ne"
+	echo "vérifie pas si un dépôt est déjà installé et ne sait rien désinstaller."
+	echo ""
+	echo "Utilisation : $0 dépôt"
+	echo ""
+	echo "Que voulez-vous 0installer ? Dépôts disponibles :"
+	echo ""
+	
+	# On découpe l'affichage et on retire les retours chariot :
+	cat $TMP/distant.log | tr '\n' ' '
+	echo ""
+else
+	# Si des paramètres sont présents, des dépôts ont été demandés à l'installation :
+	# Pour chaque dépôt demandé :
+	for param in $*; do
+		
+		# Si un dépôt a été trouvé :
+		if [ ! "$(grep -E "^${param}$" $TMP/distant.log)" = "" ]; then
+			echo "Installation de $param :"
+			mkdir -p /0/paquets/apps
+			rsync -uv ${LINUXREPO}/${param}/ /0/paquets/apps
+			spackadd /0/paquets/apps/${param}/*
+		else
+			echo "$param : ce dépôt est introuvable. Ignoré."
+		fi
+		
+	done
+fi
+
+# C'est fini !
