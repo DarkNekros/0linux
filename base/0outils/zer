@@ -103,7 +103,7 @@ done
 for appcateg in $CONFIGDIR/*; do
 	
 	# On crée la liste des paquets distants de la catégorie :
-	rsync -a ${LINUXREPO}/apps/${appcateg}/* | sed -e 's/\(^.*\) \(.*\)\(\.spack$\)/\2/p' -n > $TMP/${appcateg}.log
+	rsync -a ${LINUXREPO}/apps/$(basename ${appcateg})/* | sed -e 's/\(^.*\) \(.*\)\(\.spack$\)/\2/p' -n > $TMP/$(basename ${appcateg}).log
 
 	# Pour chaque paquet déjà installé sur le système :
 	cat $TMP/local.log | while read paquet_present; do
@@ -115,7 +115,7 @@ for appcateg in $CONFIGDIR/*; do
 		build_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n)"
 		
 		# On trouve son équivalent à jour dans la liste du serveur :
-		grep ${nom_paquet_present} $TMP/${appcateg}.log > $TMP/grep_paquet_distant.log 2>/dev/null || true
+		grep ${nom_paquet_present} $TMP/$(basename ${appcateg}).log > $TMP/grep_paquet_distant.log 2>/dev/null || true
 		
 		# Pour chaque correspondance trouvée :
 		cat $TMP/grep_paquet_distant.log | while read grep_paquet_distant; do
@@ -149,10 +149,10 @@ for appcateg in $CONFIGDIR/*; do
 					# Si la version ou le compteur sont différents, on met en attente pour mise à niveau :
 					if [ ! "${version_paquet_distant}" = "${version_paquet_present}" -o \
 						! "${build_paquet_distant}" = "${build_paquet_present}" ]; then
-						echo ${appcateg}/${grep_paquet_distant} >> $TMP/paquets_a_installer.log
+						echo $(basename ${appcateg})/${grep_paquet_distant} >> $TMP/paquets_a_installer.log
 						
 						# On crée un message pour l'utilisateur de la forme « paquet 1.0.3 -> 1.2.4 » :
-						echo "${appcateg} : ${nom_paquet_present} ${version_paquet_present}-${build_paquet_present} -> ${version_paquet_distant}-${build_paquet_distant}" >> $TMP/messages_a_installer.log
+						echo "$(basename ${appcateg}) : ${nom_paquet_present} ${version_paquet_present}-${build_paquet_present} -> ${version_paquet_distant}-${build_paquet_distant}" >> $TMP/messages_a_installer.log
 					fi
 				fi
 			fi
