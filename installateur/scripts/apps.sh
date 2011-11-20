@@ -57,7 +57,7 @@ if [ ! "${APPSDIR}" = "" ]; do
 		
 		# On installe chaque dépôt dépôt spécifié :
 		for depot in ${APPSCODES}; do
-			for paquet in $(find ${APPTAB[${depot}]} -type f -name "*.spack" | sort); do
+			for paquet in $(find ${APPTAB[${depot}]} -type f -name "*.spack"); do
 				spackadd --about ${paquet}
 				spackadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
 			done
