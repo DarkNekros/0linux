@@ -2,6 +2,7 @@
 
 set -e
 TMP=/tmp
+CONFIGDIR=/etc/0outils/apps
 
 # sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n
 
@@ -13,19 +14,17 @@ TMP=/tmp
 
 # Si un paramètre est entré :
 if [ ! "$1" = "" ]; then
-	echo "'$0' permet de synchroniser les paquets installés avec le dépôt de 0"
-	echo "pour permettre facilement leur mise à niveau."
+	echo "'$0' permet de synchroniser les paquets installés avec les"
+	echo "dépôts de 0 pour permettre facilement leur mise à niveau."
 	echo "Il s'invoque sans aucun paramètre (pour l'instant)."
+	echo ""
 	echo "Utilisation : '$0'"
-	exit 2
+	exit 0
 fi
 
 # On nettoie :
 rm -f $TMP/*.log
 rm -rf $TMP/zer_paquets
-
-# On crée les répertoires d'accueil :
-mkdir -p $TMP/zer_paquets
 
 crunch() {
 	read TEXTE;
@@ -93,6 +92,67 @@ for categ in base opt xorg; do
 						
 						# On crée un message pour l'utilisateur de la forme « paquet 1.0.3 -> 1.2.4 » :
 						echo "${categ} : ${nom_paquet_present} ${version_paquet_present}-${build_paquet_present} -> ${version_paquet_distant}-${build_paquet_distant}" >> $TMP/messages_a_installer.log
+					fi
+				fi
+			fi
+		done
+	done
+done
+
+# Et pour chaque dépôt de paquets installé :
+for appcateg in $CONFIGDIR/*; do
+	
+	# On crée la liste des paquets distants de la catégorie :
+	rsync -a ${LINUXREPO}/apps/${appcateg}/* | sed -e 's/\(^.*\) \(.*\)\(\.spack$\)/\2/p' -n > $TMP/${appcateg}.log
+
+	# Pour chaque paquet déjà installé sur le système :
+	cat $TMP/local.log | while read paquet_present; do
+		
+		# Positionnement des variables pour les paquets présents :
+		nom_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)"
+		version_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\2/p' -n)"
+		arch_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\3/p' -n)"
+		build_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n)"
+		
+		# On trouve son équivalent à jour dans la liste du serveur :
+		grep ${nom_paquet_present} $TMP/${appcateg}.log > $TMP/grep_paquet_distant.log 2>/dev/null || true
+		
+		# Pour chaque correspondance trouvée :
+		cat $TMP/grep_paquet_distant.log | while read grep_paquet_distant; do
+			
+			# Si l'occurrence n'est pas vide :
+			if [ ! "${grep_paquet_distant}" = "" ]; then
+				
+				# Positionnement des variables pour les paquets distants :
+				nom_paquet_distant="$(echo ${grep_paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)"
+				version_paquet_distant="$(echo ${grep_paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\2/p' -n)"
+				arch_paquet_distant="$(echo ${grep_paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\3/p' -n)"
+				build_paquet_distant="$(echo ${grep_paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n)"
+			
+				# Si les *noms* des paquets sont rigoureusement identiques :
+				if [ "${nom_paquet_present}" = "${nom_paquet_distant}" ]; then
+					
+					# Si l'on trouve plus d'une occurrence exacte, le dépôt local est incorrect, on quitte :
+					if [ "$(echo ${paquet_distant} | wc -l)" -gt 1 ]; then
+						echo "Erreur fatale : plusieurs versions d'un même paquet ont été détectées."
+						echo "Veuillez désinstaller les paquets redondants. '$0' va s'arrêter."
+						exit 1
+					fi
+					
+					# Si l'architecture est différente, on a un sérieux problème :
+					if [ ! "${arch_paquet_distant}" = "${arch_paquet_present}" ]; then
+						echo "Erreur fatale : les architectures ne correspondent pas !"
+						echo "'$0' va s'arrêter."
+						exit 1
+					fi
+					
+					# Si la version ou le compteur sont différents, on met en attente pour mise à niveau :
+					if [ ! "${version_paquet_distant}" = "${version_paquet_present}" -o \
+						! "${build_paquet_distant}" = "${build_paquet_present}" ]; then
+						echo ${appcateg}/${grep_paquet_distant} >> $TMP/paquets_a_installer.log
+						
+						# On crée un message pour l'utilisateur de la forme « paquet 1.0.3 -> 1.2.4 » :
+						echo "${appcateg} : ${nom_paquet_present} ${version_paquet_present}-${build_paquet_present} -> ${version_paquet_distant}-${build_paquet_distant}" >> $TMP/messages_a_installer.log
 					fi
 				fi
 			fi

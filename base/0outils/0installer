@@ -2,6 +2,7 @@
 
 set -e
 TMP=/tmp
+CONFIGDIR=/etc/0outils
 
 # On nettoie :
 rm -rf $TMP/distant.log
@@ -34,16 +35,29 @@ if [ "$1" = "" ]; then
 	cat $TMP/distant.log | tr '\n' ' '
 	echo ""
 else
-	# Si des paramètres sont présents, des dépôts ont été demandés à l'installation :
+	# Si des paramètres sont présents, des dépôts ont été demandés à l'installation.
+	
+	# On crée le répertoire de configuration des dépôts et le répertoire des dépôts :
+	mkdir -p $CONFIGDIR/apps /0/paquets/apps
+	
 	# Pour chaque dépôt demandé :
 	for param in $*; do
 		
 		# Si un dépôt a été trouvé :
 		if [ ! "$(grep -E "^${param}$" $TMP/distant.log)" = "" ]; then
 			echo "Installation de $param :"
+			
+			# On crée le répertoire du dépôt demandé :
 			mkdir -p /0/paquets/apps/${param}
+			
+			# On crée le fichier de configuration pour les mises à jour ultérieures :
+			touch $CONFIGDIR/apps/${param}
+			
+			# On synchronise et on installer :
 			rsync -uv ${LINUXREPO}/${param}/* /0/paquets/apps/${param}
 			spackadd /0/paquets/apps/${param}/*
+		
+		# Si aucun dépôt n'a été trouvé :
 		else
 			echo "$param : ce dépôt est introuvable. Ignoré."
 		fi
