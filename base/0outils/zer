@@ -149,7 +149,7 @@ for appcateg in $CONFIGDIR/*; do
 					# Si la version ou le compteur sont différents, on met en attente pour mise à niveau :
 					if [ ! "${version_paquet_distant}" = "${version_paquet_present}" -o \
 						! "${build_paquet_distant}" = "${build_paquet_present}" ]; then
-						echo $(basename ${appcateg})/${grep_paquet_distant} >> $TMP/paquets_a_installer.log
+						echo "apps/$(basename ${appcateg})/${grep_paquet_distant}" >> $TMP/paquets_a_installer.log
 						
 						# On crée un message pour l'utilisateur de la forme « paquet 1.0.3 -> 1.2.4 » :
 						echo "$(basename ${appcateg}) : ${nom_paquet_present} ${version_paquet_present}-${build_paquet_present} -> ${version_paquet_distant}-${build_paquet_distant}" >> $TMP/messages_a_installer.log
@@ -157,75 +157,6 @@ for appcateg in $CONFIGDIR/*; do
 				fi
 			fi
 		done
-	done
-done
-
-exit 0
-
-# Pour chaque catégorie du système trouvée :
-for categ in $(cat $TMP/categories.log); do
-	
-	# On télécharge la liste du dépôt et on découpe la liste pour n'avoir
-	# plus que les noms des fichiers et on trie dans l'ordre :
-	lftp -c "open -e \"ls -R ./${categ}\" ${LINUXREPO}" | \
-		crunch | \
-		sed -e 's/^\(.*\) \(.*\)$/\2/p' -n \
-		> $TMP/${categ}.log
-		cat $TMP/${categ}.log | sort > $TMP/${categ}.log
-	
-	echo "OK"
-	exit 0
-
-	# Pour chaque paquet déjà installé sur le système :
-	cat $TMP/local.log | while read paquet_present; do
-		
-		# Positionnement des variables pour réduire les appels à 'pkg*()' :
-		nom_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)"
-		version_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\2/p' -n)"
-		arch_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\3/p' -n)"
-		build_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n)"
-		
-		# On trouve son équivalent à jour dans la liste du serveur ('grep' ne suffit pas,
-		# on doit aussi comparer finement les noms pour éviter de mettre à niveau, par exemple,
-		# 'libusb' avec 'libusb-compat') :
-		paquet_distant="$(grep ${nom_paquet_present} $TMP/$local.log 2>/dev/null || true)"
-		
-		# Si l'occurrence n'est pas vide :
-		if [ ! "${paquet_distant}" = "" ]; then
-			
-			# Positionnement des variables pour réduire les appels à 'pkg*()' :
-			nom_paquet_distant="$(echo ${paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)"
-			version_paquet_distant="$(echo ${paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\2/p' -n)"
-			arch_paquet_distant="$(echo ${paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\3/p' -n)"
-			build_paquet_distant="$(echo ${paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n)"
-		
-			# Si les *noms* des paquets sont rigoureusement identiques :
-			if [ "${nom_paquet_present}" = "${nom_paquet_distant}" ]; then
-				
-				# Si l'on trouve plus d'une occurrence exacte, le dépôt local est incorrect, on quitte :
-				if [ "$(echo ${paquet_distant} | wc -l)" -gt 1 ]; then
-					echo "Erreur fatale : plusieurs versions d'un même paquet ont été détectées."
-					echo "Veuillez désinstaller les paquets redondants. '$0' va s'arrêter."
-					exit 1
-				fi
-				
-				# Si l'architecture est différente, on a un sérieux problème :
-				if [ ! "${arch_paquet_distant}" = "${arch_paquet_present}" ]; then
-					echo "Erreur fatale : les architectures ne correspondent pas !"
-					echo "'$0' va s'arrêter."
-					exit 1
-				fi
-				
-				# Si la version ou le compteur sont différents, on met en attente pour mise à niveau :
-				if [ ! "${version_paquet_distant}" = "${version_paquet_present}" -o \
-					! "${build_paquet_distant}" = "${build_paquet_present}" ]; then
-					echo ${categ}/${paquet_distant} >> $TMP/paquets_a_installer.log
-					
-					# On crée un message pour l'utilisateur de la forme « paquet 1.0.3 -> 1.2.4 » :
-					echo "${categ} : ${nom_paquet_present} ${version_paquet_present}-${build_paquet_present} -> ${version_paquet_distant}-${build_paquet_distant}" >> $TMP/messages_a_installer.log
-				fi
-			fi
-		fi
 	done
 done
 
