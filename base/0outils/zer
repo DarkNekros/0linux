@@ -108,14 +108,8 @@ for appcateg in $CONFIGDIR/*; do
 	# Pour chaque paquet déjà installé sur le système :
 	cat $TMP/local.log | while read paquet_present; do
 		
-		# Positionnement des variables pour les paquets présents :
-		nom_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)"
-		version_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\2/p' -n)"
-		arch_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\3/p' -n)"
-		build_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n)"
-		
-		# On trouve son équivalent à jour dans la liste du serveur :
-		grep ${nom_paquet_present} $TMP/$(basename ${appcateg}).log > $TMP/grep_paquet_distant.log 2>/dev/null || true
+		# On trouve son équivalent par le nom dans la liste du serveur :
+		grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/$(basename ${appcateg}).log > $TMP/grep_paquet_distant.log 2>/dev/null || true
 		
 		# Pour chaque correspondance trouvée :
 		cat $TMP/grep_paquet_distant.log | while read grep_paquet_distant; do
@@ -123,6 +117,12 @@ for appcateg in $CONFIGDIR/*; do
 			# Si l'occurrence n'est pas vide :
 			if [ ! "${grep_paquet_distant}" = "" ]; then
 				
+				# Positionnement des variables pour les paquets présents :
+				nom_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)"
+				version_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\2/p' -n)"
+				arch_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\3/p' -n)"
+				build_paquet_present="$(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n)"
+		
 				# Positionnement des variables pour les paquets distants :
 				nom_paquet_distant="$(echo ${grep_paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)"
 				version_paquet_distant="$(echo ${grep_paquet_distant} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\2/p' -n)"
