@@ -116,7 +116,7 @@ for appcateg in $CONFIGDIR/*; do
 		
 		# Si on trouve son équivalent par le nom dans la liste du serveur :
 		if [ ! "$(grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/${appcateg}.log)" = "" ]; then
-			grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/${appcateg}.log \
+			grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/$(basename {appcateg}).log \
 				> $TMP/grep_paquet_distant.log 2>/dev/null || true
 				
 			# Pour chaque correspondance trouvée :
