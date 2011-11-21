@@ -48,7 +48,7 @@ for categ in base opt xorg; do
 	cat $TMP/local.log | while read paquet_present; do
 		
 		# Si on trouve son équivalent par le nom dans la liste du serveur :
-		if [ ! "$(grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/${categ}.log)" = "" ]; then
+		if [ ! grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/${categ}.log ]; then
 			grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/${categ}.log \
 				> $TMP/grep_paquet_distant.log 2>/dev/null || true
 			
@@ -115,8 +115,8 @@ for appcateg in $CONFIGDIR/*; do
 	cat $TMP/local.log | while read paquet_present; do
 		
 		# Si on trouve son équivalent par le nom dans la liste du serveur :
-		if [ ! "$(grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/$(basename {appcateg}).log)" = "" ]; then
-			grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/$(basename {appcateg}).log \
+		if [ ! grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/$(basename ${appcateg}).log ]; then
+			grep $(echo ${paquet_present} | sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) $TMP/$(basename ${appcateg}).log \
 				> $TMP/grep_paquet_distant.log 2>/dev/null || true
 				
 			# Pour chaque correspondance trouvée :
