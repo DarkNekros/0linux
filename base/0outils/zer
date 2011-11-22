@@ -4,13 +4,11 @@ set -e
 TMP=/tmp
 CONFIGDIR=/etc/0outils/apps
 
-# sed 's/\(.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n
-
-## Seul root peut lancer 'zer' :
-#if [ ! "$(whoami)" = "root" ]; then
-#	echo "Seul root peut lancer '$0'."
-#	exit 1
-#fi
+# Seul root peut lancer 'zer' :
+if [ ! "$(whoami)" = "root" ]; then
+	echo "Seul root peut lancer '$0'."
+	exit 1
+fi
 
 # Si un paramètre est entré :
 if [ ! "$1" = "" ]; then
@@ -24,7 +22,6 @@ fi
 
 # On nettoie :
 rm -f $TMP/*.log
-rm -rf $TMP/zer_paquets
 
 crunch() {
 	read TEXTE;
@@ -172,10 +169,8 @@ for appcateg in $CONFIGDIR/*; do
 	done
 done
 
-exit 0
-
 # S'il y a des mises à niveau en attente :
-if [ -r $TMP/paquet_a_installer.log ]; then
+if [ -r $TMP/paquets_a_installer.log ]; then
 	NBINSTALLPKG="$(cat $TMP/paquets_a_installer.log | wc -l)"
 	if [ "${NBINSTALLPKG}" -gt 0 ]; then
 		
@@ -187,7 +182,7 @@ if [ -r $TMP/paquet_a_installer.log ]; then
 			echo "nouvelle version de 0 vient de sortir (oui, c'est rare) !"
 			echo ""
 			echo "Vous devez installer cette nouvelle version de la distribution"
-			echo "via l'OS autonome (clé USB, DVD, etc.). 'zer' va s'arrêter."
+			echo "via l'OS autonome (clé USB, DVD, etc.). '$0' va s'arrêter."
 			exit 0
 		fi
 		
@@ -195,34 +190,33 @@ if [ -r $TMP/paquet_a_installer.log ]; then
 		echo "Il y a ${NBINSTALLPKG} paquets à mettre à niveau :"
 		cat $TMP/messages_a_installer.log
 		echo ""
-		echo -n "Procéder aux mises à niveau (tapez « oui » pour confirmer) ? "
+		echo "Procéder aux mises à niveau ? Tapez « oui » pour confirmer ou"
+		echo "appuyez sur ENTRÉE pour annuler."
 		read CONFIRMUPGRADE;
 		
 		# Si l'on a confirmation :
 		if [ "$(echo ${CONFIRMUPGRADE} | tr '[A-Z]' '[a-z]')" = "oui" ]; then
 			
 			# S'il y a des installations en attente :
-			if [ -r $TMP/paquets_a_installer.log ]; then
-				if [ $(cat $TMP/paquets_a_installer.log | wc -l) -gt 0 ]; then
-					cat $TMP/paquets_a_installer.log | while read paq; do
-										
-						# On télécharge chaque paquet :
-						if [ ! -r $TMP/zer_paquets/${paq}.cpio ]; then
-							wget -c ${LINUXREPO}/${paq}.cpio -O $TMP/zer_paquets/${paq}.cpio.part
-							mv $TMP/zer_paquets/${paq}.cpio{.part,}
+			cat $TMP/paquets_a_installer.log | while read paq; do
+				
+				# On télécharge chaque paquet :
+				if [ ! -r /0/paquets/${paq}.spack ]; then
+							wget -vc ${LINUXREPO}/${paq}.spack -O /0/paquets/${paq}.spack.part
+							mv $TMP/zer_paquets/${paq}.spack{.part,}
 						fi
 						
-						# On met à niveau :
-						spkadd --quiet $TMP/zer_paquets/${paq}.cpio
+						# On l'installe/met à niveau :
+						spackadd --about /0/paquets/${paq}.spack
+						spackadd /0/paquets/${paq}.spack &>/dev/null 2>&1
 					done
 				fi
-			fi
+			
 		
 		# Sinon, on quitte simplement :
 		else
 			# On nettoie :
 			rm -f $TMP/*.log
-			rm -rf $TMP/zer_paquets
 			exit 0
 		fi
 	fi
