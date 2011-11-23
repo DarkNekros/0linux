@@ -206,8 +206,8 @@ if [ -r $TMP/paquets_a_installer.log ]; then
 				mv /0/paquets/$(basename ${paq}).spack{.part,}
 				
 				# On l'installe/met à niveau :
-				spackadd --about /0/paquets/${paq}.spack
-				#spackadd /0/paquets/${paq}.spack &>/dev/null 2>&1
+				spackadd --about /0/paquets/$(basename ${paq}).spack
+				#spackadd /0/paquets/$(basename ${paq}).spack &>/dev/null 2>&1
 			done
 		fi
 		
