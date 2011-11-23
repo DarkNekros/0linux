@@ -30,7 +30,8 @@ crunch() {
 
 # L'URL précise du dépôt de paquets : chemin contenant les catégories de paquets
 # ('base', 'opt', 'extra', etc.) avec ou sans la barre oblique de fin :
-LINUXREPO=${LINUXREPO:-rsync://ftp.igh.cnrs.fr/0linux/0/paquets}
+RSYNCREPO=${RSYNCREPO:-rsync://ftp.igh.cnrs.fr/0linux/0/paquets}
+FTPREPO=${FTPREPO:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/0/paquets}
 
 # On se crée d'emblée une liste du dépôt local :
 find /var/log/paquets/ -type f -exec basename {} \; | sort > $TMP/local.log
@@ -39,7 +40,7 @@ find /var/log/paquets/ -type f -exec basename {} \; | sort > $TMP/local.log
 for categ in base opt xorg; do
 	
 	# On crée la liste des paquets distants de la catégorie :
-	rsync -a ${LINUXREPO}/${categ}/* | sed -e 's/\(^.*\) \(.*\)\(\.spack$\)/\2/p' -n > $TMP/${categ}.log
+	rsync -a ${RSYNCREPO}/${categ}/* | sed -e 's/\(^.*\) \(.*\)\(\.spack$\)/\2/p' -n > $TMP/${categ}.log
 
 	# Pour chaque paquet déjà installé sur le système :
 	cat $TMP/local.log | while read paquet_present; do
@@ -106,7 +107,7 @@ done
 for appcateg in $CONFIGDIR/*; do
 	
 	# On crée la liste des paquets distants de la catégorie :
-	rsync -a ${LINUXREPO}/apps/$(basename ${appcateg})/* | sed -e 's/\(^.*\) \(.*\)\(\.spack$\)/\2/p' -n > $TMP/$(basename ${appcateg}).log
+	rsync -a ${RSYNCREPO}/apps/$(basename ${appcateg})/* | sed -e 's/\(^.*\) \(.*\)\(\.spack$\)/\2/p' -n > $TMP/$(basename ${appcateg}).log
 
 	# Pour chaque paquet déjà installé sur le système :
 	cat $TMP/local.log | while read paquet_present; do
@@ -201,7 +202,8 @@ if [ -r $TMP/paquets_a_installer.log ]; then
 			cat $TMP/paquets_a_installer.log | while read paq; do
 				
 				# On télécharge chaque paquet :
-				rsync -auPv --delete-after ${LINUXREPO}/${paq}.spack /0/paquets/
+				wget -vc ${FTPREPO}/${paq}.spack -O /0/paquets/$(basename ${paq}).spack.part
+				mv /0/paquets/$(basename ${paq}).spack{.part,}
 				
 				# On l'installe/met à niveau :
 				spackadd --about /0/paquets/${paq}.spack
