@@ -6,9 +6,9 @@ CONFIGDIR=/etc/0outils/apps
 
 # On charge les fonctions de l'interface utilisateur, selon l'appel du script :
 if [ "$0" = "/sbin/0actualiser_zenity" ]; then
-	. /sbin/0actualiser_fonctions_zenity.sh
+	. /usr/share/0outils/0actualiser_fonctions_zenity.sh
 else
-	. /sbin/0actualiser_fonctions_terminal.sh
+	. /usr/share/0outils/0actualiser_fonctions_terminal.sh
 fi
 
 # Seul root peut lancer 'zer' :

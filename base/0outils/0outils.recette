@@ -6,9 +6,9 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-0outils}
-VERSION=${VERSION:-0.66}
+VERSION=${VERSION:-0.7}
 NAMETGZ=${NAMETGZ:-0outils}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -34,12 +34,13 @@ fi
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/{etc,{,s}bin}
+mkdir -p ${PKG}/usr/share/${NAMESRC}
 
 # On place les scripts réservés à root :
-for script in 0creation_live 0horloge 0installer 0locale 0nouvel_utilisateur 0police 0reseau; do
-	cp -a ${script} ${PKG}/sbin
+for script in 0actualiser 0creation_live 0horloge 0installer 0locale 0nouvel_utilisateur 0police 0reseau; do
+	cp -a $CWD/${script} ${PKG}/sbin
 done
-chmod 755 ${PKG}/sbin/*
+chmod 700 ${PKG}/sbin/*
 
 # On place les script utilisateurs :
 cp -a $CWD/0bureau ${PKG}/bin
@@ -48,6 +49,10 @@ chmod 755 ${PKG}/bin/*
 # On place 'reseau.conf' en veillant à ne rien écraser:
 cp -a $CWD/reseau.conf ${PKG}/etc/reseau.conf.new
 chmod 600 ${PKG}/etc/reseau.conf.new
+
+# On place les fonctions pour '0actualiser' :
+cp -a $CWD/0actualiser_fonctions* ${PKG}/usr/share/${NAMESRC}
+chmod 700 ${PKG}/usr/share/${NAMESRC}
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
