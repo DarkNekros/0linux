@@ -6,9 +6,9 @@ umask 022
 CWD=$(pwd)
 PKGCAT=apps/$(basename $(dirname $CWD))
 NAMESRC=${NAMESRC:-LibO}
-VERSION=${VERSION:-3.4.3}
+VERSION=${VERSION:-3.4.4}
 VER=${VER:-3.4}
-SUBVER=${SUBVER:-302}
+SUBVER=${SUBVER:-402}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libreoffice}
 BUILD=${BUILD:-1}
