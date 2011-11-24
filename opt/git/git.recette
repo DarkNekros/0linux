@@ -6,8 +6,8 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-git}
-VERSION=${VERSION:-1.7.6}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-1.7.7.4}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-git}
 BUILD=${BUILD:-1}
 
@@ -21,9 +21,9 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://kernel.org/pub/software/scm/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-WGETMANPAGES=${WGETMANPAGES:-http://kernel.org/pub/software/scm/$NAMESRC/$NAMESRC-manpages-$VERSION.$EXT}
-WGETHTMLDOCS=${WGETHTMLDOCS:-http://kernel.org/pub/software/scm/$NAMESRC/$NAMESRC-htmldocs-$VERSION.$EXT}
+WGET=${WGET:-http://git-core.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+WGETMANPAGES=${WGETMANPAGES:-http://git-core.googlecode.com/files/$NAMESRC-manpages-$VERSION.$EXT}
+WGETHTMLDOCS=${WGETHTMLDOCS:-http://git-core.googlecode.com/files/$NAMESRC-htmldocs-$VERSION.$EXT}
 DOC="COPYING INSTALL README Documentation/ contrib/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Système de contrôle de versions décentralisé"
