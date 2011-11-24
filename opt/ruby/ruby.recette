@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-ruby}
-VERSION=${VERSION:-1.9.2p0}
+VERSION=${VERSION:-1.9.3p0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ruby}
 BUILD=${BUILD:-1}
@@ -21,10 +21,12 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/1.9/$NAMESRC-1.9.2-p0.$EXT}
-DOC="ChangeLog *COPYING* *KNOWNBUGS* *LEGAL* *README*"
+WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/1.9/$NAMESRC-$(echo $VERSION | sed -e 's/p.*$/-&/').$EXT}
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
+	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
+	TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="langage de programmation « élégant »"
+SLACKDESC="Langage de programmation orienté objet « élégant »"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -157,7 +159,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -ra ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -ra ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
