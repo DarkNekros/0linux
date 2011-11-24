@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-subversion}
-VERSION=${VERSION:-1.6.16}
+VERSION=${VERSION:-1.7.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-subversion}
 BUILD=${BUILD:-1}
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://subversion.tigris.org/downloads/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://apache.crihan.fr/dist/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DOC="BUGS CHANGES COMMITTERS COPYING HACKING INSTALL README TRANSLATING doc/ notes/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Système de contrôle de versions centralisé"
@@ -159,7 +159,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
