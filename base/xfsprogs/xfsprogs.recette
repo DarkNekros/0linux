@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-xfsprogs}
-VERSION=${VERSION:-3.1.4}
+VERSION=${VERSION:-3.1.7}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-xfsprogs}
 BUILD=${BUILD:-1}
@@ -22,7 +22,9 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://oss.sgi.com/projects/xfs/cmd_tars/$NAMESRC-$VERSION.$EXT}
-DOC="README doc/CHANGES doc/COPYING doc/CREDITS doc/INSTALL doc/*.txt"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
+	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
+	TRANSLATORS *license* *readme* doc/CHANGES doc/COPYING doc/CREDITS doc/INSTALL doc/*.txt"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils pour le système de fichiers XFS"
 ########################################
@@ -162,7 +164,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 rm -rf ${PKG}/usr/share/doc
 
 # On installe le slack-desc :
