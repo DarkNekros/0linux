@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 # On nettoie :
-unset BLURB
+unset BLURB DIR0
+
+# Tout devrait maintenant être bien en place, '/var/log/mount contenant les paquets.
+# On cherche le répertoire contenant tous les paquets et dépôts :
+DIR0=$(dirname $(find /var/log/mount -type d -name "base"))
 
 clear
 echo -e "\033[1;32mInstallation des paquets.\033[0;0m"

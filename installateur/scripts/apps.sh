@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # On nettoie :
-unset BLURB APPSDIR APPS APPTAB INDICE APPSCODES BLAH
+unset BLURB APPSDIR APPTAB INDICE APPSCODES BLAH
 
 # Si l'on trouve le dépôt supplémentaire 'apps/' :
-APPSDIR=$(find /var/log/mount -type d -name "apps")
+APPSDIR=$(dirname $(find /var/log/mount -type d -name "apps"))
 
 if [ ! "${APPSDIR}" = "" ]; do
 	clear
@@ -23,8 +23,6 @@ if [ ! "${APPSDIR}" = "" ]; do
 	read BLURB;
 	
 	# On liste tous les dépôts dans l'ordre et on affecte une variable tableau au tout pour l'afficher:
-	APPS=$(find ${APPSDIR} -type d -mindepth 1 | sort)
-	
 	clear
 	echo -e "\033[1;32mChoix des dépôts de paquets à installer.\033[0;0m"
 	echo ""
@@ -33,7 +31,7 @@ if [ ! "${APPSDIR}" = "" ]; do
 	echo ""
 	
 	INDICE=0
-	for app in ${APPS}; do
+	for app in $(find ${APPSDIR} -type d -mindepth 1); do
 		INDICE=$(( ${INDICE}+1 ))
 		APPTAB[${INDICE}]="${app}"
 		echo "${INDICE}:$(basename ${APPTAB[${INDICE}]})"
@@ -52,16 +50,24 @@ if [ ! "${APPSDIR}" = "" ]; do
 		echo "Les paquets supplémentaires vont maintenant être installés sur votre"
 		echo "disque dur."
 		echo ""
-		echo -n "Appuyez sur ENTRÉE pour continuer."
+		echo "Appuyez sur ENTRÉE pour continuer ou tapez « non » pour ignorer"
+		echo "cette étape."
+		echo ""
+		echo -n "Votre choix (ENTRÉE/non) : "
 		read BLAH;
 		
-		# On installe chaque dépôt dépôt spécifié :
-		for depot in ${APPSCODES}; do
-			for paquet in $(find ${APPTAB[${depot}]} -type f -name "*.spack"); do
-				spackadd --about ${paquet}
-				spackadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
+		if [ "${BLAH}" = "" ]; then
+			# On installe chaque dépôt dépôt spécifié :
+			for depot in ${APPSCODES}; do
+				for paquet in $(find ${APPTAB[${depot}]} -type f -name "*.spack"); do
+					spackadd --about ${paquet}
+					spackadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
+				done
 			done
-		done
+		else
+			echo "Dépôt 'apps/' ignoré."
+			sleep 2
+		fi
 	else
 		echo "Dépôt 'apps/' ignoré."
 		sleep 2
