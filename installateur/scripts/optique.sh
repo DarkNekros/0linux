@@ -2,7 +2,7 @@
 
 # On nettoie :
 rm -f $TMP/choix_media
-unset METHODE DIR BASE DIR0 DISKSELECT BLAH 
+unset METHODE DIR BASE DIR0 DISKSELECT BLAH
 
 # Boucle d'affichage du menu :
 while [ ! -r $TMP/choix_media ]; do
@@ -84,13 +84,14 @@ while [ ! -r $TMP/choix_media ]; do
 						echo ${DISKSELECT} > $TMP/choix_media
 						echo "Un dépôt de paquets a été trouvé sur ce volume !"
 						sleep 2
-					break
-				else
-					echo "Ce périphérique ne contient pas de dépôt des paquets : j'ai recherché"
-					echo "le répertoire 'base/' et son paquet 'eglibc-*', en vain. Démontage..."
-					sleep 4
-					umount /var/log/mount 1> /dev/null 2> /dev/null
-					continue
+						break
+					else
+						echo "Ce périphérique ne contient pas de dépôt des paquets : j'ai recherché"
+						echo "le répertoire 'base/' et son paquet 'eglibc-*', en vain. Démontage..."
+						sleep 4
+						umount /var/log/mount 1> /dev/null 2> /dev/null
+						continue
+					fi
 				fi
 			fi
 		done
