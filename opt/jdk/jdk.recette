@@ -14,7 +14,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-jdk}
-VERSION=${VERSION:-7}
+VERSION=${VERSION:-7u1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-jdk}
 BUILD=${BUILD:-1}
@@ -29,8 +29,8 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET32=${WGET32:-http://download.oracle.com/otn-pub/java/$NAMESRC/$VERSION/$NAMESRC-$VERSION-linux-i586.$EXT}
-WGET=${WGET:-http://download.oracle.com/otn-pub/java/$NAMESRC/$VERSION/$NAMESRC-$VERSION-linux-x64.$EXT}
+WGET32=${WGET32:-http://download.oracle.com/otn-pub/java/$NAMESRC/$VERSION-b08//$NAMESRC-$VERSION-linux-i586.$EXT}
+WGET=${WGET:-http://download.oracle.com/otn-pub/java/$NAMESRC/$VERSION-b08/$NAMESRC-$VERSION-linux-x64.$EXT}
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Environnements de développement et machines virtuelles pour Java"
 ########################################
