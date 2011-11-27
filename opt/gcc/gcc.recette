@@ -18,7 +18,7 @@ VERSION=${VERSION:-4.5.1}
 ECJVERSION=${ECJVERSION:-4.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gcc}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -176,7 +176,7 @@ $TMP/${NAME}/configure --prefix=/usr \
 	--with-ppl \
 	--build=${TARGET64}
 
-make -j3 bootstrap || make bootstrap
+make -j7 || make
 
 make info
 fakeroot make install DESTDIR=${PKG}
