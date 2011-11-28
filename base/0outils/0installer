@@ -53,8 +53,8 @@ else
 			# On crée le fichier de configuration pour les mises à jour ultérieures :
 			touch $CONFIGDIR/apps/${param}
 			
-			# On synchronise et on installer :
-			rsync -uv ${LINUXREPO}/${param}/* /0/paquets/apps/${param}
+			# On synchronise et on installe :
+			rsync -acv ${LINUXREPO}/${param}/* /0/paquets/apps/${param}
 			spackadd /0/paquets/apps/${param}/*
 		
 		# Si aucun dépôt n'a été trouvé :
