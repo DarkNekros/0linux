@@ -4,9 +4,9 @@
 unset BLURB APPSDIR APPTAB INDICE APPSCODES BLAH
 
 # Si l'on trouve le dépôt supplémentaire 'apps/' :
-APPSDIR=$(dirname $(find /var/log/mount -type d -name "apps"))
+APPSDIR=$(find /var/log/mount -type d -name "apps")
 
-if [ ! "${APPSDIR}" = "" ]; do
+if [ ! "${APPSDIR}" = "" ]; then
 	clear
 	echo -e "\033[1;32mDépôt de paquets 'apps/' détecté.\033[0;0m"
 	echo ""
@@ -31,12 +31,13 @@ if [ ! "${APPSDIR}" = "" ]; do
 	echo ""
 	
 	INDICE=0
-	for app in $(find ${APPSDIR} -type d -mindepth 1); do
+	for app in $(find ${APPSDIR} -mindepth 1 -type d | sort); do
 		INDICE=$(( ${INDICE}+1 ))
 		APPTAB[${INDICE}]="${app}"
-		echo "${INDICE}:$(basename ${APPTAB[${INDICE}]})"
+		echo -n "${INDICE}:$(basename ${APPTAB[${INDICE}]}) "
 	done
 	
+	echo ""
 	echo ""
 	echo -n "Votre choix (par exemple : 1 8 14 16 37) : "
 	read APPSCODES;
