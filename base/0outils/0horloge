@@ -110,7 +110,7 @@ while [ 0 ]; do
 		Europe/Ljubljana Europe/Zurich Europe/Prague Europe/Kiev Atlantic/Cape_Verde \
 		Indian/Comoro Indian/Antananarivo Indian/Mauritius Indian/Mayotte Indian/Reunion \
 		Indian/Mahe Pacific/Gambier Pacific/Noumea Pacific/Tahiti Pacific/Efate Pacific/Wallis; do
-			INDICE=${INDICE}+1
+			INDICE=$(( ${INDICE}+1 ))
 			FUSEAUTAB[${INDICE}]="${fuseau}"
 		done
 		FUSEAUCHOISI=${FUSEAUTAB[${TZCODE}]}

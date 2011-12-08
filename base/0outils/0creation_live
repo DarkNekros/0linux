@@ -230,7 +230,7 @@ if [ -r ${LIVEOS}/bin/bash4.new ]; then
 fi
 
 # On met à jour les liens des bibliothèques :
-chroot ${LIVEOS} /sbin/ldconfig
+/sbin/ldconfig -r ${LIVEOS}
 
 # On met à jour les dépendances des modules :
 chroot ${LIVEOS} depmod -a
