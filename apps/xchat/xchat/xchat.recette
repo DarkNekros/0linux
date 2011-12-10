@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=apps/$(basename $(dirname $CWD))
+PKGCAT=apps/$(basename $CWD)
 NAMESRC=${NAMESRC:-xchat}
 VERSION=${VERSION:-2.8.8}
 EXT=${EXT:-tar.bz2}

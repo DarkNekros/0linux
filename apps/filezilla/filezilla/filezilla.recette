@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=apps/$(basename $(dirname $CWD))
+PKGCAT=apps/$(basename $CWD)
 NAMESRC=${NAMESRC:-FileZilla}
 VERSION=${VERSION:-3.3.2.1}
 EXT=${EXT:-tar.bz2}

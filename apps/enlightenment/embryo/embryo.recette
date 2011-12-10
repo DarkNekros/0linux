@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=apps/$(basename $(dirname $CWD))
+PKGCAT=apps/$(basename $CWD)
 NAMESRC=${NAMESRC:-embryo}
 VERSION=${VERSION:-1.0.0}
 EXT=${EXT:-tar.gz}

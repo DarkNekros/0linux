@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=apps/$(basename $(dirname $CWD))
+PKGCAT=apps/$(basename $CWD)
 NAMESRC=${NAMESRC:-xfwm4-themes}
 VERSION=${VERSION:-4.6.0}
 EXT=${EXT:-tar.bz2}

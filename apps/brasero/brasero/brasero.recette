@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=apps/$(basename $(dirname $CWD))
+PKGCAT=apps/$(basename $CWD)
 NAMESRC=${NAMESRC:-brasero}
 VERSION=${VERSION:-2.28.3}
 EXT=${EXT:-tar.bz2}
