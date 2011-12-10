@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=apps/$(basename $CWD)
+PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-LibO}
 VERSION=${VERSION:-3.4.4}
 VER=${VER:-3.4}

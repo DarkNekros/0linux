@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=apps/$(basename $CWD)
+PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-pidgin}
 VERSION=${VERSION:-2.10.0}
 EXT=${EXT:-tar.bz2}

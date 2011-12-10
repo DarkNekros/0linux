@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=apps/$(basename $CWD)
+PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-mysql}
 VERSION=${VERSION:-5.1.57}
 EXT=${EXT:-tar.gz}

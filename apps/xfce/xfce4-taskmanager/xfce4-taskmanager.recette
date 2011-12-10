@@ -4,7 +4,7 @@
 set -e
 umask 022
 CWD=$(pwd)
-PKGCAT=apps/$(basename $CWD)
+PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-xfce4-taskmanager}
 VERSION=${VERSION:-1.0.0}
 EXT=${EXT:-tar.bz2}
