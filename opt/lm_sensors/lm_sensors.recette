@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-lm_sensors}
-VERSION=${VERSION:-3.3.0}
+VERSION=${VERSION:-3.3.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-lm_sensors}
 BUILD=${BUILD:-1}
@@ -22,8 +22,9 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://ftp.netroedge.com/pub/lm-sensors/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS BUGS ?hange?og* *CHANGES* *COPYING* HACKING *INSTALL* *LEGAL* *LICENSE* \
-	MAINTAINERS *NEWS* *README* THANKS TODO *license* *readme*"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
+	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
+	TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils et bibliothèques pour capteurs matériels"
 ########################################
@@ -168,6 +169,15 @@ if [ -x usr/bin/gtk-update-icon-cache ]; then
 fi
 
 config etc/sensors3.conf.new
+
+# On tente de détecter les capteurs matériels :
+chroot . rm -f /etc/modprobe.d/lm_sensors.conf
+
+chroot . echo '' | sensors-detect 2>/dev/null | grep -E '^modprobe' | while read modulesensor; do
+	echo "$modulesensor" >> /etc/modprobe.d/lm_sensors.conf
+done
+
+chroot . echo "sensors -s" >> /etc/modprobe.d/lm_sensors.conf
 
 EOF
 
