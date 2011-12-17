@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-flashplayer}
-VERSION=${VERSION:-10.2}
+VERSION=${VERSION:-11.1.102.55}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-flashplayer}
 BUILD=${BUILD:-1}
@@ -21,8 +21,8 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET32=${WGET32:-http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_10_linux.$EXT} # Nom/version/etc. différents !!
-WGET=${WGET:-http://download.macromedia.com/pub/labs/flashplayer10/flashplayer10_2_p3_64bit_linux_111710.$EXT} # Nom/version/etc. différents !!
+WGET32=${WGET32:-http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.55/install_flash_player_11_linux.i386.$EXT} # !!
+WGET=${WGET:-http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.55/install_flash_player_11_linux.x86_64.$EXT} # !!
 DOC="$CWD/LISEZMOI"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Greffons Flash pour navigateurs Web"
@@ -56,9 +56,15 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/usr/lib{,64}/mozilla/plugins
 
-# On décompacte les greffons où il faut :
-tar xf ${NAMESRC}32-${VERSION}.$EXT -C ${PKG}/usr/lib/mozilla/plugins 
-tar xf ${NAMESRC}-${VERSION}.$EXT -C ${PKG}/usr/lib64/mozilla/plugins 
+# On décompacte le greffon 32 bits où il faut :
+tar xf ${NAMESRC}32-${VERSION}.$EXT -C ${PKG}
+mv ${PKG}/libflashplayer.so ${PKG}/usr/lib/mozilla/plugins
+
+# On décompacte le greffon 64 bits où il faut :
+tar xf ${NAMESRC}-${VERSION}.$EXT -C ${PKG}
+mv ${PKG}/libflashplayer.so ${PKG}/usr/lib64/mozilla/plugins
+
+# On s'assure de la permission du greffon :
 chmod 755 ${PKG}/usr/lib{,64}/mozilla/plugins/*.so
 
 # On compresse les manuels :
