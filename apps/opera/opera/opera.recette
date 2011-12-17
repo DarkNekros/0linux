@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-opera}
-VERSION=${VERSION:-11.52_1100}
-EXT=${EXT:-rpm}
+VERSION=${VERSION:-11.60_1185}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-opera}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -21,8 +21,10 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.opera.com/pub/opera/linux/$(echo $VERSION | cut -d'_' -f1 | tr -d '.')/$NAMESRC-$(echo $VERSION | sed 's/_/-/').${ARCH}.$EXT}
-#DOC=""
+WGET=${WGET:-ftp://ftp.opera.com/pub/opera/linux/$(echo $VERSION | cut -d'_' -f1 | tr -d '.')/$NAMESRC-$(echo $VERSION | sed 's/_/-/').${ARCH}.linux.$EXT}
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
+	*INSTALL* KNOWNBUGS *LEGAL* MAINTAINERS *NEWS* *README* THANKS TODO \
+	TRANSLATORS *license* *readme* share/doc/opera/*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Le navigateur Web Opera"
 ########################################
@@ -39,26 +41,39 @@ if [ ! -r ${NAMESRC}-${VERSION}.$EXT ]; then
 	mv ${NAMESRC}-${VERSION}.$EXT{.part,}
 fi
 
+# On les vérifie :
+tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
+
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}
 
 # On déballe et on se place dans les sources :
-cd ${PKG}
+NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
+cd $TMP
+rm -rf ${NAME}
 echo "Extraction en cours..."
-rpmunpack $CWD/${NAMESRC}-${VERSION}.$EXT
-mv ${NAMESRC}-${VERSION}/* ${PKG}
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
+cd ${NAME}
 
 # On vérifie les permissions des sources :
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On déplace les manuels où il faut :
-mv ${PKG}/usr/share/man ${PKG}/usr
+# On installe via le script prévu à cet effet :
+./install --prefix /usr \
+	--repackage ${PKG}/usr
 
-# On ne touche pas à ma racine, merci... :
-rm -r ${PKG}/opera*
+# On renomme le répertoire des bibliothèques en 64 bits :
+mv ${PKG}/usr/lib{,64}
+
+# On répercute ce changement sur le « binaire » :
+sed -i "s@/lib/@/lib64/@" ${PKG}/usr/bin/opera
+
+# On supprime/déplace la documentation mal placée :
+rm -rf ${PKG}/usr/share/doc
+mv ${PKG}/usr/share/man ${PKG}/usr
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -76,16 +91,12 @@ if [ -d ${PKG}/usr/info ]; then
 fi
 
 # Installation de la documentation :
-# On déplace et on renomme la doc et on la lie :
-mv ${PKG}/usr/share/doc ${PKG}/usr
-mv ${PKG}/usr/doc/opera ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+# On déplace et on renomme la doc et on la lie correctement :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/opera
-
-# On corrige les liens cassés :
-ln -sf ../../../doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/defaults/license.txt
-ln -sf ../../../../doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/locale/en/license.txt
-ln -sf ../../../../doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/locale/ja/license.txt
-#cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
+ln -sf ../../../../usr/doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/defaults/license.txt
+ln -sf ../../../../..//usr/doc/${NAMETGZ}-${VERSION}/LICENSE ${PKG}/usr/share/opera/locale/en/license.txt
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
