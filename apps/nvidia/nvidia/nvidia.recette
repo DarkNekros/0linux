@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-NVIDIA}
-VERSION=${VERSION:-285.05.09}
+VERSION=${VERSION:-290.10}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-nvidia}
 BUILD=${BUILD:-1}
