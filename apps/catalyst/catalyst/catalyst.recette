@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-ati-driver-installer}
 VERSION=${VERSION:-11.10}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-catalyst}
-BUILD=${BUILD:-5}
+BUILD=${BUILD:-6}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
