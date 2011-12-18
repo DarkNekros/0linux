@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-ndiswrapper}
 VERSION=${VERSION:-1.56}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-ndiswrapper}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -63,6 +63,7 @@ find . \
 cat $CWD/ndiswrapper.linux-2.6.35.patch | patch -p1
 cat $CWD/ndiswrapper.linux-2.6.36.patch | patch -p1
 cat $CWD/ndiswrapper.linux-2.6.38.patch | patch -p1
+cat $CWD/ndiswrapper.linux-3.1.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
