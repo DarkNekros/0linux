@@ -58,6 +58,9 @@ if [ ! "${APPSDIR}" = "" ]; then
 		read BLAH;
 		
 		if [ "${BLAH}" = "" ]; then
+			# On crée le répertoire pour la gestion des dépôts :
+			mkdir -p ${SETUPROOT}/etc/0outils/apps
+			
 			# On installe chaque dépôt dépôt spécifié :
 			for depot in ${APPSCODES}; do
 				# On crée le fichier de gestion du dépôt pour '0actualiser' plus tard :
