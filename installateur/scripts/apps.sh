@@ -60,6 +60,9 @@ if [ ! "${APPSDIR}" = "" ]; then
 		if [ "${BLAH}" = "" ]; then
 			# On installe chaque dépôt dépôt spécifié :
 			for depot in ${APPSCODES}; do
+				# On crée le fichier de gestion du dépôt pour '0actualiser' plus tard :
+				touch ${SETUPROOT}/etc/0outils/apps/$(basename ${APPTAB[${depot}]})
+				
 				for paquet in $(find ${APPTAB[${depot}]} -type f -name "*.spack"); do
 					spackadd --about ${paquet}
 					spackadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
