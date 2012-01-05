@@ -107,7 +107,7 @@ for categ in base opt xorg; do
 done
 
 # Et pour chaque dépôt de paquets installé :
-for appcateg in $CONFIGDIR/*; do
+for appcateg in $(find ${CONFIGDIR} -mindepth 1 -type f | sort); do
 	
 	# On crée la liste des paquets distants de la catégorie :
 	rsync -a ${RSYNCREPO}/apps/$(basename ${appcateg})/* | sed -e 's/\(^.*\) \(.*\)\(\.spack$\)/\2/p' -n > $TMP/$(basename ${appcateg}).log
