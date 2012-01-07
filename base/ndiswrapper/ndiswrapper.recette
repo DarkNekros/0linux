@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=base
 NAMESRC=${NAMESRC:-ndiswrapper}
-VERSION=${VERSION:-1.56}
+VERSION=${VERSION:-1.57}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-ndiswrapper}
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -22,9 +22,11 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS ChangeLog INSTALL README"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
+	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
+	TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Implémentation réseau de la NDIS de Windows pour réseaux sans fil"
+SLACKDESC="Implémentation de la NDIS de Windows pour réseaux sans fil"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -45,6 +47,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
 mkdir -p ${PKG}/lib/modules/$(uname -r)/kernel/drivers/misc
+mkdir -p ${PKG}/usr/man/man8
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -59,11 +62,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On applique ces correctifs pour les noyaux récents :
-cat $CWD/ndiswrapper.linux-2.6.35.patch | patch -p1
-cat $CWD/ndiswrapper.linux-2.6.36.patch | patch -p1
-cat $CWD/ndiswrapper.linux-2.6.38.patch | patch -p1
-cat $CWD/ndiswrapper.linux-3.1.patch | patch -p1
+# On permet à un utilisateur normal de compiler ce paquet... Pour 2012, je voudrais
+# un paquet 'ndiswrapper' propre, sans avoir à patcher :)
+cat $CWD/ndiswrapper.non-root.patch | patch -p1
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
@@ -83,8 +84,12 @@ fakeroot make install DESTDIR=${PKG}
 unset USE_ARCH
 
 # On déplace le module où il faut :
-mv ${PKG}/lib/modules/misc/*.ko ${PKG}/lib/modules/$(uname -r)/kernel/drivers/misc
+mv ${PKG}/lib/modules/$(uname -r)/misc/*.ko ${PKG}/lib/modules/$(uname -r)/kernel/drivers/misc
 rm -rf ${PKG}/lib/modules/misc
+
+# On déplace les manuels où il faut :
+mv ${PKG}/usr/share/man/man8/* ${PKG}/usr/man/man8/
+rm -rf ${PKG}/usr/share
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -103,7 +108,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
