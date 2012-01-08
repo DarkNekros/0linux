@@ -26,7 +26,7 @@ DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING 
 	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
 	TRANSLATORS *license* *readme* *.html *.txt"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Greffon d'ajustementvectoriel pour Inkscape"
+SLACKDESC="Greffon d'ajustement vectoriel pour Inkscape"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
