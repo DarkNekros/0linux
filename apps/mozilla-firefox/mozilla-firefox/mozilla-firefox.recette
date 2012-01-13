@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-8.0}
+VERSION=${VERSION:-9.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
 BUILD=${BUILD:-1}
@@ -23,7 +23,9 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://ftp.mozilla.org/pub/firefox/releases/${VERSION}/source/${NAMESRC}-${VERSION}.source.${EXT}}
 WGETFRXPI=${WGETFRXPI:-ftp://ftp.mozilla.org/pub/firefox/releases/${VERSION}/linux-$ARCH/xpi/fr.xpi}
-DOC="LEGAL LICENSE README*"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
+	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
+	TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Le navigateur Web de la fondation Mozilla"
 ########################################
