@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-firefox}
 VERSION=${VERSION:-9.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-4}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -143,9 +143,12 @@ rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-devel-${VERSION}
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 
 # On installe les fichiers de localisation française :
-cp -a $CWD/fr.xpi ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/extensions/langpack-fr@firefox.mozilla.org.xpi
+cd ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}
+bsdtar xf $CWD/fr.xpi
+find ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome -type f -exec chmod 644 {} \;
+cd -
 
-# On place nos préférences, notamment pour la langue :
+# On place nos préférences :
 cp -a $CWD/vendor.js ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/defaults/pref
 
 # On copie le logo et le fichier pour le bureau :
