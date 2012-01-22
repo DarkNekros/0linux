@@ -6,9 +6,9 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-LibO}
-VERSION=${VERSION:-3.4.4}
+VERSION=${VERSION:-3.4.5}
 VER=${VER:-3.4}
-SUBVER=${SUBVER:-402}
+SUBVER=${SUBVER:-502}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libreoffice}
 BUILD=${BUILD:-1}
@@ -26,7 +26,9 @@ PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 WGET=${WGET:-http://download.documentfoundation.org/libreoffice/stable/$VERSION/rpm/x86_64/${NAMESRC}_${VERSION}_Linux_x86-64_install-rpm_en-US.$EXT}
 WGETFR=${WGETFR:-http://download.documentfoundation.org/libreoffice/stable/$VERSION/rpm/x86_64/${NAMESRC}_${VERSION}_Linux_x86-64_langpack-rpm_fr.$EXT}
 WGETHELPFR=${WGETHELPFR:-http://download.documentfoundation.org/libreoffice/stable/$VERSION/rpm/x86_64/${NAMESRC}_${VERSION}_Linux_x86-64_helppack-rpm_fr.$EXT}
-DOC="readmes"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
+	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
+	TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Suite bureautique complète libre"
 ########################################
@@ -91,7 +93,7 @@ rm -rf {userland,jre-*-linux-*.rpm}
 
 # On ramène les menus à la Freedesktop avec les autres RPM et on se débarrasse
 # de la mise à jour en ligne :
-mv desktop-integration/libreoffice${VER}-freedesktop-menus-${VER}-${SUBVER}.noarch.rpm .
+mv desktop-integration/libreoffice${VER}*-freedesktop-menus-${VER}-${SUBVER}.noarch.rpm .
 rm -f *onlineupdate*.rpm
 
 # On extrait chaque RPM :
@@ -143,9 +145,9 @@ if [ -d ${PKG}/usr/info ]; then
 fi
 
 # Installation de la documentation :
-mkdir -p ${PKG}/usr/doc
-cp -a $TMP/${NAME}/${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-ln -sf ../../../usr/lib64/libreoffice${VER} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/doc
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a $TMP/${NAME}/${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
+cp -a ${PKG}/usr/lib64/libreoffice${VER}/{*.{html,odt},LICENSE} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
