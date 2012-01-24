@@ -79,6 +79,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-avfilter \
 	--enable-gpl \
 	--enable-libass \
+	--enable-libcdio \
 	--enable-libdc1394 \
 	--enable-libfaac \
 	--enable-libmodplug \
@@ -100,6 +101,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-shared \
 	--enable-version3 \
 	--enable-x11grab \
+	--disable-asm \
 	--disable-debug \
 	--cc="gcc ${BUILD32}"\
 	--extra-ldflags="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}"
@@ -143,6 +145,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--enable-avfilter \
 	--enable-gpl \
 	--enable-libass \
+	--enable-libcdio \
 	--enable-libdc1394 \
 	--enable-libfaac \
 	--enable-libmodplug \
