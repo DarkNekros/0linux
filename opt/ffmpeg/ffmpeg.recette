@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-ffmpeg}
-VERSION=${VERSION:-0.6.2}
+VERSION=${VERSION:-0.9.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ffmpeg}
 BUILD=${BUILD:-1}
@@ -22,7 +22,9 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://ffmpeg.org/releases/$NAMESRC-$VERSION.$EXT}
-DOC="Changelog COPYING* CREDITS INSTALL LICENSE MAINTAINERS README* doc/*.txt"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* COPYRIGHT* Copyright* \
+	EXPAT HACKING *INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS \
+	TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Solution de traitement de flux audio et vidéo"
 ########################################
@@ -74,17 +76,17 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--shlibdir=/usr/lib${LIBDIRSUFFIX} \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
-	--arch=i686 \
 	--enable-avfilter \
 	--enable-gpl \
+	--enable-libass \
 	--enable-libdc1394 \
 	--enable-libfaac \
-	--enable-libfaad \
-	--enable-libfaadbin \
+	--enable-libmodplug \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
 	--enable-libopenjpeg \
+	--enable-libopencv \
 	--enable-libschroedinger \
 	--enable-libspeex \
 	--enable-libtheora \
@@ -140,14 +142,15 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--enable-avfilter \
 	--enable-gpl \
+	--enable-libass \
 	--enable-libdc1394 \
 	--enable-libfaac \
-	--enable-libfaad \
-	--enable-libfaadbin \
+	--enable-libmodplug \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
 	--enable-libopenjpeg \
+	--enable-libopencv \
 	--enable-libschroedinger \
 	--enable-libspeex \
 	--enable-libtheora \
@@ -193,7 +196,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install

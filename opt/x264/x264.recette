@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-x264-snapshot}
-VERSION=${VERSION:-20100914}
+VERSION=${VERSION:-20120123}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-x264}
 BUILD=${BUILD:-1}
@@ -22,7 +22,9 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-ftp://ftp.videolan.org/pub/videolan/x264/snapshots/${NAMESRC}-${VERSION}-2245.$EXT}
-DOC="AUTHORS COPYING doc/"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* COPYRIGHT* Copyright* \
+	EXPAT HACKING *INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS \
+	TODO TRANSLATORS *license* *readme* doc/"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques de codage de flux X264/AVC"
 ########################################
@@ -82,6 +84,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET32}
 
 make -j3 || make
+
 fakeroot make install bindir=/usr/bin \
 	libdir=/usr/lib${LIBDIRSUFFIX} \
 	includedir=/usr/include \
@@ -124,6 +127,7 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--build=${TARGET64}
 
 make -j3 || make
+
 fakeroot make install bindir=/usr/bin \
 	libdir=/usr/lib${LIBDIRSUFFIX} \
 	includedir=/usr/include \
@@ -149,7 +153,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -183,9 +187,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
