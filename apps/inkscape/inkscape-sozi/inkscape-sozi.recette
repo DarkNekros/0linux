@@ -124,6 +124,7 @@ PACKAGING="
 	chown root:root . -R
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
+	rm -rf $TMP/*.{css,inx,js,py,html,txt}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
 		if [ -d $TMP/${NAME} ]; then
 			rm -rf $TMP/${NAME}
