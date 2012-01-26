@@ -8,7 +8,7 @@ PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-mplayer-codecs}
 VERSION=${VERSION:-20071007}
 NAMETGZ=${NAMETGZ:-mplayer-codecs}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -20,9 +20,12 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGETESSENTIAL=${WGET:-http://www.mplayerhq.hu/MPlayer/releases/codecs/essential-amd64-$VERSION.tar.bz2}
-WGETCODECS=${WGET:-http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-20061022-1.${ARCH}.rpm}
-WGETCODECSEXTRA=${WGET:-http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-extra-20061022-1.${ARCH}.rpm}
+WGETESSENTIAL32=${WGETESSENTIAL32:-http://www.mplayerhq.hu/MPlayer/releases/codecs/essential-$VERSION.tar.bz2}
+WGETESSENTIAL=${WGETESSENTIAL:-http://www.mplayerhq.hu/MPlayer/releases/codecs/essential-amd64-$VERSION.tar.bz2}
+WGETCODECS32=${WGETCODECS32:-http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-20061022-1.i386.rpm}
+WGETCODECS=${WGETCODECS:-http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-20061022-1.${ARCH}.rpm}
+WGETCODECSEXTRA32=${WGETCODECSEXTRA32:-http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-extra-20061022-1.i386.rpm}
+WGETCODECSEXTRA=${WGETCODECSEXTRA:-http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-extra-20061022-1.${ARCH}.rpm}
 DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* COPYRIGHT* Copyright* \
 	EXPAT HACKING *INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS \
 	TODO TRANSLATORS *license* *readme*"
@@ -37,14 +40,29 @@ if [ $(echo "${SLACKDESCCHARS} -1" | bc) -ge 80 ]; then
 fi
 
 # On télécharge les sources :
+if [ ! -r essential-$VERSION.tar.bz2 ]; then
+	wget -vc $WGETESSENTIAL32 -O essential-$VERSION.tar.bz2.part
+	mv essential-$VERSION.tar.bz2{.part,}
+fi
+
 if [ ! -r essential-amd64-$VERSION.tar.bz2 ]; then
 	wget -vc $WGETESSENTIAL -O essential-amd64-$VERSION.tar.bz2.part
 	mv essential-amd64-$VERSION.tar.bz2{.part,}
 fi
 
+if [ ! -r $NAMESRC-20061022-1.i386.rpm ]; then
+	wget -vc $WGETCODECS32 -O $NAMESRC-20061022-1.i386.rpm.part
+	mv $NAMESRC-20061022-1.i386.rpm{.part,}
+fi
+
 if [ ! -r $NAMESRC-20061022-1.${ARCH}.rpm ]; then
 	wget -vc $WGETCODECS -O $NAMESRC-20061022-1.${ARCH}.rpm.part
 	mv $NAMESRC-20061022-1.${ARCH}.rpm{.part,}
+fi
+
+if [ ! -r $NAMESRC-extra-20061022-1.i386.rpm ]; then
+	wget -vc $WGETCODECSEXTRA32 -O $NAMESRC-extra-20061022-1.i386.rpm.part
+	mv $NAMESRC-extra-20061022-1.i386.rpm{.part,}
 fi
 
 if [ ! -r $NAMESRC-extra-20061022-1.${ARCH}.rpm ]; then
@@ -54,25 +72,29 @@ fi
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-rm -rf ${PKG} && mkdir -p ${PKG}/usr/lib64/codecs
+rm -rf ${PKG} && mkdir -p ${PKG}/usr/lib{,64}/codecs
 
-# On déballe et on se place dans les sources :
-NAME=$(tar ft $CWD/essential-amd64-$VERSION.tar.bz2 | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
-rm -rf ${NAME}
-echo "Extraction en cours..."
-tar xf $CWD/essential-amd64-$VERSION.tar.bz2
-cd ${NAME}
+rm -rf ${NAMESRC}-*
 
-# On copie tous les codecs :
-cp -a * ${PKG}/usr/lib64/codecs
+# On extrait tous les codecs :
+tar xf $CWD/essential-$VERSION.tar.bz2
+cp -ar essential-$VERSION/* ${PKG}/usr/lib/codecs 
+tar xf $CWD/essential-amd64-$VERSION.tar.bz2
+cp -ar essential-amd64-$VERSION/* ${PKG}/usr/lib64/codecs 
 
 # On extrait ensuite les RPM et on en copie le contenu dans $PKG :
+rpmunpack $CWD/${NAMESRC}-20061022-1.i386.rpm
+cp -ar ${NAMESRC}-20061022-1.i386/* ${PKG}
+
 rpmunpack $CWD/${NAMESRC}-20061022-1.${ARCH}.rpm
-cp -ra ${NAMESRC}-20061022-1.${ARCH}/* ${PKG}
+cp -ar ${NAMESRC}-20061022-1.${ARCH}/* ${PKG}
+
+rpmunpack $CWD/${NAMESRC}-extra-20061022-1.i386.rpm
+cp -ar ${NAMESRC}-extra-20061022-1.i386/* ${PKG}
 
 rpmunpack $CWD/${NAMESRC}-extra-20061022-1.${ARCH}.rpm
-cp -ra ${NAMESRC}-extra-20061022-1.${ARCH}/* ${PKG}
+cp -ar ${NAMESRC}-extra-20061022-1.${ARCH}/* ${PKG}
 
 # Ce répertoire est inutile :
 rm -rf ${PKG}/usr/share
@@ -95,7 +117,8 @@ fi
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
-mv ${PKG}/usr/lib64/codecs/README ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/README-20061022
+mv ${PKG}/usr/lib/codecs/README ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/README-32
+mv ${PKG}/usr/lib64/codecs/README ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/README-64
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
