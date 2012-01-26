@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-ati-driver-installer}
-VERSION=${VERSION:-11.10}
+VERSION=${VERSION:-11.11}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-catalyst}
-BUILD=${BUILD:-6}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
