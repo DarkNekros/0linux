@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-Imaging}
 VERSION=${VERSION:-1.1.7}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-pil}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -22,8 +22,9 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://effbot.org/downloads/$NAMESRC-$VERSION.$EXT}
-DOC="AUTHORS BUGS BUILDME ?hange?og* *CHANGES* CODING* *COPYING* EXPAT HACKING *INSTALL* *LEGAL* *LICENSE* \
-	MAINTAINERS MANIFEST *NEWS* *README* THANKS TODO TRANSLATORS *license* *readme*"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* COPYRIGHT* Copyright* \
+	EXPAT HACKING *INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS \
+	TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Bibliothèques Python de traitement des images "
 ########################################
