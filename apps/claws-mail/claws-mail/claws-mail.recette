@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-claws-mail}
-VERSION=${VERSION:-3.7.10}
+VERSION=${VERSION:-3.8.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-claws-mail}
 BUILD=${BUILD:-1}
