@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-ekd}
 VERSION=${VERSION:-3.0.2.20120125}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-ekd}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -46,7 +46,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-rm -rf ${PKG} && mkdir -p ${PKG}
+rm -rf ${PKG} && mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -88,6 +88,12 @@ fakeroot make install DESTDIR=${PKG}
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
+
+# On place le raccourci :
+cp -a $CWD/ekd.desktop ${PKG}/usr/share/applications/
+
+# On place son icône :
+cp -a ${PKG}/usr/share/ekd/icone_ekd.png ${PKG}/usr/share/pixmaps/
 
 # On corrige le chemin dans le « binaire » 'ekd' :
 sed -i 's@/tmp/build/ekd@@' ${PKG}/usr/bin/ekd
