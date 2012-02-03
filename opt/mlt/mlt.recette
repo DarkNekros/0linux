@@ -46,7 +46,9 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-rm -rf ${PKG} && mkdir -p ${PKG}
+rm -rf ${PKG} && mkdir -p \
+	${PKG}/$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
+	sed 's#/site-packages##')
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft $CWD/${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
@@ -61,49 +63,13 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On positionne USE_ARCH :
-export USE_ARCH=32
-
-# Compilation pour 32 bits :
-SLKCFLAGS="-O2 -march=i686 -pipe"
-LIBDIRSUFFIX=""
-CC="gcc ${BUILD32}" CXX="g++ ${BUILD32}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH32}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${TARGET32}
-
-make -j3 || make
-fakeroot make install DESTDIR=${PKG}
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
-# On re-déballe et on se re-place dans les sources :
-cd $TMP
-rm -rf ${NAME}
-echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
-
-# On re-vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+# Le 32 bits reste à faire... Qui va s'en soucier ?
 
 # On positionne USE_ARCH :
 export USE_ARCH=64
 
 # Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe"
+SLKCFLAGS="${BUILD64} -O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
 CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
@@ -117,10 +83,26 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--avformat-vdpau \
+	--enable-gpl \
 	--build=${TARGET64}
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
+
+# On compile l'interfaçage avec Python :
+cd src/swig/python
+./build
+
+cp -a mlt.py _mlt.so mlt_wrap.o \
+	${PKG}/$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
+	sed 's#/site-packages##')
+
+chmod 755 \
+	${PKG}/$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
+	sed 's#/site-packages##')/{mlt.py,_mlt.so,mlt_wrap.o}
+
+cd -
 
 # On neutralise USE_ARCH :
 unset USE_ARCH
