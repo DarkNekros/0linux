@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-9.0.1}
+VERSION=${VERSION:-10.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
 BUILD=${BUILD:-1}
@@ -21,8 +21,8 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.mozilla.org/pub/${NAMESRC}/releases/${VERSION}/source/${NAMESRC}-${VERSION}.source.${EXT}}
-WGETFRXPI=${WGETFRXPI:-ftp://ftp.mozilla.org/pub/mozilla.org/$NAMESRC/releases/$VERSION/linux-i686/xpi/fr.xpi}
+WGET=${WGET:-ftp://ftp.mozilla.org/pub/${NAMESRC}/releases/${VERSION}-real/source/${NAMESRC}-${VERSION}.source.${EXT}}
+WGETFRXPI=${WGETFRXPI:-ftp://ftp.mozilla.org/pub/mozilla.org/$NAMESRC/releases/$VERSION-real/linux-i686/xpi/fr.xpi}
 DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
 	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
 	TRANSLATORS *license* *readme*"
