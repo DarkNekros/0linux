@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-thunderbird}
 VERSION=${VERSION:-10.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -21,8 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.mozilla.org/pub/${NAMESRC}/releases/${VERSION}-real/source/${NAMESRC}-${VERSION}.source.${EXT}}
-WGETFRXPI=${WGETFRXPI:-ftp://ftp.mozilla.org/pub/mozilla.org/$NAMESRC/releases/$VERSION-real/linux-i686/xpi/fr.xpi}
+WGET=${WGET:-ftp://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION-real/linux-x86_64/fr/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
 	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
 	TRANSLATORS *license* *readme*"
@@ -45,104 +44,25 @@ fi
 # On les vérifie :
 tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
-# On télécharge l'archive de localisation :
-wget -vc $WGETFRXPI -O fr.xpi.part
-mv fr.xpi.part fr.xpi
-
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}/usr/bin
-mkdir -p ${PKG}/usr/lib{,64}/${NAMESRC}-${VERSION}/chrome/icons/default
+mkdir -p ${PKG}/usr/{bin,lib64}
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 
 # On déballe et on se place dans les sources :
 NAME=$(tar ft ${NAMESRC}-${VERSION}.$EXT | head -n 1 | awk -F/ '{ print $1 }')
 cd $TMP
 rm -rf ${NAME}
 echo "Extraction en cours..."
-tar xf $CWD/${NAMESRC}-${VERSION}.$EXT
-cd ${NAME}
-
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# On force 'thunderbird' à se conformer à la langue du système :
-cat $CWD/thunderbird.lang.patch | patch -p1
-
-# On positionne USE_ARCH :
-export USE_ARCH=64
-
-# Compilation pour 64 bits :
-SLKCFLAGS="-O2 -fPIC -pipe"
-LIBDIRSUFFIX="64"
-
-MOZILLA_OFFICIAL="1" BUILD_OFFICIAL="1" MOZ_PHOENIX="1" MOZ_CO_PROJECT=mail \
-CC="gcc ${BUILD64}" CXX="g++ ${BUILD64}" \
-CFLAGS="${SLKCFLAGS}" CXXFLAGS="${SLKCFLAGS}" \
-MOZ_MAKE_FLAGS="${SLKCFLAGS}" \
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH64}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--with-default-mozilla-five-home=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION} \
-	--disable-accessibility \
-	--disable-crashreporter \
-	--disable-debug \
-	--disable-logging \
-	--disable-tests \
-	--disable-installer \
-	--disable-pedantic \
-	--disable-profilesharing \
-	--disable-updater \
-	--enable-application=mail \
-	--enable-canvas \
-	--enable-cpp-rtti \
-	--enable-crypto \
-	--enable-default-toolkit=cairo-gtk2 \
-	--enable-faststart \
-	--enable-gio \
-	--enable-gconf \
-	--enable-libnotify \
-	--enable-official-branding \
-	--enable-optimize \
-	--enable-reorder \
-	--enable-single-profile \
-	--enable-startup-notification \
-	--enable-strip \
-	--enable-svg \
-	--enable-system-cairo \
-	--enable-xft \
-	--enable-xinerama \
-	--with-system-bz2 \
-	--with-system-jpeg \
-	--with-system-zlib \
-	--build=${TARGET64} \
-	--host=${TARGET64} 
-
-make -j1
-fakeroot make install DESTDIR=${PKG}
-
-# On neutralise USE_ARCH :
-unset USE_ARCH
-
-# On ne garde qu'un répertoire racine :
-rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-devel-${VERSION}
-
-# On crée le répertoire général pour les plugins :
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
+tar xf $CWD/${NAMESRC}-${VERSION}.$EXT -C ${PKG}/usr/lib64
+cd ${PKG}/usr/lib64/${NAMESRC}
 
 # On copie le logo et le fichier pour le bureau :
-mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 cp -a $CWD/mozilla-thunderbird.desktop ${PKG}/usr/share/applications
 cp -a $CWD/thunderbird.png ${PKG}/usr/share/pixmaps
 
-# On installe les fichiers de localisation française :
-cd ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}
-bsdtar xf $CWD/fr.xpi
-find ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome -type f -exec chmod 644 {} \;
-cd -
+# On lie le binaire :
+ln -sf ../../usr/lib64/${NAMESRC}/thunderbird ${PKG}/usr/bin/
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -198,11 +118,6 @@ if [ -x usr/bin/gtk-update-icon-cache ]; then
 fi
 
 EOF
-
-# On "strippe" tout ce qu'on trouve :
-find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
-find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
-find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
 
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
