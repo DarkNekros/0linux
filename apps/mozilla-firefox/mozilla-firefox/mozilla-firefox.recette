@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-firefox}
 VERSION=${VERSION:-10.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-firefox}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -59,8 +59,9 @@ echo "Extraction en cours..."
 tar xf $CWD/${NAMESRC}-${VERSION}.$EXT -C ${PKG}/usr/lib64
 cd ${PKG}/usr/lib64/${NAMESRC}
 
-# On crée le répertoire général pour les plugins :
+# On crée le répertoire général pour les plugins et on le lie :
 mkdir -p ${PKG}/usr/lib64/mozilla/plugins
+ln -sf ../../../usr/lib64/mozilla/plugins ${PKG}/usr/lib64/${NAMESRC}/plugins
 
 # On place nos préférences :
 cp -a $CWD/vendor.js ${PKG}/usr/lib64/${NAMESRC}/defaults/pref/
