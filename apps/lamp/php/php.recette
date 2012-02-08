@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-php}
-VERSION=${VERSION:-5.3.8}
+VERSION=${VERSION:-5.3.10}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-php}
 BUILD=${BUILD:-1}
