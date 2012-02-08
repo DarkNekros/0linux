@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-gimp}
-VERSION=${VERSION:-2.6.11}
+VERSION=${VERSION:-2.6.12}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gimp}
 BUILD=${BUILD:-1}
