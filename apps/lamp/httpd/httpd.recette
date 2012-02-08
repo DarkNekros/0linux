@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-httpd}
-VERSION=${VERSION:-2.2.21}
+VERSION=${VERSION:-2.2.22}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-httpd}
 BUILD=${BUILD:-1}
