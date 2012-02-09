@@ -6,7 +6,7 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-skype}
-VERSION=${VERSION:-2.1.0.81}
+VERSION=${VERSION:-2.2.0.35}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-skype}
 BUILD=${BUILD:-1}
@@ -22,9 +22,11 @@ PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
 WGET=${WGET:-http://download.skype.com/linux/$NAMESRC-$VERSION.$EXT}
-DOC="LICENSE README"
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* COPYRIGHT* Copyright* \
+	EXPAT HACKING *INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS \
+	TODO TRANSLATORS *license* *readme*"
 ########## |-----handy-ruler------------------------------------------------------|
-SLACKDESC="Programme pair-à-pair de transmission de voix sur IP"
+SLACKDESC="Programme pair-à-pair de transmission voix/vidéo sur IP"
 ########################################
 
 SLACKDESCCHARS=`echo ${SLACKDESC} | wc -m`
@@ -98,7 +100,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -135,12 +137,6 @@ if [ -x usr/bin/gtk-update-icon-cache ]; then
 fi
 
 EOF
-
-# On ne « strippe » rien pour éviter les plantages.
-## On "strippe" tout ce qu'on trouve :
-#find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
-#find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
-#find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs strip -g 2> /dev/null || true
 
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
