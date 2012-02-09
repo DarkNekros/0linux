@@ -6,11 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-wxWidgets}
-VERSION=${VERSION:-2.8.11}
+VERSION=${VERSION:-2.8.12}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-wxwidgets}
 BUILD=${BUILD:-1}
-
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -22,8 +21,10 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-http://downloads.sourceforge.net/project/wxwindows/2.8.11/wxWidgets-2.8.11.tar.bz2?use_mirror=freefr}
-DOC="*.txt docs/*"
+WGET=${WGET:-http://prdownloads.sourceforge.net/wxwindows/${NAMESRC}-${VERSION}.$EXT}
+DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* COPYRIGHT* Copyright* \
+	EXPAT HACKING *INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS \
+	TODO TRANSLATORS *license* *readme* *.txt docs/*"
 ########## |-----handy-ruler------------------------------------------------------|
 SLACKDESC="Outils et bibliothèques C++ de création d'interfaces graphiques"
 ########################################
@@ -77,9 +78,11 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--with-libmspack \
-	--with-sdl \
+	--enable-mediactrl \
 	--enable-unicode \
+	--with-libmspack \
+	--with-opengl \
+	--with-sdl \
 	--build=${TARGET32}
 
 make -j3 || make
@@ -120,9 +123,11 @@ LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -L/lib${LIBDIRSUFFIX}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--with-libmspack \
-	--with-sdl \
+	--enable-mediactrl \
 	--enable-unicode \
+	--with-libmspack \
+	--with-opengl \
+	--with-sdl \
 	--build=${TARGET64}
 
 make -j3 || make
@@ -157,7 +162,7 @@ fi
 
 # Installation de la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a ${DOC} ${PKG}/usr/doc/${NAMETGZ}-${VERSION} 2>/dev/null || true
 
 # On installe le slack-desc :
 mkdir -p ${PKG}/install
@@ -185,12 +190,15 @@ if [ -x usr/bin/update-desktop-database ]; then
 	chroot . /usr/bin/update-desktop-database &> /dev/null
 fi
 
+if [ -x /usr/bin/update-mime-database ]; then
+	chroot . /usr/bin/update-mime-database /usr/share/mime >/dev/null 2>&1
+fi
+
 if [ -x usr/bin/gtk-update-icon-cache ]; then
 	chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor 1>/dev/null 2>&1
 fi
 
 EOF
-
 # On "strippe" tout ce qu'on trouve :
 find ${PKG} -type f | xargs file | grep "LSB executable" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find ${PKG} -type f | xargs file | grep "shared object" | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
@@ -200,15 +208,11 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
 
-
-
-
 # Empaquetage !
 cd ${PKG}
 mkdir -p $OUT
 PACKAGING="
 	chown root:root . -R
-	
 	/sbin/spackpkg . $OUT/${NAMETGZ}-${VERSION}-${ARCH}-$BUILD
 	rm -rf ${PKG}
 	if [ ! \"X${NAME}\" = \"X\" ]; then
