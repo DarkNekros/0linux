@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-10.0}
+VERSION=${VERSION:-10.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mozilla-thunderbird}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -21,7 +21,7 @@ BUILD64=${BUILD64:--m64}
 PKG_CONFIG_PATH32=${PKG_CONFIG_PATH32:-/usr/lib/pkgconfig}
 PKG_CONFIG_PATH64=${PKG_CONFIG_PATH64:-/usr/lib64/pkgconfig}
 
-WGET=${WGET:-ftp://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION-real/linux-x86_64/fr/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-x86_64/fr/$NAMESRC-$VERSION.$EXT}
 DOC="AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* EXPAT HACKING \
 	*INSTALL* KNOWNBUGS *LEGAL* *LICENSE* MAINTAINERS *NEWS* *README* THANKS TODO \
 	TRANSLATORS *license* *readme*"
@@ -46,7 +46,7 @@ tar ft ${NAMESRC}-${VERSION}.$EXT 1> /dev/null 2> /dev/null
 
 # On crée le répertoire d'accueil :
 PKG=$TMP/build/${NAMETGZ}
-mkdir -p ${PKG}/usr/{bin,lib64}
+mkdir -p ${PKG}/usr/{bin,lib64/${NAMESRC}/defaults/pref/}
 mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 
 # On déballe et on se place dans les sources :
@@ -60,6 +60,9 @@ cd ${PKG}/usr/lib64/${NAMESRC}
 # On copie le logo et le fichier pour le bureau :
 cp -a $CWD/mozilla-thunderbird.desktop ${PKG}/usr/share/applications
 cp -a $CWD/thunderbird.png ${PKG}/usr/share/pixmaps
+
+# On place nos préférences :
+cp -a $CWD/vendor.js ${PKG}/usr/lib64/${NAMESRC}/defaults/pref/
 
 # On lie le binaire :
 ln -sf ../../usr/lib64/${NAMESRC}/thunderbird ${PKG}/usr/bin/
