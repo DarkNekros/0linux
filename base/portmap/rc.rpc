@@ -2,7 +2,7 @@
 # rc.rpc :  fichier service pour RPC ('portmap') et NFS
 
 rpc_start() {
-	if [ -x /sbin/rpc.portmap -a -x /sbin/rpc.statd ]; then
+	if [ -x /sbin/rpc.portmap -a -x /usr/sbin/rpc.statd ]; then
 		
 		if ! ps axc | grep -q rpc.portmap ; then
 			echo "Démarrage de RPC..."

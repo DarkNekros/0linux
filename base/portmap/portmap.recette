@@ -9,7 +9,7 @@ NAMESRC=${NAMESRC:-portmap}
 VERSION=${VERSION:-6.0}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-portmap}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
@@ -93,8 +93,8 @@ cp -a *.8 ${PKG}/usr/man/man8
 cp -a portmap.man ${PKG}/usr/man/man8/portmap.8
 chmod 644 ${PKG}/usr/man/man8/*
 
-# On copie le fichier service et on veille à ne rien écraser:
-cp -a $CWD/rc.rpc ${PKG}/etc/rc.d/rc.rpc.new
+# On copie le fichier service :
+cp -a $CWD/rc.rpc ${PKG}/etc/rc.d/
 
 # On compresse les manuels :
 if [ -d ${PKG}/usr/man ]; then
@@ -126,19 +126,6 @@ if [ -x sbin/ldconfig ]; then
 	sbin/ldconfig -r .
 fi
 
-config() {
-	NEW="$1"
-	OLD="$(dirname $NEW)/$(basename $NEW .new)"
-	
-	if [ ! -r $OLD ]; then
-		mv $NEW $OLD
-	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
-		mv $NEW $OLD
-	fi
-}
-
-config etc/rc.d/rc.rpc.new
-
 EOF
 
 # On "strippe" tout ce qu'on trouve :
@@ -149,9 +136,6 @@ find ${PKG} -type f | xargs file | grep "current ar archive" | cut -f 1 -d : | x
 # On vérifie enfin les droits de la doc, souvent problématiques :
 find ${PKG}/usr/{doc,man,info} -type d -exec chmod 755 {} \; 2> /dev/null || true
 find ${PKG}/usr/{doc,man,info} -type f -exec chmod 644 {} \; 2> /dev/null || true
-
-
-
 
 # Empaquetage !
 cd ${PKG}
