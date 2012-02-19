@@ -6,8 +6,8 @@ umask 022
 CWD=$(pwd)
 PKGCAT="apps/$(basename $(dirname $CWD))"
 NAMESRC=${NAMESRC:-vlc}
-VERSION=${VERSION:-1.1.12}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-2.0.0}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-vlc}
 BUILD=${BUILD:-1}
 
@@ -139,7 +139,7 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-sed -i -e 's#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g' vlc-config.in.in configure*
+sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
 sed -i -e "s#SDL_image.h#SDL/&#" -e "s#SDL.h#SDL/&#" $(grep -lr "SDL*.h" .)
 
 # On positionne USE_ARCH :
