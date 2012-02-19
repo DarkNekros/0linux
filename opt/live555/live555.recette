@@ -6,10 +6,10 @@ umask 022
 CWD=$(pwd)
 PKGCAT=opt
 NAMESRC=${NAMESRC:-live}
-VERSION=${VERSION:-2011_03_14}
+VERSION=${VERSION:-2012_02_04}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-live555}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
 OUT=${OUT:-/usr/local/paquets/$PKGCAT}
