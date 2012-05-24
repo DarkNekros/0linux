@@ -9,7 +9,7 @@ rm -rf $TMP/distant.log
 
 # L'URL précise du dépôt 'apps' : chemin contenant les dépôts de paquets
 # avec ou sans la barre oblique de fin :
-LINUXREPO=${LINUXREPO:-rsync://ftp.igh.cnrs.fr/0linux/0/paquets/apps}
+LINUXREPO=${LINUXREPO:-rsync://ftp.igh.cnrs.fr/0linux/grenier/0linux-multilib/0/paquets/apps}
 
 # Seul root peut lancer '0installer' :
 if [ ! "$(whoami)" = "root" ]; then

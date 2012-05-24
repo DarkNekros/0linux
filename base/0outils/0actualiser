@@ -35,8 +35,8 @@ patienter
 
 # L'URL précise du dépôt de paquets : chemin contenant les catégories de paquets
 # ('base', 'opt', 'extra', etc.) avec ou sans la barre oblique de fin :
-RSYNCREPO=${RSYNCREPO:-rsync://ftp.igh.cnrs.fr/0linux/0/paquets}
-FTPREPO=${FTPREPO:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/0/paquets}
+RSYNCREPO=${RSYNCREPO:-rsync://ftp.igh.cnrs.fr/grenier/0linux-multilib/0/paquets}
+FTPREPO=${FTPREPO:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/grenier/0linux-multilib/0/paquets}
 
 # On se crée d'emblée une liste du dépôt local :
 find /var/log/paquets/ -type f -exec basename {} \; | sort > $TMP/local.log
