@@ -1,6 +1,0 @@
-#!/bin/sh
-#
-# Ce fichier détermine la police à utiliser en mode console, parmi celles
-# disponibles dans /lib/kbd/consolefonts ou /usr/share/kbd/consolefonts.
-#
-setfont -v

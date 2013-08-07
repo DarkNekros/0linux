@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# On tue les clients démarrés par Xsetup :
-killall xmessage
-killall xclock

@@ -1,4 +1,0 @@
-#
-# /etc/hosts.deny : ce fichier décrit les noms d'hôte NON-autorisés à accéder
-# aux services INET locaux.
-#

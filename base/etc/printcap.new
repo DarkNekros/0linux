@@ -1,4 +1,0 @@
-# /etc/printcap : On utilisera l'interface Web de CUPS à l'adresse URL :
-# http://localhost:631 
-# pour renseigner correctement ce fichier.
-#
