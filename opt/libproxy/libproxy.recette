@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-libproxy}
+VERSION=${VERSION:-0.4.11}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-libproxy}
+WGET=${WGET:-http://libproxy.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques de gestion de proxy"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+mkdir -p ${PKG}/usr/{bin,include}
+
+mkdir build && cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
+	-DLIBEXEC_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX}/libproxy \
+	-DCMAKE_SKIP_RPATH=ON \
+	-DCMAKE_BUILD_TYPE=None \
+	-DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
+	-DCMAKE_C_FLAGS="${CFLAGS}" \
+	-DPERL_VENDORINSTALL=yes \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

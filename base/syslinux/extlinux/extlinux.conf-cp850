@@ -1,0 +1,104 @@
+#
+# Fichier de configuration de 'syslinux'.
+# 
+
+# ATTENTION ! Ce fichier doit ˆtre encod‚ en ISO-8859-1 et non en UTF-8 !
+
+# On charge d'embl‚e le module du menu graphique :
+DEFAULT vesamenu.c32
+PROMPT 0
+
+# On laisse 10 secondes de r‚flexion avant d'amorcer :
+TIMEOUT 100
+
+# Couleurs :
+menu color border		*	#00000000 #00000000 none
+menu color screen		*	#90ffffff #00000000 *
+menu color title		*	#ffffffff #00000000 *
+menu color unsel		*	#90ffffff #00000000 *
+menu color hotkey		*	#ff6bff6b #00000000 *
+menu color sel			*	#e0ffffff #200cd22d *
+menu color hotsel		*	#e06bff6b #200cd22d *
+menu color scrollbar	*	#200cd22d #00000000 *
+menu color tabmsg		*	#60ffffff #00000000 *
+menu color cmdmark		*	#c000ffff #00000000 *
+menu color cmdline		*	#c0ffffff #00000000 *
+menu color timeout_msg	*	#80ffffff #00000000 *
+menu color timeout		*	#c0ffffff #00000000 *
+
+# Image d'arriŠre-plan :
+MENU BACKGROUND syslinux.png
+
+# Police latine pour afficher les accents :
+FONT lat9w16.psf
+
+# Titre du menu :
+MENU TITLE SystŠme 0 Linux
+
+# On remplace le message anglophone "Press [tab] to edit options."
+MENU TABMSG Appuyez sur TAB pour ‚diter les options de d‚marrage
+
+# Message d'attente :
+MENU AUTOBOOT Lancement automatique dans # seconde{,s}...
+
+# 0 Linux :
+LABEL 0
+	MENU LABEL 0 Linux
+	LINUX ../vmlinuz
+	APPEND ro vt.default_utf8=1 root=ROOTPART
+
+# Sous-menu pour les choix de claviers :
+
+MENU SEPARATOR
+
+LABEL -
+	MENU LABEL Passer en ligne de commande
+	MENU DISABLE
+
+MENU SEPARATOR
+
+LABEL be
+	MENU LABEL Charger le clavier belge
+	MENU INDENT 1
+	KERNEL kbdmap.c32
+	APPEND claviers/be.ktl
+
+LABEL cf
+	MENU LABEL Charger le clavier canadien
+	MENU INDENT 1
+	KERNEL kbdmap.c32
+	APPEND claviers/cf.ktl
+
+LABEL ch
+	MENU LABEL Charger le clavier suisse
+	MENU INDENT 1
+	KERNEL kbdmap.c32
+	APPEND claviers/ch.ktl
+
+LABEL fr
+MENU LABEL Charger le clavier fran‡ais
+	MENU INDENT 1
+	KERNEL kbdmap.c32
+	APPEND claviers/fr.ktl
+
+## L'outil de d‚tection de mat‚riel HDT :
+#
+#MENU SEPARATOR
+#
+#LABEL hdt
+#	MENU LABEL HDT : d‚tection du mat‚riel
+#	KERNEL hdt.c32
+#	APPEND modules=modules.pci pciids=pci.ids
+#
+## L'outil de test de la m‚moire Memtest86+ :
+#LABEL memtest
+#	MENU LABEL Memtest86+ : test de la m‚moire vive
+#	LINUX mtest86.bin
+
+# Menu pour red‚marrer :
+
+MENU SEPARATOR
+
+LABEL reboot
+	MENU LABEL Red‚marrer la machine
+	KERNEL reboot.c32

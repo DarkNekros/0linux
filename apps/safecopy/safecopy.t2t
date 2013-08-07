@@ -1,0 +1,17 @@
+Description du dépôt @safecopy
+fatalerrors - jeff.levasseur@free.fr
+Juin 2013
+
+= Description de @safecopy =
+
+SafeCopy est un système de recouvrement de données endomagés utilisable avec tout type de support. Il a la particularité de tenter de réparer les fichiers qui ne sont plus lisibles en s'appuyant sur de multiples passes et des algorithmes heuristiques.
+
+= Le dépôt @safecopy pour 0linux =
+
+Le dépôt contient le programme SafeCopy et sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @safecopy``
+
+% Contenu maintenu par fatalerrors.

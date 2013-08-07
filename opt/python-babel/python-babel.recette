@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-Babel}
+VERSION=${VERSION:-0.9.6}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-python-babel}
+WGET=${WGET:-http://ftp.edgewall.com/pub/babel/$NAMESRC-$VERSION.$EXT}
+DESC="Outils d'internationalisation pour Python"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+fakeroot python setup.py install  --optimize=1 --root=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

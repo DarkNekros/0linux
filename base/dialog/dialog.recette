@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-dialog}
+VERSION=${VERSION:-1.1_20120706}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-dialog}
+WGET=${WGET:-ftp://invisible-island.net/$NAMESRC/$NAMESRC-$(echo $VERSION | tr '_' '-').$EXT}
+DESC="Boîtes de dialogues pour terminal"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--enable-nls \
+	--with-ncursesw \
+	--with-libtool \
+	--enable-widec \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On corrige les permissions des bibliothèques partagées :
+chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/libdialog.so*
+
+# On copie le fichier de thème modifié pour 0 :
+mkdir -p ${PKG}/etc
+cp -a $CWD/dialogrc ${PKG}/etc
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

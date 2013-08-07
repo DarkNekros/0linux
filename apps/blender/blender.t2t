@@ -1,0 +1,32 @@
+Description du dépôt @blender
+fatalerrors - jeff.levasseur@free.fr
+Juin 2013
+
+= Description de @blender =
+
+Blender est une solution complète de modélisation, d'animation et de rendu 3D. Il dispose de fonctions avancées pour la 3D et la vidéo parmis lesquelles :
+
+ - sculpture 3D ;
+ - dépliage UV ;
+ - texturage ;
+ - rigging ;
+ - armaturage ;
+ - animation 3D (avec montage) ;
+ - rendu avec plusieurs moteur en fonction de l'ambiance recherché ;
+ - montage vidéo non-linéaire ;
+ - composition d'image ;
+ - création nodale de matériaux ;
+ - création d'application 3D intéractive.
+
+
+Blender est également doté d'un moteur physique permettant la gestion de partucules, les corps soupples et rigides et les fluides.
+
+= Le dépôt @blender pour 0linux =
+
+Le dépôt contient le logiciel Blender complet, accompagné des ses modèles, de ses exemples et de sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @blender``
+
+% Contenu maintenu par fatalerrors. Inspiré par Wikipédia.

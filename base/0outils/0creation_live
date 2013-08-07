@@ -1,0 +1,364 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+set -e
+umask 022
+
+unset PLOP MNTTYPE
+
+# On définit l'architecture visée :
+PKGARCH="$(uname -m)"
+
+# On définit le suffixe du répertoire standard accueillant les bibliothèques :
+if [ ${PKGARCH} = "x86_64" ]; then
+	LIBDIRSUFFIX="64"
+else
+	LIBDIRSUFFIX=""
+fi
+
+# On vérifie qu'on est bien root :
+if [ ! "$(whoami)" = "root" ]; then
+	echo "Erreur : seul root peut m'exécuter !"
+	exit 1
+fi
+
+# On analyse la ligne de commande :
+if [ "$1" != "--mini" -a "$1" != "--complet" -a "$1" != "--maxi" -o ! -d "$2" -o  "$2" = "" ]; then
+	echo "$0 : "
+	echo "Crée un système autonome (ou système « live ») pour média"
+	echo "amovible (DVD, clé USB, etc.), contenant le noyau, un système minimal,"
+	echo "l'installateur et éventuellement les paquets du système 0linux."
+	echo "'$0' doit être suivie de l'option --mini, --complet, --maxi ou --tout,"
+	echo "puis de l'emplacement des paquets (contenant les répertoires 'base/',"
+	echo "'opt/', 'xorg/' et éventuellement 'apps/')"
+	echo ""
+	echo "Créer une image du système autonome nu, dépourvue de paquets :"
+	echo "	$0 --mini /quelque/part/paquets/"
+	echo ""
+	echo "Créer une image complète du système autonome (base, opt et xorg inclus) :"
+	echo "	$0 --complet /quelque/part/paquets/"
+	echo ""
+	echo "Créer une image maximale du système autonome (base, opt, xorg ET dépôts"
+	echo "'apps/' inclus intégralement - attentionà la taille finale, c'est très lourd) :"
+	echo "	$0 --maxi /quelque/part/paquets/contenant/aussi/le/depot/apps"
+	echo ""
+	echo ""
+	exit 1
+fi
+
+# La version de l'image à créer sera la date d'aujourd'hui :
+VERSION="$(date +%d%m%Y)"
+
+# La date en français pour l'affichage de l'accueil :
+DATEFR="$(date '+%A %d %B %Y') à $(date '+%H:%M')"
+
+SOURCES=${SOURCES:-/usr/share/0outils/installateur}
+PAQUETS=${PAQUETS:-${2}}
+TMP=${TMP:-/usr/local/temp}
+
+LIVEOS=${LIVEOS:-$TMP/liveos}
+MEDIAROOT=${MEDIAROOT:-$TMP/mediaroot}
+ISODIR=${ISODIR:-$TMP/iso}
+INITRDGZ=${INITRDGZ:-$TMP/initrd}
+NOYAU=${NOYAU:-$TMP/noyau}
+
+mkdir -p $TMP
+
+# On crée et on vide les répertoires d'accueil :
+rm -rf ${MEDIAROOT} ${LIVEOS} ${NOYAU} ${INITRDGZ}
+rm -f ${ISODIR}/*.iso
+mkdir -p ${LIVEOS} ${ISODIR} 
+mkdir -p ${MEDIAROOT}/{boot/isolinux,0/paquets}
+
+# On installe les paquets pour le système temporaire :
+echo "Installation du système temporaire dans ${LIVEOS} : "
+
+# base :
+echo "Installation du dépôt base... "
+
+spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "busybox*")
+spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "base-systeme*")
+spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "glibc*")
+spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "readline*")
+spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "ncurses*")
+spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "bash*")
+spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "sgml-*")
+
+for paq in $(find ${PAQUETS}/base -type f \
+	\! -name "base-systeme*" \
+	\! -name "bash*" \
+	\! -name "busybox*" \
+	\! -name "linux*" \
+	\! -name "ncurses*" \
+	\! -name "ndiswrapper*" \
+	\! -name "readline*" \
+	\! -name "sgml-*" \
+	-name "*.spack" | sort); do
+	spackadd --quiet --root=${LIVEOS} ${paq}
+done
+
+# Le noyau en dernier (appels à 'make' en post-installation) :
+spackadd --quiet --root=${LIVEOS} ${PAQUETS}/base/linux-*.spack
+spackadd --quiet --root=${LIVEOS} ${PAQUETS}/base/ndiswrapper-*.spack
+
+# xorg :
+echo "Installation du dépôt xorg... "
+spackadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{freetype*,lib*}.spack
+
+# opt :
+echo "Installation du dépôt opt... "
+for paq in \
+bc-* \
+lesstif* \
+libidn-* \
+libpng-* \
+libssh2-* \
+openldap-* \
+popt-* \
+rtmpdump-*; do
+	spackadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.spack
+done
+
+# On copie les bibliothèques requises en dépendances pour les isoler :
+echo "Nettoyage en cours... "
+mkdir -p ${LIVEOS}/conserver/usr/lib${LIBDIRSUFFIX}
+
+for libbb in \
+libICE.so* \
+libSM.so* \
+libX*.so* \
+libbz2.so* \
+lib*curse*.so* \
+libdb-*.so* \
+libdbus-*.so* \
+libexpat.so* \
+libfreetype.so* \
+libgcc_s.so* \
+libgcj.so* \
+libgcrypt.so* \
+libglib-*.so* \
+libgmp.so* \
+libgnutls.so* \
+libgobject-*.so* \
+libgomp.so* \
+libgpg-error.so* \
+libgpm.so* \
+libgthread-*.so* \
+libidn.so* \
+liblber*.so* \
+libldap*.so* \
+libpcre.so* \
+libperl.so* \
+libpopt.so* \
+libpython*.so* \
+libqrencode.so* \
+libmpc.so* \
+libmpfr.so* \
+librtmp-*.so* \
+libnettle*.so* \
+libsasl* \
+libssh2.so* \
+libstdc++.so* \
+libtasn1.so* \
+libxcb.so* \
+libxml2.so* \
+libxtables.so* \
+libz.so*; do
+	find ${LIVEOS}/usr/lib${LIBDIRSUFFIX} -type f -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/usr/lib${LIBDIRSUFFIX} \;
+done
+
+# On se garde également 'minivim' :
+mkdir -p ${LIVEOS}/conserver/usr/bin
+cp -a ${LIVEOS}/usr/bin/minivim ${LIVEOS}/conserver/usr/bin/
+
+# On détermine la version du noyau visé :
+VERSION_NOYAU=$(basename $(find ${LIVEOS}/boot/ -type f -name "noyau-*" | cut -d '-' -f2))
+
+# On copie les modules réseau et les firmwares en lieu sûr :
+cp -ar ${LIVEOS}/lib/firmware ${LIVEOS}/conserver
+cp -ar ${LIVEOS}/lib/modules/${VERSION_NOYAU}/kernel ${LIVEOS}/conserver
+
+# On se garde l'unique manuel de '0g' :
+cp ${LIVEOS}/usr/man/man8/0g.8.xz ${LIVEOS}/conserver/
+
+# On désinstalle les gros paquets superflus, maintenant qu'on a les bibliothèques en lieu sûr :
+for paq in \
+autoconf-* \
+automake-* \
+berkeley-db-* \
+binutils-* \
+cyrus-sasl-* \
+dialog-* \
+freetype-* \
+gcc-* \
+lesstif-* \
+libssh2-* \
+openldap-client-* \
+perl-* \
+popt-* \
+python-* \
+qrencode-* \
+rtmtpdump* \
+sgml-common-*; do
+	chroot ${LIVEOS} /usr/sbin/spackrm /var/log/paquets/${paq}
+done
+
+# On allège :
+# La documentation (on peut la réintégrer s'il y a de la demande en ce sens) :
+rm -rf ${LIVEOS}/usr/doc/*
+rm -rf ${LIVEOS}/usr/man/*
+rm -rf ${LIVEOS}/usr/info/*
+
+# La documentation pour 'gtk-doc' :
+rm -rf ${LIVEOS}/usr/share/gtk-doc/*
+
+# Toutes les bibliothéques statiques et pour 'libtool' :
+find ${LIVEOS} -type f -name "*.a" -delete
+find ${LIVEOS} -type f -name "*.la" -delete
+
+# Tous les fichiers entêtes :
+rm -rf ${LIVEOS}/usr/include/*
+
+# Toutes les sources du noyau :
+rm -rf ${LIVEOS}/usr/src/*
+
+# On ramène les bibliothèques :
+cp -a ${LIVEOS}/conserver/usr/lib${LIBDIRSUFFIX}/* ${LIVEOS}/usr/lib${LIBDIRSUFFIX}/
+
+# On ramène les binaires :
+cp -a ${LIVEOS}/conserver/usr/bin/* ${LIVEOS}/usr/bin/
+
+# On fait les liens standard pour 'minivim' et on supprime la configuration :
+ln -sf minivim ${LIVEOS}/usr/bin/vim
+ln -sf vim ${LIVEOS}/usr/bin/vi
+rm -f ${LIVEOS}/etc/vimrc
+
+# On ramène les modules et les firmware : 
+mkdir -p ${LIVEOS}/lib/modules/${VERSION_NOYAU}
+cp -ra ${LIVEOS}/conserver/firmware ${LIVEOS}/lib/
+cp -ra ${LIVEOS}/conserver/kernel ${LIVEOS}/lib/modules/${VERSION_NOYAU}/
+
+# On ramène le manuel de '0g' :
+mkdir -p ${LIVEOS}/usr/man/man8
+cp ${LIVEOS}/conserver/0g.8.xz ${LIVEOS}/usr/man/man8/
+
+# On peut supprimer notre sauvegarde :
+rm -rf ${LIVEOS}/conserver
+
+# On copie nos fichiers spéciaux pour le Live :
+echo -n "Copie des fichiers dans l'initrd... "
+install -m 644 ${SOURCES}/initrd/{fstab,issue} ${LIVEOS}/etc
+install -m 644 ${SOURCES}/initrd/initrd-release ${LIVEOS}/etc
+install -m 755 ${SOURCES}/initrd/profile ${LIVEOS}/etc
+install -m 644 ${SOURCES}/initrd/bash_profile ${LIVEOS}/root/.bash_profile
+
+# On place la version (date de génération du système autonome) dans le
+# fichier de bienvenue '/etc/issue' :
+sed -i "s@DATEGEN@${DATEFR}@" ${LIVEOS}/etc/issue
+
+# On crée un fichier vide '.hushlogin' dans le répertoire de root pour éviter
+# l'affichage du "message du jour" contenu dans '/etc/motd' :
+touch ${LIVEOS}/root/.hushlogin
+
+# On met à jour les liens des bibliothèques :
+chroot ${LIVEOS} ldconfig
+
+# On met à jour les dépendances des modules :
+chroot ${LIVEOS} depmod -a
+
+# On déplace et on renomme le nouveau noyau sans sa version :
+rm -f ${NOYAU}
+mv ${LIVEOS}/boot/noyau-* ${NOYAU}
+
+# On positionne le fuseau à Paris car on est franco-français et chauvin :
+echo "localtime" > ${LIVEOS}/etc/hardwareclock
+ln -sf ../usr/share/zoneinfo/Europe/Paris ${LIVEOS}/etc/localtime
+echo "Terminé."
+
+# Chauvin jusqu'à la locale :
+echo "LANG=fr_FR.UTF-8" >> ${LIVEOS}/etc/locale.conf
+echo "LC_ALL=fr_FR.UTF-8" >> ${LIVEOS}/etc/locale.conf
+
+# Et chauvin jusqu'à la police :
+echo "FONT=lat-9w-16" > ${LIVEOS}/etc/vconsole.conf
+
+# On crée le lien pour 'init' que le noyau lancera dès la fin de l'amorçage :
+ln -sf sbin/init ${LIVEOS}/init
+
+# On vide le mot de passe du compte 'root' (envoyer vos plaintes pour sacrilège) :
+chroot ${LIVEOS} passwd -d root
+
+# On crée l'initrd :
+echo -n "Création de l'initrd... "
+rm -f ${INITRDGZ}
+cd ${LIVEOS}
+find . | cpio -o -H newc | xz -v --x86 --check=crc32 --lzma2=dict=32MiB > ${INITRDGZ}
+echo "Terminé."
+
+echo "Copie du noyau, de l'initrd et des paquets éventuels... "
+
+# On copie le noyau et l'initrd :
+cp -a ${INITRDGZ} ${NOYAU} ${MEDIAROOT}/boot/
+
+# On copie tous les fichiers de 'syslinux' et on renomme pour 'isolinux' :
+echo "Copie du chargeur d'amorçage... "
+mkdir -p ${MEDIAROOT}/boot/isolinux
+cp -ra ${SOURCES}/syslinux/* ${MEDIAROOT}/boot/isolinux/
+mv ${MEDIAROOT}/boot/isolinux/{syslinux.cfg,isolinux.cfg}
+
+# On corrige l'encodage de 'isolinux.cfg' :
+iconv -f UTF-8 -t CP850 ${MEDIAROOT}/boot/isolinux/isolinux.cfg > ${MEDIAROOT}/boot/isolinux/isolinux.cfg-cp850
+mv ${MEDIAROOT}/boot/isolinux/isolinux.cfg{-cp850,}
+
+# On copie les modules binaires de 'syslinux' ainsi que leurs nouvelles dépendances (depuis Syslinux 5.00) :
+cp -a /usr/share/syslinux/{*.c32,isolinux.bin} ${MEDIAROOT}/boot/isolinux/
+chmod +x ${MEDIAROOT}/boot/isolinux/*.c32
+echo "Terminé."
+
+# On nettoie au cas où :
+rm -rf ${MEDIAROOT}/0/paquets/*
+
+# On copie les paquets selon l'option choisie :
+if [ "${1}" = "--complet" ]; then
+	rsync -a --delete-after ${PAQUETS}/{base,opt,xorg} ${MEDIAROOT}/0/paquets
+elif [ "${1}" = "--maxi" ]; then
+	rsync -a --delete-after ${PAQUETS}/{base,opt,xorg,apps} ${MEDIAROOT}/0/paquets
+fi
+
+# On s'assure des permissions :
+chown -R root:root ${MEDIAROOT}/* 2> /dev/null || true
+
+# Le nom de l'image ISO finale :
+ISONAME=${ISONAME:-0linux-$(echo ${1} | sed 's@--@@')-${VERSION}-${PKGARCH}.iso}
+
+echo "Création de l'image finale ${ISONAME}..."
+
+# On génère l'image ISO :
+mkisofs -o ${ISODIR}/${ISONAME} \
+	-A "$(echo ${ISONAME} | tr '-' ' ' | sed 's/\.iso//')" \
+	-b boot/isolinux/isolinux.bin \
+	-c boot/isolinux/boot.cat \
+	-d \
+	-J \
+	-l \
+	-N \
+	-R \
+	-V "$(echo ${ISONAME} | tr '-' ' ' | sed 's/\.iso//')" \
+	-boot-load-size 4 \
+	-boot-info-table \
+	-hide-rr-moved \
+	-no-emul-boot \
+	${MEDIAROOT}
+
+# On rend cette image amorçable même sur volume USB, grâce à 'isohybrid' :
+isohybrid ${ISODIR}/${ISONAME}
+
+echo "L'image '${ISODIR}/${ISONAME}' a été créée ."
+echo "Gravez-la sur un DVD ou copiez-la sur une clé/carte USB amorçable"
+echo "via 'dd'."
+echo ""
+echo "Exemple pour une clé USB reconnue sous '/dev/sdc' :"
+echo "	dd if=${ISODIR}/${ISONAME} of=/dev/sdc"
+echo ""
+
+exit 0

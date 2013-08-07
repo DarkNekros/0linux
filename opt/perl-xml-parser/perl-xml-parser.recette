@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-XML-Parser}
+VERSION=${VERSION:-2.36}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-perl-xml-parser}
+WGET=${WGET:-http://cpan.org/authors/id/M/MS/MSERGEANT/$NAMESRC-$VERSION.$EXT}
+DESC="Module XML-Parser pour Perl"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+perl Makefile.PL INSTALLDIRS=vendor
+
+make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	TEST_JOBS=${JOBS} make test 2>&1 || true
+fi
+
+fakeroot make install DESTDIR=${PKG}
+
+# On supprime ce fichier Perl en doublon :
+find ${PKG} -type f -name "perllocal.pod" -delete
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

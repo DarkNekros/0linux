@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-arj}
+VERSION=${VERSION:-3.10.22}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-arj}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de compression des archives au format ARJ"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Correctifs divers :
+cat $CWD/arj.64bits.patch | patch -p1
+cat $CWD/arj.no_remove_static_const.patch | patch -p1
+cat $CWD/arj.64bits_bis.patch | patch -p1
+cat $CWD/arj.parallel.patch | patch -p1
+cat $CWD/arj.system_strnlen.patch | patch -p1
+cat $CWD/arj.safe_strcpy.patch | patch -p1
+cat $CWD/arj.build.patch | patch -p1
+cat $CWD/arj.postproc.patch | patch -p1
+
+# Compilation avec nos outils :
+rm makefile
+cd gnu
+cp -a /usr/share/libtool/config/config.sub ./
+autoreconf -vif || true
+
+CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--program-prefix="" \
+	--program-suffix="" \
+	--build=${PKGARCH}-0linux-linux-gnu
+cd ..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,35 @@
+Description du dépôt @gimp
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @gimp =
+
+GIMP est un programme de retouche et de manipulation d'images, littéralement le « GNU Image Manipulation Program ». GIMP est utilisable pour une grande variété de tâches de manipulations d'images comme la retouche photo, la composition ou la création d'images. Il offre de nombreuses fonctionnalités. Il peut être utilisé comme un simple programme de dessin, comme un programme de retouche photo, comme un système en ligne de traitement par lot, comme un générateur d'image pour la production en masse, pour convertir un format d'image en un autre.
+
+GIMP est extensible. On peut lui ajouter de nombreux « Greffons » (plug-ins). Une interface de scripts bien développée permet de créer des procédures, les scripts, regroupant plusieurs opérations.
+Voici un condensé des fonctionnalités de GIMP:
+
+  - Suite complète d'outils de dessin comprenant un crayon, un pinceau, un aérographe, un outil de clonage, etc...
+  - Gestion partitionnée de la mémoire de telle façon que la taille de l'image ne soit limitée que par l'espace disque disponible,
+  - Échantillonnage des sous-pixels pour tous les outils de dessin pour un anticrénelage de qualité,
+  - Support de la transparence via un canal Alpha,
+  - Calques et canaux
+  - Une suite de procédures pour appeler les fonctions internes de GIMP à partir de programmes extérieurs tels que les Script-Fu,
+  - Capacités avancées de script (Perl, Python, Ruby, C#)
+  - Historique illimité d'annulation,
+  - Outils de transformations tels que rotation, mise à l'échelle, cisaillement et miroir,
+  - Nombreux format de fichiers acceptés : GIF, JPEG, PNG, XPM, TIFF, TGA, MPEG, PS, PDF, PCX, BMP et plein d'autres,
+  - Outils de sélection tels que rectangle, ellipse, main levée, par couleur, contiguë, courbes de Bézier et ciseaux intelligents,
+  - Greffons qui autorisent l'extension du programme de base par des réalisations extérieures téléchargeables.
+
+
+= Le dépôt @gimp pour 0linux =
+
+Le dépôt contient le logiciel GIMP complet ainsi que la suite d'outils graphiques G'MIC offrant des fonctionnalités additionnelles.
+
+= Installation sous 0linux =
+
+``# 0g @gimp``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license
+% Contenu en partie issu du site http://gimp.org, merci aux auteurs originaux. Cf. http://docs.gimp.org/2.8/fr/legal.html

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-qjson}
+VERSION=${VERSION:-0.8.1}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-qjson}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Compilateur de méta-objets pour Qt et C++"
+
+. /usr/share/0outils/fonctions_paquets.sh # On inclut les fonctions isolées
+ 
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	..
+
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+#C'est fini.

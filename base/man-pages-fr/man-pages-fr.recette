@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-man-pages-fr}
+VERSION=${VERSION:-3.51.1}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-man-pages-fr}
+WGET=(http://alioth.debian.org/frs/download.php/file/3905/$NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').$EXT} # Version différente !
+      http://www.delafond.org/traducmanfr/mansupfr.tar.bz2
+      http://manpagesfr.free.fr/download/man-pages-extras-fr-0.8.1.tar.bz2
+     )
+DESC="Manuels francophones du système Linux"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+
+# On déballe d'abord les manuels du projet de Gérard Delafond (merci !),
+# plus anciens mais très utiles, certains étant absents de l'actuel projet Perkamon :
+tar xf ${PKGSOURCES}/${NAMETGZ}/mansupfr.tar.bz2 -C $TMP
+tar xf ${PKGSOURCES}/${NAMETGZ}/man-pages-extras-fr-0.8.1.tar.bz2 -C $TMP
+
+preparer_sources $NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').$EXT
+cflags
+
+# On crée le réperoire d'accueil :
+mkdir -p ${PKG}/usr/man/fr
+
+# On va d'abord copier tous les manuels du projet de Gérard Delefond. Les manuels
+# en doublon du projet Perkamon les écraseront, ils sont à priori plus récents :
+cp -ar $TMP/pagesdeman/* ${PKG}/usr/man/fr/
+
+# On place maintenant les manuels de man-pages-extras-fr :
+for section in 1 2 3 4 5 6 7 8 9; do
+	find $TMP/man-pages-extras-fr-0.8.1 -type f -name "*.${section}" -exec cp -a {} ${PKG}/usr/man/fr/man${section}/ \;
+done
+
+# Installation des manuels du projet Perkamon:
+cp -ar man? ${PKG}/usr/man/fr
+
+# On évite d'écraser des manuels existants certainement plus récents :
+for fichier in $(find ${PKG}/usr/man/fr -type f); do
+	if [ -r $(echo ${fichier} | sed -e "s@${PKG}@@" -e 's@$@.xz@') ]; then
+		rm -v -f ${fichier}
+	fi
+done
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+echo "# On met à jour la base de données des manuels :" >> ${PKG}/post-install.sh
+echo "if [ -x /usr/bin/mandb ]; then" >> ${PKG}/post-install.sh
+echo "	mandb -c --quiet 1>/dev/null 2>/dev/null &" >> ${PKG}/post-install.sh
+echo "fi" >> ${PKG}/post-install.sh
+
+stripper
+empaqueter
+
+# C'est fini.

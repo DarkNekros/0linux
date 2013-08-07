@@ -1,0 +1,135 @@
+diff -u -N -r -x Makefile xbase-2.0.0/xbase/dbf.cpp xbase-2.0.0-fixed/xbase/dbf.cpp
+--- xbase-2.0.0/xbase/dbf.cpp	2001-02-20 18:54:15.000000000 +0100
++++ xbase-2.0.0-fixed/xbase/dbf.cpp	2010-05-14 22:09:43.441629205 +0200
+@@ -61,12 +61,12 @@
+ #endif
+ 
+ #ifdef __WIN32__
+-#include <xbase/xbconfigw32.h>
++#include "xbase/xbconfigw32.h"
+ #else
+-#include <xbase/xbconfig.h>
++#include "xbase/xbconfig.h"
+ #endif
+ 
+-#include <xbase/xbase.h>
++#include "xbase/xbase.h"
+ 
+ #ifdef HAVE_IO_H
+ #include <io.h> 
+@@ -77,8 +77,9 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-#include <xbase/xbexcept.h>
++#include "xbase/xbexcept.h"
+ 
++using namespace std;
+ /*! \file dbf.cpp
+ */
+ 
+diff -u -N -r -x Makefile xbase-2.0.0/xbase/dbf.h xbase-2.0.0-fixed/xbase/dbf.h
+--- xbase-2.0.0/xbase/dbf.h	2001-01-13 21:20:53.000000000 +0100
++++ xbase-2.0.0-fixed/xbase/dbf.h	2010-05-14 21:49:33.225628580 +0200
+@@ -65,7 +65,7 @@
+ #include <xbase/xtypes.h>
+ #include <xbase/xdate.h>
+ 
+-#include <iostream.h>
++#include <iostream>
+ #include <stdio.h>
+ 
+ /*! \file dbf.h
+diff -u -N -r -x Makefile xbase-2.0.0/xbase/ndx.cpp xbase-2.0.0-fixed/xbase/ndx.cpp
+--- xbase-2.0.0/xbase/ndx.cpp	2001-03-21 01:28:53.000000000 +0100
++++ xbase-2.0.0-fixed/xbase/ndx.cpp	2010-05-14 22:10:52.409631008 +0200
+@@ -66,7 +66,7 @@
+ #endif
+ 
+ #include <xbase/xbase.h>
+-#include <iostream.h>
++#include <iostream>
+ 
+ #ifdef XB_INDEX_NDX
+ 
+@@ -80,6 +80,8 @@
+ 
+ #include <xbase/xbexcept.h>
+ 
++using namespace std;
++
+ /*! \file ndx.cpp
+ */
+ 
+diff -u -N -r -x Makefile xbase-2.0.0/xbase/ntx.h xbase-2.0.0-fixed/xbase/ntx.h
+--- xbase-2.0.0/xbase/ntx.h	2000-11-10 20:04:17.000000000 +0100
++++ xbase-2.0.0-fixed/xbase/ntx.h	2010-05-14 22:08:21.293630445 +0200
+@@ -53,6 +53,8 @@
+ #include <xbase/xbase.h>
+ #include <string.h>
+ 
++using namespace std;
++
+ /*! \file ntx.h
+ */
+ 
+@@ -218,7 +220,7 @@
+    xbShort  KeyExists( char * Key ) { return FindKey( Key, strlen( Key ), 0 ); }
+    xbShort  KeyExists( xbDouble );
+ 
+-   xbShort xbNtx::AllocKeyBufs(void);
++   xbShort AllocKeyBufs(void);
+ 
+    virtual void GetExpression(char *buf, int len);
+ };
+diff -u -N -r -x Makefile xbase-2.0.0/xbase/stack.cpp xbase-2.0.0-fixed/xbase/stack.cpp
+--- xbase-2.0.0/xbase/stack.cpp	2000-11-10 20:04:17.000000000 +0100
++++ xbase-2.0.0-fixed/xbase/stack.cpp	2010-05-14 22:11:30.141629978 +0200
+@@ -59,10 +59,12 @@
+ 
+ #include <string.h>
+ #include <stdlib.h>
+-#include <iostream.h>
++#include <iostream>
+ 
+ #include <xbase/xstack.h>
+ 
++using namespace std;
++
+ /*! \file stack.cpp
+ */
+ 
+diff -u -N -r -x Makefile xbase-2.0.0/xbase/stamp-h xbase-2.0.0-fixed/xbase/stamp-h
+--- xbase-2.0.0/xbase/stamp-h	1970-01-01 01:00:00.000000000 +0100
++++ xbase-2.0.0-fixed/xbase/stamp-h	2010-05-15 15:28:36.827002476 +0200
+@@ -0,0 +1 @@
++timestamp
+diff -u -N -r -x Makefile xbase-2.0.0/xbase/xbase.h xbase-2.0.0-fixed/xbase/xbase.h
+--- xbase-2.0.0/xbase/xbase.h	2001-06-27 01:43:11.000000000 +0200
++++ xbase-2.0.0-fixed/xbase/xbase.h	2010-05-15 15:28:36.567002954 +0200
+@@ -1,4 +1,4 @@
+-/*  $Id: xbase.h,v 1.19 2001/06/26 23:43:11 dbryson Exp $
++/*  $Id: xbase.h.in,v 1.5 2000/11/10 19:30:29 dbryson Exp $
+ 
+     Xbase project source code
+ 
+diff -u -N -r -x Makefile xbase-2.0.0/xbase/xbstring.h xbase-2.0.0-fixed/xbase/xbstring.h
+--- xbase-2.0.0/xbase/xbstring.h	2001-01-27 06:00:32.000000000 +0100
++++ xbase-2.0.0-fixed/xbase/xbstring.h	2010-05-14 22:04:35.349629462 +0200
+@@ -52,12 +52,14 @@
+ #ifdef __WIN32__
+ #include <xbase/xbconfigw32.h>
+ #else
+-#include <xbase/xbconfig.h>
++#include "xbase/xbconfig.h"
+ #endif
+ 
+ #include <stdlib.h>
+-#include <iostream.h>
++#include <iostream>
+ 
++#pragma once
++using namespace std;
+ /*! \file xbstring.h
+ */
+ 

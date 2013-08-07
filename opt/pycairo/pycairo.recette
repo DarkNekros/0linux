@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-pycairo}
+VERSION=${VERSION:-1.10.0}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-pycairo}
+WGET=${WGET:-http://cairographics.org/releases/py2cairo-$VERSION.$EXT}
+DESC="Interfaçage Python pour Cairo"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+cflags
+preparer_sources
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python ./waf configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
+
+python ./waf build -j${JOBS} || ./waf build
+fakeroot python ./waf install --destdir=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

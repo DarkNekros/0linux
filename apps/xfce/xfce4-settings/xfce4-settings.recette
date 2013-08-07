@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-xfce4-settings}
+VERSION=${VERSION:-4.9.5}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-xfce4-settings}
+WGET=${WGET:-http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+DESC="Paramètres d'Xfce"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-libnotify \
+	--enable-pluggable-dialogs \
+	--enable-xcursor \
+	--enable-xrandr \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On copie les personnalisations pour 0 :
+cp -a $CWD/*.xml ${PKG}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/
+chmod 644 ${PKG}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/*.xml
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

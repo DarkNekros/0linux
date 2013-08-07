@@ -1,0 +1,103 @@
+______________________________________________________
+
+Aide rapide concernant l'installation de votre système
+______________________________________________________
+
+Tout d'abord, un peu d'aide concernant l'aide elle-même. Sachez que vous 
+utilisez en ce moment même le logiciel 'less' pour consulter cette aide. Vous
+pouvez vous déplacer dans ce document avec les flèches de navigation et 
+les touches PG.PRÉC. et PG.SUIV. et quitter avec la touche Q. Consultez 
+'man less' pour en savoir plus sur l'utilisation du logiciel 'less'.
+
+Les consoles virtuelles
+-----------------------
+
+Sachez que vous utilisez maintenant un système multi-tâches.
+Vous n'êtes donc pas confiné au programme d'installation. Vous pouvez 
+vous connecter sur d'autres consoles (ou « terminaux ») et voir ce qui 
+se passe à n'importe quel moment sans bloquer le processus d'installation. 
+Pour cela, il vous faudra apprendre les commandes de la console sous Linux. 
+Vous utiliserez souvent ces commandes en utilisant Linux.
+
+Les consoles virtuelles et l'historique : l'écran que vous regardez en ce 
+moment même est probablement la console virtuelle numéro 1 (« /dev/tty1 » 
+en jargon Linux). Il y a habituellement plusieurs consoles virtuelles 
+disponibles. 
+
+Lorsque vous vous connectez via le média d'installation, il y a plusieurs 
+consoles activées par défaut. Pour basculer de l'une à l'autre, utilisez 
+les touches Alt+F1, Alt+F2, Alt+F3 et ainsi de suite pour choisir quelle 
+console utiliser. Pendant l'utilisation d'une console, une mémoire pour 
+votre historique vous est allouée. Pour naviguer en arrière dans cet 
+historique, maintenez enfoncée la touche MAJ.DROITE et appuyez sur 
+PG.PRÉC., vous remonterez dans les écrans précédents. Pour naviguer 
+plus avant, appuyez sur PG.SUIV. tout en maintenant la touche 
+MAJ.DROITE enfoncée. Cela peut s'avérer fort utile pour lire les 
+messages lors du demarrage, lesquels défilent souvent trop rapidement 
+à l'écran. 
+
+Déroulement de l'installation
+-----------------------------
+
+1- Préparer son ou ses disques durs
+
+Vous devez vous assurer que vos disques durs ont été préparés pour
+accueillir un système Linux. L'installateur ne le fera pas pour vous !
+
+Il vous faut au minimum une partition de type Linux et optionnellement une 
+partition d'échange (ou partition « swap »). 
+
+Si vous disposez de suffisamment d'espace disque, il est plus 
+aisé de gérer un système partitionné de la facon suivante  :
+
+	- 5 giga-octets minimum pour la racine du système (« / ») 
+	- de l'espace supplémentaire dédié aux utilisateurs sur '/home' 
+	- 1 partition « swap » éventuelle d'un peu plus que votre quantité de
+	  mémoire vive (RAM)
+
+Faire une partition séparée pour /home est optionnel mais recommandé,
+celle-ci contenant entre autres les préférences des utilisateurs.
+
+Le partitionnement s'effectue avec un outil de partitionnement tel que 
+le programme 'cfdisk', ou bien avec sa version plus « vieille école », 
+'fdisk'. Les deux programmes font le même travail. 'parted' est également 
+disponible.
+
+Vous allez avoir besoin d'une partition de type 83 (type Linux par défaut) 
+et optionnnellement une de type 82 (la partition d'échange ou « swap »)
+afin que l'installateur reconnaisse vos partitions comme exploitables.
+
+	a) Si vous choisissez 'cfdisk', les menus vous guideront.
+
+	b) Si vous choisissez 'fdisk', utilisez la commande 't' pour choisir 
+	   le type des partitions puis finissez par 'w' pour écrire la
+	   nouvelle table de partitions avant de quitter.
+
+Par défaut, 'fdisk' et 'cfdisk' sélectionneront le premier lecteur de
+disque dur de votre machine, '/dev/sda'. 
+Pour partitionner des disque durs supplémentaires, il faut les indiquer. 
+
+Pour consulter la liste des disques détectés, tapez : 
+
+	# fdisk -l
+
+Par exemple, pour partitionner le second disque dur avec 'cfdisk', tapez :
+
+	# cfdisk /dev/sdb
+
+2- Lancement de l'installateur
+
+Après avoir tapé 'installateur', suivez simplement les rubriques à l'écran,
+les unes après les autres.
+
+Espérons que les rubriques parlent d'elles-mêmes :). Lisez attentivement
+ce qui est inscrit à l'écran et tout devrait bien se passer.
+
+Si vous faites une erreur de saisie, appuyez sur RETOUR ARRIÈRE/BACKSPACE pour
+corriger : la touche SUPPR. ne fonctionnera pas !
+
+Quand l'installation et la configuration sont terminées, quittez le 
+programme d'installation pour redémarrer sous votre nouveau système Linux.
+Pour toute remarque sur cet installateur, écrivez à appzer0@free.fr
+
+Appuyez sur Q pour quitter cette aide et revenir à l'installateur.

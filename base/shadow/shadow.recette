@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-shadow}
+VERSION=${VERSION:-4.1.5}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-shadow}
+WGET=${WGET:-http://pkg-shadow.alioth.debian.org/releases/$NAMESRC-$VERSION.$EXT}
+DESC="Gestion de mots de passe"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On ajoute un entête manquant et on supprime des messages d'avertissement
+# lors de l'ajout d'utilisateur si 'nscd' n'est pas lancé :
+cat $CWD/shadow.copydir.patch | patch -p1
+cat $CWD/shadow.erreur-nscd.patch | patch -p1
+
+# On empêche l'installation de 'groups', 'coreutils' en fournit déjà une version :
+sed -i 's/groups$(EXEEXT) //' src/Makefile.in
+find man -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;
+
+# /var/mail doit être utilisé. On remplace aussi l'algorithme DES par MD5 :
+sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD MD5@' \
+	-e 's@/var/spool/mail@/var/mail@' etc/login.defs
+
+# Les manuels chinois et coréen cassent l'affichage de Man-DB :
+sed -i -e 's/ ko//' -e 's/ zh_CN zh_TW//' man/Makefile.in
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install man_nopam="" DESTDIR=${PKG}
+
+# On veille à ne rien écraser :
+mv ${PKG}/etc/login.defs{,.0nouveau}
+mv ${PKG}/etc/login.access{,.0nouveau}
+
+# On crée le fichier journal de connexions échouées sans écraser l'ancien journal:
+mkdir -p ${PKG}/var/log
+touch ${PKG}/var/log/faillog.0nouveau
+
+# On modifie le groupe par défaut de 1000 vers 100 (groupe 'users') :
+sed -i "s@GROUP=1000@GOUP=100@" ${PKG}/etc/default/useradd
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

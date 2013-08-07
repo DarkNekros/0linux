@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-ImageMagick}
+VERSION=${VERSION:-6.8.2_10}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-imagemagick}
+WGET=${WGET:-http://mirror.checkdomain.de/imagemagick/$NAMESRC-$(echo $VERSION | tr '_' '-').$EXT}
+DESC="Outils de manipulation de fichiers graphiques"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-openmp \
+	--htmldir=/usr/doc/${NAMETGZ}-${VERSION}/html \
+	--with-dejavu-font-dir=/usr/share/fonts/TTF \
+	--with-modules \
+	--with-x \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DOCUMENTATION_PATH=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
+
+# On empêche 'imagemagick' d'écraser nos bibliothèques 'libltdl.*' !
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/libltdl.*
+
+# On supprime tout 'perllocal.mod' :
+find ${PKG} -name perllocal.pod -delete
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+VERSION=${VERSION:-0.6}
+NAMETGZ=${NAMETGZ:-initialisation-systeme}
+DESC="Fichiers d'initialisation système et services de 0Linux"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/etc/rc.d
+
+# On installe les scripts d'initialisation de 0linux :
+for script in rc.{4,6,K,M,S,reseau}; do
+	cp -a $CWD/${script} ${PKG}/etc/rc.d/
+	chmod 755 ${PKG}/etc/rc.d/${script}
+done
+
+# On place la configuration du réseau sans écraser quoi que ce soit :
+cp -a $CWD/reseau.conf ${PKG}/etc/reseau.conf.0nouveau
+
+# On place les chargements des modules du réseau sans écraser quoi que ce soit :
+cp -a $CWD/rc.modules ${PKG}/etc/rc.d/rc.modules.0nouveau
+
+# On prend garde à ne pas écraser la config' locale :
+cp -a $CWD/rc.local ${PKG}/etc/rc.d/rc.local.0nouveau
+
+# Installation du fichier 'inittab' :
+cp -a $CWD/inittab ${PKG}/etc/
+mv ${PKG}/etc/inittab{,.0nouveau}
+
+# On lie le script du niveau 0 à celui du niveau 6 pour l'arrêt-redémarrage :
+ln -sf rc.6 ${PKG}/etc/rc.d/rc.0
+
+# On crée le fichier d'actualisation des journaux des messages du noyau :
+mkdir ${PKG}/etc/logrotate.d
+cat > ${PKG}/etc/logrotate.d/dmesg << "EOF"
+/var/log/dmesg {
+	compress
+	maxage 365
+	size=+1024k
+}
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

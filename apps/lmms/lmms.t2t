@@ -1,0 +1,23 @@
+Description du dépôt @lmms
+fatalerrors - jeff.levasseur@free.fr
+Juin 2013
+
+= Description de @lmms =
+
+LMMS pour Linux MultiMedia Studio est un puissant logiciel de production musicale basé sur le fonctionnement de Fruity Loop.
+
+LMMS est aussi bien capable de produire des mélodies ou des rythmiques.
+
+LMMS gère les claviers MIDI, les cartes sons multivoies, les tables de mixage numérique ou d'autres appareils d'effets.
+
+La version proposé par 0Linux ne gère malheureusement pas encore les plug-ins VST.
+
+= Le dépôt @lmms pour 0linux =
+
+Le dépôt contient le logiciel LMMS complet avec une biliothèque de générateur de sons.
+
+= Installation sous 0linux =
+
+``# 0g @lmms``
+
+% Contenu maintenu par fatalerrors.

@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-sysklogd}
+VERSION=${VERSION:-1.5}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-sysklogd}
+WGET=${WGET:-http://www.infodrom.org/projects/$NAMESRC/download/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de traçage des évènements système"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" make -j${JOBS} || make
+
+# 'make install' à la main !
+mkdir -p ${PKG}/usr/sbin
+mkdir -p ${PKG}/usr/man/man{5,8}
+mkdir -p ${PKG}/etc/{logrotate.d,rc.d}
+mkdir -p ${PKG}/var/log
+
+# On copie les binaires :
+cp -a syslogd ${PKG}/usr/sbin
+cp -a klogd ${PKG}/usr/sbin
+chmod 755 ${PKG}/usr/sbin/{syslogd,klogd}
+
+# ...et les manuels :
+cp -a *.5 ${PKG}/usr/man/man5
+cp -a *.8 ${PKG}/usr/man/man8
+
+# On crée tous les fichiers journaux sans en écraser de plus anciens :
+touch ${PKG}/var/log/{cron,debug,maillog,messages,secure,syslog}.0nouveau
+
+# On place les scripts aux emplacements appropriés sans écraser une ancienne config' :
+cp -a $CWD/syslog.conf ${PKG}/etc/syslog.conf.0nouveau
+cp -a $CWD/syslog ${PKG}/etc/logrotate.d/syslog.0nouveau
+
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.syslog << "EOF"
+#!/usr/bin/env bash
+
+#!/bin/sh
+syslogd_start() {
+	if [ -x /usr/sbin/syslogd -a -x /usr/sbin/klogd ]; then
+		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de syslogd..."
+		/usr/sbin/syslogd
+		
+		# On attend que Udev se réveille :
+		if ps acx | grep -q udevd ; then
+			while [ ! -e /dev/log ] ; do
+				sleep 0
+			done
+		else
+			sleep 1
+		fi
+		
+		/usr/sbin/klogd -c 3 -x
+	fi
+}
+
+syslogd_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de syslogd..."
+	killall syslogd 2>/dev/null
+	killall klogd 2>/dev/null
+}
+
+case "$1" in
+	'start')
+		syslogd_start
+	;;
+	
+	'stop')
+		syslogd_stop
+	;;
+	
+	'restart')
+		syslogd_stop
+		sleep 1
+		syslogd_restart
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.syslog
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

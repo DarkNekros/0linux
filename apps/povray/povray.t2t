@@ -1,0 +1,21 @@
+Description du dépôt @povray
+fatalerrors - jeff.levasseur@free.fr
+Juin 2013
+
+= Description de @povray =
+
+POV-Ray, pour Persistance Of Vision Raytracer, est un puissant lanceur de rayon, une technique de synthèse d'image en 3D.
+
+POV-Ray utilise un language de description de scènes qui lui est propre pour décrire des images et/ou des animations et ne propose pas d'interface graphique.
+
+Toutefois, de nombreaux logiciels graphiques, dédié ou non, permettent de faire des exportations au format POV.
+
+= Le dépôt @povray pour 0linux =
+
+Le dépôt contient le lanceur de rayon en ligne de commande et sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @povray``
+
+% Contenu maintenu par fatalerrors.

@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-sgml-common}
+VERSION=${VERSION:-0.6.3}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-sgml-common}
+WGET=${WGET:-ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de centralisation de catalogues SGML"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On applique les correctifs de Fedora pour que la compilation passe :
+cat $CWD/sgml-common-manpage.patch | patch -p1
+cat $CWD/sgml-common-quotes.patch | patch -p1
+cat $CWD/sgml-common-umask.patch | patch -p1
+cat $CWD/sgml-common-xmldir.patch | patch -p1
+
+# Compilation :
+autoreconf -f -i
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On veille à ne rien écraser :
+mv ${PKG}/etc/sgml/sgml.conf{,.0nouveau}
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+echo "# On crée les catalogues (on n'oublie SURTOUT PAS d'indiquer la racine, auquel" >> ${PKG}/post-install.sh
+echo "# cas on casse tout le système de documentation des autres paquets. On doit donc" >> ${PKG}/post-install.sh
+echo "# chrooter :" >> ${PKG}/post-install.sh
+echo "chroot . install-catalog --add /etc/sgml/sgml-ent.cat /usr/share/sgml/sgml-iso-entities-8879.1986/catalog &>/dev/null 2>&1" >> ${PKG}/post-install.sh
+echo "chroot . install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/sgml-ent.cat &>/dev/null 2>&1" >> ${PKG}/post-install.sh
+
+stripper
+empaqueter
+
+# C'est fini.

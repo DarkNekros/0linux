@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-libpng}
+VERSION=${VERSION:-1.5.14}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-libpng}
+WGET=(http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+      http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-1.4.12.$EXT
+      http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-1.2.50.$EXT
+     )
+DESC="Bibliothèques graphiques « Portable Network Graphics »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+cflags
+
+# On compile libpng 1.2 :
+preparer_sources $NAMESRC-1.2.50.$EXT
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources $NAMESRC-1.2.50.$EXT
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} prefix=/usr LIBPATH=/usr/lib${LIBDIRSUFFIX}
+fakeroot make install prefix=/usr LIBPATH=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
+
+# On place la documentation dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/libpng-1.2.50
+
+# On compile libpng 1.4 :
+preparer_sources $NAMESRC-1.4.12.$EXT
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources $NAMESRC-1.4.12.$EXT
+cflags
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} prefix=/usr LIBPATH=/usr/lib${LIBDIRSUFFIX}
+fakeroot make install prefix=/usr LIBPATH=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
+
+# On place la documentation dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/libpng-1.4.12
+
+# On compile libpng :
+preparer_sources
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--program-suffix=-32 \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On lie un binaire générique à 'libpng-config' :
+	rm -f ${PKG}/usr/bin/libpng-config
+	ln -s libpng$(echo $VERSION | cut -d'.' -f1-2 | tr -d '.')-config-32 ${PKG}/usr/bin/libpng-config-32
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources
+cflags
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} prefix=/usr LIBPATH=/usr/lib${LIBDIRSUFFIX}
+fakeroot make install prefix=/usr LIBPATH=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
+
+# On compile les contributions :
+cd contrib/pngminus
+make PNGLIB="-L${PKG}/usr/lib${LIBDIRSUFFIX} -lpng" -f makefile.std png2pnm pnm2png
+cp -a png2pnm pnm2png ${PKG}/usr/bin/
+chmod 755 ${PKG}/usr/bin/*
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

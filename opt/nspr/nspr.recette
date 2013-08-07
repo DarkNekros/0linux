@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-nspr}
+VERSION=${VERSION:-4.9.5}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-nspr}
+WGET=${WGET:-ftp://ftp.mozilla.org/pub/mozilla.org/$NAMESRC/releases/v$VERSION/src/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques système multi-plateformes de Mozilla"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée le répertoire d'accueil :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+
+# une option dépend de l'architecture :
+if [ "${PKGARCH}" =  "x86_64" ]; then
+	OPTARCH="--enable-64bit"
+fi
+
+# Les CFLAGS plantent la compilation :
+cd mozilla/nsprpub
+
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--disable-debug \
+	--enable-system-sqlite ${OPTARCH} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+cd -
+
+# On crée le fichier pour 'pkg-config' :
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nspr.pc << EOF
+prefix=/usr
+exec_prefix=/usr/bin
+libdir=/usr/lib${LIBDIRSUFFIX}
+includedir=/usr/include/nspr
+
+Name: NSPR
+Description: The Netscape Portable Runtime
+Version: ${VERSION}
+Libs: -L/usr/lib${LIBDIRSUFFIX} -lplds4 -lplc4 -lnspr4 -lpthread -ldl
+Cflags: -I/usr/include/nspr
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

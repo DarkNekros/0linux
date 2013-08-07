@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-ardour}
+VERSION=${VERSION:-3.0}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-ardour}
+WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+DESC="Studio de production audio"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation avec drapeaux supplémentaires:
+python waf configure \
+	--prefix=/usr \
+	--configdir=/etc
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" python waf build
+fakeroot python waf install --destdir=${PKG}
+
+# On veille à ne rien écraser :
+for i in ${PKG}/etc/ardour$(echo $VERSION | cut -d'.' -f1)/*; do
+	mv ${PKG}/etc/ardour$(echo $VERSION | cut -d'.' -f1)/$(basename $i){,.new}
+done
+
+# On crée le raccourci bureau :
+mkdir -p ${PKG}/usr/share/applications
+
+cat > ${PKG}/usr/share/applications/ardour.desktop << "EOF"
+[Desktop Entry]
+Name=Ardour
+Comment=Multitrack hard disk recorder
+Comment[fr]=Studio de production audio multipiste
+Exec=ardour3
+Icon=/usr/share/ardour3/icons/ardour_icon_48px.png
+Terminal=false
+Type=Application
+X-MultipleArgs=false
+Categories=GTK;Audio;AudioVideoEditing;AudioVideo;Video;
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

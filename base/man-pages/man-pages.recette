@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-man-pages}
+VERSION=${VERSION:-3.52}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-man-pages}
+WGET=${WGET:-http://www.kernel.org/pub/linux/docs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Manuels du système Linux"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags # On a besoin de la variable $PKGARCH
+
+# Installation des manuels :
+mkdir -p ${PKG}/usr/man
+cp -a man? ${PKG}/usr/man
+
+# On évite d'écraser des manuels existants certainement plus récents :
+for fichier in ${PKG}/usr/man/man*/*.*z* ; do
+	if grep -l ${fichier} /var/log/paquets/* | grep -v var/log/paquets/man-pages; then
+		rm -f ${fichier}
+	fi
+done
+
+# On supprime les fichiers inutiles à l'utilisateur :
+rm -rf ${PKG}/usr/man/scripts
+rm -f ${PKG}/usr/man/Makefile
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

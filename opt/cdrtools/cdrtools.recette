@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-cdrtools}
+VERSION=${VERSION:-3.00}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-cdrtools}
+WGET=${WGET:-ftp://ftp.berlios.de/pub/cdrecord/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de gravure pour disques optiques"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige les chemins pour contenir '${LIBDIRSUFFIX}' :
+(find . -name "*.mk"; find . -name Makefile) | xargs sed -i "/^INSDIR=\s*lib$/s/lib/&${LIBDIRSUFFIX}/"
+
+# Compilation en double pour avoir 'cdda2wav' :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} INS_BASE=/usr
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} INS_BASE=/usr
+
+fakeroot make install INS_BASE=/usr DEST_DIR=${PKG}
+
+# On renomme un répertoire mal nommé :
+mv ${PKG}/usr/lib/siconv/ ${PKG}/usr/lib${LIBDIRSUFFIX}
+
+# On supprime ce fichier malvenu :
+rm -f ${PKG}/etc/default/rscsi
+
+# Et ce répertoire... :
+rm -rf ${PKG}/usr/lib
+
+# On copie les manuels où il faut :
+mv ${PKG}/usr/share/man ${PKG}/usr/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

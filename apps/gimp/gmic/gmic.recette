@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-gmic}
+VERSION=${VERSION:-1.5.0.9}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-gmic}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_${VERSION}.$EXT}
+DESC="Framework de traitement de l'image"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Le support de 'opencv' est cassé pour le moment :
+sed -i -e 's/^OPENCV_CFLAGS =.*$//' -e 's/^OPENCV_LDFLAGS =.*$//' src/Makefile
+
+# On force la prise en compte de $LIBDIRSUFFIX :
+sed -i -e "s@MANDATORY_LDFLAGS += -L\$(USR)/lib@&${LIBDIRSUFFIX}@" src/Makefile
+sed -i -e "s@lib/libgmic@lib${LIBDIRSUFFIX}/libgmic@g" src/Makefile
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} -C src all
+
+fakeroot make -C src install DESTDIR=${PKG} USR=/usr
+
+# On supprime ce répertoire qui traîne :
+rm -rf ${PKG}/usr/lib
+
+# On déplace les manuels où il faut :
+mv ${PKG}/usr/share/man ${PKG}/usr
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

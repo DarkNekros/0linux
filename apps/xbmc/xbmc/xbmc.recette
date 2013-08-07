@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-xbmc}
+VERSION=${VERSION:-12.2}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-xbmc}
+WGET=${WGET:-http://mirrors.xbmc.org/releases/source/$NAMESRC-$VERSION.$EXT}
+DESC="Le centre multimédia XBMC"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige des références non-existantes :
+sed -i -e 's@/usr/bin/lsb_release -d@cat /etc/os-release@' xbmc/utils/SystemInfo.cpp
+
+# On lance le script 'bootstrap' permettant de générer le nécessaire à la compilation :
+chmod +x bootstrap
+./bootstrap 
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--exec-prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-external-ffmpeg \
+	--disable-hal \
+	--disable-webserver \
+	--enable-avahi \
+	--enable-dvdcss \
+	--enable-external-libraries \
+	--enable-ffmpeg-libvorbis \
+	--enable-gl \
+	--enable-goom \
+	--enable-joystick \
+	--enable-mid \
+	--enable-nfs \
+	--enable-optimizations \
+	--enable-samba \
+	--enable-texturepacker \
+	--enable-udev \
+	--enable-vaapi \
+	--enable-vdpau \
+	--enable-xrandr \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place des outils oubliés :
+mkdir -p ${PKG}/usr/share/xbmc/TexturePacker
+cp -a xbmc-xrandr ${PKG}/usr/share/xbmc/
+cp -a tools/TexturePacker/TexturePacker ${PKG}/usr/share/xbmc/TexturePacker/
+  
+# On crée un fichier de démarrage pour lancer uniquement 'xbmc' en tant que « bureau » :
+mkdir -p ${PKG}/etc/X11/xinit
+cat > ${PKG}/etc/X11/xinit/xinitrc.xbmc << "EOF"
+exec xbmc-standalone
+
+EOF
+
+chmod 755 ${PKG}/etc/X11/xinit/xinitrc.xbmc
+
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd/system
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd/system/xbmc.service << "EOF"
+[Unit]
+Description=Démarrage d'une session graphique sous XBMC
+After = remote-fs.target
+
+[Service]
+Type=simple
+ExecStart =/usr/bin/xbmc-standalone -- :0 -nolisten tcp
+Restart=always
+
+[Install]
+WantedBy = multi-user.target
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

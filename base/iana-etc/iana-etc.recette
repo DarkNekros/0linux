@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-iana-etc}
+VERSION=${VERSION:-2.30}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-iana-etc}
+WGET=${WGET:-http://sethwklein.net/$NAMESRC-$VERSION.$EXT}
+DESC="Fichiers de définitions réseau de l'IANA"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+
+# Installation des fichiers compilés :
+mkdir -p ${PKG}/etc
+cp -a protocols services ${PKG}/etc/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

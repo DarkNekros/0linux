@@ -1,0 +1,17 @@
+Description du dépôt @flashplayer
+appzer0 - appzer0@free.fr
+Mai 2013
+
+= Description de @flashplayer =
+
+Flash Player est un lecteur de contenus multimédia animés au format Flash, de la société Adobe. Il se présente sous la forme d'un greffon attaché au fonctionnement de votre navigateur Web.
+
+= Le dépôt @flashplayer pour 0linux =
+
+Le dépôt contient le logiciel Flash Player d'Adobe complet.
+
+= Installation sous 0linux =
+
+``# 0g @flashplayer``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

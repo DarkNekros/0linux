@@ -1,0 +1,125 @@
+--- a/src/spackdesc	2013-06-08 23:36:12.546167452 +0200
++++ b/src/spackdesc	2013-06-08 23:36:24.746166724 +0200
+@@ -29,24 +29,22 @@
+     # Transform the given text into "about.txt" one.
+     # $f SOURCE FILE, PACKAGE NAME
+     awk 'function pr (col) { print PKG col PREV; PREV = ""; return ++N; }
+-         BEGIN {PREV =""; PKG= "'"$2"'"; N = 0; hr="|-#handy-ruler#############--|\n" }
++         BEGIN {PREV =""; PKG= "'"$2"'"; N = 0; hr="|-Ne-pas-dépasser-cette-règle-pour-la-description---------------------------|\n" }
+         /^[\t ]*$/{ (PREV"") && pr(": ") && pr(":"); next }
+         ((! PREV) && /^[\t ]+/) {PREV = $0; gsub(/[^\t ].*/,"", PREV); gsub(/\t/,"    ",PREV)}
+-        (hr){(PKG) || PKG = $1; gsub(/#/,"----", hr); printf("%"length(PKG)"s%s", "", hr); hr=""}
++        (hr){(PKG) || PKG = $1; printf("%"length(PKG)"s%s", "", hr); hr=""}
+         {   gsub(/[\t ]+/, " ") && gsub(/^ | $/, "")
+             (PREV) && $0 = PREV " " $0
+             while (length($0) > 70) {
+                 PREV = substr($0, 1, 71)
+                 sub(/ ([^ ]+)?$/,"", PREV) || PREV = substr($0, 1, 70) # fix if no space is found.
+                 $0 = substr($0, 1 + length(PREV))
+-                if (! sub(/^ /, "")) print "(W) l." NR": no space to cut the line!" >"/dev/stderr"
++                if (! sub(/^ /, "")) print "(A) l." NR" : aucun espace trouvé pour scinder le texte !" >"/dev/stderr"
+                 pr(": ")
+             }
+             PREV = $0
+         } 
+-        END {(PREV) && pr(": "); while (N < 11) { pr(":") };  if (N == 11) exit
+-             print "(W) Your description is more than 11 lines long!">"/dev/stderr"
+-        }' "$1"
++        END {(PREV) && pr(": "); }' "$1"
+ }
+ 
+ growl () {
+@@ -57,23 +55,7 @@
+         echo "(E) $*" >&2
+         exit $code
+     fi
+-    echo "(W) $*" >&2
+-}
+-
+-howto () {
+-    # Print howto edit the file.
+-    # $f
+-    cat >&1 << E0F
+-# You must edit this file just like an official slack-desc:
+-#
+-#    + exactly 11 lines (do not add lines or remove empty lines);
+-#    + a line must not be longer than the ending ">" of the specified limit;
+-#    + on each filled line, a space should be left after the first ":";
+-#    + the name which begins the lines must be the one  in the final 
+-#      package (ie. do not write "firefox" if the package is 
+-#      "mozilla-firefox-[...].tgz", but "mozilla-firefox").
+-#
+-E0F
++    echo "(A) $*" >&2
+ }
+ 
+ usage () {
+@@ -81,27 +63,27 @@
+     # $f CODE
+     [ $1 -eq 0 ] || exec 1>&2
+     cat >&1 << US4G3
+-spackdesc - about.txt formatter.
++spackdesc - outil de formatage pour fichiers 'about.txt'.
+                                        
+-    Spackdesc lets you write untidily the content of your about.txt, then
+-    transforms it to make it comply with the specifications of this format.
+-    Thus, you have to care neither of the length of your lines, nor of setting
+-    the ruler and the margins. You can store your text in a file or, if you
+-    specify "-" as the input, pass it directly on the standard input of the
+-    script.
++    Spackdesc permet de saisir le contenu d'un fichier 'about.txt' sans aucun
++    formatage du texte et de le formater pour se conformer aux spécifications
++    du format. Il n'y a ainsi pas à se soucier de la longueur des lignes ou
++    de la présence des marges. Le texte peut être stocké dans un fichier ou 
++    bien directement sur la ligne de commande, en utilisant le tiret « - » 
++    en tant qu'entrée.
+     
+-    Usage: spackdesc <input> [output] [options]
++    Usage: spackdesc <entrée> [sortie] [options]
+ 
+     Options:
+ 
+-        -h, --help          ---    print this help on the standard output.
+-        --package=<name>    ---    specify the package name to use as margin.
+-                                   The default is the first word in the input.
+-        -r, --reverse       ---    instead of formatting it, unformat the
+-                                   input to bare text.
++        -h, --help, --aide  ---    affiche cette aide et quitte.
++        --paquet=<nom>      ---    spécifie le nom du paquet pour la marge.
++                                   Par défaut, prend le premier mot du texte.
++        -r, --reverse       ---    inverse la procédure en supprimant le 
++                                   formatage pour revenir au texte brut.
+ 
+-    Bug reports, suggestions, feedbacks, questions, and so on are welcome here
+-    (the license is at the head of the script): <sbb at tuxfamily dot org>.
++    Bogues, suggestions, retours, questions, etc. sont les bienvenus
++    (la licence figure en tête du script) : <sbb at tuxfamily point org>.
+ 
+ US4G3
+     exit $1
+@@ -114,12 +96,12 @@
+ 
+ for arg in "$@"; do
+     case "$arg" in
+-        -h|--help) usage 0 ;;
+-        --package=?*) pkg="$(echo "$arg" | cut -f 2- -d "=")";;
++        -h|--help|--aide) usage 0 ;;
++        --package=?*|--paquet=?*) pkg="$(echo "$arg" | cut -f 2- -d "=")";;
+         -r|--reverse) rev=1;;
+-        -?*) growl 1 "'$arg': invalid option.";;
++        -?*) growl 1 "'$arg': option incorrecte.";;
+         *)  if [ "$src" ]; then  
+-                [ "$txt" ] &&  growl 1 "too many arguments."
++                [ "$txt" ] &&  growl 1 "trop d'arguments."
+                 txt="$arg"
+             else
+                 src="$arg"
+@@ -130,7 +112,7 @@
+ [ "${txt:-"-"}" = "-" ] || exec 1>"$txt"
+ 
+ if [ $rev -eq 0 ]; then
+-    howto && fmtxt "$src" "$pkg"
++    fmtxt "$src" "$pkg"
+ else
+     sed "s/^[^\t #][^:]*: \?//p" -n $src
+ fi

@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-perl}
+VERSION=${VERSION:-5.18.0}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-perl}
+WGET=${WGET:-http://www.cpan.org/src/$NAMESRC-$VERSION.$EXT}
+DESC="Le « Langage pratique d'extraction et de rapport »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On dit à Perl d'utiliser notre suffixe en plaçant un marqueur MULTILIB :
+	sed -i -e 's@\*lib/perl5\*) set dflt privlib lib/$package/$version ;;@\*MULTILIB/perl5\*) set dflt privlib MULTILIB/$package/$version ;;@' \
+		-e 's@\*lib/perl5\*) dflt=$siteprefix/lib/$package/site_$prog/$version ;;@\*MULTILIB/perl5\*) dflt=$siteprefix/MULTILIB/$package/site_$prog/$version ;;@' \
+		-e 's@\*lib/perl5\*) dflt=$vendorprefix/lib/$package/vendor_$prog/$version ;;@\*MULTILIB/perl5\*) dflt=$vendorprefix/MULTILIB/$package/vendor_$prog/$version ;;@' \
+		Configure
+
+	# On remplace les marqueurs « MULTILIB » par notre suffixe :
+	sed -i -e "s@MULTILIB@lib${LIBDIRSUFFIX}@g" Configure
+
+	# On force ensuite 'perl' à utiliser ce suffixe :
+	echo 'installstyle="lib${LIBDIRSUFFIX}/perl5"' >> hints/linux.sh
+
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./Configure -des \
+		-Dprefix=/usr \
+		-Dinstallprefix=/usr \
+		-Dvendorprefix=/usr \
+		-Darchlib="/usr/lib${LIBDIRSUFFIX}/perl5" \
+		-Dman1dir=/usr/man/man1 \
+		-Dman3dir=/usr/man/man3 \
+		-Dpager="/usr/bin/less -isR" \
+		-Dlibpth="/usr/local/lib${LIBDIRSUFFIX} /usr/lib${LIBDIRSUFFIX}" \
+		-Dcc="gcc -m32" \
+		-Doptimize="${FLAGS}" \
+		-Dprivlib="/usr/share/perl5" \
+		-Dscriptdir='/usr/bin' \
+		-Dsitearch="/usr/local/lib${LIBDIRSUFFIX}/perl5" \
+		-Dsitelib="/usr/local/share/perl5" \
+		-Dsiteprefix=/usr/local \
+		-Duseithreads \
+		-Duseshrplib \
+		-Dusethreads \
+		-Dvendorarch="/usr/lib${LIBDIRSUFFIX}/perl5/vendor_perl" \
+		-Dvendorlib="/usr/share/perl5/vendor_perl" \
+		-Ubincompat5005 \
+		-Uversiononly \
+		-Dbuild=${PKGARCH}-0linux-linux-gnu
+
+	make -j${JOBS} || make
+
+	# On lance la suite de tests si $TESTS est positionnée :
+	if [ ! "${TESTS}" = "" ]; then
+		TEST_JOBS=${JOBS} make test_harness 2>&1 || true
+	fi
+	
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On renomme le binaire sans la version pour l'envelopper plus tard :
+	mv ${PKG}/usr/bin/perl{,-32}
+	mv ${PKG}/usr/bin/perl{${VERSION},-32}
+	
+	# On évite d'écraser 'perllocal.pod' :
+	if [ -r ${PKG}/usr/lib${LIBDIRSUFFIX}/perl5/perllocal.pod ]; then
+		mv ${PKG}/usr/lib${LIBDIRSUFFIX}/perl5/perllocal.pod{,.0nouveau}
+	fi
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On dit à Perl d'utiliser notre suffixe en plaçant un marqueur MULTILIB :
+sed -i -e 's@\*lib/perl5\*) set dflt privlib lib/$package/$version ;;@\*MULTILIB/perl5\*) set dflt privlib MULTILIB/$package/$version ;;@' \
+	-e 's@\*lib/perl5\*) dflt=$siteprefix/lib/$package/site_$prog/$version ;;@\*MULTILIB/perl5\*) dflt=$siteprefix/MULTILIB/$package/site_$prog/$version ;;@' \
+	-e 's@\*lib/perl5\*) dflt=$vendorprefix/lib/$package/vendor_$prog/$version ;;@\*MULTILIB/perl5\*) dflt=$vendorprefix/MULTILIB/$package/vendor_$prog/$version ;;@' \
+	Configure
+
+# On remplace les marqueurs « MULTILIB » par notre suffixe :
+sed -i -e "s@MULTILIB@lib${LIBDIRSUFFIX}@g" Configure
+
+# On force ensuite 'perl' à utiliser ce suffixe :
+echo 'installstyle="lib${LIBDIRSUFFIX}/perl5"' >> hints/linux.sh
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./Configure -des \
+	-Dprefix=/usr \
+	-Dinstallprefix=/usr \
+	-Dvendorprefix=/usr \
+	-Darchlib="/usr/lib${LIBDIRSUFFIX}/perl5" \
+	-Dman1dir=/usr/man/man1 \
+	-Dman3dir=/usr/man/man3 \
+	-Dpager="/usr/bin/less -isR" \
+	-Dlibpth="/usr/local/lib${LIBDIRSUFFIX} /usr/lib${LIBDIRSUFFIX}" \
+	-Doptimize="${FLAGS}" \
+	-Dprivlib="/usr/share/perl5" \
+	-Dscriptdir='/usr/bin' \
+	-Dsitearch="/usr/local/lib${LIBDIRSUFFIX}/perl5" \
+	-Dsitelib="/usr/local/share/perl5" \
+	-Dsiteprefix=/usr/local \
+	-Duseithreads \
+	-Duseshrplib \
+	-Dusethreads \
+	-Dvendorarch="/usr/lib${LIBDIRSUFFIX}/perl5/vendor_perl" \
+	-Dvendorlib="/usr/share/perl5/vendor_perl" \
+	-Ubincompat5005 \
+	-Uversiononly \
+	-Dbuild=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	TEST_JOBS=${JOBS} make test_harness 2>&1 || true
+fi
+
+fakeroot make install DESTDIR=${PKG}
+
+# Quelques liens symboliques (et non en dur) :
+ln -sf c2ph ${PKG}/usr/bin/pstruct
+ln -sf s2p ${PKG}/usr/bin/psed
+
+# On renomme les binaires 64 bits pour les envelopper :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mv ${PKG}/usr/bin/perl{,-64}
+	mv ${PKG}/usr/bin/perl{${VERSION},-64}
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/perl
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/perl${VERSION}
+else
+	ln -sf perl${VERSION} ${PKG}/usr/bin/perl
+fi
+
+# On évite d'écraser 'perllocal.pod' :
+if [ -r ${PKG}/usr/lib${LIBDIRSUFFIX}/perl5/perllocal.pod ]; then
+	mv ${PKG}/usr/lib${LIBDIRSUFFIX}/perl5/perllocal.pod{,.0nouveau}
+fi
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

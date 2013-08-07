@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# On nettoie  :
+unset CHOIXNOM
+
+# Boucle pour le choix du nom d'hôte et du domaine :
+while [ 0 ]; do
+	clear
+	echo -e "\033[1;32mNommage de votre machine.\033[0;0m"
+	echo ""
+	echo "Il est temps de baptiser votre machine en lui donnant un nom d'hôte."
+	echo "Le nom d'hôte désigne la machine et son identification sur le réseau."
+	echo "Évitez la ponctuation et les majuscules pour maximiser la compatibilité."
+	echo ""
+	echo "Exemples : « monordi » ; « pcsalon » ; « saturne »"
+	echo ""
+	echo -n "Votre choix : "
+	read CHOIXNOM;
+	if [ "$CHOIXNOM" = "" ]; then
+		echo "Veuillez entrer un nom d'hôte."
+		sleep 2
+		unset CHOIXNOM
+		continue
+	else
+		# On envoie l'hôte en écrasant le contenu de '/etc/hostname' :
+		echo "${CHOIXNOM}" > /etc/hostname
+		
+		# On envoie l'hôte dans '/etc/hosts' pour la boucle locale :
+		sed -i "s@pingouin.exemple.fr pingouin@${CHOIXNOM}@" /etc/hosts
+		break
+	fi
+done
+
+# C'est fini.

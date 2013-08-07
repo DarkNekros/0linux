@@ -1,0 +1,236 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-VirtualBox}
+VERSION=${VERSION:-4.2.12}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-virtualbox}
+WGET=(http://download.virtualbox.org/virtualbox/$VERSION/$NAMESRC-$VERSION.$EXT
+      http://download.virtualbox.org/virtualbox/$VERSION/VBoxGuestAdditions_${VERSION}.iso
+      http://download.virtualbox.org/virtualbox/$VERSION/UserManual.pdf
+      http://download.virtualbox.org/virtualbox/$VERSION/SDKRef.pdf
+     )
+DESC="Logiciel complet de virtualisation x86"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/{bin,src} \
+	${PKG}/usr/{include,lib${LIBDIRSUFFIX},share}/virtualbox \
+	${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/misc \
+	${PKG}/usr/share/{applications,pixmaps,mime/packages} \
+	${PKG}/etc/{default,vbox}
+
+# Un répertoire change selon l'architecture :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	BUILDDIR="amd64"
+elif [ "${PKGARCH}" = "i686" ]; then
+	BUILDDIR="x86"
+fi
+
+PKG_VERS=${VERSION}_$(echo $KERNEL | tr - _)
+vboxwebsrv="vboxwebsrv"
+guiapp="VirtualBox VBoxSDL VBoxBFE"
+
+# On supprime 'check_makeself' (qui sert à construire un installateur) :
+sed -i '/[ $OSE -ge 1 ] && check_makeself/d' configure
+
+# On empêche la suppression de modules sur la racine (!!!) :
+cat $CWD/virtualbox.modules.patch | patch -p1
+
+# On place nos préférences dans leur machin.kmk en s'inspirant lourdement de Slackware :
+cat > LocalConfig.kmk << "EOF"
+
+# On intègre correctement VBox au système :
+DEFS += RTPATH_APP_PRIVATE=\"/usr/share/virtualbox\"
+KBUILD_MSG_STYLE             := brief
+VBOX_WITH_ORIGIN             :=
+VBOX_PATH_APP_PRIVATE_ARCH   := /usr/libARCH/virtualbox
+VBOX_PATH_SHARED_LIBS        := $(VBOX_PATH_APP_PRIVATE_ARCH)
+VBOX_WITH_RUNPATH            := $(VBOX_PATH_APP_PRIVATE_ARCH)
+VBOX_PATH_APP_PRIVATE        := /usr/share/virtualbox
+VBOX_PATH_APP_DOCS           := $(VBOX_PATH_APP_PRIVATE)
+
+# Pas de tests :
+VBOX_WITH_TESTCASES          :=
+VBOX_WITH_TESTSUITE          :=
+
+# Pas de fenêtre de demande d'enregistrement :
+VBOX_WITH_REGISTRATION        =
+
+# Pour GCC >= 4.5 :
+VBOX_WITH_WARNINGS_AS_ERRORS :=
+
+# Pas de PAM :
+VBOX_WITH_PAM                :=
+
+# Chemin vers Java :
+VBOX_JAVA_HOME               := /usr/libARCH/jdk
+
+# Pas de documentation ('texlive' est nécessaire) :
+VBOX_WITHOUT_DOCS            := 1
+
+EOF
+
+# On modifie 'LocalConfig.kmk' pour LIBDIRSUFFIX :
+sed -i "s@libARCH@lib${LIBDIRSUFFIX}@g" LocalConfig.kmk
+
+# Comfiguration :
+fakeroot ./configure \
+	--disable-pulse \
+	--enable-hardening \
+	--enable-vde \
+	--nofatal
+
+. ./env.sh
+
+# Compilation :
+kmk -j ${JOBS} LOCALCFG=./LocalConfig.kmk || kmk LOCALCFG=./LocalConfig.kmk
+
+# On compile maintenant VBoxFUSE :
+cd src/VBox/ImageMounter/VBoxFUSE
+kmk -j ${JOBS} || kmk
+cd -
+
+# On crée un fichier de configuration qui n'écrasera rien :
+cat > ${PKG}/etc/vbox/vbox.cfg.0nouveau << "EOF"
+INSTALL_DIR="/usr/libARCH/virtualbox"
+MODULE_SRC="/usr/src"
+
+EOF
+
+# On corrige notre config' pour notre LIBDIRSUFFIX :
+sed -i "s@libARCH@lib${LIBDIRSUFFIX}@g" ${PKG}/etc/vbox/vbox.cfg.0nouveau
+
+# On crée un fichier de paramètres par défaut :
+cat > ${PKG}/etc/default/virtualbox.0nouveau << "EOF"
+SHUTDOWN_USERS=""
+SHUTDOWN="savestate"
+VBOXWEB_USER="vboxweb"
+VBOXWEB_LOGFILE="/var/log/vboxweb/vboxweb.log"
+
+EOF
+
+# On se place dans le répertoire résultant de la compilation :
+cd out/linux.$BUILDDIR/release/bin/
+tree
+exit 0
+
+# on place les sources pour les modules :
+mv src $PKG/usr/src/virtualbox-kernel-$VERSION
+
+# On place les modules noyau :
+cp vboxdrv.ko vboxnetflt.ko vboxnetadp.ko vboxpci.ko${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/misc \
+
+# On place et on corrige le raccourci bureau, évidemment faux :
+cp virtualbox.desktop ${PKG}/usr/share/applications/
+sed -i "s@/opt/VirtualBox@/usr/share/virtualbox@" ${PKG}/usr/share/applications/virtualbox.desktop
+
+# on place les archives de localisation :
+cp nls* *.tar.bz2 ${PKG}/usr/share/virtualbox/
+
+# on place l'icône :
+cp VBox.png ${PKG}/usr/share/pixmaps/
+
+# Et le reste (mais quel foutoir !) :
+cd icons
+
+for i in *; do
+	install -d ${PKG}/usr/share/icons/hicolor/${i}/mimetypes
+	cp ${i}/* $PKG/usr/share/icons/hicolor/${i}/mimetypes
+done
+
+cd -
+
+# On place les type MIME :
+cp virtualbox.xml ${PKG}/usr/share/mime/packages
+
+# On compile et on installe le SDK
+export VBOX_INSTALL_PATH=/usr/lib${LIBDIRSUFFIX}/virtualbox
+cd sdk/installer
+fakeoot python ./vboxapisetup.py install --prefix "/usr" --root $PKG
+cd -
+
+# On copie le SDK et les scripts :
+cp sdk ${PKG}/usr/share/virtualbox/
+install -m755 VBoxCreateUSBNode.sh VBoxFUSE VBoxSysInfo.sh VBoxTunctl ${PKG}/usr/share/virtualbox/
+rm -f VBoxSysInfo.sh VBoxCreateUSBNode.sh VBoxTunctl
+
+# On nettoie et on place le reste :
+mv * ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/
+  chown -R root:$GROUP $PKG/usr/lib$LIBDIRSUFFIX/virtualbox/
+  chmod -R $MODE $PKG/usr/lib$LIBDIRSUFFIX/virtualbox/
+  mv $PKG/usr/lib$LIBDIRSUFFIX/virtualbox/VBox.sh $PKG/usr/lib$LIBDIRSUFFIX/virtualbox/VBox
+cd $TMP/$SRCNAM-${VERSION}
+
+
+if [ "$vboxwebsrv" = "vboxwebsrv" ]; then
+  mkdir -p $PKG/var/{lib,log}/vboxweb
+  chown vboxweb:vboxusers $PKG/var/{lib,log}/vboxweb
+  cp -f src/VBox/Installer/linux/vboxweb-service.sh.in $PKG/etc/rc.d/rc.vboxweb-service.new
+  sed -i "s/%PACKAGE%/virtualbox/g" $PKG/etc/rc.d/rc.vboxweb-service.new
+  sed -i "s/%NOLSB%/yes/" $PKG/etc/rc.d/rc.vboxweb-service.new
+  sed -i "s/%DEBIAN%/no/" $PKG/etc/rc.d/rc.vboxweb-service.new
+  sed -i "s/\[ -z \"\$DEBIAN\"/#\[ -z \"\$DEBIAN\"/" $PKG/etc/rc.d/rc.vboxweb-service.new
+fi
+
+# install headers. Needed by some third party tools
+cp -rf include/* $PKG/usr/include/virtualbox/
+rm -f $PKG/usr/include/virtualbox/Makefile.kmk
+
+cp -f $CWD/VBoxGuestAdditions_$VERSION.iso \
+  $PKG/usr/share/virtualbox/VBoxGuestAdditions.iso
+
+cp -f $CWD/UserManual.pdf \
+  $PKG/usr/share/virtualbox/UserManual.pdf
+
+cp -f $CWD/SDKRef.pdf \
+  $PKG/usr/share/virtualbox/SDKRef.pdf
+
+# install profile.d scripts for 3rd party apps
+mkdir -p $PKG/etc/profile.d/
+
+cat << EOF > $PKG/etc/profile.d/vbox.sh
+#!/bin/sh
+export VBOX_PROGRAM_PATH=/usr/lib${LIBDIRSUFFIX}/virtualbox/
+export VBOX_SDK_PATH=/usr/share/virtualbox/sdk/
+EOF
+chmod 0755 $PKG/etc/profile.d/*
+
+# setup udev rules for vboxdrv and USB device support
+mkdir -p $PKG/lib/udev/rules.d
+install -m 644 $CWD/10-virtualbox.rules $PKG/lib/udev/rules.d/
+
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
+cp -f COPYING COPYING.CDDL $PKG/usr/doc/$PRGNAM-$VERSION
+cat $CWD/README.SLACKWARE > $PKG/usr/doc/$PRGNAM-$VERSION/README.SLACKWARE
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+cat $CWD/doinst.sh > $PKG/install/doinst.sh
+
+if [ "$vboxwebsrv" = "vboxwebsrv" ]; then
+  echo "preserve_perms etc/rc.d/rc.vboxweb-service.new" >> $PKG/install/doinst.sh
+fi
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation en spécifiant les permissions :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+chown vboxusers usr/share/virtualbox/{VBoxCreateUSBNode.sh,VBoxSysInfo.sh}
+chown vboxusers usr/bin/{VBoxFUSE,VBoxTunctl}
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

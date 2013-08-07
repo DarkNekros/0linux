@@ -1,0 +1,16 @@
+# Configuration de 'dcron'.
+# Tous les messages de 'dcron' sont redirigés par défaut vers /dev/null.
+# 'dcron' lancera 'lancer-taches', un script exécutant tout script trouvé
+# dans les répertoires suivants :
+#
+# On exécute les tâches horaires à la 47ème minute :
+47 * * * * /usr/bin/lancer-taches /etc/cron.horaire 1> /dev/null
+#
+# On exécute les tâches journalières à 4:40 chaque jour :
+40 4 * * * /usr/bin/lancer-taches /etc/cron.journalier 1> /dev/null
+#
+# On exécute les tâches hebdomadaires à 4:30 le premier jour de semaine :
+30 4 * * 0 /usr/bin/lancer-taches /etc/cron.hebdomadaire 1> /dev/null
+#
+# On exécute les tâches mensuelles à 4:20 le premier jour du mois :
+20 4 1 * * /usr/bin/lancer-taches /etc/cron.mensuel 1> /dev/null

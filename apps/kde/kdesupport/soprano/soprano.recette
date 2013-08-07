@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-soprano}
+VERSION=${VERSION:-2.9.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-soprano}
+WGET=${WGET:-http://prdownloads.sourceforge.net/project/$NAMESRC/Soprano/$VERSION/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques de haut niveau de traitement de données RDF"
+########################################
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+mkdir -p build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=OFF \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D BUILD_TESTS=OFF \
+	-D ENABLE_SSE=ON \
+	-D ENABLE_SSE2=ON \
+	-D ENABLE_SSE3=ON \
+	-D KDE4_BUILD_TESTS=FALSE \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D SYSCONF_INSTALL_DIR=/etc/kde \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+# On crée le fichier de configuration global
+mkdir -p $PKG/etc/sysconfig
+cat > $PKG/etc/sysconfig/soprano.0nouveau <<EOF
+# Début de /etc/sysconfig/soprano
+
+SOPRANO_STORAGE="/var/lib/soprano"
+SOPRANO_BACKEND="redland"                       # virtuoso, sesame2, redland
+#SOPRANO_OPTIONS="$SOPRANO_OPTIONS --port 4711" # Le port par défaut est 5000
+
+# Fin de /etc/sysconfig/soprano
+EOF
+mkdir -p $PKG/var/lib/soprano
+
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

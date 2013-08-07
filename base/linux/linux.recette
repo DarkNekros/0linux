@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-linux}
+VERSION=${VERSION:-3.10.0}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-linux}
+# Le nommage des versions « .0 » est incohérent :
+if [ "$(echo $VERSION | cut -d'.' -f3)" = "0" ]; then
+	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2).$EXT}
+else
+	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$VERSION.$EXT}
+fi
+DESC="Le noyau Linux avec ses modules, ses firmwares, ses entêtes et son code source complet"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On nettoie obligatoirement :
+make mrproper
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/{boot,etc/rc.d,usr/src}
+
+# Extraction des en-têtes du noyau :
+make headers_install INSTALL_HDR_PATH=${PKG}/usr
+
+# On supprime les fichiers inutiles :
+find ${PKG}/usr \( -name .install -o -name ..install.cmd \) -delete
+
+# On corrige le nom du répertoire asm/ en asm-x86/ et on ajoute un lien :
+mv ${PKG}/usr/include/asm{,-x86}
+ln -sf asm-x86 ${PKG}/usr/include/asm
+
+# On copie la configuration du noyau :
+cat $CWD/config-${PKGARCH} > .config
+
+# On compile le noyau :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" make -j${JOBS} || make
+
+# On copie le noyau fraîchement compilé, les fichiers 'System.map' et '.config'
+# dans /boot, agrémentés de leur version :
+cp -a arch/x86/boot/bzImage ${PKG}/boot/noyau-${VERSION}
+cp -a System.map ${PKG}/boot/System.map-${VERSION}
+cp -a .config ${PKG}/boot/config-${VERSION}
+
+# Puis on crée un lien générique :
+ln -sf noyau-${VERSION} ${PKG}/boot/vmlinuz
+
+# On relie l'ensemble des fichiers par défaut à « *-$VERSION » :
+ln -sf System.map-${VERSION} ${PKG}/boot/System.map
+ln -sf config-${VERSION} ${PKG}/boot/config
+
+# On compile et installe maintenant les modules noyau :
+make -j${JOBS} modules_install INSTALL_MOD_PATH=${PKG} || make modules_install INSTALL_MOD_PATH=${PKG}
+
+# On copie les fichiers nécessaires à certains paquets :
+mkdir -p ${PKG}/usr/src/${NAMESRC}-${VERSION}
+cp Module.symvers ${PKG}/usr/src/${NAMESRC}-${VERSION}
+cp -a scripts     ${PKG}/usr/src/${NAMESRC}-${VERSION}
+
+# On compresse tous les modules noyau (et on tire la langue au mainteneur de 'kmod'
+# qui voulait supprimer la prise en charge des modules compressés) :
+find ${PKG}/lib/modules/${VERSION} -type f -name "*.ko" -exec xz -v {} \;
+
+make mrproper
+
+# On copie toutes les sources et on crée le lien symbolique générique 'linux' :
+cp -ar $TMP/${NAME}/* ${PKG}/usr/src/${NAMESRC}-${VERSION}/
+ln -sf ${NAMESRC}-${VERSION} ${PKG}/usr/src/linux
+
+# On corrige les permissions et on ajoute un répertoire manquant :
+chmod og-w -R ${PKG}/usr/src/${NAMESRC}-${VERSION}/scripts
+mkdir -p ${PKG}/usr/src/${NAMESRC}-${VERSION}/.tmp_versions
+
+# On relie enfin les répertoires 'build' et 'source' des modules aux sources du noyau :
+rm -rf ${PKG}/lib/modules/${VERSION}/build
+rm -rf ${PKG}/lib/modules/${VERSION}/source
+ln -sf ../../../../usr/src/${NAMESRC}-${VERSION} ${PKG}/lib/modules/${VERSION}/build
+ln -sf ../../../../usr/src/${NAMESRC}-${VERSION} ${PKG}/lib/modules/${VERSION}/source
+
+# Installation de la documentation (on crée simplement un lien) :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+ln -sf ../../src/${NAMESRC}-${VERSION}/Documentation ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
+# Il y a un peu de doc pour les firmwares :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a $TMP/${NAME}/firmware/{README*,WHENCE} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+
+# On ajoute la préparation des sources au script de post-installation :
+cat >> ${PKG}/post-install.sh << EOF
+
+# On prépare les sources du noyau :
+cat boot/config-${VERSION} > usr/src/${NAMESRC}-${VERSION}/.config
+chroot . make -C usr/src/${NAMESRC}-${VERSION} clean oldconfig prepare scripts 2>/dev/null
+rm -f usr/src/${NAMESRC}-${VERSION}/.version
+
+# On actualise les dépendances des modules du noyau :
+chroot . depmod -a ${VERSION} 2>/dev/null
+
+EOF
+
+empaqueter
+
+# C'est fini.

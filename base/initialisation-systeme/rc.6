@@ -1,0 +1,79 @@
+#!/bin/sh
+#
+# /etc/rc.d/rc. : ce fichier est exécuté lors du redémarrage (niveau 6) ou
+# de l'extinction (niveau 0) de la machine. Tous les processus sont tués,
+# les systèmes de fichiers démontés.
+# Très lourdement inspiré de Slackware.
+
+# On spécifie le $PATH.
+PATH=/sbin:/etc:/bin:/usr/bin
+
+# On évite l'effet d'escalier de la console :
+stty onlcr
+
+case "$0" in
+	*0)
+		commande="halt"
+		;;
+	*6)
+		commande="reboot"
+		;;
+	*)
+		echo "$0 : Appelez-moi \"rc.0\" ou \"rc.6\", je vous prie !"
+		exit 1
+		;;
+esac
+
+# On sauvegarde l'heure du système dans l'horloge matérielle :
+if [ -x /sbin/hwclock ]; then
+	if grep -q "^UTC" /etc/hardwareclock 2> /dev/null ; then
+		/sbin/hwclock --utc --systohc
+	else
+		/sbin/hwclock --localtime --systohc
+	fi
+fi
+
+# On exécute les scripts d'arrêt locaux s'ils existent :
+if [ -x /etc/rc.d/rc.local_shutdown ]; then
+	/etc/rc.d/rc.local_shutdown stop
+fi
+
+# On démonte les systèmes de fichiers distants :
+umount -v -a -l -f -r -t nfs,smbfs,cifs
+
+# On tue tous les processus :
+killall5 -15 
+killall5 -9
+
+# On enregistre notre graine de génération de nombres aléatoires en utilisant
+# le fichier « poolsize » du noyau :
+dd if=/dev/urandom of=/etc/random-seed count=1 bs=$(cat /proc/sys/kernel/random/poolsize) 2> /dev/null
+chmod 600 /etc/random-seed
+
+# On enregistre l'action ('halt' ou 'reboot') dans 'wtmp' :
+$commande -w
+
+# On nettoie /var/lock/subsys :
+if [ -d /var/lock/subsys ]; then
+	rm -f /var/lock/subsys/*
+fi
+
+# On désactive la partition d'échange (« swap ») :
+swapoff -a
+
+# On synchronise le tout :
+sync
+
+# On démonte ce qui reste :
+umount -v -a -t no,proc,sysfs,tmpfs
+
+# On éteind ou redémarre la machine :
+if [ "$commande" = "reboot" ]; then
+	echo "Redémarrage."
+	reboot
+else
+	echo "Au revoir !"
+	poweroff
+fi
+
+# C'est fini !

@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-popt}
+VERSION=${VERSION:-1.16}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-popt}
+WGET=${WGET:-http://rpm5.org/files/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèque d'analyse de la ligne de commande"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+# On corrige certains chemins en dur :
+sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" libpopt.la
+sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" .libs/libpopt.lai
+
+fakeroot make install usrlibdir=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

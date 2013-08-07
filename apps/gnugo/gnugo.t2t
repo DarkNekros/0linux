@@ -1,0 +1,17 @@
+Description du dépôt @gnugo
+fatalerrors - jeff.levasseur@free.fr
+Juin 2013
+
+= Description de @gnugo =
+
+GNUGo est un jeu de Go en ligne de commande dont l'intelligence artificielle est largement reconnue. Ce jeu est plutôt destiné à être une dépendance à l'exécution d'un certain nombre de jeux de Go graphiques, comme KiGo du projet KDE, par exemple.
+
+= Le dépôt @gnugo pour 0linux =
+
+Le dépôt contient le jeu GNUGo et sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @gnugo``
+
+% Contenu maintenu par fatalerrors.

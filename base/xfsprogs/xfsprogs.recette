@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-xfsprogs}
+VERSION=${VERSION:-3.1.11}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-xfsprogs}
+WGET=${WGET:-ftp://oss.sgi.com/projects/xfs/cmd_tars/$NAMESRC-$VERSION.$EXT}
+DESC="Outils pour le système de fichiers XFS"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--datadir=/usr/share \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DIST_ROOT=${PKG}
+fakeroot make install-dev DIST_ROOT=${PKG}
+
+# On passe les bibliothèques au bon endroit :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+cp -a $(find ${PKG}/lib* -type f) ${PKG}/usr/lib${LIBDIRSUFFIX}/
+
+# Les statiques font un peu n'importe quoi selon le suffixe :) :
+if [ -r ${PKG}/usr/lib3264 ]; then
+	cp -a $(find ${PKG}/usr/lib3264 -type f) ${PKG}/usr/lib${LIBDIRSUFFIX}/
+fi
+if [ -r ${PKG}/usr/lib ]; then
+	cp -a $(find ${PKG}/usr/lib -type f) ${PKG}/usr/lib${LIBDIRSUFFIX}/
+fi
+
+# On lie tout ce beau monde correctement :
+ln -sf libhandle.so.1.0.3 ${PKG}/usr/lib${LIBDIRSUFFIX}/libhandle.so.1
+ln -sf libhandle.so.1 ${PKG}/usr/lib${LIBDIRSUFFIX}/libhandle.so
+
+# On nettoie :
+rm -rf ${PKG}/lib*
+rm -rf ${PKG}/usr/lib3264
+rm -rf ${PKG}/usr/lib
+
+installer_doc
+
+# On complète la documentation :
+cp -a doc/CHANGES doc/COPYING doc/CREDITS doc/INSTALL doc/*.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

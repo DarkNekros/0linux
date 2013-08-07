@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-slv2}
+VERSION=${VERSION:-0.6.6}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-slv2}
+WGET=${WGET:-http://download.drobilla.net/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques pour greffons audio LV2"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./waf configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--htmldir=/usr/doc/${NAMESRC}-${VERSION}
+
+./waf build -j${JOBS}
+./waf install --destdir=${PKG}
+
+# On s'assure que le fichier pour 'pkg-config' est correct :
+sed -i "s,/lib,/lib$LIBDIRSUFFIX,g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/${NAMESRC}.pc
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

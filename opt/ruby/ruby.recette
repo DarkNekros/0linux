@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-ruby}
+VERSION=${VERSION:-2.0.0p247}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-ruby}
+WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$(echo $VERSION | sed -e 's/p.*$/-&/').$EXT}
+DESC="Langage de programmation orienté objet « élégant »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-install-doc \
+	--enable-pthread \
+	--enable-shared \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée le fichier de configuration pour les gems utilisateur :
+mkdir -p ${PKG}/etc
+cat > ${PKG}/etc/gemrc.0nouveau << "EOF"
+# Fichier de configuration des « gems » Ruby.
+# Pour utiliser les « gems » installables avec la commande 'gem', ajoutez la
+# sortie de la commande suivante à votre $PATH :
+# $(ruby -rubygems -e "puts Gem.user_dir")/bin
+# 0Linux utilise "--user-install" afin de vous permettre d'installer des
+# « gems » dans '$HOME/.gem/' afin de ne pas se téléscoper avec les fichiers
+# installés par le paquet officiel 'ruby'.
+gem: --user-install
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

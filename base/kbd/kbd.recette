@@ -1,0 +1,172 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-kbd}
+VERSION=${VERSION:-1.15.3}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-kbd}
+WGET=${WGET:-http://ftp.altlinux.com/pub/people/legion/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Dispositions pour claviers et polices pour console"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige le comportement des touches « Supprimer » et « Retour arrière »
+# dans certains dispositions :
+cat $CWD/kbd-1.15.1-backspace-1.patch | patch -p1
+
+# On applique également le correctif pour l'euro de la disposition « nl » :
+cat $CWD/nl.euro.diff | patch -p1
+
+# On corrige une faute de frappe et on se demande comment ils font pour compiler :
+sed -i 's@fichero de tipos %2$dx%3$d de %1$d caracteres@fichero de tipos %dx%d de %d caracteres@' po/es.po
+
+# On génère les scripts standard, dont le 'configure' :
+autoreconf
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--datadir=/usr/lib${LIBDIRSUFFIX}/kbd \
+	--enable-nls \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} KEYCODES_PROGS=yes RESIZECONS_PROGS=yes || make KEYCODES_PROGS=yes RESIZECONS_PROGS=yes
+fakeroot make install KEYCODES_PROGS=yes RESIZECONS_PROGS=yes DESTDIR=${PKG}
+
+# On ajoute des polices supplémentaires :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/kbd/consolefonts
+
+for police in $CWD/polices/*.gz; do
+	cp -a ${police} ${PKG}/usr/lib${LIBDIRSUFFIX}/kbd/consolefonts
+done
+
+# On va suivre Slackware concernant les dispositions 7 bits ainsi que celles
+# qui ne sont pas compatibles Euro :
+mv data/keymaps/i386/qwerty/fi.map data/keymaps/i386/qwerty/fi-old.map
+cp -a data/keymaps/i386/qwerty/fi-latin9.map data/keymaps/i386/qwerty/fi.map
+cp -a data/keymaps/i386/qwerty/pt-latin9.map data/keymaps/i386/qwerty/pt.map
+cp -a data/keymaps/i386/qwerty/sv-latin1.map data/keymaps/i386/qwerty/se-latin1.map
+mv data/keymaps/i386/azerty/fr.map data/keymaps/i386/azerty/fr-obsolete.map
+cp -a data/keymaps/i386/azerty/fr-latin9.map data/keymaps/i386/azerty/fr.map
+
+# Toujours en suivant Slackware, on renomme les fichiers dont les noms entrent
+# en conflit avec d'autres :
+mv data/keymaps/i386/dvorak/no.map data/keymaps/i386/dvorak/no-dvorak.map
+mv data/keymaps/i386/fgGIod/trf.map data/keymaps/i386/fgGIod/trf-fgGIod.map
+mv data/keymaps/i386/olpc/es.map data/keymaps/i386/olpc/es-olpc.map
+mv data/keymaps/i386/olpc/pt.map data/keymaps/i386/olpc/pt-olpc.map
+mv data/keymaps/i386/qwerty/cz.map data/keymaps/i386/qwerty/cz-qwerty.map
+
+# On reste compatible en créant un lien dans '/usr/share' :
+mkdir -p ${PKG}/usr/share
+ln -sf ../../lib${LIBDIRSUFFIX}/kbd ${PKG}/usr/share/kbd
+
+# On ajoute une disposition coréenne QWERTY « factice » :
+ln -sf us.map.gz ${PKG}/usr/lib${LIBDIRSUFFIX}/kbd/keymaps/i386/qwerty/ko.map.gz
+
+# On ajoute les dispositions pour bépo et on les compresse :
+cp -a $CWD/fr-dvorak-bepo*.map ${PKG}/usr/lib${LIBDIRSUFFIX}/kbd/keymaps/i386/dvorak
+chmod 644 ${PKG}/usr/lib${LIBDIRSUFFIX}/kbd/keymaps/i386/dvorak/fr-dvorak-bepo*.map
+gzip -9 ${PKG}/usr/lib${LIBDIRSUFFIX}/kbd/keymaps/i386/dvorak/fr-dvorak-bepo*.map
+
+# On crée les fichiers service pour le clavier et la police à charger :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.police << "EOF"
+#!/usr/bin/env bash
+
+# On charge la configuration :
+. /etc/vconsole.conf
+
+police_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la police : ${FONT}"
+	setfont -v ${FONT}
+}
+
+police_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la police par défaut : lat9w-16..."
+	setfont lat9w-16
+}
+
+case "$1" in
+	'start')
+		police_start
+	;;
+	
+	'stop')
+		police_stop
+	;;
+	
+	'restart')
+		police_stop
+		sleep 1
+		police_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.police
+
+cat > ${PKG}/etc/rc.d/rc.clavier << "EOF"
+#!/usr/bin/env bash
+
+# On charge la configuration :
+. /etc/vconsole.conf
+
+clavier_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la disposition du clavier : ${KEYMAP}..."
+	loadkeys ${KEYMAP}
+}
+
+clavier_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la disposition du clavier : us..."
+	loadkeys us
+}
+
+case "$1" in
+	'start')
+		clavier_start
+	;;
+	
+	'stop')
+		clavier_stop
+	;;
+	
+	'restart')
+		clavier_stop
+		sleep 1
+		clavier_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.clavier
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

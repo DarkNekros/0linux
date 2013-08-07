@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-git}
+VERSION=${VERSION:-1.8.3.2}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-git}
+WGET=(http://git-core.googlecode.com/files/$NAMESRC-$VERSION.$EXT
+      http://git-core.googlecode.com/files/$NAMESRC-manpages-$VERSION.$EXT
+      http://git-core.googlecode.com/files/$NAMESRC-htmldocs-$VERSION.$EXT
+     )
+DESC="Système de contrôle de versions décentralisé"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On nettoie les répertoires ayant trait à Perl :
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/perl5
+
+# On installe les manuels :
+mkdir -p ${PKG}/usr/man
+tar xf ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-manpages-${VERSION}.$EXT -C ${PKG}/usr/man
+
+installer_doc
+
+# On complète la documentation :
+tar xf ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-htmldocs-${VERSION}.$EXT -C ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+rm -rf ${PKG}/usr/share/{doc,man}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

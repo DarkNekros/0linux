@@ -1,0 +1,17 @@
+accountsservice
+gsettings-desktop-schemas
+gjs
+gnome-desktop
+libpeas
+gmime
+totem-pl-parser
+gnome-video-effects
+yelp
+cogl
+clutter
+clutter-gst
+clutter-gtk
+mutter
+gnome-menus
+gnome-online-accounts
+gnome-settings-daemon

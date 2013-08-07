@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-ffmpeg}
+VERSION=${VERSION:-1.1.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-ffmpeg}
+WGET=${WGET:-http://ffmpeg.org/releases/$NAMESRC-$VERSION.$EXT}
+DESC="Solution de traitement de flux audio et vidéo"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--disable-debug \
+	--mandir=/usr/man \
+	--enable-avfilter \
+	--enable-avresample \
+	--enable-fontconfig \
+	--enable-frei0r \
+	--enable-gpl \
+	--enable-libass \
+	--enable-libcaca \
+	--enable-libcdio \
+	--enable-libdc1394 \
+	--enable-libfaac \
+	--enable-libgsm \
+	--enable-libmodplug \
+	--enable-libmp3lame \
+	--enable-libopencore_amrnb \
+	--enable-libopencore_amrwb \
+	--enable-libopencv \
+	--enable-librtmp \
+	--enable-libschroedinger \
+	--enable-libspeex \
+	--enable-libtheora \
+	--enable-libtwolame \
+	--enable-libv4l2 \
+	--enable-libvorbis \
+	--enable-libvpx \
+	--enable-libx264 \
+	--enable-libxvid \
+	--enable-nonfree \
+	--enable-openal \
+	--enable-postproc \
+	--enable-pthreads \
+	--enable-shared \
+	--enable-version3 \
+	--enable-x11grab \
+	--shlibdir=/usr/lib${LIBDIRSUFFIX}
+
+make -j${JOBS} || make
+make -j${JOBS} tools/qt-faststart || make tools/qt-faststart
+make -j${JOBS} doc/ff{mpeg,play,server}.1 || make doc/ff{mpeg,play,server}.1
+fakeroot make install install-man DESTDIR=${PKG}
+
+# On place le binaire 'qt-faststart' :
+cp -a tools/qt-faststart ${PKG}/usr/bin/
+chmod 755 ${PKG}/usr/bin/qt-faststart
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

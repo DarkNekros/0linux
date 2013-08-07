@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-SDL}
+VERSION=${VERSION:-1.2.15}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-sdl}
+WGET=${WGET:-http://www.libsdl.org/release/$NAMESRC-$VERSION.$EXT}
+DESC="Outils et bibliothèques « Simple DirectMedia Layer »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige l'emplacement de X11 et des bibliothèques :
+sed -i "s@/usr/X11R6@$/usr@g" $(grep -lr /usr/X11R6 *)
+sed -i "/-laudio/s:/lib:&${LIBDIRSUFFIX}:g" configure
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--with-alsa-prefix=/usr/lib${LIBDIRSUFFIX} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-binutils}
+VERSION=${VERSION:-2.23.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-binutils}
+WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Binaires de développement GNU"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On active le multilib pour x86_64 uniquement :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	OPTMULTILIB="--enable-multilib --enable-64-bit-bfd"
+	MYLDFLAGS="-Wl,-rpath-link,/usr/lib${LIBDIRSUFFIX}:/lib${LIBDIRSUFFIX}:/usr/lib:/lib"
+else
+	OPTMULTILIB="--disable-multilib"
+	MYLDFLAGS="-Wl,-rpath-link,/usr/lib${LIBDIRSUFFIX}:/lib${LIBDIRSUFFIX}"
+fi
+
+# Compilation :
+CC="${CC} -isystem /usr/include" \
+LDFLAGS="${MYLDFLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--with-docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	${OPTMULTILIB} \
+	--enable-plugins \
+	--enable-shared \
+	--enable-threads \
+	--enable-werror=no \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} configure-host || make configure-host
+fakeroot make -j${JOBS} tooldir=/usr || fakeroot make tooldir=/usr
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1
+fi
+
+fakeroot make install tooldir=/usr DESTDIR=${PKG}
+
+# Oubli du "make install" :
+cp -a $TMP/${NAME}/include/libiberty.h ${PKG}/usr/include/libiberty.h
+
+# On passe les "ldscripts" dans lib$LIBDIRSUFFIX :
+mv ${PKG}/usr/lib/ldscripts ${PKG}/usr/lib${LIBDIRSUFFIX}/ || true
+
+# 'binutils' s'entête à placer '/usr/share/man' et '/usr/share/info' en doublon :
+rm -rf ${PKG}/usr/{share/{info,man}}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

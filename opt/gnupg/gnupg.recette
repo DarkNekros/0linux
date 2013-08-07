@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-gnupg}
+VERSION=${VERSION:-2.0.20}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-gnupg}
+WGET=${WGET:-ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Outils OpenPGP de chiffrement et de signature"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée le répertoire de configuration :
+mkdir -p ${PKG}/etc/gnupg
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+make html
+fakeroot make install DESTDIR=${PKG}
+
+# On crée un lien générique pour 'gpg2' :
+ln -sf gpg2 ${PKG}/usr/bin/gpg
+
+installer_doc
+
+# On complète la documentation :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/html
+cp -a doc/*.html ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/html
+ln -sf ../../share/gnupg ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/help
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-opencollada}
+VERSION=${VERSION:-15062013}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-opencollada}
+WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC/${NAMESRC}-${VERSION}.${EXT}}
+DESC="Bibliothèques de décodage des fichiers « 3D Studio » et « Maya »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+mkdir -p build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D USE_SHARED=ON \
+	-D CMAKE_{MODULE,EXE}_LINKER_FLAGS='-Wl,--no-undefined -Wl,--as-needed' \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Les bibliothèques sont mal placés en x86_64 :
+if [ $LIBDIRSUFFIX ] ; then
+	mv $PKG/usr/lib{,$LIBDIRSUFFIX}
+fi
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-findutils}
+VERSION=${VERSION:-4.4.2}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-findutils}
+WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Ensemble de programmes de recherche de fichiers"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-leaf-optimisation \
+	--enable-d_type-optimisation \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On se passe de 'locate 'et 'updatedb' aux performances affreuses, utilisez 'whereis'
+# ou 'find'  ;) :
+rm -f ${PKG}/usr/bin/{locate,updatedb}
+rm -f ${PKG}/usr/man/man1/{locate,updatedb}*
+rm -f ${PKG}/usr/man/man5/locate*
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

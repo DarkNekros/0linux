@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-acpica-unix}
+VERSION=${VERSION:-20121018}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-iasl}
+WGET=${WGET:-http://acpica.org/download/$NAMESRC-$VERSION.$EXT}
+DESC="Compilateur ACPI"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+cd generate/unix
+
+# On adapte et on empêche la compilation de s'arrêter au moindre avertissement :
+sed -i -e 's/_CYGWIN/_LINUX/g' -e 's/-Werror//g' Makefile.config
+
+# Un paramètre dépend de l'architecture :
+if [[ "${PKGARCH}" == "i686" ]]; then
+	
+	# Compilation :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	make -j${JOBS} BITS=32 || make BITS=32
+	fakeroot make install DESTDIR=${PKG}
+elif [[ "${PKGARCH}" == "x86_64" ]]; then
+	
+	# Compilation :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	make -j${JOBS} BITS=64 || make BITS=64
+	fakeroot make install DESTDIR=${PKG}
+fi
+
+# Ce paquet est vide pour les autres architectures.
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

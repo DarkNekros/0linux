@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-nss}
+VERSION=${VERSION:-3.14.3}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-nss}
+WGET=${WGET:-ftp://ftp.mozilla.org/pub/mozilla.org/security/$NAMESRC/releases/NSS_$(echo $VERSION | sed 's/\./_/g')_RTM/src/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques de sécurité multi-plateformes de Mozilla"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée le répertoire d'accueil :
+mkdir -p ${PKG}/usr/{bin,include/nss3,lib${LIBDIRSUFFIX}/pkgconfig}
+
+# une option dépend de l'architecture :
+if [ "${PKGARCH}" =  "x86_64" ]; then
+	export USE_64=1
+fi
+
+# Les CFLAGS plantent la compilation.
+for rep in mozilla/security/{coreconf,dbm,nss}; do
+	PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 \
+	PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 \
+	NSPR_INCLUDE_DIR=/usr/include/nspr \
+	NSPR_LIB_DIR=/usr/lib${LIBDIRSUFFIX} \
+	NSS_ENABLE_ECC=1 \
+	NS_USE_GCC=1 \
+	NSDISTMODE=copy \
+	NSS_USE_SYSTEM_SQLITE=1 \
+	BUILD_OPT=1 \
+	make -C ${rep}
+done
+
+# 'make install' à la main !
+install -m755 mozilla/dist/*.OBJ/lib/lib*3.so ${PKG}/usr/lib${LIBDIRSUFFIX}
+install -m644 mozilla/dist/*.OBJ/lib/*.a ${PKG}/usr/lib${LIBDIRSUFFIX}
+install -m644 mozilla/dist/public/nss/*.h ${PKG}/usr/include/nss3
+ln -sf nss3 ${PKG}/usr/include/nss
+
+for binaire in certutil cmsutil crlutil modutil pk12util signtool signver ssltap; do
+	install -m755 mozilla/dist/*.OBJ/bin/${binaire} ${PKG}/usr/bin
+done
+
+# Cette bibliothèque statique ne doit pas écraser celle de 'openssl', on renomme :
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/libssl{,3}.a
+
+# On crée le fichier pour 'pkg-config' :
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/nss.pc << EOF
+prefix=/usr
+exec_prefix=/usr/bin
+libdir=/usr/lib${LIBDIRSUFFIX}
+includedir=/usr/include/nss3
+
+Name: NSS
+Description: Network Security Services
+Version: ${VERSION}
+Requires: sqlite3 nspr >= 4.8
+Libs: -L/usr/lib${LIBDIRSUFFIX} -lssl3 -lsmime3 -lnss3 -lnssutil3
+Cflags: -I/usr/include/nss
+
+EOF
+
+# On crée le binaire 'nss-config :'
+cat $CWD/nss-config > ${PKG}/usr/bin/nss-config
+sed -i -e "s,@libdir@,/usr/lib${LIBDIRSUFFIX},g" \
+	-e "s,@prefix@,/usr,g" \
+	-e "s,@exec_prefix@,/usr,g" \
+	-e "s,@includedir@,/usr/include/nss3,g" \
+	-e "s,@MOD_MAJOR_VERSION@,$(echo $VERSION | cut -d'.' -f1),g" \
+	-e "s,@MOD_MINOR_VERSION@,$(echo $VERSION | cut -d'.' -f2),g" \
+	-e "s,@MOD_PATCH_VERSION@,$(echo $VERSION | cut -d'.' -f3),g" \
+	${PKG}/usr/bin/nss-config
+
+chmod 755 ${PKG}/usr/bin/nss-config
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

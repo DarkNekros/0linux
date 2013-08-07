@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-0outils}
+VERSION=${VERSION:-5.2}
+NAMETGZ=${NAMETGZ:-0outils}
+DESC="Outils « maison » pour la configuration du système"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags # on appelle cflags() car elle contient la détection de $PKGARCH
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/{etc/0outils/0g,usr/share/0outils}
+mkdir -p ${PKG}/usr/{s,}bin
+
+# On place les scripts réservés à root :
+for script in \
+0clavier \
+0creation_live \
+0g \
+0horloge \
+0locale \
+0nouvel_utilisateur \
+0police \
+0reseau; do
+	cp -a $CWD/${script} ${PKG}/usr/sbin
+done
+chmod 700 ${PKG}/usr/sbin/*
+
+# On place les script utilisateurs :
+cp -a $CWD/0bureau ${PKG}/usr/bin
+chmod 755 ${PKG}/usr/bin/*
+
+# On place les fonctions pour l'empaquetage :
+cp -a $CWD/fonctions_paquets.sh ${PKG}/usr/share/0outils/
+chmod 755 ${PKG}/usr/share/0outils/fonctions_paquets.sh
+
+# On place les fichiers du système autonome, scripts et fichiers d'amorçage :
+cp -a $CWD/installateur ${PKG}/usr/share/0outils/
+
+# On place la configuration de '0g' en prenant garde à ne rien écraser ::
+cat > ${PKG}/etc/0outils/0g/config.0nouveau << "EOF"
+# config : fichier de configuration de '0g(8)'.
+# On force l'ajout de la gestion des dépôts dans 'apps' dès la première installation :
+force 1
+
+EOF
+
+cat > ${PKG}/etc/0outils/0g/apps.0nouveau << "EOF"
+# apps : fichier de configuration des dépôts gérés par '0g(8)'.
+# Un dépôt par ligne, précédé à chaque fois d'un arobase « @ ».  Voyez 'man 8 0g'.
+# Ce fichier est alimenté automatiquement par '0g' (cf. '/etc/0outils/0g/config')
+# Exemple :
+# @firefox
+# @kde
+
+EOF
+
+cat > ${PKG}/etc/0outils/0g/liste_noire.0nouveau << "EOF"
+# liste_noire : liste noire des paquets destinés à être ignorés par '0g(8)'.
+# Un paquet par ligne, suivi d'un espace et d'un 0 (ignoré mais téléchargé) ou
+# d'un 1 (totalement ignoré : ni téléchargé ni installé). Voyez 'man 8 0g'.
+# Exemple :
+# libcaca 0
+# nvidia 1
+
+EOF
+
+# On place le manuel via 'txt2tags' :
+mkdir -p ${PKG}/usr/man/man8
+txt2tags -t man -o ${PKG}/usr/man/man8/0g.8 $CWD/0g-man.t2t || true
+
+installer_doc
+
+# On place le manuel HTML via 'txt2tags' :
+txt2tags -t html -o ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0g.html $CWD/0g-man.t2t || true
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,6 @@
+[Configuration]
+FontName=DejaVu Sans Mono 10
+MiscHighlightUrls=TRUE
+ScrollingLines=10000
+CommandLoginShell=TRUE
+

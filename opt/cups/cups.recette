@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-cups}
+VERSION=${VERSION:-1.6.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-cups}
+WGET=${WGET:-http://ftp.easysw.com/pub/$NAMESRC/$VERSION/$NAMESRC-$VERSION-source.$EXT}
+DESC="Le système d'impression « Common Unix Printing System »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On régénère les scripts de construction :
+aclocal -I config-scripts
+autoconf -I config-scripts
+
+# On force notre chemin de bibliothèques via 'libdir' :
+sed -i -e 's#$exec_prefix/lib#$libdir#g' configure
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-pam \
+	--enable-avahi \
+	--enable-dbus \
+	--enable-gnutls \
+	--enable-ssl=yes \
+	--enable-threads \
+	--with-docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-logdir=/var/log/cups \
+	--without-php \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install BUILDROOT=${PKG}
+
+# On nettoie tous les scripts SysV  :
+rm -rf ${PKG}/etc/rc*.d
+rm -rf ${PKG}/etc/init.d
+
+# L'astuce de Slackware pour le support de Samba :
+ln -sf ../../../../usr/bin/smbspool ${PKG}/usr/lib${LIBDIRSUFFIX}/cups/backend/smb
+
+# On corrige le raccourci bureau :
+sed -i 's@^Exec=htmlview http://localhost:631/@Exec=xdg-open http://localhost:631/@g' ${PKG}/usr/share/applications/cups.desktop
+
+# On crée un fichier pour l'actualisation des journaux :
+mkdir -p ${PKG}/etc/logrotate.d
+cat > ${PKG}/etc/logrotate.d/cups << "EOF"
+/var/log/cups/*log {
+	missingok
+	notifempty
+	delaycompress
+	postrotate
+		kill -HUP `cat /var/run/cups.pid 2>/dev/null` 2>/dev/null || true
+	endscript
+}
+
+EOF
+
+# On prend garde à n'écraser aucun fichier de configuration :
+for fichierconfig in $(find ${PKG}/etc/cups/ -type f); do
+	mv ${fichierconfig}{,.0nouveau}
+done
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+chgrp lp etc/cups/client.conf
+chgrp lp etc/cups/{printers.conf,classes.conf,subscriptions.conf}
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

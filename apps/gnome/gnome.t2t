@@ -1,0 +1,17 @@
+Description du dépôt @gnome
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @gnome =
+
+L'environnement de bureau GNOME, un bureau moderne, attractif et intuitif.
+
+= Le dépôt @gnome pour 0linux =
+
+Le dépôt contient le bureau minimal GNOME. Le dépôt est en cours d'intégration ; il n'est donc pas encore complet.
+
+= Installation sous 0linux =
+
+``# 0g @gnome``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

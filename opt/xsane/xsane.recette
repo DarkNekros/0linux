@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-xsane}
+VERSION=${VERSION:-0.998}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-xsane}
+WGET=${WGET:-http://www.xsane.org/download/$NAMESRC-$VERSION.$EXT}
+DESC="Interface graphique pour SANE"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On supprime une antiquité pour quelque chose de plus standard :
+sed -i 's@define DEFAULT_BROWSER "netscape"@define DEFAULT_BROWSER "xdg-open"@' src/xsane.h
+
+# On corrige un appel :
+sed -i 's@png_ptr->jmpbuf@png_jmpbuf(png_ptr)@' src/xsane-save.c
+
+# Compilation :
+LDFLAGS="-lpng15" CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--enable-gimp \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée un lien pour permettre à 'gimp' d'accéder à 'xsane' :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/gimp/2.0/plug-ins
+ln -sf ../../../../../usr/bin/xsane ${PKG}/usr/lib${LIBDIRSUFFIX}/gimp/2.0/plug-ins/xsane
+
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

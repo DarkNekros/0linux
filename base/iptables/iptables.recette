@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-iptables}
+VERSION=${VERSION:-1.4.19.1}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-iptables}
+WGET=${WGET:-http://www.netfilter.org/projects/$NAMESRC/files/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de filtrage de paquets pour Linux"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On force à se conformer à l'entête de Linux sur le système hôte :
+rm -f include/linux/types.h
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/iptables \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-devel \
+	--enable-libipq \
+	--enable-shared \
+	--with-xtlibdir=/usr/lib${LIBDIRSUFFIX}/iptables \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On corrige les chemins erronés dans les bibliothèques :
+chrpath --delete ${PKG}/usr/lib${LIBDIRSUFFIX}/iptables/*.so
+
+# On crée le fichier service du pare-feu rudimentaire :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.iptables << "EOF"
+#!/usr/bin/env bash
+
+iptables_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du pare-feu..."
+	
+	# Filtre des attaques SSH par "force brute"
+	iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH
+	iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 --rttl --name SSH -j LOG --log-prefix "SSH_attaque"
+	iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 --rttl --name SSH -j DROP
+	
+	# On accepte ce qui sort :
+	iptables -P OUTPUT ACCEPT
+	
+	# Pour éviter les mauvaises suprises, on va autoriser l'accès à la loopback :
+	iptables -A INPUT -i lo -j ACCEPT
+	iptables -A OUTPUT -o lo -j ACCEPT
+	
+	iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+	iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+	iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+}
+
+iptables_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt du pare-feu..."
+	iptables -F
+	iptables -X
+	iptables -P INPUT ACCEPT
+	iptables -P FORWARD ACCEPT
+	iptables -P OUTPUT ACCEPT
+}
+
+case "$1" in
+	'start')
+		iptables_start
+	;;
+	
+	'stop')
+		iptables_stop
+	;;
+	
+	'restart')
+		iptables_stop
+		sleep 1
+		iptables_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 {start|stop|restart}"
+		exit 1
+	;;
+
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.iptables
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

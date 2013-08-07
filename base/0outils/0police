@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+unset CONSOLEFONT TESTPOLICE
+
+# Cette fonction supprime les espaces superflus via 'echo' :
+crunch() {
+	read STRING;
+	echo $STRING;
+}
+
+# Boucle pour l'affichage du menu :
+while [ ! "$TESTPOLICE" = "1" ]; do
+	clear
+	echo -e "\033[1;32mChoix de la police console.\033[0;0m"
+	echo ""
+	echo "Veuillez choisir la taille de la police console souhaitée parmi la"
+	echo "la liste suivante :"
+	echo ""
+	echo " 8 : police Unicode 'latin-9w', taille 8 pixels"
+	echo "10 : police Unicode 'latin-9w', taille 10 pixels"
+	echo "12 : police Unicode 'latin-9w', taille 12 pixels"
+	echo "14 : police Unicode 'latin-9w', taille 14 pixels"
+	echo "16 : police Unicode 'latin-9w', taille 16 pixels (recommandée)"
+	echo ""
+	echo -n "Votre choix : "
+	read CONSOLEFONT;
+	if [ "$CONSOLEFONT" = "" ]; then
+		echo "Veuillez entrer un code valide (8, 10, 12, 14 ou 16 uniquement)."
+		unset CONSOLEFONT
+		sleep 2
+		continue
+	elif [ "$(echo ${CONSOLEFONT} | crunch | grep -E '8|10|12|14|16')" = "" ]; then
+		echo "Veuillez entrer un code valide (8, 10, 12, 14 ou 16 uniquement)."
+		unset CONSOLEFONT
+		sleep 2
+		continue
+	else
+		# Test de la police. On charge la police et on affiche un test :
+		setfont lat9w-${CONSOLEFONT}.psfu
+		
+		while [ 0 ]; do
+			if [ "${INSTALLDEBUG}" = "" ]; then
+				clear
+			fi
+			echo -e "\033[1;32mTest de la police console.\033[0;0m"
+			echo ""
+			echo "La nouvelle police est maintenant chargée. Qu'en pensez-vous ?"
+			echo ""
+			echo "« Dès Noël où un zéphyr haï me vêt de glaçons würmiens je dîne"
+			echo "  d'exquis rôtis de bœuf au kir à l'aÿ d'âge mûr & cætera ! »"
+			echo ""
+			echo "Tapez tout ce que vous voulez pour la tester. ENTRÉE vide la ligne."
+			echo "Pour quitter le test de la police console, entrez simplement le"
+			echo "chiffre « 1 » et appuyez sur ENTRÉE pour valider votre choix ou"
+			echo "bien entrez « 2 » pour refuser la police et en choisir une autre."
+			echo ""
+			echo -n "Test : "
+			read TESTPOLICE;
+			
+			# Si le choix est validé, on sort du script :
+			if [ "$TESTPOLICE" = "1" ]; then
+				
+				# On crée le fichier de configuration au cas où :
+				if [ ! -r /etc/vconsole.conf ]; then
+					echo "# Ce fichier détermine la police à utiliser en mode console parmi celles" >> /etc/vconsole.conf
+					echo "# disponibles dans '/usr/share/kbd/consolefonts', ainsi que la disposition" >> /etc/vconsole.conf
+					echo "# des touches du clavier en mode console parmi celles disponibles dans" >> /etc/vconsole.conf
+					echo "# '/usr/share/kbd/keymaps/i386'." >> /etc/vconsole.conf
+					echo "FONT=" >> /etc/vconsole.conf
+					echo "KEYMAP=" >> /etc/vconsole.conf
+				else
+					
+					# On le met à jour selon ce qu'on y trouve :
+					if [ ! "$(grep -E '^FONT=' /etc/vconsole.conf)" = "" ]; then
+						sed -i -e "s@^FONT=.*$@FONT=lat9w-${CONSOLEFONT}@" /etc/vconsole.conf
+					else
+						echo "FONT=lat9w-${CONSOLEFONT}" >> /etc/vconsole.conf
+					fi
+				fi
+				
+				break
+			
+			# Sinon, on retourne au choix de la police :
+			elif  [ "$TESTPOLICE" = "2" ]; then
+				
+				# On recharge la police par défaut et on sort de la boucle :
+				setfont lat9w-16.psfu 1>/dev/null 2>/dev/null
+				unset CONSOLEFONT TESTPOLICE
+				break
+			fi
+		done
+	fi
+done
+
+# C'est fini !

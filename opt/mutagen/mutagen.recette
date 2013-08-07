@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-mutagen}
+VERSION=${VERSION:-1.21}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-mutagen}
+WGET=${WGET:-http://mutagen.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+DESC="Module Python de gestion des méta-données audio"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python setup.py build
+
+fakeroot python setup.py install --root ${PKG}
+
+# On déplace les manuels où il faut :
+mv ${PKG}/usr/share/man ${PKG}/usr
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

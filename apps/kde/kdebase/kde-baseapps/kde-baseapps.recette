@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-kde-baseapps}
+VERSION=${VERSION:-4.10.5}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-kde-baseapps}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+DESC="Applications de base de KDE : Konqueror et Dolphin"
+########################################
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+mkdir -p build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D BUILD_TESTS=OFF \
+	-D ENABLE_SSE=ON \
+	-D ENABLE_SSE2=ON \
+	-D ENABLE_SSE3=ON \
+	-D KDE4_BUILD_TESTS=FALSE \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D CMAKE_{SHARED,MODULE,EXE}_LINKER_FLAGS='-Wl,--no-undefined -Wl,--as-needed' \
+	-D SYSCONF_INSTALL_DIR=/etc/kde \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+# Ajoute l'icone de KFind, manquante
+sed -i -e "s@Icon=kfind@Icon=edit-find@g" ${PKG}/usr/share/applications/kde4/kfind.desktop
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-Python}
+VERSION=${VERSION:-2.7.5}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-python}
+WGET=(http://www.python.org/ftp/python/$VERSION/$NAMESRC-$VERSION.$EXT
+      http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-html.tar.bz2
+      http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-text.tar.bz2
+     )
+DESC="Langage de programmation interprété orienté objet"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+cflags
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On corrige une idiotie :
+	sed -i "s@^# /usr/local/bin/python@#!/usr/bin/python@" Lib/cgi.py
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--enable-ipv6 \
+		--enable-shared \
+		--enable-unicode=ucs4 \
+		--with-system-expat \
+		--with-system-ffi \
+		--with-threads \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On renomme ces binaires et entêtes spécifiques à l'architecture :
+	mv ${PKG}/usr/bin/python{,-32}
+	mv ${PKG}/usr/bin/python2{,-32}
+	mv ${PKG}/usr/bin/python2.7{,-32}
+	mv ${PKG}/usr/include/python2.7/pyconfig{,-32}.h
+	
+	# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-32' :
+	ln -sf python2.7-32 ${PKG}/usr/bin/python2-32
+	ln -sf python2-32   ${PKG}/usr/bin/python-32
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige les sources pour intégrer notre répertoire standard de bibliothèques :
+cat $CWD/python.lib64.patch | sed "s@lib64@lib${LIBDIRSUFFIX}@g" | patch -p1
+
+# On corrige une idiotie :
+sed -i "s@^# /usr/local/bin/python@#!/usr/bin/python@" Lib/cgi.py
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-ipv6 \
+	--enable-shared \
+	--enable-unicode=ucs4 \
+	--with-system-expat \
+	--with-system-ffi \
+	--with-threads \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On copie les outils dans les modules :
+mkdir -p      ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages
+cp -a Tools/* ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages
+
+# On renomme les binaires et l'entête 64 bits :
+mv ${PKG}/usr/bin/python{,-64}
+mv ${PKG}/usr/bin/python2{,-64}
+mv ${PKG}/usr/bin/python2.7{,-64}
+mv ${PKG}/usr/include/python2.7/pyconfig{,-64}.h
+
+# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-64' :
+ln -sf python2.7-64 ${PKG}/usr/bin/python2-64
+ln -sf python2-64   ${PKG}/usr/bin/python-64
+
+# On lie des binaires génériques au programme enveloppe :
+ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python
+ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python2
+ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python2.7
+
+# On crée un faux entête pour s'adapter au multilib :
+cat > ${PKG}/usr/include/python2.7/pyconfig.h << "EOF"
+#ifndef __STUB__PYCONFIG_H__
+#define __STUB__PYCONFIG_H__
+
+#if defined(__x86_64__)
+#	include "pyconfig-64.h"
+#else
+#	include "pyconfig-32.h"
+#endif
+
+#endif
+
+EOF
+
+installer_doc
+
+# Et on extrait les archives de documentation au bon endroit :
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-$VERSION-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-$VERSION-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,48 @@
+# Fichier de configuration de 'sudo'.
+#
+# Ce fichier peut être édité avec 'visudo' pour éviter les erreurs de
+# syntaxe. Mais vous êtes soigné(e), vous pouvez l'éditer avec ce que
+# vous voulez.
+# 
+# Voyez 'man sudo' et 'man sudoers'.
+
+# Alias d'hôtes : pour identifier un groupe d'hôtes ou machines via leur nom
+# d'hôte ou adresses IP (caractères jokers autorisés)
+#Host_Alias	SERVEURSWEB = www1, www2, www3
+
+# Alias des utilisateurs : pour identifier un groupe d'utilisateurs, selon
+# leur nom d'utilisateur, UID, groupe Unix ou réseau.
+#User_Alias	ADMINISTRATEURS = pierre, paul, jacques, momo
+
+# Alias des commandes : pour identifier un groupe de commandes à autoriser.
+#Cmnd_Alias	COMMANDES = /usr/bin/nice, /usr/bin/kill, /usr/bin/top
+
+# Préservation des variables d'environnement dans les commandes via 'sudo'.
+# Syntaxe : Defaults env_keep += "LANG LANGUAGE DISPLAY QTDIR"
+# Ici on permet à 'sudo' d'accéder aux binaire de '/*sbin', comme 'root' :
+Defaults	secure_path = /usr/sbin:/usr/bin
+
+# Journalisation : Décommentez ce qui suit pour activer la journalisation
+# des commandes, sauf 'sudoreplay' dans l'exemple qui suit :
+#Defaults log_output
+#Defaults!/usr/bin/sudoreplay !log_output
+
+# Privilèges des utilisateurs.
+# 'root' a tous les droits pour invoquer sudo :
+root ALL=(ALL) ALL
+
+# Décommentez ceci pour permettre au group wheel d'exécuter n'importe quelle
+# commande via 'sudo' (le mot de passe sera demandé) :
+#%wheel ALL=(ALL) ALL
+
+# Le groupe d'utilisateurs par défaut 'users' peut invoquer 'sudo' :
+%users ALL=(ALL) ALL
+
+# Le groupe 'sudo peut invoquer 'sudo' SANS MOT DE PASSE. Réfléchissez bien
+# aux implications en terme de sécurité : si vous ajoutez un utilisateur au
+# groupe 'sudo', c'est comme si vous lui donniez le mot de passe root !!!
+#%sudo	ALL=(ALL) NOPASSWD: ALL
+
+# On inclut tous les fichiers de configurations trouvés sous '/etc/sudoers.d'
+# (attention, le dièze « # » ici ne représente pas un commentaire !) :
+#includedir /etc/sudoers.d

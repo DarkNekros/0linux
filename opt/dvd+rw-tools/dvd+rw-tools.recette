@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-dvd+rw-tools}
+VERSION=${VERSION:-7.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-dvd+rw-tools}
+WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+DESC="Ensemble de programmes pour graver DVD et Blu-Ray en ligne de commande"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige les entêtes :
+cat $CWD/dvd+rw-tools.limits.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+
+# L'installation doit être manuelle pour être propre :
+mkdir -p ${PKG}/usr/bin
+
+for binaire in dvd+rw-booktype dvd+rw-booktype dvd+rw-format \
+dvd+rw-mediainfo dvd-ram-control growisofs; do
+	cp -a ${binaire} ${PKG}/usr/bin/
+done
+
+chmod 755 ${PKG}/usr/bin/*
+
+# On place le manuel :
+mkdir -p ${PKG}/usr/man/man1
+cp -a growisofs.1 ${PKG}/usr/man/man1/
+
+installer_doc
+
+# On complète la documentataion :
+cp -a index.html LICENSE ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-coreutils}
+VERSION=${VERSION:-8.20}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-coreutils}
+WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Outils système vitaux GNU"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# 'hostname, ''kill' et 'uptime' sont inclus dans d'autres paquets.
+# Compilation. On autorise de configurer les sources en root via cette variable :
+FORCE_UNSAFE_CONFIGURE=1 \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-no-install-program=hostname,kill,uptime \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	RUN_EXPENSIVE_TESTS=yes make -k check 2>&1 || true
+fi
+
+fakeroot make install DESTDIR=${PKG}
+
+# On ajoute le script de colorisation de la sortie de 'ls' :
+mkdir -p ${PKG}/etc
+cp -a $CWD/DIR_COLORS ${PKG}/etc/
+
+# On copie les scripts de colorisation :
+mkdir -p ${PKG}/etc/profile.d
+cp -a $CWD/coreutils-dircolors.sh ${PKG}/etc/profile.d/
+chmod 755 ${PKG}/etc/profile.d/*
+
+# 'ginstall' est encore utilisé. On ajoute les liens du binaire et du manuel:
+ln -sf install ${PKG}/usr/bin/ginstall
+ln -sf install.1 ${PKG}/usr/man/man1/ginstall.1
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

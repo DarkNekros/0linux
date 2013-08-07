@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-vim}
+VERSION=${VERSION:-7.3} #  Indiquer ici le nombre de correctifs à appliquer
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-vim}
+WGET=${WGET:-ftp://ftp.vim.org/pub/vim/unix/$NAMESRC-$VERSION.$EXT}
+DESC="Le puissant éditeur de texte « Vi IMproved »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On télécharge chaque correctif :
+mkdir -p ${PKGSOURCES}/${NAMETGZ}/patches
+
+for correctif in {001..750}; do # Indiquer ici le nombre de correctifs à appliquer.
+	if [ ! -r ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} ]; then
+		wget -vc "ftp://ftp.vim.org/pub/vim/patches/${VERSION}/${VERSION}.${correctif}" \
+			-O ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif}.part
+		mv ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif}{.part,}
+	fi
+	
+	# On applique un à un les correctifs des mainteneurs :
+	cat ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} | patch -p0
+done
+
+# Compilation en 3 temps : 
+# 1- Compilation de 'minivim' statique pour le système autonome
+# 2- Compilation du 'vim' complet pour terminal
+# 3- Compilation de 'gvim' pour X
+
+# On force l'emplacement de 'vimrc' dans /etc :
+echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
+
+# 1- Compilation de 'minivim' statique pour le système autonome :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-gui \
+	--enable-multibyte \
+	--with-compiledby=0 \
+	--with-features=tiny \
+	--with-vim-name=minivim \
+	--without-x \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install VIMRTDIR= DESTDIR=${PKG}
+
+# On nettoie la présente compilation :
+make distclean
+
+# 2- Compilation du 'vim' complet pour terminal :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-gui \
+	--enable-acl \
+	--enable-cscope \
+	--enable-gpm \
+	--enable-pythoninterp \
+	--enable-perlinterp \
+	--enable-rubyinterp \
+	--enable-multibyte \
+	--with-compiledby=0 \
+	--with-features=huge \
+	--without-x \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install VIMRTDIR= DESTDIR=${PKG}
+
+# On nettoie la présente compilation :
+make distclean
+
+# 3- Compilation de 'gvim' pour X avec le maximum de fonctionnalités :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-acl \
+	--enable-cscope \
+	--enable-gpm \
+	--enable-gui=gtk2 \
+	--enable-pythoninterp \
+	--enable-perlinterp \
+	--enable-rubyinterp \
+	--enable-multibyte \
+	--with-compiledby=0 \
+	--with-features=huge \
+	--with-vim-name=gvim \
+	--with-x \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install VIMRTDIR= DESTDIR=${PKG}
+
+# On crée un lien pour 'gview' :
+ln -sf gvim ${PKG}/usr/bin/gview
+
+# On ajoute le dictionnaire pour le français en encodage UTF-8 :
+cp -a $CWD/fr.utf-8.* ${PKG}/usr/share/vim/spell/
+
+# On copie le vimrc à sa place :
+cp -a runtime/vimrc_example.vim ${PKG}/usr/share/vim
+
+# Puis on en copie un autre dans /etc pour en faire la configuration globale :
+mkdir -p ${PKG}/etc
+cp runtime/vimrc_example.vim ${PKG}/etc/vimrc.0nouveau
+
+# On y ajoute quelques paramètres personnalisés (compatibilité 'crontab -e', 
+# dictionnaires, police brillante, coloration, lignes numérotées, auto-détection de la souris) :
+echo "
+\" Options pour 0 :
+\" ----------------
+
+filetype plugin on
+filetype indent on
+set backupskip+=/var/spool/cron/*
+set spelllang=fr,en
+set spell
+set background=dark
+set number
+syntax enable
+" >> ${PKG}/etc/vimrc.0nouveau
+
+# On ajoute un lien de 'vi' vers 'vim' :
+ln -sf vim ${PKG}/usr/bin/vi
+
+installer_doc
+
+# On lie la doc de '/usr/share/vim/vim*/doc' à '/usr/doc/vim-*/doc' :
+ln -sf ../../../usr/share/vim/doc ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,21 @@
+Description du dépôt @stellarium
+fatalerrors - jeff.levasseur@free.fr
+Juin 2013
+
+= Description de @stellarium =
+
+Stellarium est un planétarium 3D photo-réaliste en temps réel. Il est ainsi possible de simuler sur un écran ce que l'on verrait réellement à l'œil nu, aux jumelles ou avec un petit télescope.
+
+Stellarium possède un catalogue de base de plus de 600 000 étoiles, et plus de 210 millions d'étoiles peuvent être ajoutées en téléchargeant des catalogues supplémentaires.
+
+Stellarium inclut également des images des planètes, satellites et astéroïdes du système solaire, des images de plusieurs nébuleuses (en particulier des objets du catalogue Messier), et des représentations artistiques des constellations.
+
+= Le dépôt @stellarium pour 0linux =
+
+Le dépôt contient le planétarium Stellarium complet et sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @stellarium``
+
+% Contenu maintenu par fatalerrors. Inspiré par Wikipédia.

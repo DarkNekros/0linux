@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-ffmpeg2theora}
+VERSION=${VERSION:-0.29}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-ffmpeg2theora}
+WGET=${WGET:-http://v2v.cc/~j/$NAMESRC/downloads/$NAMESRC-$VERSION.$EXT}
+DESC="Convertisseur vers le format Ogg Theora"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+sed -i 's:pp_mode_t:pp_mode:' src/ffmpeg2theora.c
+sed -i 's:pp_context_t:pp_context:' src/ffmpeg2theora.c
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+scons
+
+fakeroot scons install prefix=/usr mandir="PREFIX/man" destdir=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

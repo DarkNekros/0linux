@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-sane-backends}
+VERSION=${VERSION:-1.0.23}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-sane-backends}
+WGET=${WGET:-https://alioth.debian.org/frs/download.php/3503/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques d'interfaçage pour la numérisation via scanneurs"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/udev/rules.d
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd/system/
+
+# On corrige un problème de compatibilité avec 'sane-frontends' et le « support » de V4L en le désactivant :
+cat $CWD/sane-backends.disable-v4l.patch | patch -p1
+cat $CWD/sane-backends.cap-settable.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-libusb_1_0 \
+	--enable-avahi \
+	--enable-pthread \
+	--with-group=scanner \
+	--with-lockdir=/var/lock/sane \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la règle pour 'udev' :
+cp -a tools/udev/libsane.rules ${PKG}/usr/lib${LIBDIRSUFFIX}/udev/rules.d/80-libsane.rules
+
+# On corrige les jets d'encre HP :
+echo "#hpaio" >> ${PKG}/etc/sane.d/dll.conf
+
+# Le fichir pour 'pkg-config' n'est pas installé :
+cp -a tools/sane-backends.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/
+
+# On prend garde à ne rien écraser :
+for conf in ${PKG}/etc/sane.d/*.conf ; do
+	mv ${conf}{,.0nouveau}
+done
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On corrige les permissions :
+chmod 755 var
+chmod 1777 var/lock
+chown root:scanner var/lock/sane
+chmod 775 var/lock/sane
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

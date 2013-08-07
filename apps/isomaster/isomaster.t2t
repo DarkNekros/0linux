@@ -1,0 +1,17 @@
+Description du dépôt @isomaster
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @isomaster =
+
+Isomaster est un éditeur graphique d'images de CD et autres formats pour lecteurs optiques. Isomaster permet de monter une image de disque et ainsi de maninpuler son contenu comme un système de fichiers classique : ajouter, supprimer ou extraire des fichiers contenus dans des images disque, le tout graphiquement.
+
+= Le dépôt @isomaster pour 0linux =
+
+Le dépôt contient le logiciel Isomaster complet.
+
+= Installation sous 0linux =
+
+``# 0g @isomaster``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

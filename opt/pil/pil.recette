@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-Imaging}
+VERSION=${VERSION:-1.1.7}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-pil}
+WGET=${WGET:-http://effbot.org/downloads/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques Python de traitement des images"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python setup.py build
+
+fakeroot python setup.py install --root=${PKG}
+
+(
+	cd Sane
+	
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	python setup.py build
+	
+	fakeroot python setup.py install --root=${PKG}
+)
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

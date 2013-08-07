@@ -1,0 +1,16 @@
+
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=ekd
+GenericName=EnKoDeur-Mixeur
+GenericName[fr]=EnKoDeur-Mixeur
+Comment=Application used on post-production for video and pictures.
+Comment[fr]=Application réalisant des opérations de post-production pour la vidéo et les images.
+Exec=/usr/bin/ekd
+Icon=/usr/share/ekd/icone_ekd.png
+Terminal=false
+MultipleArgs=false
+Type=Application
+Categories=AudioVideo;AudioVideoEditing;
+StartupNotify=true

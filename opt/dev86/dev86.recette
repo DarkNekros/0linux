@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-Dev86src}
+VERSION=${VERSION:-0.16.19}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-dev86}
+WGET=${WGET:-http://www.debath.co.uk/dev86/$NAMESRC-$VERSION.$EXT}
+DESC="Compilateur, assembleur et éditeur de liens 8086"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige l'erreur « ncc: illegal label » ainsi qu'un bogue dans 'nc'' :
+sed -i 's@strcpy(buf, cp);@memmove(buf, cp, strlen(cp) + 1);@' copt/copt.c
+cat $CWD/dev86.ncc.path | patch -p1
+
+# Compilation sans $FLAGS :
+echo 'quit' | make -j${JOBS} PREFIX=/usr INCLDIR=/usr/lib${LIBDIRSUFFIX}/bcc LIBDIR=/usr/lib${LIBDIRSUFFIX}/bcc DIST=${PKG} || \
+echo 'quit' | make PREFIX=/usr  INCLDIR=/usr/lib${LIBDIRSUFFIX}/bcc LIBDIR=/usr/lib${LIBDIRSUFFIX}/bcc DIST=${PKG}
+fakeroot make install-all DIST=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-openshadinglanguage}
+VERSION=${VERSION:-1.3.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-openshadinglanguage}
+WGET=${WGET:-https://github.com/imageworks/OpenShadingLanguage/archive/Release-$VERSION.$EXT}
+DESC="Langage avancé de création d'ombres pour les moteurs de rendu 3D"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+cd src
+mkdir -p build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D LLVM_STATIC=ON \
+	-D Boost_DIR=/usr/include/boost \
+	-D USE_TBB=0 \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../../
+
+# Les libs sont mal placés :
+if [ $LIBDIRSUFFIX ] ; then
+	mv $PKG/usr/lib{,$LIBDIRSUFFIX}
+fi
+
+# C'est assez sale comme paquet...
+mkdir -p $PKG/usr/share/OSL
+mv $PKG/usr{,/share/OSL}/shaders
+
+installer_doc
+
+# Comme je disais, c'est crade...
+mv $PKG/usr/{LICENSE,CHANGES,README.md,INSTALL,doc/osl-languagespec.pdf} \
+	$PKG/usr/doc/$NAMETGZ-$VERSION
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

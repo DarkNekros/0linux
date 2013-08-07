@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+# 0MIR (I) gère le serveur maître de 0linux.
+#
+
+# === Library ==================================================================
+checknewpkg () {
+    # Vérifie que les nouveaux paquets/dbs ont été correctement poussés.
+    # $f TIMESTAMP, DBs
+    local newer="" stamp="$1"; shift 1
+    [ -f "$stamp" ] && newer="-newer $stamp"
+    find $@  "$PKGROOT" -type f $newer \! -name include \! -name "*~" | while read pkg; do
+            echo "   Check   $pkg..."
+            sum="$(curl -s "$FTP/$pkg" | md5sum | awk '{print $1}')"
+            check="$(md5sum "$pkg" | awk '{print $1}')"
+            [ "$check" = "$sum" ] || growl 0 "$FTP/$pkg is CORRUPTED!"
+    done
+    date -u '+TZ=UTC0 touch -m -t %Y%m%d%H%M.%S "$0"' >"$stamp"
+}
+
+growl () {
+    # Imprime le message d'erreur et sort si un code non-nul est donné.
+    # $f CODE, MESSAGE
+    local code=$1; shift 1
+    if [ $code -ne 0 ]; then
+        echo "(E) $*" >&2
+        exit $code
+    fi
+    echo "(W) $*" >&2
+}
+
+mkpkgDB () {
+    # Régénère la DB des paquets.
+    # $f
+    find "$PKGROOT" -type f -name "*.spack" | sed 's#^\(.*/\)\(.*\).spack#\2 \2 \1#;
+                                                   s#-[^-]*-[^-]*-[^-]* # #'
+}
+
+mkpkgsetDB () {
+    # Régénère la DB des jeux de paquets.
+    # $f
+    (   cd "./$PKGROOT/apps" || exit 1
+    ls -1 */*.spack | (sort -r; echo "") | \
+                    awk -F/ '(DIR != $1){ if (PKG) print "@"DIR PKG;DIR=$1
+                                           f=$1"/include";PKG="";split("",GOT)
+                                           while((getline l < f) > 0) {
+                                               gsub(/^[\t ]*|[\t ]*$/,"",l)
+                                               (l ~ /^[^#]/) && (PKG = PKG" "l) && GOT[l] 
+                                           }
+                                           if(PKG)close(f) }
+                              {sub(/-[^-]+-[^-]+-[^-]+$/,"",$2)
+                                   ($2 in GOT) || GOT[$2] ||PKG = PKG" "$2}'
+    )
+}
+
+mirror () {
+    # Mets à jour le dépôt sur le serveur.
+    # $f TIMESTAMP
+    local user="${FTPUSER:+"-u $FTPUSER"}"
+    [ -f "$1" ] || TZ=UTC0 touch -t 197001010000.01 "$1"
+    lftp  -c "open $FTP $user && mirror -R -e -N "$1" -X *~ -X include . ." || exit 1
+}
+
+# === Main =====================================================================
+
+export LC_ALL="C"
+umask 022
+FTP="ftp://127.0.0.3:2112"
+FTPUSER=""
+ROOT="0"
+PKGROOT="paquets"
+
+cd "$(dirname "$0")/$ROOT" || exit 1
+
+mkpkgDB >"./paquets.db"
+mkpkgsetDB >"./applications.db"
+mirror ../.timestamp
+checknewpkg ../.timestamp paquets.db applications.db
+
+# EoF

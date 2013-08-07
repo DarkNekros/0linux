@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-alsa-utils}
+VERSION=${VERSION:-1.0.27}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-alsa-utils}
+WGET=${WGET:-ftp://ftp.alsa-project.org/pub/utils/$NAMESRC-$VERSION.$EXT}
+DESC="Outils en ligne de commande pour ALSA"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-udev-rules-dir=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.alsa << "EOF"
+#!/usr/bin/env bash
+
+alsa_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de ALSA..."
+	# Si les modules de compatibilité avec OSS existent, on les charge :
+	if [ ! "$(modprobe -c | grep -E 'snd.*oss')" = "" ]; then
+		modprobe snd-pcm-oss 2>/dev/null
+		modprobe snd-seq-oss 2>/dev/null
+		modprobe snd-mixer-oss 2>/dev/null
+	fi
+
+	# Si la configuration d'ALSA existe, on la restaure :
+	if [ -r /etc/asound.state ]; then
+		alsactl restore
+	
+	# Sinon, on crée une configuration par défaut et on l'enregistre :
+	else
+amixer -s -q << EOC
+set Master 75% unmute
+set Master -12dB
+set 'Master Mono' 75% unmute
+set 'Master Mono' -12dB
+set Front 75% unmute
+set Front -12dB
+set PCM 90% unmute
+set PCM 0dB
+mixer Synth 90% unmute
+mixer Synth 0dB
+mixer CD 90% unmute
+mixer CD 0dB
+# On coupe le micro par défaut :
+set Mic 0% mute
+# Les chipsets ESS 1969 ont 2 canaux PCM :
+set PCM,1 90% unmute
+set PCM,1 0dB
+# Trident/YMFPCI/emu10k1 :
+set Wave 100% unmute
+set Music 100% unmute
+set AC97 100% unmute
+# CS4237B  :
+set 'Master Digital' 75% unmute
+# Envy24 avec sorties analogiques :
+set DAC 90% unmute
+set DAC -12dB
+set DAC,0 90% unmute
+set DAC,0 -12dB
+set DAC,1 90% unmute
+set DAC,1 -12dB
+# Certains portables utilise la sortie casque plutôt que la master :
+set Headphone 75% unmute
+set Headphone -12dB
+set Playback 100% unmute
+# On désactive les switches Analog/Digital en sortie :
+set "SB Live Analog/Digital Output Jack" off
+set "Audigy Analog/Digital Output Jack" off
+
+EOC
+		
+		alsactl store
+	fi
+}
+
+alsa_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de ALSA..."
+	alsactl kill quit
+}
+
+case "$1" in
+	'start')
+		alsa_start
+	;;
+	
+	'stop')
+		alsa_stop
+	;;
+	
+	'restart')
+		alsa_stop
+		sleep 1
+		alsa_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.alsa
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

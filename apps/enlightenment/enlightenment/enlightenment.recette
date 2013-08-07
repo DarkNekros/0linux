@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-enlightenment}
+VERSION=${VERSION:-0.17.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-enlightenment}
+WGET=${WGET:-http://download.enlightenment.org/releases/$NAMESRC-$VERSION.$EXT}
+DESC="L'environnement graphique Enlightenment ou « E »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-device-hal \
+	--disable-mount-hal \
+	--enable-device-udev \
+	--enable-elementary \
+	--enable-emotion \
+	--enable-enotify \
+	--enable-mount-eeze \
+	--enable-mount-udisks \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On veille à ne rien écraser :
+mv ${PKG}/etc/enlightenment/sysactions.conf{,.0nouveau}
+
+# On crée le fichier de démarrage pour 'startx' ou 'xdm' :
+mkdir -p ${PKG}/etc/X11/xinit
+echo "exec enlightenment_start" > ${PKG}/etc/X11/xinit/xinitrc.e
+chmod 755 ${PKG}/etc/X11/xinit/xinitrc.e
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
+

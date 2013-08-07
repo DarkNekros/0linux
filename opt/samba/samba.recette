@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-samba}
+VERSION=${VERSION:-4.0.6}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-samba}
+WGET=${WGET:-http://ftp.samba.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Clients et serveurs Samba pour les protocoles SMB, CIFS et Active Directory"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/etc/samba
+mkdir -p ${PKG}/var/spool/samba
+
+cd source3
+
+# Compilation avec 'libtirpc' :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+LDFLAGS+="-ltirpc" \
+./configure \
+	--enable-fhs \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-configdir=/etc/samba \
+	--with-lockdir=/var/cache/samba \
+	--with-logfilebase=/var/log/samba \
+	--with-piddir=/run \
+	--with-privatedir=/etc/samba/private \
+	--with-swatdir=/usr/share/swat \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install-everything DESTDIR=${PKG}
+
+# On place le fichier de configuration sans rien écraser :
+cp ../examples/smb.conf.default ${PKG}/etc/samba/smb.conf.0nouveau
+
+# À FAIRE : écrire rc.samba+ ordre des lancements des démons à déduire :
+## On monte les partages Samba :
+#	if [ ! "$(cat /etc/fstab | grep -v '^#' | grep -w -E 'cifs|smbfs')" = "" ]; then
+#		echo "Montage des systèmes de fichiers distants Samba..."
+#		mount -R -a -t cifs,smbfs
+#	fi
+#/usr/sbin/swat
+#/usr/sbin/winbindd -D (+ nmbd ?)
+#/usr/sbin/smbd -D 
+
+# Ce répertoire a besoin du bit « sticky » :
+chmod 1777 ${PKG}/var/spool/samba
+  
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

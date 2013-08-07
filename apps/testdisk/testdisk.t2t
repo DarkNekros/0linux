@@ -1,0 +1,27 @@
+Description du dépôt @testdisk
+fatalerrors - jeff.levasseur@free.fr
+Juin 2013
+
+= Description de @testdisk =
+
+TestDisk est un logiciel de récupération de données. Il est capable d'un grand nombre de possibilité, ce qui en fait l'un des plus puissant de sa catégorie :
+
+ - récupération de partitions perdues ;
+ - réparation de partitions endomagés ;
+ - réparation / réinitialisation du MBR ;
+ - comparaison des copies d'une FAT12/FAT16/FAT32 et réparation de celle-ci ;
+ - récupération de fichiers effacés (FAT12/FAT16/FAT32/exFAT/NTFS/ext2) ;
+ - assistance à fsck en localisant les sauvegardes de superblock.
+
+
+ TestDisk est accompagné de PhotoRec dont le but est de scanner la surface d'un disque à la recherche de documents à récupérer à partir de leurs structures et non en fonction des informations fournies par le système de fichier.
+
+= Le dépôt @testdisk pour 0linux =
+
+Le dépôt contient les programmes TestDisk et PhotoRec et leurs documentations.
+
+= Installation sous 0linux =
+
+``# 0g @testdisk``
+
+% Contenu maintenu par fatalerrors.

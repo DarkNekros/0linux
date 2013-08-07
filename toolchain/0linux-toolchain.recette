@@ -1,0 +1,1344 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+# Créez avant tout les liens à la racine du système hôte (donc en root)
+# pour les répertoires 'cross-tools' et 'tools', même s'ils n'existent pas encore :
+#	ln -sv /tmp/0-marmite/0linux-toolchain/paquet/cross-tools /
+#	ln -sv /tmp/0-marmite/0linux-toolchain/paquet/tools /
+
+# Renseignez le fichier 'versions.sh', dans le même répertoire, puis positionnez
+# la variable $PKGSOURCES à l'emplacement des archives sources dont vous disposez .
+# Par exemple :
+#	PKGSOURCES=/quelque/part/sources/ ./0linux-toolchain.recette
+
+# Il est fortement recommandé de NE PAS faire confiance à l'environnement et
+# d'ajouter au début de son PATH le répertoire '/cross-tools', ainsi :
+# 	export PATH=/cross-tools/bin:/cross-tools/usr/bin:${PATH}
+
+# On doit entrer dans un environnement vide avec notamment le PATH placant la
+# nouvelle chaine d'outils en premier, qui va donc se remplir au fur et à
+# mesure en la privilégiant toujours à l'hôte ainsi que la locale (C ou POSIX
+# et pas autre chose) :
+#env -i \
+#	HOME=${HOME} \
+#	LC_ALL="POSIX" \
+#	PATH="/cross-tools/bin:/bin:/usr/bin" \
+#	PS1='\u:\w\$ ' \
+#	TERM=${TERM} \
+#	/bin/bash --login +h
+
+# On supprime le « hash » servant de cache à bash (quel poète) :
+set +h
+
+# On affiche l'environnement 10 secondes :
+echo "Voici 10 secondes pour vérifier l'environnement ci-dessous:"
+echo "---"
+env
+echo "---"
+sleep 10
+
+PKGCAT=toolchain
+NAMESRC=${NAMESRC:-0linux-toolchain}
+VERSION=${VERSION:-$(date +%d%m%Y)}
+NAMETGZ=${NAMETGZ:-0linux-toolchain}
+DESC="La chaîne d'outils croisés pour 0Linux"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+# On a besoin de cflags() pour définir $PKGARCH et $LIBDIRSUFFIX :
+cflags
+
+# La racine du système hypothétique final. Ici, c'est le paquet lui-même :
+FINAL_SYSROOT=${PKG}
+
+# La machine hôte, différente du système hôte réel (on ajoute « cross ») :
+HOST=$(echo ${MACHTYPE} | sed -e 's/-[^-]*/-cross/')
+
+# La machine cible :
+TARGET="${PKGARCH}-0linux-linux-gnu"
+
+# On vérifie que les liens à la racine existent :
+if [ ! -L /cross-tools ]; then
+	echo "/cross-tools n'existe pas ou n'est pas un lien ! Créez-le en root."
+	exit 1
+elif [ ! -L /tools ]; then
+	echo "/tools n'existe pas ou n'est pas un lien ! Créez-le en root."
+	exit 1
+fi
+
+# La locale (C ou POSIX et pas autre chose) :
+export LC_ALL="POSIX"
+
+# Nom et versions des archives :
+source $CWD/versions.sh
+
+# On crée les emplacements et les liens pour les outils croisés :
+mkdir -p ${PKG}/cross-tools/include
+
+# On crée les emplacements et les liens pour la chaîne temporaire :
+mkdir -p ${PKG}/tools/usr/include
+ln -sf usr/include ${PKG}/tools/include
+
+# Gestion du multilib :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mkdir -p ${PKG}/tools/usr/lib
+	mkdir -p ${PKG}/tools/usr/lib${LIBDIRSUFFIX}
+	ln -sf usr/lib ${PKG}/tools/lib
+	ln -sf usr/lib${LIBDIRSUFFIX} ${PKG}/tools/lib${LIBDIRSUFFIX}
+else
+	# Structure standard avec ou sans suffixe :
+	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+		mkdir -p ${PKG}/tools/usr/lib${LIBDIRSUFFIX}
+		ln -sf lib${LIBDIRSUFFIX} ${PKG}/usr/lib
+		ln -sf usr/lib ${PKG}/lib
+	else
+		mkdir -p ${PKG}/tools/usr/lib
+		ln -sf usr/lib ${PKG}/tools/lib
+	fi
+fi
+
+# On crée les emplacements standards et les liens pour le paquet final :
+mkdir -p ${PKG}/usr/bin
+mkdir -p ${PKG}/usr/sbin
+ln -sf usr/bin ${PKG}/bin
+ln -sf usr/sbin ${PKG}/sbin
+
+# Gestion du multilib :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mkdir -p ${PKG}/usr/lib
+	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+	ln -sf usr/lib ${PKG}/lib
+	ln -sf usr/lib${LIBDIRSUFFIX} ${PKG}/lib${LIBDIRSUFFIX}
+
+# Structure standard avec ou sans suffixe :
+else
+	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+		mkdir -p ${PKG}/usr/lib
+		mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+		ln -sf lib${LIBDIRSUFFIX} ${PKG}/usr/lib
+		ln -sf usr/lib ${PKG}/lib
+	else
+		mkdir -p ${PKG}/usr/lib
+		ln -sf usr/lib ${PKG}/lib
+	fi
+fi
+
+## PHASE 1 : Chaîne d'outils croisés temporaire installée dans /cross-tools ##
+
+# linux-entetes
+cd $TMP
+rm -rf $TMP/$LINUX
+tar xf $PKGSOURCES/linux/$LINUX.tar.* -C $TMP
+cd $TMP/$LINUX
+
+# L'architecture diffère pour les entêtes Linux :
+if [ "${PKGARCH}" = "i686" ]; then
+	BUILDARCH="i386"
+else
+	BUILDARCH="${PKGARCH}"
+fi
+
+make mrproper
+make ARCH=${BUILDARCH} headers_check
+fakeroot make ARCH=${BUILDARCH} INSTALL_HDR_PATH=dest headers_install
+cp -ar dest/include/* /tools/usr/include
+
+cd -
+rm -rf $TMP/$LINUX
+
+# file
+cd $TMP
+rm -rf $TMP/$FILE
+tar xf $PKGSOURCES/file/$FILE.tar.*
+cd $TMP/$FILE
+
+./configure --prefix=/cross-tools \
+	--disable-static
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$FILE
+
+## m4
+#cd $TMP
+#rm -rf $TMP/$M4
+#tar xf $PKGSOURCES/m4/$M4.tar.*
+#cd $TMP/$M4
+#
+#./configure --prefix=/cross-tools
+#
+#make -j${JOBS} || make
+#fakeroot make install
+#
+#cd -
+#rm -rf $TMP/$M4
+
+# ncurses
+cd $TMP
+rm -rf $TMP/$NCURSES
+tar xf $PKGSOURCES/ncurses/$NCURSES.tar.*
+cd $TMP/$NCURSES
+
+./configure --prefix=/cross-tools \
+	--without-debug \
+	--without-gpm \
+	--without-shared
+
+make -j${JOBS} -C include || make -C include
+make -j${JOBS} -C progs tic || make -C progs tic
+
+install -m755 progs/tic /cross-tools/bin/
+
+cd -
+rm -rf $TMP/$NCURSES
+
+# gmp
+cd $TMP
+rm -rf $TMP/$GMP
+tar xf $PKGSOURCES/gmp/$GMP.tar.* -C $TMP
+cd $TMP/$GMP
+
+./configure \
+	--prefix=/cross-tools \
+	--disable-static \
+	--enable-cxx
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$GMP
+
+# mpfr
+cd $TMP
+rm -rf $TMP/$MPFR
+tar xf $PKGSOURCES/mpfr/$MPFR.tar.* -C $TMP
+cd $TMP/$MPFR
+
+LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+./configure \
+	--prefix=/cross-tools \
+	--disable-static \
+	--enable-shared \
+	--with-gmp=/cross-tools
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$MPFR
+
+# mpc
+cd $TMP
+rm -rf $TMP/$MPC
+tar xf $PKGSOURCES/mpc/$MPC.tar.* -C $TMP
+cd $TMP/$MPC
+
+LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+./configure \
+	--prefix=/cross-tools \
+	--disable-static \
+	--with-gmp=/cross-tools \
+	--with-mpfr=/cross-tools
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$MPC
+
+# isl
+cd $TMP
+rm -rf $TMP/$ISL
+tar xf $PKGSOURCES/isl/$ISL.tar.* -C $TMP
+cd $TMP/$ISL
+
+LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+./configure \
+	--prefix=/cross-tools \
+	--disable-static \
+	--with-gmp-prefix=/cross-tools
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$ISL
+
+# cloog
+cd $TMP
+rm -rf $TMP/$CLOOG
+tar xf $PKGSOURCES/cloog/$CLOOG.tar.* -C $TMP
+cd $TMP/$CLOOG
+
+LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+./configure \
+	--prefix=/cross-tools \
+	--disable-static \
+	--enable-shared \
+	--with-gmp-prefix=/cross-tools \
+	--with-isl-prefix=/cross-tools
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$CLOOG
+
+# binutils croisés
+cd $TMP
+rm -rf $TMP/$BINUTILS
+rm -rf $TMP/binutils-build
+tar xf $PKGSOURCES/binutils/$BINUTILS.tar.* -C $TMP
+cd $TMP/$BINUTILS
+mkdir -p $TMP/binutils-build
+cd $TMP/binutils-build
+
+AR=ar \
+AS=as \
+$TMP/$BINUTILS/configure \
+	--prefix=/cross-tools \
+	--with-lib-path=/tools/lib \
+	--disable-nls \
+	--disable-static \
+	--enable-shared  \
+	--with-sysroot=${FINAL_SYSROOT} \
+	--host=${HOST} \
+	--target=${TARGET}
+
+make configure-host
+make -j${JOBS} || make
+fakeroot make install
+
+cp -a $TMP/$BINUTILS/include/libiberty.h /tools/include/
+
+cd -
+rm -rf $TMP/$BINUTILS
+rm -rf $TMP/binutils-build
+
+# gcc croisé statique
+cd $TMP
+rm -rf $TMP/$GCC
+rm -rf $TMP/gcc-build
+tar xf $PKGSOURCES/gcc/$GCC.tar.*
+cd $TMP/$GCC
+
+# Ce correctif place notre chaîne d'outils dans les chemins de recherche :
+cat $CWD/0-toolchain.gcc-static-specs.patch | patch -p1
+
+# On modifie la config pour ne fouiller que dans notre chaîne d'outils :
+echo -en '\n#undef STANDARD_STARTFILE_PREFIX_1\n#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"\n' >> gcc/config/linux.h
+echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFIX_2 ""\n' >> gcc/config/linux.h
+
+# On empêche de fouiller dans les entêtes de l'hôte en créant un entête 'limits.h' vide :
+touch /tools/include/limits.h
+
+mkdir -p $TMP/gcc-build
+cd $TMP/gcc-build
+
+AR=ar \
+LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+$TMP/$GCC/configure \
+	--prefix=/cross-tools \
+	--disable-cloog-version-check \
+	--disable-decimal-float \
+	--disable-libatomic \
+	--disable-libgomp \
+	--disable-libitm \
+	--disable-libmudflap \
+	--disable-libquadmath \
+	--disable-libsanitizer \
+	--disable-libssp \
+	--disable-nls \
+	--disable-threads \
+	--disable-shared \
+	--disable-target-libiberty \
+	--disable-target-zlib \
+	--enable-checking=release \
+	--enable-cloog-backend=isl \
+	--enable-languages=c \
+	--with-cloog=/cross-tools \
+	--with-gmp=/cross-tools \
+	--with-mpc=/cross-tools \
+	--with-mpfr=/cross-tools \
+	--with-local-prefix=/tools \
+	--with-newlib \
+	--with-sysroot=${FINAL_SYSROOT} \
+	--with-native-system-header-dir=/tools/include \
+	--without-headers \
+	--build=${HOST} \
+	--host=${HOST} \
+	--target=${TARGET}
+
+make all-gcc all-target-libgcc
+fakeroot make install-gcc install-target-libgcc
+
+cd -
+rm -rf $TMP/$GCC
+rm -rf $TMP/gcc-build
+
+# glibc en 32 bits pour le multilib dans le cas d'une chaîne d'outils pour x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	cd $TMP
+	rm -rf $TMP/glibc-*
+	tar xf $PKGSOURCES/glibc/$GLIBC.tar.*
+	cd $TMP/$GLIBC
+	
+	mkdir -p $TMP/glibc-build
+	cd $TMP/glibc-build
+	
+	# On force le support de NPTL :
+	echo "libc_cv_ssp=no" >> config.cache
+	
+	AR="${TARGET}-ar" \
+	BUILD_CC="gcc" \
+	CC="${TARGET}-gcc -m32" \
+	RANLIB="${TARGET}-ranlib" \
+	$TMP/$GLIBC/configure \
+		--prefix=/tools \
+		--cache-file=config.cache \
+		--disable-profile \
+		--enable-kernel=3.1.0 \
+		--enable-obsolete-rpc \
+		--with-__thread \
+		--with-binutils=/cross-tools/bin \
+		--with-headers=/tools/include \
+		--with-tls \
+		--build=${HOST} \
+		--host=i686-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install
+
+	cd -
+	rm -rf $TMP/glibc-*
+fi
+
+# glibc native
+cd $TMP
+rm -rf $TMP/glibc-*
+tar xf $PKGSOURCES/glibc/$GLIBC.tar.*
+cd $TMP/$GLIBC
+
+mkdir -p $TMP/glibc-build
+cd $TMP/glibc-build
+
+# Les bibliothèques vont dans la chaîne d'outils finale :
+echo "slibdir=/tools/lib${LIBDIRSUFFIX}" >> configparms
+
+# On force le support de NPTL :
+echo "libc_cv_ssp=no" >> config.cache
+
+AR="${TARGET}-ar" \
+BUILD_CC="gcc" \
+CC="${TARGET}-gcc" \
+RANLIB="${TARGET}-ranlib" \
+	$TMP/$GLIBC/configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--cache-file=config.cache \
+	--disable-profile \
+	--enable-kernel=3.1.0 \
+	--enable-obsolete-rpc \
+	--with-__thread \
+	--with-binutils=/cross-tools/bin \
+	--with-headers=/tools/usr/include \
+	--with-tls \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install inst_vardbdir=/tools/var/db
+
+cd -
+rm -rf $TMP/glibc-*
+
+# gcc croisé final
+cd $TMP
+rm -rf $TMP/$GCC
+rm -rf $TMP/gcc-build
+tar xf $PKGSOURCES/gcc/$GCC.tar.*
+cd $TMP/$GCC
+
+# Ce correctif place notre chaîne d'outils dans les chemins de recherche :
+cat $CWD/0-toolchain.gcc-static-specs.patch | patch -p1
+
+# On modifie la config pour ne fouiller que dans notre chaîne d'outils :
+echo -en '\n#undef STANDARD_STARTFILE_PREFIX_1\n#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"\n' >> gcc/config/linux.h
+echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFIX_2 ""\n' >> gcc/config/linux.h
+
+mkdir -p $TMP/gcc-build
+cd $TMP/gcc-build
+
+AR=ar \
+LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+$TMP/$GCC/configure \
+	--prefix=/cross-tools \
+	--disable-cloog-version-check \
+	--disable-nls \
+	--disable-static \
+	--enable-threads=posix \
+	--enable-__cxa_atexit \
+	--enable-c99 \
+	--enable-checking=release \
+	--enable-cloog-backend=isl \
+	--enable-languages=c,c++ \
+	--enable-libstdcxx-time \
+	--enable-long-long \
+	--enable-shared \
+	--enable-threads=posix \
+	--with-cloog=/cross-tools \
+	--with-gmp=/cross-tools \
+	--with-local-prefix=/tools \
+	--with-mpc=/cross-tools \
+	--with-mpfr=/cross-tools \
+	--with-native-system-header-dir=/tools/include \
+	--with-sysroot=${FINAL_SYSROOT} \
+	--with-system-zlib \
+	--build=${HOST} \
+	--host=${HOST} \
+	--target=${TARGET}
+
+make -j${JOBS} AS_FOR_TARGET="${TARGET}-as" LD_FOR_TARGET="${TARGET}-ld" || \
+	make AS_FOR_TARGET="${TARGET}-as" LD_FOR_TARGET="${TARGET}-ld"
+fakeroot make install
+
+cd -
+rm -rf $TMP/$GCC
+rm -rf $TMP/gcc-build
+
+# PHASE 2 : recompilation croisée des outils critiques sur notre propre chaîne d'outils croisée.
+# On place les fichiers résultants dans /tools.
+
+# On utilise désormais nos outils croisés sur la machine cible et on:
+export     AR="${TARGET}-ar"
+export     AS="${TARGET}-as"
+export     CC="${TARGET}-gcc"
+export    CXX="${TARGET}-g++"
+export     LD="${TARGET}-ld"
+export RANLIB="${TARGET}-ranlib"
+export  STRIP="${TARGET}-strip"
+
+# gmp
+cd $TMP
+rm -rf $TMP/$GMP
+tar xf $PKGSOURCES/gmp/$GMP.tar.* -C $TMP
+cd $TMP/$GMP
+
+# On force l'ABI 32 bits selon l'architecture :
+if [ ! "${PKGARCH}" = "x86_64" ]; then
+	export ABI=32
+fi
+
+HOST_CC="gcc" CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--enable-cxx \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+# On n'a plus besoin de la variable ABI :
+unset ABI
+
+cd -
+rm -rf $TMP/$GMP
+
+# mpfr
+cd $TMP
+rm -rf $TMP/$MPFR
+tar xf $PKGSOURCES/mpfr/$MPFR.tar.* -C $TMP
+cd $TMP/$MPFR
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--enable-shared \
+	--with-gmp=/tools/usr \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$MPFR
+
+# mpc
+cd $TMP
+rm -rf $TMP/$MPC
+tar xf $PKGSOURCES/mpc/$MPC.tar.* -C $TMP
+cd $TMP/$MPC
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$MPC
+
+# isl
+cd $TMP
+rm -rf $TMP/$ISL
+tar xf $PKGSOURCES/isl/$ISL.tar.* -C $TMP
+cd $TMP/$ISL
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--with-gmp-prefix=/tools/usr \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$ISL
+
+# cloog
+cd $TMP
+rm -rf $TMP/$CLOOG
+tar xf $PKGSOURCES/cloog/$CLOOG.tar.* -C $TMP
+cd $TMP/$CLOOG
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--enable-shared \
+	--with-gmp-prefix=/tools \
+	--with-isl-prefix=/tools \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$CLOOG
+
+# zlib
+cd $TMP
+rm -rf $TMP/$ZLIB
+tar xf $PKGSOURCES/zlib/$ZLIB.tar.* -C $TMP
+cd $TMP/$ZLIB
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX}
+
+make clean
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$ZLIB
+
+# binutils
+cd $TMP
+rm -rf $TMP/$BINUTILS
+rm -rf $TMP/binutils-build
+tar xf $PKGSOURCES/binutils/$BINUTILS.tar.* -C $TMP
+cd $TMP/$BINUTILS
+mkdir -p $TMP/binutils-build
+cd $TMP/binutils-build
+
+# On active le 64 bits le cas échéant :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	BFD64OPT="--enable-64-bit-bfd"
+fi
+
+CC="${CC}" \
+$TMP/$BINUTILS/configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--with-lib-path=/tools/lib${LIBDIRSUFFIX}:/tools/lib \ \
+	--disable-cloog-version-check \
+	${BFD64OPT} \
+	--disable-nls \
+	--enable-shared \
+	--build=${HOST} \
+	--host=${TARGET} \
+	--target=${TARGET}
+
+make configure-host
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$BINUTILS
+rm -rf $TMP/binutils-build
+
+# gcc final
+cd $TMP
+rm -rf $TMP/$GCC
+rm -rf $TMP/gcc-build
+tar xf $PKGSOURCES/gcc/$GCC.tar.*
+cd $TMP/$GCC
+
+# Ce correctif place notre chaîne d'outils dans les chemins de recherche :
+cat $CWD/0-toolchain.gcc-static-specs.patch | patch -p1
+
+# On modifie la config pour ne fouiller que dans notre chaîne d'outils :
+echo -en '\n#undef STANDARD_STARTFILE_PREFIX_1\n#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"\n' >> gcc/config/linux.h
+echo -en '\n#undef STANDARD_STARTFILE_PREFIX_2\n#define STANDARD_STARTFILE_PREFIX_2 ""\n' >> gcc/config/linux.h
+
+mkdir -p $TMP/gcc-build
+cd $TMP/gcc-build
+
+CC="${CC}" CXX="${CXX}" \
+$TMP/$GCC/configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--libexecdir=/tools/lib${LIBDIRSUFFIX} \
+	--disable-cloog-version-check \
+	--disable-install-libiberty \
+	--disable-libstdcxx-pch \
+	--disable-nls \
+	--enable-__cxa_atexit \
+	--enable-c99 \
+	--enable-languages=c,c++ \
+	--enable-libstdcxx-time \
+	--enable-long-long \
+	--enable-shared \
+	--enable-threads=posix \
+	--with-local-prefix=/tools \
+	--build=${HOST} \
+	--host=${TARGET} \
+	--target=${TARGET}
+
+# On force GCC à chercher à tâtons :
+sed -i "/^HOST_\(GMP\|CLOOG\)\(LIBS\|INC\)/s@-[IL]/.*\(lib\|include\)@@" Makefile
+
+make -j${JOBS} AS_FOR_TARGET="${AS}" LD_FOR_TARGET="${LD}" || \
+	make AS_FOR_TARGET="${AS}" LD_FOR_TARGET="${LD}"
+fakeroot make install
+
+cd -
+rm -rf $TMP/$GCC
+rm -rf $TMP/gcc-build
+
+# ncurses
+cd $TMP
+rm -rf $TMP/$NCURSES
+tar xf $PKGSOURCES/ncurses/$NCURSES.tar.*
+cd $TMP/$NCURSES
+
+CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--enable-overwrite \
+	--with-build-cc=gcc \
+	--with-shared \
+	--without-ada \
+	--without-debug \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$NCURSES
+
+# bash4
+cd $TMP
+rm -rf $TMP/$BASH4
+tar xf $PKGSOURCES/bash/$BASH4.tar.*
+cd $TMP/$BASH4
+
+# On force la détection de certains paramètres qui échoue dans un environnement croisé :
+cat > config.cache << "EOF"
+ac_cv_func_mmap_fixed_mapped=yes
+ac_cv_func_strcoll_works=yes
+ac_cv_func_working_mktime=yes
+bash_cv_func_sigsetjmp=present
+bash_cv_getcwd_malloc=yes
+bash_cv_job_control_missing=present
+bash_cv_printf_a_format=yes
+bash_cv_sys_named_pipes=present
+bash_cv_ulimit_maxfds=yes
+bash_cv_under_sys_siglist=yes
+bash_cv_unusable_rtsigs=no
+gt_cv_int_divbyzero_sigfpe=yes
+
+EOF
+
+CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--cache-file=config.cache \
+	--without-bash-malloc \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+# L'important lien sh -> bash
+ln -sf bash /tools/bin/sh
+
+cd -
+rm -rf $TMP/$BASH4
+
+# bison
+cd $TMP
+rm -rf $TMP/$BISON
+tar xf $PKGSOURCES/bison/$BISON.tar.*
+cd $TMP/$BISON
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$BISON
+
+# bzip2
+cd $TMP
+rm -rf $TMP/$BZIP2
+tar xf $PKGSOURCES/bzip2/$BZIP2.tar.*
+cd $TMP/$BZIP2
+
+# On supprime la suite de tests et on corrige pour notre suffixe :
+sed -i -e 's@^\(all:.*\) test@\1@g' \
+	-e "s@/lib\(/\| \|$\)@/lib${LIBDIRSUFFIX}\1@g" Makefile
+
+make clean
+
+CC="${CC}" AR="${AR}" RANLIB="${RANLIB}" \
+make
+
+fakeroot make install PREFIX=/tools
+
+# Quelques liens standards :
+ln -sf bzip2 /tools/bin/bunzip2
+ln -sf bzip2 /tools/bin/bzcat
+
+cd -
+rm -rf $TMP/$BZIP2
+
+# coreutils
+cd $TMP
+rm -rf $TMP/$COREUTILS
+tar xf $PKGSOURCES/coreutils/$COREUTILS.tar.*
+cd $TMP/$COREUTILS
+
+# On empêche la régénération du manuel :
+touch man/hostname.1
+
+# On adapte à l'environnement croisé pour être sur de compiler tous les
+# programmes ('df' est ignoré entre autres) :
+echo "fu_cv_sys_stat_statfs2_bsize=yes" >> config.cache
+echo "gl_cv_func_working_mkstemp=yes" >> config.cache
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--cache-file=config.cache \
+	--enable-install-program=hostname \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$COREUTILS
+
+# diffutils
+cd $TMP
+rm -rf $TMP/$DIFFUTILS
+tar xf $PKGSOURCES/diffutils/$DIFFUTILS.tar.*
+cd $TMP/$DIFFUTILS
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$DIFFUTILS
+
+# findutils
+cd $TMP
+rm -rf $TMP/$FINDUTILS
+tar xf $PKGSOURCES/findutils/$FINDUTILS.tar.*
+cd $TMP/$FINDUTILS
+
+# On adapte à l'environnement croisé :
+echo "gl_cv_func_wcwidth_works=yes" >> config.cache
+echo "ac_cv_func_fnmatch_gnu=yes" >> config.cache
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--cache-file=config.cache \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$FINDUTILS
+
+# file
+cd $TMP
+rm -rf $TMP/$FILE
+tar xf $PKGSOURCES/file/$FILE.tar.*
+cd $TMP/$FILE
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $PKGSOURCES/$FILE
+
+# flex
+cd $TMP
+rm -rf $TMP/$FLEX
+tar xf $PKGSOURCES/flex/$FLEX.tar.*
+cd $TMP/$FLEX
+
+# On adapte à l'environnement croisé (certaines détections échouent) :
+echo "ac_cv_func_realloc_0_nonnull=yes" >> config.cache
+echo "ac_cv_func_malloc_0_nonnull=yes" >> config.cache
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--cache-file=config.cache \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$FLEX
+
+# gawk
+cd $TMP
+rm -rf $TMP/$GAWK
+tar xf $PKGSOURCES/gawk/$GAWK.tar.*
+cd $TMP/$GAWK
+
+# On corrige une erreur à la construction :
+sed -i -e 's/check-recursive all-recursive: check-for-shared-lib-support/check-recursive all-recursive:/' \
+	extension/Makefile.in
+	
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$GAWK
+
+# gettext
+cd $TMP
+rm -rf $TMP/$GETTEXT
+tar xf $PKGSOURCES/gettext/$GETTEXT.tar.*
+cd $TMP/$GETTEXT/gettext-tools
+
+# On adapte une détection à l'environnement croisé, sinon la compilation échoue :
+echo "gl_cv_func_wcwidth_works=yes" > config.cache
+
+CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--cache-file=config.cache \
+	--disable-shared \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} -C gettext-tools/gnulib-lib || make -C gettext-tools/gnulib-lib
+make -j${JOBS} -C src gettext-tools/msgfmt || make -C gettext-tools/src msgfmt
+
+fakeroot cp src/msgfmt /tools/bin
+chmod +x /tools/bin/msgfmt
+
+cd -
+rm -rf $TMP/$GETTEXT
+
+# grep
+cd $TMP
+rm -rf $TMP/$GREP
+tar xf $PKGSOURCES/grep/$GREP.tar.*
+cd $TMP/$GREP
+
+# On adapte à l'environnement croisé (certaines détections échouent) :
+echo "ac_cv_func_realloc_0_nonnull=yes" >> config.cache
+echo "ac_cv_func_malloc_0_nonnull=yes" >> config.cache
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--cache-file=config.cache \
+	--without-included-regex \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$GREP
+
+# gzip
+cd $TMP
+rm -rf $TMP/$GZIP
+tar xf $PKGSOURCES/gzip/$GZIP.tar.*
+cd $TMP/$GZIP
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$GZIP
+
+# m4
+cd $TMP
+rm -rf $TMP/$M4
+tar xf $PKGSOURCES/m4/$M4.tar.*
+cd $TMP/$M4
+
+# On corrige la compilation avec les plus récentes glibc :
+sed -i '/_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");/d' lib/stdio.in.h
+
+# Même rengaine concernant l'environnement croisé :
+echo "gl_cv_func_btowc_eof=yes" >> config.cache
+echo "gl_cv_func_mbrtowc_incomplete_state=yes" >> config.cache
+echo "gl_cv_func_mbrtowc_sanitycheck=yes" >> config.cache
+echo "gl_cv_func_mbrtowc_null_arg=yes" >> config.cache
+echo "gl_cv_func_mbrtowc_retval=yes" >> config.cache
+echo "gl_cv_func_mbrtowc_nul_retval=yes" >> config.cache
+echo "gl_cv_func_wcrtomb_retval=yes" >> config.cache
+echo "gl_cv_func_wctob_works=yes" >> config.cache
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--cache-file=config.cache \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$M4
+
+# make
+cd $TMP
+rm -rf $TMP/$MAKE
+tar xf $PKGSOURCES/make/$MAKE.tar.*
+cd $TMP/$MAKE
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$MAKE
+
+# patch
+cd $TMP
+rm -rf $TMP/$PATCH
+tar xf $PKGSOURCES/patch/$PATCH.tar.*
+cd $TMP/$PATCH
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$PATCH
+
+# sed
+cd $TMP
+rm -rf $TMP/$SED
+tar xf $PKGSOURCES/sed/$SED.tar.*
+cd $TMP/$SED
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$SED
+
+# tar
+cd $TMP
+rm -rf $TMP/$TAR
+tar xf $PKGSOURCES/tar/$TAR.tar.*
+cd $TMP/$TAR
+
+# On corrige la compilation avec les plus récentes glibc :
+sed -i -e '/gets is a/d' gnu/stdio.in.h
+
+# Même rengaine concernant l'environnement croisé :
+echo "gl_cv_func_wcwidth_works=yes" >> config.cache
+echo "gl_cv_func_btowc_eof=yes" >> config.cache
+echo "ac_cv_func_malloc_0_nonnull=yes" >> config.cache
+echo "ac_cv_func_realloc_0_nonnull=yes" >> config.cache
+echo "gl_cv_func_mbrtowc_incomplete_state=yes" >> config.cache
+echo "gl_cv_func_mbrtowc_nul_retval=yes" >> config.cache
+echo "gl_cv_func_mbrtowc_null_arg=yes" >> config.cache
+echo "gl_cv_func_mbrtowc_retval=yes" >> config.cache
+echo "gl_cv_func_wcrtomb_retval=yes" >> config.cache
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--cache-file=config.cache \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$TAR
+
+# texinfo
+cd $TMP
+rm -rf $TMP/texinfo-*
+tar xf $PKGSOURCES/texinfo/$TEXINFO.tar.*
+cd $TMP/texinfo-*
+
+CC="${CC}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} -C tools/gnulib/lib || make -C tools/gnulib/lib
+make -j${JOBS} -C tools || make -C tools
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/texinfo-4*
+
+# xz
+cd $TMP
+rm -rf $TMP/$XZ
+tar xf $PKGSOURCES/xz/$XZ.tar.*
+cd $TMP/$XZ
+
+CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$XZ
+
+# util-linux
+cd $TMP
+rm -rf $TMP/$UTILLINUX
+tar xf $PKGSOURCES/util-linux/$UTILLINUX.tar.*
+cd $TMP/$UTILLINUX
+
+CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--disable-login \
+	--disable-makeinstall-chown \
+	--disable-su \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$UTILLINUX
+
+# Spéficiques à 0 :
+
+# cpio
+cd $TMP
+rm -rf $TMP/$CPIO
+tar xf $PKGSOURCES/cpio/$CPIO.tar.*
+cd $TMP/$CPIO
+
+# On corrige un entête :
+sed -i -e '/int lstat ();/d' -e '/int stat ();/d' src/filetypes.h
+
+# On corrige la compilation avec les plus récentes glibc :
+sed -i -e '/gets is a/d' gnu/stdio.in.h
+
+CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--disable-mt \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$CPIO
+
+# fakeroot
+cd $TMP
+rm -rf $TMP/$FAKEROOT
+tar xf $PKGSOURCES/fakeroot/$FAKEROOT.tar.*
+cd $TMP/$FAKEROOT
+
+CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$FAKEROOT
+
+# which
+cd $TMP
+rm -rf $TMP/$WHICH
+tar xf $PKGSOURCES/which/$WHICH.tar.*
+cd $TMP/$WHICH
+
+CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--libdir=/tools/lib${LIBDIRSUFFIX} \
+	--build=${HOST} \
+	--host=${TARGET}
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$WHICH
+
+# spack
+cd $TMP
+rm -rf $TMP/$SPACK
+tar xf $PKGSOURCES/spack/$SPACK.tar.*
+cd $TMP/$SPACK
+
+CC="${CC}" CXX="${CXX}" \
+./configure \
+	--prefix=/tools \
+	--bindir=/tools/bin \
+	--sbindir=/tools/sbin
+
+fakeroot make
+
+cd -
+rm -rf $TMP/$SPACK
+
+# 0outils
+mkdir -p /tools/usr/share/0outils
+fakeroot cp /usr/share/0outils/fonctions_paquets.sh /tools/usr/share/0outils/
+
+# On supprime toute documentation :
+for repfinal in ${PKG} /cross-tools /tools; do
+	rm -rf ${repfinal}/man
+	rm -rf ${repfinal}/share/man
+	rm -rf ${repfinal}/usr/man
+	rm -rf ${repfinal}/usr/share/man
+	rm -rf ${repfinal}/doc
+	rm -rf ${repfinal}/share/doc
+	rm -rf ${repfinal}/usr/doc
+	rm -rf ${repfinal}/usr/share/doc
+	rm -rf ${repfinal}/info
+	rm -rf ${repfinal}/share/info
+	rm -rf ${repfinal}/usr/info
+	rm -rf ${repfinal}/usr/share/info
+done
+
+empaqueter
+
+# C'est fini ! \o/

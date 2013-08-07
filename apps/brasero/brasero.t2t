@@ -1,0 +1,22 @@
+Description du dépôt @brasero
+appzer0 - appzer0@free.fr
+Mai 2013
+
+= Description de @brasero =
+
+Brasero est une application en GTK+ simple pour graver, copier et effacer des CD, DVD et autres disques optiques : audio, vidéo ou de données. Il comprend entre autres :
+
+  - Gravure à la volée
+  - Support des sessions multiples
+  - Conversion à la volée de liste de lecture de musique dans tous les formats supportés par GStreamer
+
+
+= Le dépôt @brasero pour 0linux =
+
+Le dépôt contient le logiciel Brasero complet.
+
+= Installation sous 0linux =
+
+``# 0g @brasero``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

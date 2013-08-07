@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-dcron}
+VERSION=${VERSION:-4.5}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-dcron}
+WGET=${WGET:-http://www.jimpryor.net/linux/releases/$NAMESRC-$VERSION.$EXT}
+DESC="Planificateur de tâches"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/var/spool/cron/{crontabs,cronstamps}
+mkdir -p ${PKG}/etc/cron.d
+mkdir -p ${PKG}/etc/cron.{horaire,journalier,hebdomadaire,mensuel}
+mkdir -p ${PKG}/usr/man/man{1,8}
+mkdir -p ${PKG}/usr/{bin,sbin}
+
+# On corrige l'emplacement des tâches de 'cron' :
+sed -i 's@#define TMPDIR		"/tmp"@#define TMPDIR		"/var/spool/cron"@' defs.h
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make PREFIX=/usr MANDIR=/usr/man
+
+fakeroot make install DESTDIR=${PKG}
+
+# On copie la configuration pour lancer 'lancer-taches' périodiquement et on veille
+# à ne rien écraser :
+cp -a $CWD/root ${PKG}/var/spool/cron/crontabs/root.0nouveau
+
+# On copie le script d'exécution périodique :
+cp -a $CWD/lancer-taches.sh ${PKG}/usr/bin/lancer-taches
+
+# On copie les binaires :
+cp -a crond ${PKG}/usr/sbin
+cp -a crontab ${PKG}/usr/bin
+
+# On définit des permissions restrictives :
+chmod 0751 ${PKG}/var/spool/cron
+chmod 0750 ${PKG}/var/spool/cron/{crontabs,cronstamps}
+chmod 0600 ${PKG}/var/spool/cron/crontabs/root.0nouveau
+chmod 0755 ${PKG}/usr/sbin/crond
+chmod 4711 ${PKG}/usr/bin/crontab
+chmod 0755 ${PKG}/usr/bin/lancer-taches
+
+# On copie les manuels :
+cp -a *.1 ${PKG}/usr/man/man1
+cp -a *.8 ${PKG}/usr/man/man8
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

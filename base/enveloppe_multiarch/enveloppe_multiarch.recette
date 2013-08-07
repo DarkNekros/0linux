@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-enveloppe_multiarch}
+VERSION=${VERSION:-0.1}
+NAMETGZ=${NAMETGZ:-enveloppe_multiarch}
+DESC="Le programme enveloppe multi-architecture pour certains binaires spécifiques"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On crée le répertoire d'accueil :
+mkdir -p ${PKG}/usr/bin
+
+# On crée le programme enveloppe, réagissant à la variable USE_ARCH, laquelle
+# vaut 32 ou 64 (64 par défaut). Ne sert qu'en x86_64 pour le multilib :
+cat > $TMP/enveloppe_multiarch.c << "EOF"
+#define _GNU_SOURCE
+
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+#ifndef DEF_SUFFIX
+#	define DEF_SUFFIX "64"
+#endif
+
+int main(int argc, char **argv)
+{
+	char *filename;
+	char *suffix;
+	
+	if(!(suffix = getenv("USE_ARCH")))
+		if(!(suffix = getenv("BUILDENV")))
+			suffix = DEF_SUFFIX;
+	
+	if (asprintf(&filename, "%s-%s", argv[0], suffix) < 0) {
+		perror(argv[0]);
+		return -1;
+	}
+	
+	int status = EXIT_FAILURE;
+	pid_t pid = fork();
+	
+	if (pid == 0) {
+		execvp(filename, argv);
+		perror(filename);
+		goto end;
+	} else if (pid < 0) {
+		goto end_error;
+	} else {
+		if (waitpid(pid, &status, 0) != pid) {
+			status = EXIT_FAILURE;
+			goto end_error;
+		}
+		status = WEXITSTATUS(status);
+	}
+	
+	goto end;
+
+	end_error:
+		perror(argv[0]);
+
+	end:
+		free(filename);
+	
+	return status;
+}
+
+EOF
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+gcc $TMP/enveloppe_multiarch.c -o ${PKG}/usr/bin/enveloppe_multiarch
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

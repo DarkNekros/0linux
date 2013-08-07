@@ -1,0 +1,17 @@
+Description du dépôt @claws-mail
+appzer0 - appzer0@free.fr
+Mai 2013
+
+= Description de @claws-mail =
+
+Claws-Mail est un client de courrier électronique basé sur GTK+, rapide et léger. Il est puissant, doté de nombreuses fonctionnalités. Il peut être enrichi à l'aide de greffons qui fournissent des fonctions supplémentaires, telles que de nouveaux formats de boîte aux lettres, la lecture de flux, la gestion de calendrier, le filtrage de courrier, etc. 
+
+= Le dépôt @claws-mail pour 0linux =
+
+Le dépôt contient le logiciel Claws-Mail complet ainsi qu'un ensemble de thèmes graphiques et des bibliothèques dédiées.
+
+= Installation sous 0linux =
+
+``# 0g @claws-mail``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

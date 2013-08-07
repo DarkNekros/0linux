@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+unset ORIG CHOIX
+
+for f in $(find /etc -type f -name "*.0nouveau" 2>/dev/null) ; do
+	clear
+	ORIG=$(echo $f | sed 's/\.0nouveau//')
+	
+	# Si le 'diff' est vide on supprime d'office ('spackadd' ayant à priori été trop prudent) :
+	if [ "$(diff -uN ${ORIG} ${f})" = "" ]; then
+		rm -f ${f}
+	else
+		while [ 0 ] ; do
+			echo -e "\033[1;32mNouveau fichier de configuration trouvé.\033[0;0m"
+			echo ""
+			echo "Un fichier '.0nouveau' a été trouvé pour ne pas écraser votre configuration existante :"
+			echo "Fichier original : ${ORIG}"
+			echo "Nouveau fichier  : ${f}"
+			echo "Voici les différences trouvées :"
+			echo "$(diff -uN ${ORIG} ${f} | more)"
+			echo ""
+			echo "Que voulez-vous faire du nouveau fichier ?"
+			echo "1 : ÉCRASER   - renommer le nouveau fichier et écraser votre configuration existante"
+			echo "2 : SUPPRIMER - Supprimer le nouveau et conserver votre fichier existant"
+			echo "3 : FUSIONNER - Intégrer les nouveautés en commentaires à la fin de votre fichier existant"
+			echo "4 : VIM       - Éditer avec 'vim'  votre fichier (les nouveautés seront ajoutées en commentaires)"
+			echo "5 : NANO      - Éditer avec 'nano' votre fichier (les nouveautés seront ajoutées en commentaires)"
+			echo "6 : IGNORER   - Ne rien faire (choix par défaut si vous appuyez sur ENTRÉE)"
+			echo ""
+			echo -n "Votre choix (de 1 à 5 ou ENTRÉE) : "
+			read CHOIX;
+			case $CHOIX in
+			"1")
+				mv $f ${ORIG}
+				unset CHOIX
+				break
+			;;
+			"2")
+				rm -f ${f}
+				unset CHOIX
+				break
+			;;
+			"3")
+				echo "# Différences avec la nouvelle configuration :" >> ${ORIG}
+				diff -uN ${ORIG} ${f} | sed -e 's@^@^#@g' >> ${ORIG}
+				rm -f ${f}
+				unset CHOIX
+				break
+			;;
+			"4")
+				echo "# Différences avec la nouvelle configuration :" >> ${ORIG}
+				diff -uN ${ORIG} ${f} | sed -e 's@^@^#@g' >> ${ORIG}
+				vim ${ORIG}
+				rm -f ${f}
+				unset CHOIX
+				break
+			;;
+			"5")
+				echo "# Différences avec la nouvelle configuration :" >> ${ORIG}
+				diff -uN ${ORIG} ${f} | sed -e 's@^@^#@g' >> ${ORIG}
+				nano ${ORIG}
+				rm -f ${f}
+				unset CHOIX
+				break
+			;;
+			"6")
+				unset CHOIX
+				break
+			;;
+			"")
+				unset CHOIX
+				break
+			;;
+			*)
+				echo "Veuillez entrer un chiffre entre 1 et 5 ou appuyer sur ENTRÉE."
+				sleep 3
+				unset CHOIX
+				continue
+			esac
+		done
+	fi
+done
+

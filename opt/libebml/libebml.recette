@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-libebml}
+VERSION=${VERSION:-1.2.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-libebml}
+WGET=${WGET:-http://dl.matroska.org/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques d'analyse XML EBML"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -C make/linux \
+	prefix=/usr \
+	libdir=/usr/lib${LIBDIRSUFFIX} \
+	sharedlib 
+
+fakeroot make -C make/linux \
+	prefix=${PKG}/usr \
+	libdir=${PKG}/usr/lib${LIBDIRSUFFIX} \
+	install_headers \
+	install_sharedlib
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

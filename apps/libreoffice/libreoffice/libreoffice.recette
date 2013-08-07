@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-LibreOffice}
+VERSION=${VERSION:-4.0.4}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-libreoffice}
+. /usr/share/0outils/fonctions_paquets.sh
+cflags
+if [ "${PKGARCH}" = "i686" ]; then
+	SUBARCH="x86"
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	SUBARCH="x86-64"
+fi
+WGET=(http://download.documentfoundation.org/libreoffice/stable/$VERSION/rpm/$(echo $SUBARCH | sed 's/-/_/')/${NAMESRC}_${VERSION}_Linux_${SUBARCH}_rpm.$EXT
+      http://download.documentfoundation.org/libreoffice/stable/$VERSION/rpm/$(echo $SUBARCH | sed 's/-/_/')/${NAMESRC}_${VERSION}_Linux_${SUBARCH}_rpm_langpack_fr.$EXT
+      http://download.documentfoundation.org/libreoffice/stable/$VERSION/rpm/$(echo $SUBARCH | sed 's/-/_/')/${NAMESRC}_${VERSION}_Linux_${SUBARCH}_rpm_helppack_fr.$EXT
+     )
+DESC="Suite bureautique complète libre"
+
+telecharger_sources
+preparer_sources ${NAMESRC}_${VERSION}_Linux_${SUBARCH}_rpm.$EXT
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/{bin,lib${LIBDIRSUFFIX}}
+
+# On décompacte la localisation et l'aide en français :
+tar xf ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}_${VERSION}_Linux_${SUBARCH}_rpm_langpack_fr.$EXT
+tar xf ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}_${VERSION}_Linux_${SUBARCH}_rpm_helppack_fr.$EXT
+
+# On déplace tous les paquets RPM au même endroit :
+cp -a $TMP/${NAME}/${NAMESRC}_${VERSION}*_Linux_${SUBARCH}_rpm_langpack_fr/RPMS/*.rpm $TMP/${NAME}/RPMS/
+cp -a $TMP/${NAME}/${NAMESRC}_${VERSION}*_Linux_${SUBARCH}_rpm_helppack_fr/RPMS/*.rpm $TMP/${NAME}/RPMS/
+cd $TMP/${NAME}/RPMS
+
+# On supprime tout ce qui concerne Java :
+rm -rf {JavaSetup.jar,installdata,setup}
+rm -rf {userland,jre-*-linux-*.rpm}
+
+# On ramène les menus à la Freedesktop avec les autres RPM et on se débarrasse
+# de la mise à jour en ligne :
+mv desktop-integration/libreoffice$(echo $VERSION | cut -d'.' -f1-2)*-freedesktop-menus-${VERSION}-*.noarch.rpm .
+rm -f *onlineupdate*.rpm
+
+# On extrait chaque RPM :
+for RPMPACK in *.rpm; do
+	rpmunpack ${RPMPACK}
+done
+
+# On copie chaque sous-répertoire principal 'opt', on renomme 'opt' en 'lib${LIBDIRSUFFIX}' :
+# puis on déplace le tout sous /usr :
+find . -type d -name "opt" -exec cp -ar {} . \;
+mv opt lib${LIBDIRSUFFIX}
+cp -ar lib${LIBDIRSUFFIX} ${PKG}/usr
+
+# On copie tout ce qui se trouve sous 'usr/' (Freedesktop & Co.) :
+cp -ar libreoffice$(echo $VERSION | cut -d'.' -f1-2)-freedesktop-menus-$(echo $VERSION | cut -d'.' -f1-2)*.noarch/usr/* ${PKG}/usr
+
+# On nettoie les RPM, un lien cassé, et les polices DejaVu et Liberation :
+rm -rf ${PKG}/{desktop-integration,*.rpm}
+rm -f ${PKG}/usr/share/applications/libreoffice*startcenter.desktop
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/libreoffice$(echo $VERSION | cut -d'.' -f1-2)/basis$(echo $VERSION | cut -d'.' -f1-2)/share/fonts/truetype/[DL]*.ttf
+
+# On répare les raccourcis pour XFCE et les les liens symboliques cassés pointant vers '/opt' :
+for appli in base calc draw impress math writer; do
+	sed -i "s@Exec=libreoffice -@Exec=/usr/lib${LIBDIRSUFFIX}/libreoffice/program/s@" \
+		${PKG}/usr/lib${LIBDIRSUFFIX}/libreoffice$(echo $VERSION | cut -d'.' -f1-2)/share/xdg/${appli}.desktop
+	ln -sf ../../lib${LIBDIRSUFFIX}/libreoffice$(echo $VERSION | cut -d'.' -f1-2)/share/xdg/${appli}.desktop ${PKG}/usr/share/applications/${appli}.desktop
+done
+
+# Ce lien pointe vers '/opt', on le modifie:
+ln -sf ../lib${LIBDIRSUFFIX}/libreoffice$(echo $VERSION | cut -d'.' -f1-2)/program/soffice ${PKG}/usr/bin/libreoffice$(echo $VERSION | cut -d'.' -f1-2)
+
+# On crée des liens symboliques standard vers les binaires :
+for binaire in sbase scalc sdraw simpress smath soffice spadmin swriter unopkg; do
+	ln -sf ../lib${LIBDIRSUFFIX}/libreoffice$(echo $VERSION | cut -d'.' -f1-2)/program/${binaire} ${PKG}/usr/bin/${binaire}
+done 
+
+installer_doc
+
+# On complète la documentation :
+cp -a ${PKG}/usr/lib${LIBDIRSUFFIX}/libreoffice$(echo $VERSION | cut -d'.' -f1-2)/{*.{html,odt},LICENSE} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
+# Ce fut pénible !
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

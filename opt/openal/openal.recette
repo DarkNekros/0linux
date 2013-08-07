@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-openal-soft}
+VERSION=${VERSION:-1.15.1}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-openal}
+WGET=${WGET:-http://kcat.strangesoft.net/openal-releases/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques audio 3D OpenAL"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake \
+	-DCMAKE_C_FLAGS="${FLAGS}" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_VERBOSE_MAKEFILE:BOOL="on" \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX}
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

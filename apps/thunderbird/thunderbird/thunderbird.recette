@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-thunderbird}
+VERSION=${VERSION:-17.0.7}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-thunderbird}
+WGET=(http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/source/$NAMESRC-$VERSION.source.${EXT}
+      http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-i686/xpi/fr.xpi
+     )
+DESC="Client de messagerie électronique de la fondation Mozilla"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources $NAMESRC-$VERSION.source.${EXT}
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/bin
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome/icons/default
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/defaults/{pref,profile}
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+
+# Compilation avec des CFLAGS minimalistes : 
+export \
+	BUILD_OFFICIAL="1" \
+	MOZ_CO_PROJECT=mail \
+	MOZ_MAKE_FLAGS="-j${JOBS}" \
+	MOZ_PHOENIX="1" \
+	MOZILLA_DIR=$TMP/${NAME}/mozilla \
+	MOZILLA_OFFICIAL="1"
+
+# On force une optimisation ignorée par le 'configure' :
+sed -i '/ac_cpp=/s/$CPPFLAGS/& -O2/' configure
+
+# On crée le '.mozconfig' et on ajoute toutes nos options (c'est péniiible !) :
+cat > .mozconfig << EOF
+# Emplacements :
+ac_add_options --prefix=/usr
+ac_add_options --libdir=/usr/lib${LIBDIRSUFFIX}
+ac_add_options --with-default-mozilla-five-home=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}
+
+# Désactivation des fonctions intégrées :
+ac_add_options --disable-crashreporter
+ac_add_options --disable-debug
+ac_add_options --disable-installer
+ac_add_options --disable-mochitest
+ac_add_options --disable-tests
+ac_add_options --disable-updater
+
+# Habillage officiel de Mozilla :
+ac_add_options --enable-application=mail
+ac_add_options --enable-official-branding
+
+# Fonctionnalités et bibliothèques système liées :
+ac_add_options --enable-gio
+ac_add_options --enable-libnotify
+ac_add_options --enable-optimize
+ac_add_options --enable-startup-notification
+ac_add_options --enable-system-ffi
+ac_add_options --enable-system-pixman
+ac_add_options --enable-system-sqlite
+ac_add_options --enable-url-classifier
+ac_add_options --with-pthreads
+ac_add_options --with-system-bz2
+ac_add_options --with-system-jpeg
+ac_add_options --with-system-libevent
+ac_add_options --with-system-libvpx
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+ac_add_options --with-system-zlib
+ac_add_options --build=${PKGARCH}-0linux-linux-gnu
+ac_add_options --host=${PKGARCH}-0linux-linux-gnu
+
+# Parallélisation :
+mk_add_options MOZ_MAKE_FLAGS="-j${JOBS}"
+
+EOF
+
+# Compilation :
+fakeroot make -f client.mk build
+fakeroot make -f client.mk install DESTDIR=${PKG}
+
+# On supprime le superflu
+rm -rf ${PKG}/usr/include
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/thunderbird-devel-*
+
+# On crée le répertoire général pour les plugins :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
+
+# On place nos préférences :
+cp -a $CWD/vendor.js ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/defaults/pref/
+
+# On installe les fichiers de localisation française :
+cd ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}
+bsdtar xf ${PKGSOURCES}/${NAMETGZ}/fr.xpi
+find ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/chrome -type f -exec chmod 644 {} \;
+cd -
+
+# On copie le logo et le fichier pour le bureau :
+cp -a $CWD/mozilla-thunderbird.desktop ${PKG}/usr/share/applications
+cp -a $CWD/thunderbird.png ${PKG}/usr/share/pixmaps
+
+# On place nos préférences :
+cp -a $CWD/vendor.js ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}/defaults/pref/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

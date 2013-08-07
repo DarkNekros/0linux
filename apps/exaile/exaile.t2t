@@ -1,0 +1,19 @@
+Description du dépôt @exaile
+appzer0 - appzer0@free.fr
+Mai 2013
+
+= Description de @exaile =
+
+Exaile est un lecteur multimédia complet et flexible, mimant le comportement du logiciel Amarok de KDE, mais en GTK+. Il prend en charge le chargement distant des pochettes d'albums, les grandes musithèques, l'affichage des paroles ou des informations sur l'auteur et le titre depuis internet (dont Wikipedia et Last.fm), la lecture aléatoire. 
+
+Il est extensible via des greffons dont de nombreux sont déjà inclus. De plus, Exaile permet de naviguer dans des répertoires Shyicast, d'afficher des playlists multiples dans des onglets ou de mettre en liste noire des fichiers non désirés. Il gère également le téléchargement de tablatures pour guitare et la soumission de fichiers sur Last.fm.. 
+
+= Le dépôt @exaile pour 0linux =
+
+Le dépôt contient le logiciel Exaile complet.
+
+= Installation sous 0linux =
+
+``# 0g @exaile``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

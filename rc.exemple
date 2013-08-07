@@ -1,0 +1,43 @@
+# Exemple pour l'intégration des fichiers services '/etc/rc.d/rc.*' :
+
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.exemple << "EOF"
+#!/usr/bin/env bash
+
+exemple_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de Exemple..."
+	# Commandes de démarrage
+}
+
+exemple_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de Exemple..."
+	# Commandes d'arrêt
+}
+
+case "$1" in
+	'start')
+		exemple_start
+	;;
+	
+	'stop')
+		exemple_stop
+	;;
+	
+	'restart')
+		exemple_stop
+		sleep 1
+		exemple_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
+
+EOF
+
+# Si le service doit être activé par défaut :
+chmod +x ${PKG}/etc/rc.d/rc.exemple

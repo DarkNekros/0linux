@@ -1,0 +1,119 @@
+# /etc/nanorc : fichier de configuration de 'nano'.
+#
+# Consultez le fichier 'nanorc.sample' dans al documentation pour un exemple
+# plus complet (en anglais) des paramètres disponibles.
+
+# Auto-indentation :
+set autoindent
+
+# Les fichiers sont sauvegardés en 'fichier~' :
+set backup
+
+# Les caractères, à la suite, traités comme des fermetures de parenthèses/crochets/expressions :
+set brackets ""')>]}"
+
+# Le type de césure pour les fins de ligne :
+set cut
+set nowrap
+
+# Les caractères ouvrants et fermants pour les recherches :
+set matchbrackets "(<[{)>]}"
+
+# Support de la souris, via GPM ou sous X, pour placer le curseur, des marques
+# ou des raccourcis :
+set mouse
+
+# On permet les tampons (ou « buffers ») multiples (l'insertion d'un fichier
+# se fait alors dans un tampon séparé du tampon principal) :
+set multibuffer
+
+# Les caractères de ponctuation traités comme des fins de phrase :
+set punct "!.?"
+
+# Activer les expressions régulières par défaut lors des recherches :
+set regexp
+
+# Touche DÉBUT intelligente, se plaçant différemment selon le contexte :
+set smarthome
+
+# Utiliser 'aspell' pour vérifier l'orthographe. Français de France pour chauvins
+# par défaut :
+set speller "aspell -x -c --lang=fr_FR"
+
+# Les fichiers de coloration syntaxique spécifiques aux langages :
+include "/usr/share/nano/nanorc.nanorc"
+
+# C/C++
+ include "/usr/share/nano/c.nanorc"
+
+# Fichiers Makefile
+include "/usr/share/nano/makefile.nanorc"
+
+# CSS
+include "/usr/share/nano/css.nanorc"
+
+# Debian
+include "/usr/share/nano/debian.nanorc"
+
+# Gentoo
+include "/usr/share/nano/gentoo.nanorc"
+
+# HTML
+include "/usr/share/nano/html.nanorc"
+
+# PHP
+include "/usr/share/nano/php.nanorc"
+
+# TCL
+include "/usr/share/nano/tcl.nanorc"
+
+# TeX
+include "/usr/share/nano/tex.nanorc"
+
+# Courriels en citation (sous 'mutt' par exemple)
+include "/usr/share/nano/mutt.nanorc"
+
+# Correctifs/patches
+include "/usr/share/nano/patch.nanorc"
+
+# Manuels
+include "/usr/share/nano/man.nanorc"
+
+# Groff
+include "/usr/share/nano/groff.nanorc"
+
+# Perl
+include "/usr/share/nano/perl.nanorc"
+
+# Python
+include "/usr/share/nano/python.nanorc"
+
+# Ruby
+include "/usr/share/nano/ruby.nanorc"
+
+# Java
+include "/usr/share/nano/java.nanorc"
+
+# Fortran
+include "/usr/share/nano/fortran.nanorc"
+
+# Objective-C
+include "/usr/share/nano/objc.nanorc"
+
+# OCaml
+include "/usr/share/nano/ocaml.nanorc"
+
+# AWK
+include "/usr/share/nano/awk.nanorc"
+
+# Assembleur
+include "/usr/share/nano/asm.nanorc"
+
+# Scripts shell
+include "/usr/share/nano/sh.nanorc"
+
+# POV-Ray
+include "/usr/share/nano/pov.nanorc"
+
+# Fichiers XML
+include "/usr/share/nano/xml.nanorc"

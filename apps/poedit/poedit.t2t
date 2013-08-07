@@ -1,0 +1,17 @@
+Description du dépôt @poedit
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @poedit =
+
+Poedit est un éditeur de fichier gettext (fichiers .po). Il propose une approche pratique pour éditer les catalogues Gettext permettant la localisation et la traduction d'applications. Il gère l'UTF-8, le surlignage des enregistrements modifiés nouveaux ou approximatifs (« fuzzy ») ou non traduits, le repérage des espaces inutiles, les références du navigateur, l'édition des en-têtes et peut être utilisé pour créer de nouveaux catalogues ou les mettre à jour d'un simple clic à partir du code source. Il est écrit avec la boîte à outils wxWigets. 
+
+= Le dépôt @poedit pour 0linux =
+
+Le dépôt contient le logiciel Poedit complet.
+
+= Installation sous 0linux =
+
+``# 0g @poedit``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

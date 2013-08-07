@@ -1,0 +1,187 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-qt-everywhere-opensource-src}
+VERSION=${VERSION:-4.8.5}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-qt}
+WGET=${WGET:-http://download.qt-project.org/official_releases/qt/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/$NAMESRC-$VERSION.$EXT}
+DESC="Outils et bibliothèques de création d'applications graphiques"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige les chemins de X11 codés en dur :
+for fichier in $(grep -lr "X11R6" *); do
+	sed -i "s@/usr/X11R6@/usr@g" ${fichier}
+done
+
+# On force les drapeaux d'optimisation :
+sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& ${FLAGS}@" mkspecs/common/g++.conf
+sed -i "s@-O2@& ${FLAGS}@" mkspecs/common/{g++,gcc}-base.conf
+
+# La machine doit être spécifiée selon l'architecture :
+if [ "${PKGARCH}" = "i686" ]; then
+	OPTMACHINE=32
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	OPTMACHINE=64
+fi
+
+# Compilation :
+export QT4DIR=${TMP}/${NAME}
+export LD_LIBRARY_PATH=${QT4DIR}/lib:${LD_LIBRARY_PATH}
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+QMAKSPEC=linux-g++-${OPTMACHINE} \
+./configure \
+	-prefix /usr \
+	-confirm-license \
+	-datadir /usr/share/qt \
+	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
+	-fast \
+	-importdir /usr/lib${LIBDIRSUFFIX}/qt4/imports \
+	-L/usr/lib${LIBDIRSUFFIX} \
+	-libdir /usr/lib${LIBDIRSUFFIX} \
+	-no-phonon \
+	-no-rpath \
+	-no-separate-debug-info \
+	-no-webkit \
+	-nomake demos \
+	-nomake examples \
+	-opensource \
+	-optimized-qmake \
+	-plugin-sql-sqlite \
+	-plugindir /usr/lib${LIBDIRSUFFIX}/qt4/plugins \
+	-reduce-relocations \
+	-release \
+	-translationdir /usr/share/qt/translations
+
+make -j${JOBS} || make
+fakeroot make install INSTALL_ROOT=${PKG}
+
+# Certains paquets réclament 'qmake-qt4' :
+ln -sf qmake ${PKG}/usr/bin/qmake-qt4
+
+# Ce paquet est sale... :
+rm -rf ${PKG}/usr/{demos,examples,tests}
+
+# On place et on redimensionne le logo de Qt :
+mkdir -p ${PKG}/usr/share/icons/hicolor/{16x16,32x32,48x48,64x64,128x128}/apps
+convert ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/src/images/qt-logo.png -resize 48x48 ${PKG}/usr/share/icons/hicolor/48x48/apps/qt-logo.png
+
+# On place les autres icônes :
+cp -a tools/assistant/tools/assistant/images/assistant.png ${PKG}/usr/share/icons/hicolor/32x32/apps/assistant.png
+cp -a tools/assistant/tools/assistant/images/assistant-128.png ${PKG}/usr/share/icons/hicolor/128x128/apps/assistant.png
+cp -a tools/designer/src/designer/images/designer.png ${PKG}/usr/share/icons/hicolor/128x128/apps/designer.png
+
+for icone in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
+	taille=$(echo $(basename ${icone}) | cut -d- -f2)
+	cp -a ${icone} ${PKG}/usr/share/icons/hicolor/${taille}x${taille}/apps/linguist.png
+done
+
+# On fait comme Slackware, c'est propre et complet :
+
+# On crée un fichier pour 'pkg-config' :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt.pc << EOF
+prefix=/usr/lib${LIBDIRSUFFIX}
+bindir=\${prefix}/bin
+datadir=\${prefix}/share/qt
+docdir=\${prefix}/doc
+headerdir=\${prefix}/include
+importdir=\${prefix}/lib${LIBDIRSUFFIX}/qt4/imports
+libdir=\${prefix}/lib
+moc=\${bindir}/moc
+plugindir=\${prefix}/lib${LIBDIRSUFFIX}/qt4/plugins
+qmake=\${bindir}/qmake
+sysconfdir=\${prefix}/etc
+translationdir=\${prefix}/share/qt/translations
+
+Name: Qt
+Description: Qt Configuration
+Version: ${VERSION}
+
+EOF
+
+# On ajoute les raccourcis bureau :
+mkdir -p ${PKG}/usr/share/applications
+cat > ${PKG}/usr/share/applications/designer.desktop << EOF
+[Desktop Entry]
+Name=Qt4 Designer
+GenericName=Interface Designer
+Comment=Création d'interfaces graphiques pour applications Qt
+Exec=designer
+Icon=designer
+MimeType=application/x-designer;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+
+EOF
+
+cat > ${PKG}/usr/share/applications/assistant.desktop << EOF
+[Desktop Entry]
+Name=Qt4 Assistant 
+Comment=Exemples et documentation de Qt
+Exec=assistant
+Icon=assistant
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Documentation;
+
+EOF
+
+cat > ${PKG}/usr/share/applications/linguist.desktop << EOF
+[Desktop Entry]
+Name=Qt4 Linguist 
+Comment=Localisation d'applications Qt
+Exec=linguist
+Icon=linguist
+MimeType=text/vnd.trolltech.linguist;application/x-linguist;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+
+EOF
+
+cat > ${PKG}/usr/share/applications/qtconfig.desktop << EOF
+[Desktop Entry]
+Name=Qt4 Config 
+Comment=Configuration du conportement de Qt
+Exec=qtconfig
+Icon=qt-logo
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Settings;
+
+EOF
+
+# On crée un fichier profil pour s'assurer des variables d'environnement :
+mkdir -p ${PKG}/etc/profile.d
+cat > ${PKG}/etc/profile.d/qt4.sh << "EOF"
+#!/usr/bin/env bash
+# Fichier profil pour QT4.
+QT4DIR=/usr/libARCH/qt4
+QT_PLUGIN_PATH=/usr/libARCH/qt4/plugins
+
+export QT4DIR QT_PLUGIN_PATH
+
+EOF
+
+# Et on remplace la marqueur ARCH par notre suffixe standard :
+sed -i "s@ARCH@${LIBDIRSUFFIX}@g" ${PKG}/etc/profile.d/qt4.sh
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

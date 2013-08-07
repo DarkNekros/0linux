@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-ladspa_sdk}
+VERSION=${VERSION:-1.13}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-ladspa}
+WGET=${WGET:-http://www.ladspa.org/download/${NAMESRC}_${VERSION}.$EXT}
+DESC="Bibliothèques pour greffons audio sous Linux"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée une structure d'accueil :
+mkdir -p ${PKG}/usr/{include,lib${LIBDIRSUFFIX}}
+
+cd src
+
+# On améliore le makefile pour prendre en compte DESTDIR :
+sed -i -e 's/$(INSTALL_PLUGINS_DIR)/$(DESTDIR)$(INSTALL_PLUGINS_DIR)/g' \
+	-e 's/$(INSTALL_INCLUDE_DIR)/$(DESTDIR)$(INSTALL_INCLUDE_DIR)/g' \
+	-e 's/$(INSTALL_BINARY_DIR)/$(DESTDIR)$(INSTALL_BINARY_DIR)/g' \
+	-e "s|/usr/local|/usr|g" \
+	-e "s|/lib/|/lib${LIBDIRSUFFIX}/|g" \
+	makefile
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make
+
+fakeroot make install DESTDIR=${PKG}
+
+cd -
+
+# On installe un fichier profil pour la variable $LADSPA_PATH :
+mkdir -p ${PKG}/etc/profile.d
+cat > ${PKG}/etc/profile.d/ladspa.sh << EOF
+#!/usr/bin/env bash
+export LADSPA_PATH=/usr/lib${LIBDIRSUFFIX}/ladspa
+
+EOF
+chmod 0755 ${PKG}/etc/profile.d/*
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

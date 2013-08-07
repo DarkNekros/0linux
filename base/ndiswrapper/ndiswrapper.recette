@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-ndiswrapper}
+VERSION=${VERSION:-1.58}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-ndiswrapper}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Implémentation NDIS pour réseaux sans fil"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/kernel/drivers/misc
+mkdir -p ${PKG}/usr/man/man8
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+fakeroot make KSRC="/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/build"
+
+fakeroot make install DESTDIR=${PKG}
+
+# On déplace le module où il faut :
+mv ${PKG}/lib/modules/$(uname -r)/misc/*.ko ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/kernel/drivers/misc
+rm -rf ${PKG}/lib${LIBDIRSUFFIX}/modules
+
+# On déplace les manuels où il faut :
+mv ${PKG}/usr/share/man/man8/* ${PKG}/usr/man/man8/
+rm -rf ${PKG}/usr/share
+
+installer_doc
+creer_post_installation
+
+# On ajoute la mise à jour des dépendances modules à la post-installation :
+echo "depmod -a 2>/dev/null" >> ${PKG}/post-install.sh
+
+stripper
+empaqueter
+
+# C'est fini.

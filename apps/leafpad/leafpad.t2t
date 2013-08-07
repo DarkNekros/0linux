@@ -1,0 +1,17 @@
+Description du dépôt @leafpad
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @leafpad =
+
+Leafpad est un éditeur de texte simple en GTK+, tsimilaire à d'autres éditeurs très simples commen Notepad ou Mousepad. Il se veut très léger et apportant le strict nécessaire.
+
+= Le dépôt @leafpad pour 0linux =
+
+Le dépôt contient le logiciel Leafpad complet.
+
+= Installation sous 0linux =
+
+``# 0g @leafpad``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

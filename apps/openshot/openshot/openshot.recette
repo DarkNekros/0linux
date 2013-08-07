@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-openshot}
+VERSION=${VERSION:-1.4.2}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-openshot}
+WGET=${WGET:-http://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/+download//$NAMESRC-$VERSION.$EXT}
+DESC="Éditeur vidéo non-linéaire"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+fakeroot python setup.py install --root=${PKG}/ --optimize=1
+
+# On neutralise USE_ARCH :
+unset USE_ARCH
+
+# Ce répertoire est en trop :
+rm -rf ${PKG}/usr/lib/mime
+
+# On replace les manuels où il faut :
+mv ${PKG}/usr/share/man ${PKG}/usr/man
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

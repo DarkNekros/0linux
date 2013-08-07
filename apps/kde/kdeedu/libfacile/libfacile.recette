@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-facile}
+VERSION=${VERSION:-1.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-libfacile}
+WGET=${WGET:-http://www.recherche.enac.fr/log/$NAMESRC/distrib/$NAMESRC-$VERSION.$EXT}
+DESC="Résolveur d'équation"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Il faut créer manuellement le répertoire d'acueil avant le make install :
+mkdir -p $PKG/usr/lib64/ocaml/facile
+
+./configure \
+	--faciledir $PKG/usr/lib$LIBDIRSUFFIX/ocaml/facile
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

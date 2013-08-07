@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-mlt}
+VERSION=${VERSION:-0.8.8}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-mlt}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Framework multimédia"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée le répertoire d'accueil :
+PYTHONLIB=$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
+	sed 's#/site-packages##')
+mkdir -p ${PKG}/${PYTHONLIB}
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--avformat-swscale \
+	--avformat-vdpau \
+	--enable-gpl \
+	--qimage-includedir=/usr/include/Qt \
+	--qimage-libdir=/usr/lib${LIBDIRSUFFIX}/ \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On compile l'interfaçage avec Python :
+(
+	cd src/swig/python
+	./build
+	cp -a mlt.py _mlt.so mlt_wrap.o ${PKG}/${PYTHONLIB}/
+	chmod 755 ${PKG}/${PYTHONLIB}/*
+)
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

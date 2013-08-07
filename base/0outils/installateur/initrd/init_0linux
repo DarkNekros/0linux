@@ -1,0 +1,61 @@
+#!/bin/sh
+# Initialisation du système autonome.
+
+# On spécifie un $PATH avant tout :
+PATH=/usr/sbin:/usr/bin
+export PATH
+
+# On monte tout notre bazar, DONT '/dev', l'auto-montage du noyau ne suffit
+# apparemment pas :
+mount -v -n -o nosuid,noexec,nodev -t proc     proc     /proc
+mount -v -n -o nosuid,noexec,nodev -t sysfs    sysfs    /sys
+mount -v -n -o mode=0755,nosuid    -t devtmpfs devtmpfs /dev
+mount -v -n -o defaults            -t tmpfs    tmpfs    /run
+
+# On ne peut créer ces répertoires que maintenant :
+mkdir -p /dev/pts /dev/shm
+
+# On peut maintenant les monter :
+mount -v -n -o gid=5,mode=620      -t devpts  devpts  /dev/pts
+mount -v -n -o defaults            -t tmpfs   tmpfs   /dev/shm
+
+# On crée les nœuds critiques de '/dev' :
+mknod -m 600 /dev/console c 5 1
+mknod -m 666 /dev/null c 1 3
+
+# On met à jour les dépendances des modules noyau :
+depmod -a
+
+# On lance très tôt le module 'loop' :
+modprobe loop 2>/dev/null
+
+# On spécifie le nom de l'hôte si celui-ci n'existe pas :
+if [ ! -r /etc/hostname ]; then
+	echo "0linux" > /etc/hostname
+fi
+
+# On définit le timestamp via 'systemd' pour éviter les bidouilles avec la date :
+export RD_TIMESTAMP=$(/usr/lib/systemd/systemd-timestamp)
+
+# On reste franco-français en définissant la locale française par défaut :
+echo "LANG=fr_FR.UTF-8" >> /etc/locale.conf
+echo "LC_ALL=fr_FR.UTF-8" >> /etc/locale.conf
+
+# On charge une police latine compatible UTF-8 pour afficher le français :
+echo "FONT=lat-9w-16" >> /etc/vconsole.conf
+
+# On lance system/udev :
+[ -r /usr/bin/systemd ] && /usr/bin/systemd
+
+read PLOP;
+
+# On charge les paramètres pour le shell ($PATH, invite, etc.) :
+source /etc/profile
+
+# On lance la configuration du clavier d'office :
+/usr/share/0outils/installateur/scripts/clavier.sh
+
+# On ouvre l'interpréteur :
+exec bash
+
+# C'est fini.

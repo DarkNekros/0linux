@@ -1,0 +1,5 @@
+# /etc/mdns.allow : noms de domaine autorisés pour le « multicast »
+
+# On autorise le multicast sur tous les noms de domaines :
+*
+

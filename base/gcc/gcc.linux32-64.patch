@@ -1,0 +1,22 @@
+--- gcc/config/i386/linux.h.orig	2009-09-16 11:01:17.404568317 +0200
++++ gcc/config/i386/linux.h	2009-09-16 11:01:23.176573079 +0200
+@@ -122,6 +122,8 @@
+   "%{ffast-math|funsafe-math-optimizations:crtfastmath.o%s} \
+    %{shared|pie:crtendS.o%s;:crtend.o%s} crtn.o%s"
+ 
++#define MULTILIB_DEFAULTS { "m32" }
++
+ /* A C statement (sans semicolon) to output to the stdio stream
+    FILE the assembler definition of uninitialized global DECL named
+    NAME whose size is SIZE bytes and alignment is ALIGN bytes.
+
+--- /dev/null	2009-09-10 15:59:29.820003140 +0200
++++ gcc/config/i386/t-linux32	2009-09-16 11:02:34.118502434 +0200
+@@ -0,0 +1,7 @@
++# On colle lib32 dans les chemins de recherche, vu que chacun fait sa
++# tambouille dans son coin et que le LSB ne sait pas se positionner non
++# plus sur le 32 bits. 
++
++MULTILIB_OPTIONS = m32
++MULTILIB_DIRNAMES = .
++MULTILIB_OSDIRNAMES = $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,)

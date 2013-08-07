@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-gmp}
+VERSION=${VERSION:-5.1.2}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-gmp}
+WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques arithmétiques « GNU Multiple Precision »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On blouse le système de construction, qui suppose mal pour quel processeur optimiser :
+	mv config{fsf,}.guess
+	mv config{fsf,}.sub
+	
+	# On force l'ABI 32 bits :
+	export ABI=32
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--enable-cxx \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On n'a plus besoin de la variable ABI :
+	unset ABI
+	
+	# Cet entête est spécifique à l'architecture, on renomme pour créer ensuite
+	# un entête générique :
+	mv ${PKG}/usr/include/gmp{,-32}.h
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On blouse le système de construction, qui suppose mal pour quel processeur optimiser :
+mv config{fsf,}.guess
+mv config{fsf,}.sub
+
+# On force l'ABI 32 bits selon l'architecture :
+if [ ! "${PKGARCH}" = "x86_64" ]; then
+	export ABI=32
+fi
+
+# Compilation :
+CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-cxx \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
+fakeroot make install DESTDIR=${PKG}
+
+# On n'a plus besoin de la variable ABI :
+unset ABI
+
+# Cet entête est spécifique à l'architecture, on renomme pour créer ensuite
+# un entête générique :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mv ${PKG}/usr/include/gmp{,-64}.h
+	
+	# On crée l'entête générique :
+	cat > ${PKG}/usr/include/gmp.h << "EOF"
+#ifndef __STUB__GMP_H__
+#define __STUB__GMP_H__
+
+#if defined(__x86_64__) || \
+    defined(__sparc64__) || \
+    defined(__arch64__) || \
+    defined(__powerpc64__) || \
+    defined (__s390x__)
+# include "gmp-64.h"
+#else
+# include "gmp-32.h"
+#endif
+
+#endif
+EOF
+
+fi
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

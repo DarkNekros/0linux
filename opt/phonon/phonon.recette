@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-phonon}
+VERSION=${VERSION:-4.6.0}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-phonon}
+WGET=${WGET:-http://ftp.kde.org/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+DESC="Couche d'abstraction et bibliothèques multimédia pour Qt"
+
+. /usr/share/0outils/fonctions_paquets.sh # On inclut les fonctions isolées
+ 
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D MAN_INSTALL_DIR=/usr/man \
+	-D PHONON_INSTALL_QT_EXTENSIONS_INTO_SYSTEM_QT=ON \
+	-D PHONON_BUILD_DESCRIPTOR=OFF \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On corrige le fichier pour 'pkg-config' :
+sed -i -e 's@includedir}$@& -I\${includedir}/phonon@' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/phonon.pc
+
+# On veille à lier le répertoires des « backends » de Phonon à KDE4 :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/qt4/plugins/
+ln -sf ../../kde4/plugins/phonon_backend ${PKG}/usr/lib${LIBDIRSUFFIX}/qt4/plugins/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+#C'est fini.

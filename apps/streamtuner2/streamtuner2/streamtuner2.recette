@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-streamtuner2}
+VERSION=${VERSION:-2.0.8}
+EXT=${EXT:-rpm}
+NAMETGZ=${NAMETGZ:-streamtuner2}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Lecteur de webradios et flux audio en ligne"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources || true
+cflags
+
+# On déballe le RPM :
+cd $TMP
+rpmunpack ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}.$EXT
+cd ${NAMESRC}-${VERSION}
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On copie le tout dans le paquet :
+mkdir -p ${PKG}
+cp -ar * ${PKG}/
+
+# On déplace le manuel :
+mv ${PKG}/usr/share/man ${PKG}/usr/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-txt2tags}
+VERSION=${VERSION:-2.6}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-txt2tags}
+WGET=${WGET:-http://txt2tags.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+DESC="Outil syntaxique de conversion multi-formats"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/{bin,man/{{ca,es,fr,it,pt_BR}/man1,man1}}
+mkdir -p ${PKG}/usr/share/emacs/site-lisp
+mkdir -p ${PKG}/usr/share/vim/{compiler,macros,plugin,syntax}
+
+# On place les « binaires »
+cp -a txt2tags ${PKG}/usr/bin/
+cp -a extras/{dynartslides,gensite,html-update.sh,t2tmake.rb} ${PKG}/usr/bin/
+
+# on place tous les fichiers de syntaxe, macros, etc. pour 'vim' :
+cp -a extras/{pagemaker,txt2tags}.vim ${PKG}/usr/share/vim/syntax/
+cp -a extras/gvim-menu.vim            ${PKG}/usr/share/vim/plugin/txt2tags-gvim-menu.vim
+cp -a extras/txt2tags-compiler.vim    ${PKG}/usr/share/vim/compiler/
+cp -a extras/unhtml.vim               ${PKG}/usr/share/vim/macros/
+
+# Ainsi que ce fichier pour 'emacs' :
+cp -a extras/txt2tags-mode.el ${PKG}/usr/share/emacs/site-lisp/
+
+# on place les manuels :
+for langue in {ca,es,fr,it,pt}; do
+	cp -a doc/manpage-${langue}.man doc/txt2tags.1-${langue}
+	
+	# Le portugais du Brésil est à traiter différemment ("pt/pt_BR") :
+	if [[ ${langue} == "pt" ]]; then
+		cp -a doc/txt2tags.1-${langue} ${PKG}/usr/man/pt_BR/man1/txt2tags.1
+	else
+		cp -a doc/txt2tags.1-${langue} ${PKG}/usr/man/${langue}/man1/txt2tags.1
+	fi
+done
+
+cp -a doc/manpage.man ${PKG}/usr/man/man1/txt2tags.1
+
+# On compile et on place les fichiers '*.po' :
+for fichierpo in po/*.po; do
+	msgfmt ${fichierpo} -o $(echo ${fichierpo} | sed 's@.po@.mo@')
+	mkdir -p ${PKG}/usr/share/locale/$(basename ${fichierpo} .po)/LC_MESSAGES/
+	cp -a $(echo ${fichierpo} | sed 's@.po@.mo@') ${PKG}/usr/share/locale/$(basename ${fichierpo} .po)/LC_MESSAGES/txt2tags.mo
+done # C'était pénible !
+
+# On s'assure de rendre les « binaires » exécutables :
+chmod 755 ${PKG}/usr/bin/*
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

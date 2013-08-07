@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-qca}
+VERSION=${VERSION:-2.0.3}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-qca2}
+WGET=${WGET:-http://delta.affinix.com/download/qca/2.0/$NAMESRC-$VERSION.$EXT}
+DESC="Extension de cryptographie pour Qt"
+########################################
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Corrige la compilation avec gcc 4.7.x :
+cat $CWD/qca2.gcc47.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--qtdir=/usr \
+	--includedir=/usr/include \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--certstore-path=/etc/ssl/certs/ca-certificates.crt \
+	--no-separate-debug-info \
+	--disable-tests \
+	--release
+
+make -j${JOBS} || make
+fakeroot make install INSTALL_ROOT=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

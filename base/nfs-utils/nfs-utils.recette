@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-nfs-utils}
+VERSION=${VERSION:-1.2.8}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-nfs-utils}
+WGET=${WGET:-http://prdownloads.sourceforge.net/nfs/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de partage NFS"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/{,s}bin
+mkdir -p ${PKG}/etc/exports.d
+mkdir -p -m 555 ${PKG}/var/lib/nfs/rpc_pipefs
+mkdir ${PKG}/var/lib/nfs/v4recovery
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-ipv6 \
+	--enable-libmount-mount \
+	--enable-mountconfig \
+	--with-statedir=/var/lib/nfs \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# À FAIRE. Les binaires à appeler dans l'ordre semblent être pour NFSv3 + NFSv4 .
+# RPC Bind doit être lancé à un certain stade, à étudier :
+#/usr/sbin/blkmapd
+#/usr/sbin/rpc.idmapd
+#/usr/sbin/rpc.nfsd
+#/usr/sbin/exportfs -a
+#/usr/sbin/rpc.mountd
+#/usr/sbin/rpc.statd
+#
+## On monte les volumes NFS :
+#echo "Montage des systèmes de fichiers distants NFS..."
+#mount -F -a -t nfs,nfs4
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

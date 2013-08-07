@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-lilv}
+VERSION=${VERSION:-0.14.4}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-lilv}
+WGET=${WGET:-http://download.drobilla.net/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques d'interfaçage pour greffons LV2"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On n'a pas besoin de 'ldconfig' :
+sed -i "/ldconfig/d" wscript
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./waf configure \
+	--prefix=/usr \
+	--configdir=/etc \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--bindings \
+	--dyn-manifest
+
+./waf build -j${JOBS}
+DESTDIR=${PKG} fakeroot ./waf install
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

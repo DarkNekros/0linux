@@ -1,0 +1,35 @@
+Description du dépôt @ardour
+appzer0 - appzer0@free.fr
+Mai 2013
+
+= Description de @ardour =
+
+Ardour est un enregistreur multicanal sur disque dur (HDR « hard disk recorder ») et une station de traitement de signaux acoustiques (DAW « digital audio workstation »). Il est utile pour contrôler, enregistrer, modifier et exécuter des configurations acoustiques complexes.
+
+Ardour gère des interfaces acoustiques professionnelles via le projet ALSA, qui fournit des pilotes de périphérique de haute qualité et bien conçus, mais aussi des API pour les entrées/sorties acoustiques sous Linux. Toutes les interfaces gérées par ALSA sont accessibles avec Ardour. Cela inclut l'interface « RME Hammerfall » avec 26 canaux numériques, l'interface « the Midiman Delta 1010 » et beaucoup d'autres.
+
+Ardour supporte l'encodage sur 24 bits des échantillons (en utilisant des nombres à virgule flottante en interne), l'édition non-linéraire avec historique d'annulation infini, dispose d'une table de mixage configurable, gère les capacités maître/esclave MTC, et est compatible avec les surfaces de contrôle MIDI.
+
+Ardour supporte le standard MIDI Machine Control, et peut donc être contrôlé par n'importe quel contrôleur MMC et par plusieurs tables de mixage numériques modernes.
+
+Ardour contient un puissant éditeur/arrangeur acoustique multi-pistes qui est complètement non-destructif et gérant toutes les opérations standard non-linéaires (insérer, remplacer, supprimer, déplacer, tailler, sélectionner, couper/copier/coller). L'éditeur gère un nombre illimité de défaire/refaire (undo/redo) et peut enregistrer des « versions » indépendantes d'une piste ou de tout un morceau.
+
+L'éditeur d'Ardour supporte le standard de greffons LADSPA développé par la communauté. Des chaînes de greffons peuvent être attachées à n'importe quelle partie d'une piste. Chaque tranche de la table de mixage peut avoir n'importe quel nombre d'entrées et de sorties, c'est-à-dire qu'elle n'est pas restreinte à mono, stéréo ou 5.1. Un contrôle de spatialisation à N canaux supportant plusieurs modèles de spatialisation est inclus. Des «⋅fader sends⋅» pré et post existent, chacun possédant ses propres contrôles de gain et de spatialisation (pan). Chaque tranche de la table de mixage agit comme son propre bus, et le nombre de bus est illimité dans Ardour. On peut mixer n'importe quel nombre de tranches dans une autre tranche.
+
+Le nombre de canaux dans Ardour est seulement limité par votre interface audio et la capacité du système de stockage sur disque à lire et écrire les données suffisamment rapidement.
+
+JACK (JACK Audio Connection Kit) est utilisé pour toutes les E/S audio. Il est donc possible de partager les flux audio d'Ardour avec d'autres applications et/ou d'autres interfaces audio de façon parfaitement synchrone.
+
+Ardour est neutre sa gestion des taux et tailles des échantillons, tous les formats matériels de 8 à 32 bits et les taux de 8kHz à 192kHz sont gérés. En interne, il manipule les flottants au format IEEE 32/64 bits.
+
+Pour plus d'informations, veuillez consulter le site web http://ardour.org
+
+= Le dépôt @ardour pour 0linux =
+
+Le dépôt contient le logiciel Ardour complet.
+
+= Installation sous 0linux =
+
+``# 0g @ardour``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

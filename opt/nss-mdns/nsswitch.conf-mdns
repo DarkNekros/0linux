@@ -1,0 +1,13 @@
+aliases:    files
+automount:  files
+bootparams: files
+ethers:     files
+group:      compat
+hosts:      files mdns4_minimal [NOTFOUND=return] dns mdns4
+netmasks:   files
+netgroup:   files
+networks:   files dns
+passwd:     compat
+protocols:  files
+rpc:        files
+services:   files

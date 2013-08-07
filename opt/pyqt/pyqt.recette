@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-PyQt-x11-gpl}
+VERSION=${VERSION:-4.10.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-pyqt}
+WGET=${WGET:-http://prdownloads.sourceforge.net/pyqt/$NAMESRC-$VERSION.$EXT}
+DESC="Interfaçage python pour qt"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On définit l'emplacement des modules Python :
+PYTHONLIB=$( python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' )
+
+# L'appel au compilateur change selon l'architecture :
+if [ "${PKGARCH}" = "i686" ]; then
+	GPP=32
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	GPP=64
+fi
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+QMAKESPEC=linux-g++-${GPP} \
+python configure.py \
+	--confirm-license \
+	--destdir=$(echo ${PYTHONLIB} | sed s#/lib/#/lib${LIBDIRSUFFIX}/#)
+
+# On supprime l'édition de liens en relatif :
+sed -i -e "s@-Wl,-rpath,/usr/lib${LIBDIRSUFFIX}@@g" -e "s@-Wl,-rpath,.* @@g" $(find . -type f -name "Makefile")
+
+# Pas de parallélisation pour ce paquet :
+make
+
+# INSTALL_ROOT est requis pour le module QtDesigner :
+fakeroot make install INSTALL_ROOT=${PKG} DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

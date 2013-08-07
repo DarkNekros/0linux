@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-ConsoleKit}
+VERSION=${VERSION:-0.4.5}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-consolekit}
+WGET=${WGET:-http://www.freedesktop.org/software/$NAMESRC/dist/$NAMESRC-$VERSION.$EXT}
+DESC="Service système de gestion de sessions"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/ConsoleKit/run-session.d
+
+# On corrige une foule de bogues très gênants pour les activations de sessions
+# ainsi que l'affichage notamment dans GDM :
+cat $CWD/consolekit.truncate.patch | patch -p1
+cat $CWD/consolekit.at_console.patch | patch -p1
+cat $CWD/consolekit.revert042.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/ConsoleKit \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-pam-module=no \
+	--with-pid-file=/var/run/ConsoleKit/pid \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On copie le fichier de compatibilité pour notre système, dépourvu de 'pam' :
+cp -a $CWD/pam-foreground-compat.ck ${PKG}/usr/lib${LIBDIRSUFFIX}/ConsoleKit/run-session.d/
+chmod 0755 ${PKG}/usr/lib${LIBDIRSUFFIX}/ConsoleKit/run-session.d/pam-foreground-compat.ck
+
+# On replace ces scripts où il faut :
+cp -ar ${PKG}/usr/lib/ConsoleKit ${PKG}/usr/lib${LIBDIRSUFFIX}
+rm -rf ${PKG}/usr/lib
+
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.consolekit << "EOF"
+#!/usr/bin/env bash
+
+consolekit_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de ConsoleKit..."
+	console-kit-daemon
+}
+
+consolekit_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de ConsoleKit..."
+	if [ -f /var/run/ConsoleKit/pid ]; then
+		kill -HUP $(cat /var/run/ConsoleKit/pid)
+		rm -f /var/run/ConsoleKit/pid
+	fi
+}
+
+case "$1" in
+	'start')
+		consolekit_start
+	;;
+	
+	'stop')
+		consolekit_stop
+	;;
+	
+	'restart')
+		consolekit_stop
+		sleep 1
+		consolekit_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 {start|stop|restart}"
+		exit 1
+	;;
+
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.consolekit
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-lxml}
+VERSION=${VERSION:-2.3.6}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-python-lxml}
+WGET=${WGET:-http://lxml.de/files/$NAMESRC-$VERSION.$EXT}
+DESC="Interfaçage Python des bibliothèques XML et XSLT"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation  :
+python setup.py build
+fakeroot python setup.py install --root=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

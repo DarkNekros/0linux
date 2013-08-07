@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-scons}
+VERSION=${VERSION:-2.2.0}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-scons}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Système de compilation en Python"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+fakeroot python ./setup.py install --root=${PKG} --symlink-scons
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

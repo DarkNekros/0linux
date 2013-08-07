@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-procps-ng}
+VERSION=${VERSION:-3.3.8}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-procps}
+WGET=${WGET:-http://gitorious.org/procps/procps/archive-tarball/v${VERSION}}
+DESC="Outils de surveillance des processus"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Le sources sont brutes, ; on ajoute la version :
+echo "${VERSION}" > .tarball-version
+
+# On désactive 'kill', déjà inclus dans 'util-linux'.
+# Compilation :
+./autogen.sh
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--bindir=/usr/bin \
+	--exec-prefix=/ \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-kill \
+	--enable-examples \
+	--enable-oomem \
+	--build=${PKGARCH}-0linux-linux-gnu
+  
+make -j${JOBS} || make
+
+fakeroot make install DESTDIR=${PKG}
+
+# On copie notre 'sysctl.conf' et on veille à ne rien écraser :
+mkdir -p ${PKG}/etc
+mv ${PKG}/etc/sysctl.conf{,.example}
+cp -a $CWD/sysctl.conf ${PKG}/etc/sysctl.conf.0nouveau
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

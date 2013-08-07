@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-sysvinit}
+VERSION=${VERSION:-2.88dsf}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-sysvinit}
+WGET=${WGET:-http://download.savannah.gnu.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Programmes d'initialisation du système"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/man/man{1,5,8}
+
+# On ne compile pas 'wall' car "util-linux-ng" l'inclut déjà :
+sed -i -e 's/utmpdump wall/utmpdump/' -e 's/mountpoint.1 wall.1/mountpoint.1/' src/Makefile
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} -C src || make -C src
+fakeroot make -C src install MANDIR=/usr/man ROOT=${PKG}
+
+
+installer_doc
+
+# On complète la documentation :
+cp -a doc/Propaganda doc/bootlogd.README src/initscript.sample ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
+

@@ -1,0 +1,11 @@
+--- arj-3.10.22/postproc.c	2003-06-22 13:12:28.000000000 +0200
++++ arj-3.10.22/postproc.c	2006-01-27 16:57:14.000000000 +0100
+@@ -71,7 +71,7 @@
+   if((bytes_read=fread(buf, 1, PROC_BLOCK_SIZE, stream))==0)
+   {
+    printf("Patch not found\n");
+-   return(POSTPROC_ERL_BAD_EXE);
++   break;     /* return(POSTPROC_ERL_BAD_EXE); */
+   }
+   bytes_read-=rp_len;
+   pb_ptr=buf;

@@ -1,0 +1,26 @@
+Description du dépôt @kde
+fatalerrors - jeff.levasseur@free.fr
+Juin 2013
+
+= Description de @kde =
+
+Ce dépôt contient l'environnement de bureau Plasma complet, accompagné d'une importante sélection de logiciels du projet KDE-Sc. Parmi ces logiciels vous trouverez des ténors du monde du libre :
+
+ - bureautique : la suite Calligra Office, Skrooge, Tellico...
+ - multimedia : Amarok, K3B, KDE'n'Live...
+ - messagerie et réseau : la suite Kontact, KVIRC, Kopete, KTorrent, Konqueror...
+ - outils divers : Konsole, Yakuake, Dolphin...
+ - éducatif : Kalgebra, Kalzium, KStars, Marble...
+ - programmation : la suite KDevelop, Kate, Lokalize...
+ - les très nombreux jeux de la suite kdegames.
+
+
+= Le dépôt @kde pour 0linux =
+
+Le dépôt contient l'environnement de bureau Plasma Desktop et Plasma Netbook avec de nombreux thèmes, plus d'une centaine d'applications pour tous les usages et leurs documentations.
+
+= Installation sous 0linux =
+
+``# 0g @kde``
+
+% Contenu maintenu par fatalerrors.

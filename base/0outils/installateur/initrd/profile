@@ -1,0 +1,31 @@
+#!/bin/sh
+# Fichier profil pour le système autonome, différent de celui du système installé.
+
+# On définit un PATH large :
+PATH="$PATH:/usr/sbin:/usr/bin:/usr/share/0outils/installateur/scripts"
+
+TERM=linux
+HOME=/root
+LESS=-MM
+
+# On définit l'invite de commande :
+PS1='\u@\h:\w# '
+PS2='> '
+
+# On reste franco-français en définissant la locale française par défaut :
+LANG="fr_FR.UTF-8"
+LC_ALL="fr_FR.UTF-8"
+
+# On dit au shell qu'il doit recevoir 20 EOF avant de quitter :
+IGNOREEOF=20
+
+# Le masque de création par défaut (fichiers en 644, répertoires en 755) :
+umask 022
+
+# On exporte le tout :
+export HOME PATH DISPLAY LESS TERM PS1 PS2 LANG LC_ALL IGNOREEOF
+
+# L'UTF-8 est censé fonctionner mais ça ne coûte rien :
+unicode_start 1>/dev/null 2>/dev/null || true
+
+# C'est fini !

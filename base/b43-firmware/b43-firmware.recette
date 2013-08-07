@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-broadcom-wl}
+VERSION=${VERSION:-5.100.138}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-b43-firmware}
+WGET=${WGET:-http://mirror2.openwrt.org/sources/$NAMESRC-${VERSION}.$EXT}
+DESC="Firmware pour cartes réseau sans fil Broadcom"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/lib/firmware
+
+cflags
+
+# On copie le firmware :
+for fw in $(find . -type f -name "wl_apsta.o"); do
+	b43-fwcutter -w ${PKG}/lib/firmware ${fw}
+done
+
+chmod 0755 ${PKG}/lib/firmware/*
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

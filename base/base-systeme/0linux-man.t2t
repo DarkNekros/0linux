@@ -1,0 +1,67 @@
+0LINUX
+base-systeme
+Avril 2013
+
+%!postproc(man): "^(\.TH.*) 1 "  "\1 7 "
+%!encoding: UTF-8
+
+= NOM =[nom]
+
+0Linux - Distribution Linux francophone, didactique et originale
+
+= DESCRIPTION =[description]
+
+Un survol rapide de la configuration de 0Linux.
+
+= OUTILS DE 0LINUX =[outilsde0linux]
+
+0Linux se configure via certains outils dédiés pour éviter d'avoir à chercher quel fichier gère quelle fonction. Tous les outils de 0linux commencent par un « 0 », afin qu'il soit aisé de parcourir tous les outils disponibles via l'auto-complètement de la ligne de commande, en tapant simplement « 0 » suivi de 2 frappes sur la touche TABULATION (ou TAB).
+
+= SYSTÈMES DE FICHIERS ET MONTAGES =[systemesdefichiersetmontages]
+
+Les systèmes de fichiers à monter sont spécifiés dans le fichier __/etc/fstab__.
+Les systèmes de fichiers CHIFFRÉS sont spécifiés dans le fichier __/etc/crypttab__.
+
+= SERVICES DU SYSTÈME =[servicesdusysteme]
+
+Les services du système sont gérés par de simples scripts nommés « rc.* » et rangés dans __/etc/rc.d/rc.*__.  On les rend actifs au démarrage de l'ordinateur en les rendant exécutables -chmod +x) et on les appelle en les exécutant, comme de simples scripts.
+
+= NOM D'HÔTE =[nomdhote]
+
+On définit le nom d'hôte du système en rensignant le fichier __/etc/hostname__. Un outil dédié existe, **__0reseau__**, lequel sert également à la configuration globale du réseau.
+
+= LANGUE DU SYSTÈME =[languedusysteme]
+
+On définit la langue et la localisation du système en définissant les variables ad-hoc dans le fichier __/etc/locale.conf__. Un outil dédié existe : **__0locale__**.
+
+= CLAVIER ET POLICE DE LA CONSOLE VIRTUELLE =[clavieretpolicedelaconsolevirtuelle]
+
+On définit la disposition de touches du clavier ainsi que la police par défaut chargée dans la console en renseignant le fichier __/etc/vconsole.conf__. Le clavier et la police se définissent aussi via les outils dédié **__0clavier__** et **__0police__**, lesquels permettent de tester les dispositions de clavier et les polices de caractères.
+
+= FUSEAU HORAIRE =[fuseauhoraire]
+
+Le fuseau horaire se définit avec l'outil dédié **__0horloge__**. Ces commandes servent à créer un lien symbolique __/etc/localtime__ pointant sur le fichier de fuseau horaire choisi sous __/usr/share/zoneinfo/__. Par exemple :
+
+/etc/localtime -> /usr/share/zoneinfo/Europe/Paris
+
+= GESTION DES PAQUETS =[gestiondespaquets]
+
+Les paquets sont gérés par **Spack** (surtout les programmes 'spackadd' et 'spackrm') et l'outil de gestion des dépôts et mises à jour,  **0g**. Voyez leur manuel respectif pour en savoir plus.
+
+= AMORÇAGE DU SYSTÈME =[amorcagedusysteme]
+
+Le gestionnaire d'amorçage du système est **extlinux**, un outil du paquet **syslinux**. Sa configuration se trouve dans __/boot/extlinux/extlinux.conf__.
+
+= MODULES DU NOYAU =[modulesdunoyau]
+
+Les modules sont chargés automatiquement se lon le matériel. Pour forcer le chargement d'un module donné, ajoutez-le à un fichier dédié sous __/etc/modprobe.d/__. Pour empêcher un module de se charger, ajoutez une commande 'blacklist' adaptée au module dans le fichier __/etc/modprobe.d/blacklist.conf__ ou bien créez dans ce même répertoire un fichier du nom de votre choix, contenant la commande 'blacklist' à invoquer.
+
+= POUR EN SAVOIR PLUS =[pourensavoirplus]
+
+Voyez ces manuels :
+
+tzselect(8), hostname(5),, timezone(3), fstab(5), crypttab(5), modprobe.d(5), 
+0g(8), 'spackadd --help', 'spackrm --help'.
+
+Et consultez la documentation sur le site de 0linux : [http://0linux.org]
+

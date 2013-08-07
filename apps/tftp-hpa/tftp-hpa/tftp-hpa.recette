@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-tftp-hpa}
+VERSION=${VERSION:-5.2}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-tftp-hpa}
+WGET=${WGET:-https://www.kernel.org/pub/software/network/tftp/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Serveur de fichiers trivial pour le démarrage réseau"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install INSTALLROOT=${PKG}
+
+# On crée quelques répertoires supplémentaires :
+mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/systemd/system \
+	$PKG/var/tftpboot \
+	$PKG/srv/tftp
+
+# On crée les fichiers systemd :
+cat > $PKG/usr/lib${LIBDIRSUFFIX}/systemd/system/tftpd.service << "EOF"
+[Unit]
+Description=Serveur de fichier pour le démarrage réseau
+
+[Service]
+ExecStart=/usr/sbin/in.tftpd -s /srv/tftp/
+StandardInput=socket
+StandardOutput=inherit
+StandardError=journal
+
+EOF
+
+cat > $PKG/usr/lib${LIBDIRSUFFIX}/systemd/system/tftpd.socket << "EOF"
+[Socket]
+ListenDatagram=69
+
+[Install]
+WantedBy=sockets.target
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

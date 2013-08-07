@@ -1,0 +1,19 @@
+Description du dépôt @sendmail
+fatalerrors - jeff.levasseur@free.fr
+Juin 2013
+
+= Description de @sendmail =
+
+Sendmail est le serveur de messagerie électronique (MTA) ancestral pour le protocole SMTP (et d'autres).
+
+Après installation, le serveur ne sera pas démarré par défaut au lancement de 0linux.
+
+= Le dépôt @sendmail pour 0linux =
+
+Le dépôt contient le système de serveur sendmail, ses outils de gestion en ligne de commande et sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @sendmail``
+
+% Contenu maintenu par fatalerrors.

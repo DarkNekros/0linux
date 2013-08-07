@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-claws-mail-themes}
+VERSION=${VERSION:-20120129}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-claws-mail-themes}
+WGET=${WGET:-http://www.claws-mail.org/themes/$NAMESRC-$VERSION.$EXT}
+DESC="Ensemble de thèmes pour Claws Mail"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On copie tous les thèmes :
+mkdir -p ${PKG}/usr/share/claws-mail/themes
+cp -ar $(find . -type d -mindepth 1 -maxdepth 1) ${PKG}/usr/share/claws-mail/themes/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

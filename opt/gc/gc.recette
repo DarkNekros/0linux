@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-gc}
+VERSION=${VERSION:-7.2d}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-gc}
+WGET=${WGET:-http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/$NAMESRC-$VERSION.$EXT}
+DESC="Outil de nettoyage mémoire pour C et C++"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On déplace le manuel où il faut :
+mkdir -p ${PKG}/usr/man/man1
+mv ${PKG}/usr/share/gc/gc.man ${PKG}/usr/man/man1/gc.1
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

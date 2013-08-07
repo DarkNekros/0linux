@@ -1,0 +1,46 @@
+#!/bin/sh /usr/share/dpatch/dpatch-run
+## 02-no-io_h.dpatch by Fabian Greffrath <fabian@debian-unofficial.org>
+##
+## DP: Not every arch has <io.h>, include <unistd.h> instead.
+
+@DPATCH@
+diff -urNad unace-nonfree-2.5~/makefile unace-nonfree-2.5/makefile
+--- unace-nonfree-2.5~/makefile	2007-11-15 00:06:39.000000000 +0100
++++ unace-nonfree-2.5/makefile	2007-11-15 00:06:40.355691226 +0100
+@@ -17,7 +17,7 @@
+ INCLSYSDIR 	= //usr/include/sys
+ INCLDIR 	= //usr/include
+ 
+-DEFINES		= -D__LINUX__ -D__unix__ -D__GCC__ -D__HAS_IO_H__
++DEFINES		= -D__LINUX__ -D__unix__ -D__GCC__ -U__HAS_IO_H__
+ 
+ ifdef DEBUG
+ LSWITCHES	=
+diff -urNad unace-nonfree-2.5~/source/base/all/bufread/bufread.c unace-nonfree-2.5/source/base/all/bufread/bufread.c
+--- unace-nonfree-2.5~/source/base/all/bufread/bufread.c	2007-11-15 00:06:39.000000000 +0100
++++ unace-nonfree-2.5/source/base/all/bufread/bufread.c	2007-11-15 00:06:40.355691226 +0100
+@@ -3,6 +3,10 @@
+ 
+ #ifdef __HAS_IO_H__
+ 	#include <io.h>
++#else
++#ifdef __unix__
++	#include <unistd.h>
++#endif
+ #endif
+ 
+ #include <string.h>
+diff -urNad unace-nonfree-2.5~/source/base/all/lfn/lfn.h unace-nonfree-2.5/source/base/all/lfn/lfn.h
+--- unace-nonfree-2.5~/source/base/all/lfn/lfn.h	2007-11-15 00:06:39.000000000 +0100
++++ unace-nonfree-2.5/source/base/all/lfn/lfn.h	2007-11-15 00:06:57.995758343 +0100
+@@ -6,6 +6,10 @@
+ 
+ #ifdef __HAS_IO_H__
+ 	#include <io.h>
++#else
++#ifdef __unix__
++	#include <unistd.h>
++#endif
+ #endif
+ 
+ #ifdef INCL_BASE_LFN_EXCLUSIVE

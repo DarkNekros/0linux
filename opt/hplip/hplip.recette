@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-hplip}
+VERSION=${VERSION:-3.12.11}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-hplip}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Ensemble d'outils et de pilotes pour périphériques HP"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige les aparamètres 'udev', le propriétaire par défaut ainsi 
+# que le chemin des bibliothèques ::
+sed -i 's/SYSFS/ATTR/g' data/rules/*.rules
+sed -i 's%OWNER="lp"%OWNER="root"%g' data/rules/*.rules
+sed -i -e "s#usr/lib#usr/lib${LIBDIRSUFFIX}#g" configure
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-cups-ppd-install \
+	--enable-fax-build \
+	--enable-foomatic-drv-install \
+	--enable-foomatic-ppd-install \
+	--enable-foomatic-rip-hplip-install \
+	--enable-gui-build \
+	--enable-hpijs-install \
+	--enable-network-build=yes \
+	--enable-new-hpcups \
+	--enable-policykit \
+	--enable-pp-build \
+	--enable-qt4 \
+	--enable-scan-build \
+	--enable-shadow-build \
+	--with-cupsbackenddir=/usr/lib${LIBDIRSUFFIX}/cups/backend \
+	--with-cupsfilterdir=/usr/lib${LIBDIRSUFFIX}/cups/filter \
+	--with-docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-drvdir=/usr/share/cups/drv/hp \
+	--with-hpppddir=/usr/share/cups/model/HP \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install rulesdir=/lib/udev/rules.d DESTDIR=${PKG}
+
+# On empêche le démarrage automatique en barre des tâches :
+rm -rf ${PKG}/etc/xdg
+
+# Ce répertoire écrase le contenu d'autres paquets, on supprime :
+rm -rf ${PKG}/etc/sane.d
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

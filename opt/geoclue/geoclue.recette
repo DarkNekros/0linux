@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-geoclue}
+VERSION=${VERSION:-0.12.0}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-geoclue}
+WGET=${WGET:-https://launchpad.net/$NAMESRC/trunk/$(echo $VERSION | cut -d'.' -f1-2)/+download/$NAMESRC-$VERSION.$EXT}
+DESC="Outils et bibliothèques de géolocalisation"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige la compilation avec GCC >= 4.6.x :
+cat $CWD/geoclue.gcc46.patch | patch -p1
+
+# On corrige la compilation avec les 'glib2' récents et ses amis :
+sed -i 's/libnm_glib/libnm-glib/g' configure.ac
+sed -i '/libsoup-gnome/s/$/ gthread-2.0/' configure.ac
+sed -i 's@-Werror@@g' configure.ac
+autoreconf -vif
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

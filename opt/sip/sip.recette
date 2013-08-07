@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=opt
+NAMESRC=${NAMESRC:-sip}
+VERSION=${VERSION:-4.14.3}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-sip}
+WGET=${WGET:-http://prdownloads.sourceforge.net/pyqt/$NAMESRC-$VERSION.$EXT}
+DESC="Outils d'interfaçage pour Python"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On définit l'emplacement des modules Python :
+PYTHONLIB=$( python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' )
+
+# On corrige pour le respect de LIBDIRSUFFIX :
+sed -i "/lib_dir/s:\"lib\":\"lib${LIBDIRSUFFIX}\":" configure.py
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python configure.py --destdir=${PYTHONLIB}
+
+make -j${JOBS} LINK='$(CXX)' || make LINK='$(CXX)'
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

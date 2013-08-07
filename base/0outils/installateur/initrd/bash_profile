@@ -1,0 +1,18 @@
+# On charge la config du clavier après l'appui sur ENTRÉE :
+if [ ! -r /var/log/setup/tmp/choix_clavier ]; then
+	
+	# On patiente 5 secondes car 'systemd' en est encore à baver des messages par dizaines :
+	sleep 5
+	echo -e "\033[1;32mAppuyez sur ENTRÉE pour commencer la configuration de votre clavier.\033[0;0m"
+	read BLAM;
+	. /usr/share/0outils/installateur/scripts/clavier.sh
+	
+	# On relance 'dhcpcd' pour le réseau car 'systemd' est trop con pour le faire correctement :
+	systemctl start dhcpcd >/dev/null 2>&1
+	
+	# Puis on affiche un message d'accueil :
+	echo "---"
+	echo "Bonjour ! Vous êtes connecté en root."
+	echo "Pour débuter l'installation, tapez « installateur » et appuyez sur ENTRÉE."
+	echo "---"
+fi

@@ -1,0 +1,209 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT=base
+NAMESRC=${NAMESRC:-eudev}
+VERSION=${VERSION:-1.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-eudev}
+WGET=${WGET:-https://github.com/gentoo/$NAMESRC/archive/v${VERSION}.$EXT}
+DESC="Système de noeuds de périphériques dynamiques"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/{,s}bin
+mkdir -p ${PKG}/etc/rc.d
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	autoreconf -vif
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--htmldir=/usr/doc/${NAMETGZ}-${VERSION}/html \
+		--enable-gudev \
+		--disable-introspection \
+		--enable-rule-generator \
+		--enable-static \
+		--with-firmware-path=/usr/lib${LIBDIRSUFFIX}/firmware/updates:/usr/lib${LIBDIRSUFFIX}/firmware \
+		--with-rootlibdir=/usr/lib${LIBDIRSUFFIX} \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+autoreconf -vif
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--htmldir=/usr/doc/${NAMETGZ}-${VERSION}/html \
+	--enable-gudev \
+	--enable-introspection \
+	--enable-rule-generator \
+	--enable-static \
+	--with-firmware-path=/usr/lib${LIBDIRSUFFIX}/firmware/updates:/usr/lib${LIBDIRSUFFIX}/firmware \
+	--with-rootlibdir=/usr/lib${LIBDIRSUFFIX} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || fakeroot make
+fakeroot make install DESTDIR=${PKG}
+
+# Les règles passent dans notre répertoire suffixé s'il existe et on le lie
+# dans '/usr/lib' pour contenter tout les paquets :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	cp -ar ${PKG}/usr/lib/udev ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	rm -rf ${PKG}/usr/lib/udev
+	ln -sf ../lib${LIBDIRSUFFIX}/udev ${PKG}/usr/lib/
+fi
+
+# On renomme la configuration pour ne rien écraser :
+mv ${PKG}/etc/udev/udev.conf{,.0nouveau}
+
+# On crée le fichier de règles de 0linux :
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/udev/rules.d/65-0linux-permissions.rules << "EOF"
+# Règles des permissions du système et du matériel pris en charge par Udev.
+
+# Les disques non-'fd*' appartiennent au groupe 'disk'
+KERNEL!="fd*", SUBSYSTEM=="block", GROUP="disk"
+
+# Tous les périphériques amovibles 'sd*' vont dans le groupe 'plugdev' :
+KERNEL=="sd*[!0-9]", ATTR{removable}=="1", GROUP="plugdev"
+KERNEL=="sd*[0-9]", ATTRS{removable}=="1", GROUP="plugdev"
+
+# ...tout comme les périphériques branchables à chaud (ZIP, Jazz, LS-120, etc.) :
+KERNEL=="diskonkey*", GROUP="plugdev"
+KERNEL=="jaz*", GROUP="plugdev"
+KERNEL=="ls120", GROUP="plugdev"
+KERNEL=="microdrive*", GROUP="plugdev"
+KERNEL=="pocketzip*", GROUP="plugdev"
+KERNEL=="zip*", GROUP="plugdev"
+
+# Les périphérique de communication appartiennent au groupe 'dialout' :
+KERNEL=="ippp[0-9]*", GROUP="dialout"
+KERNEL=="isdn[0-9]*", GROUP="dialout"
+KERNEL=="isdnctrl[0-9]*", GROUP="dialout"
+KERNEL=="dcbri[0-9]*", GROUP="dialout"
+
+# CD-ROM :
+ENV{ID_CDROM}=="?*", GROUP="cdrom", MODE="0660"
+KERNEL=="pktcdvd", GROUP="cdrom", MODE="0660"
+KERNEL=="pktcdvd[0-9]*", GROUP="cdrom", MODE="0660"
+SUBSYSTEMS=="scsi", KERNEL=="s[gt][0-9]*", ATTRS{type}=="5", GROUP="cdrom", MODE="0660"
+
+# Périphériques optiques SCSI :
+SUBSYSTEMS=="scsi", KERNEL=="s[gt][0-9]*", ATTRS{type}=="5", GROUP="cdrom", MODE="0660"
+
+# Le mode DRI est accessible au groupe 'video' :
+KERNEL=="card[0-9]*",GROUP:="video"
+
+# Permissions pour ALSA :
+SUBSYSTEM=="sound", GROUP="audio", MODE="0660"
+
+# Permissions pour l'horloge temps réel :
+KERNEL=="rtc|rtc0", MODE="0644"
+
+# HPET appartient au groupe 'audio' :
+KERNEL=="hpet", GROUP="audio"
+
+# On permet au groupe 'netdev' d'écrire sur les devices "rfkill" :
+KERNEL=="rfkill", GROUP:="netdev", MODE:="0664"
+
+EOF
+
+# On supprime le fatras RPM :
+rm -rf ${PKG}/etc/rpm
+  
+# On lie ce binaire, dont le chemin est parfois codé en dur :
+ln -sf ../bin/udevadm ${PKG}/usr/sbin/
+
+# On crée le fichier service :
+cat > ${PKG}/etc/rc.d/rc.udev << "EOF"
+#!/usr/bin/env bash
+
+udev_start() {
+	echo "Démarrage de Udev..."
+	
+	# Cette méthode est dépréciée :
+	if [ -e /proc/sys/kernel/hotplug ]; then
+		echo "" > /proc/sys/kernel/hotplug
+	fi
+	
+	# On lance 'udevd' :
+	if [ "$(pidof udevd)" = "" ]; then
+		udevd --daemon
+		udevadm trigger --type=subsystems --action=add
+		udevadm trigger --type=devices    --action=add
+	else
+		udevadm trigger --type=subsystems --action=change
+		udevadm trigger --type=devices    --action=change
+	fi
+	
+	udevadm settle --timeout=30
+}
+
+udev_stop() {
+	echo "Arrêt de Udev..."
+	killall udevd 
+}
+
+case "$1" in
+	'start')
+		udev_start
+	;;
+	
+	'stop')
+		udev_stop
+	;;
+	
+	'restart')
+		udev_stop
+		sleep 1
+		udev_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.udev
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
