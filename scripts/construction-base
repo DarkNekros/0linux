@@ -138,3 +138,5 @@ eudev
 dbus
 wpa_supplicant
 xfsprogs
+sysvinit
+initialisation-systeme
