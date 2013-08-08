@@ -95,23 +95,24 @@ fakeroot make install DESTDIR=${PKG}
 mkdir -p      ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages
 cp -a Tools/* ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages
 
-# On renomme les binaires et l'entête 64 bits :
-mv ${PKG}/usr/bin/python{,-64}
-mv ${PKG}/usr/bin/python2{,-64}
-mv ${PKG}/usr/bin/python2.7{,-64}
-mv ${PKG}/usr/include/python2.7/pyconfig{,-64}.h
+if [ "${PKGARCH}" = "x86_64" ]; then
+	# On renomme les binaires et l'entête 64 bits :
+	mv ${PKG}/usr/bin/python{,-64}
+	mv ${PKG}/usr/bin/python2{,-64}
+	mv ${PKG}/usr/bin/python2.7{,-64}
+	mv ${PKG}/usr/include/python2.7/pyconfig{,-64}.h
 
-# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-64' :
-ln -sf python2.7-64 ${PKG}/usr/bin/python2-64
-ln -sf python2-64   ${PKG}/usr/bin/python-64
+	# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-64' :
+	ln -sf python2.7-64 ${PKG}/usr/bin/python2-64
+	ln -sf python2-64   ${PKG}/usr/bin/python-64
 
-# On lie des binaires génériques au programme enveloppe :
-ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python
-ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python2
-ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python2.7
-
-# On crée un faux entête pour s'adapter au multilib :
-cat > ${PKG}/usr/include/python2.7/pyconfig.h << "EOF"
+	# On lie des binaires génériques au programme enveloppe :
+	ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python
+	ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python2
+	ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python2.7
+	
+	# On crée un faux entête pour s'adapter au multilib :
+	cat > ${PKG}/usr/include/python2.7/pyconfig.h << "EOF"
 #ifndef __STUB__PYCONFIG_H__
 #define __STUB__PYCONFIG_H__
 
@@ -124,6 +125,7 @@ cat > ${PKG}/usr/include/python2.7/pyconfig.h << "EOF"
 #endif
 
 EOF
+fi
 
 installer_doc
 

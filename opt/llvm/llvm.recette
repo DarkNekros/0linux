@@ -153,24 +153,22 @@ sed -i "s|\$RealBin/bin|/usr/bin|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/
 sed -i "s|\$RealBin/sorttable.js|/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/sorttable.js|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build
 sed -i "s|\$RealBin/scanview.css|/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scanview.css|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build
 
-# On renomme les binaires et entêtes spécifiques :
-mv ${PKG}/usr/include/llvm/Config/config{,-64}.h
-mv ${PKG}/usr/include/llvm/Config/llvm-config{,-64}.h
-mv ${PKG}/usr/bin/llvm-config{,-64}
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On renomme les binaires et entêtes spécifiques :
+	mv ${PKG}/usr/include/llvm/Config/config{,-64}.h
+	mv ${PKG}/usr/include/llvm/Config/llvm-config{,-64}.h
+	mv ${PKG}/usr/bin/llvm-config{,-64}
 
-# On lie un binaire générique à l'enveloppe multiarch :
-ln -sf enveloppe_multiarch ${PKG}/usr/bin/llvm-config
+	# On lie un binaire générique à l'enveloppe multiarch :
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/llvm-config
 
-# On crée les entêtes génériques :
-cat > ${PKG}/usr/include/llvm/Config/config.h << "EOF"
+	# On crée les entêtes génériques :
+	cat > ${PKG}/usr/include/llvm/Config/config.h << "EOF"
 #ifndef __STUB__LLVM_CONFIG_H__
 #define __STUB__LLVM_CONFIG_H__
 
-#if defined(__x86_64__) || \
-    defined(__sparc64__) || \
-    defined(__arch64__) || \
-    defined(__powerpc64__) || \
-    defined (__s390x__)
+#if defined(__x86_64__)
 # include "config-64.h"
 #else
 # include "config-32.h"
@@ -178,16 +176,12 @@ cat > ${PKG}/usr/include/llvm/Config/config.h << "EOF"
 
 #endif
 EOF
-
-cat > ${PKG}/usr/include/llvm/Config/llvm-config.h << "EOF"
+	
+	cat > ${PKG}/usr/include/llvm/Config/llvm-config.h << "EOF"
 #ifndef __STUB__LLVMCONFIG_H__
 #define __STUB__LLVMCONFIG_H__
 
-#if defined(__x86_64__) || \
-    defined(__sparc64__) || \
-    defined(__arch64__) || \
-    defined(__powerpc64__) || \
-    defined (__s390x__)
+#if defined(__x86_64__)
 # include "llvm-config-64.h"
 #else
 # include "llvm-config-32.h"
@@ -195,6 +189,8 @@ cat > ${PKG}/usr/include/llvm/Config/llvm-config.h << "EOF"
 
 #endif
 EOF
+fi
+
 installer_doc
 
 # On complète la documentation :

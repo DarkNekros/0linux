@@ -19,21 +19,60 @@ cflags
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
 mkdir -p ${PKG}/usr/{bin,include,man/man1}
 
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On crée les répertoires d'accueil :
+	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+	
+	# On force la création de liens symboliques relatifs :
+	sed -i -e 's@ln -s -f $(PREFIX)/bin/@ln -s -f @' Makefile
+	
+	# On force à respecter le suffixe de nos bibliothèques et notre compilateur :
+	sed -i "s@/lib\(/\| \|$\)@/usr/lib${LIBDIRSUFFIX}\1@g" $(find . -type f -name "Makefile*")
+	sed -i "s@^CFLAGS=.*@CFLAGS=${FLAGS} -O3@g" $(find . -type f -name "Makefile*")
+	sed -i "s@^CFLAGS=.*@CFLAGS=${FLAGS} -O3@g" $(find . -type f -name "Makefile*")
+	sed -i "s@^CC=.*@CC=${CC}@" $(find . -type f -name "Makefile*")
+	
+	# Compilation de la bibliothèque partagée :
+	make -j${JOBS} -f Makefile-libbz2_so || make -f Makefile-libbz2_so
+	make clean
+	
+	# Compilation de la bibliothèque statique :
+	make -j${JOBS} bzip2 bzip2recover libbz2.a || make bzip2 bzip2recover libbz2.a
+	
+	# On copie et on lie la bibliothèque partagée :
+	cp libbz2.so.${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	ln -sf libbz2.so.${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/libbz2.so
+	ln -sf libbz2.so.${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/libbz2.so.$(echo $VERSION | cut -d'.' -f1)
+	ln -sf libbz2.so.${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/libbz2.so.$(echo $VERSION | cut -d'.' -f1-2)
+
+	# On copie la bibliothèque statique :
+	cp libbz2.a ${PKG}/usr/lib${LIBDIRSUFFIX}/
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
 # On force la création de liens symboliques relatifs :
 sed -i -e 's@ln -s -f $(PREFIX)/bin/@ln -s -f @' Makefile
 
-# On force à respecter le suffixe de nos bibliothèques :
-sed -i "s@/lib\(/\| \|$\)@/usr/lib${LIBDIRSUFFIX}\1@g" Makefile
+# On force à respecter le suffixe de nos bibliothèques et notre compilateur :
+sed -i "s@/lib\(/\| \|$\)@/usr/lib${LIBDIRSUFFIX}\1@g" $(find . -type f -name "Makefile*")
+sed -i "s@^CFLAGS=.*@CFLAGS=${FLAGS} -O3@g" $(find . -type f -name "Makefile*")
+sed -i "s@^CFLAGS=.*@CFLAGS=${FLAGS} -O3@g" $(find . -type f -name "Makefile*")
+sed -i "s@^CC=.*@CC=${CC}@" $(find . -type f -name "Makefile*")
 
-sed -i "s#$(grep CFLAGS= Makefile-libbz2_so)#& ${FLAGS}#" Makefile-libbz2_so
-sed -i "s#$(grep CFLAGS= Makefile)#& ${FLAGS}#" Makefile
-
-# Compilation de la bilbiothèque partagée :
-CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+# Compilation de la bibliothèque partagée :
 make -j${JOBS} -f Makefile-libbz2_so || make -f Makefile-libbz2_so
+make clean
 
-# Compilation :
-CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+# Compilation de la bibliothèque statique :
 make -j${JOBS} bzip2 bzip2recover libbz2.a || make bzip2 bzip2recover libbz2.a
 
 # 'make install' à la main !

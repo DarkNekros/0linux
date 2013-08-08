@@ -74,11 +74,14 @@ NM=nm \
 make -j${JOBS} || make
 fakeroot make install completiondir=/usr/share/bash-completion/completions DESTDIR=${PKG}
 
-# On renomme un binaire spécifique à l'architecture :
-mv ${PKG}/usr/bin/gio-querymodules{,-64}
-
-# lie un binaire générique au programme enveloppe :
-ln -sf enveloppe_multiarch ${PKG}/usr/bin/gio-querymodules
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On renomme un binaire spécifique à l'architecture :
+	mv ${PKG}/usr/bin/gio-querymodules{,-64}
+	
+	# lie un binaire générique au programme enveloppe :
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/gio-querymodules
+fi
 
 # Les complètements pour Bash n'ont pas à être exécutables :
 chmod 644 ${PKG}/usr/share/bash-completion/completions/*
