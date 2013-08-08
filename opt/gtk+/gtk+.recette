@@ -19,11 +19,66 @@ cflags
 # On compile GTK+ 2 :
 preparer_sources $NAMESRC-2.24.17.$EXT
 
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On corrige pour placer la configuration de GTK+ dans un répertoire lié à l'archi :
+	cat $CWD/gtk+.multilib.patch | sed 's/BUILDENV/32/g' | patch -p1
+	
+	# On corrige la génération de la doc, boguée avec nos 'docbook*' :
+	sed -i 's#l \(gtk-.*\).sgml#& -o \1#' docs/{faq,tutorial}/Makefile.in
+	
+	# Ainsi que quelques manuels manquants :
+	sed -i 's#.*@man_#man_#' docs/reference/gtk/Makefile.in
+	
+	# On supprime ce message inquiétant et inutile :
+	sed -i -e '/if (g_hash_table_lookup (display_x11->xid_ht, xid))/d' \
+		-e '/g_warning ("XID collision, trouble ahead");/d' \
+		gdk/x11/gdkxid.c
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--with-xinput=yes \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On renomme ce binaire spécifique à l'architecture pour l'envelopper :
+	mv ${PKG}/usr/bin/gtk-query-immodules-2.0{,-32}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige pour placer la configuration de GTK+ dans un répertoire lié à l'archi :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	cat $CWD/gtk+.multilib.patch | sed 's/BUILDENV/64/g' | patch -p1
+fi
+
 # On corrige la génération de la doc, boguée avec nos 'docbook*' :
 sed -i 's#l \(gtk-.*\).sgml#& -o \1#' docs/{faq,tutorial}/Makefile.in
 
 # Ainsi que quelques manuels manquants :
 sed -i 's#.*@man_#man_#' docs/reference/gtk/Makefile.in
+
+# On supprime ce message inquiétant et inutile :
+sed -i -e '/if (g_hash_table_lookup (display_x11->xid_ht, xid))/d' \
+	-e '/g_warning ("XID collision, trouble ahead");/d' \
+	gdk/x11/gdkxid.c
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -42,11 +97,57 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On renomme ce binaire spécifique à l'architecture pour l'envelopper :
+mv ${PKG}/usr/bin/gtk-query-immodules-2.0{,-64}
+
+# on lie un binaire générique au programme enveloppe :
+ln -sf enveloppe_multiarch ${PKG}/usr/bin/gtk-query-immodules-2.0
+
+# On crée un lien générique pour la configuration :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	gtk-2.0-64 ${PKG}/etc/gtk-2.0
+fi
+
 # On affecte un thème par défaut sans écraser quoi que ce soit :
 echo 'gtk-theme-name="GTK+"' > ${PKG}/etc/gtk-2.0/gtkrc.0nouveau
 
 # On compile GTK+ 3 :
 preparer_sources
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--disable-schemas-compile \
+		--enable-xkb \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On renomme ce binaire spécifique à l'architecture pour l'envelopper :
+	mv ${PKG}/usr/bin/gtk-query-immodules-3.0{,-64}
+	
+	# On corrige pour placer la configuration de GTK+ dans un répertoire lié à l'archi :
+	mv ${PKG}/etc/gtk-3.0{,-32}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -64,6 +165,19 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+# On renomme ce binaire spécifique à l'architecture pour l'envelopper :
+mv ${PKG}/usr/bin/gtk-query-immodules-3.0{,-64}
+
+# on lie un binaire générique au programme enveloppe :
+ln -sf enveloppe_multiarch ${PKG}/usr/bin/gtk-query-immodules-3.0
+
+# On corrige pour placer la configuration de GTK+ dans un répertoire lié à l'archi
+# et on crée un lien générique : :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mv ${PKG}/etc/gtk-3.0{,-64}
+	ln -sf gtk-3.0-64 ${PKG}/etc/gtk-3.0
+fi
 
 # On affecte un thème par défaut sans écraser quoi que ce soit :
 echo 'gtk-theme-name="GTK+"' > ${PKG}/etc/gtk-3.0/gtkrc.0nouveau
@@ -83,8 +197,15 @@ creer_post_installation
 cat >> ${PKG}/post-install.sh << "EOF"
 
 # On nettoie le cache et on régénère les modules GTK+ :
-chroot . gtk-query-immodules-2.0 > /etc/gtk-2.0/gtk.immodules 2>/dev/null
-chroot . gtk-query-immodules-3.0 > /etc/gtk-3.0/gtk.immodules 2>/dev/null
+if [ "$(uname -m)" = "x86_64" ]; then
+	chroot . gtk-query-immodules-2.0-32 > /etc/gtk-2.0-32/gtk.immodules 2>/dev/null
+	chroot . gtk-query-immodules-2.0-64 > /etc/gtk-2.0-64/gtk.immodules 2>/dev/null
+	chroot . gtk-query-immodules-3.0-32 > /etc/gtk-3.0-32/gtk.immodules 2>/dev/null
+	chroot . gtk-query-immodules-3.0-64 > /etc/gtk-3.0-64/gtk.immodules 2>/dev/null
+else
+	chroot . gtk-query-immodules-2.0 > /etc/gtk-2.0/gtk.immodules 2>/dev/null
+	chroot . gtk-query-immodules-3.0 > /etc/gtk-3.0/gtk.immodules 2>/dev/null
+fi
 
 EOF
 

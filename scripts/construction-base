@@ -124,7 +124,7 @@ sgml-common
 shadow
 sudo
 eventlog
-syslog-ng
+sysklogd
 syslinux
 tree
 util-linux
