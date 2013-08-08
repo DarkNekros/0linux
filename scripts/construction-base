@@ -51,6 +51,7 @@ file
 util-linux
 coreutils
 bash
+dash
 diffutils
 findutils
 gawk
@@ -116,6 +117,7 @@ libnfsidmap
 nfs-utils
 fuse
 ntfs-3g_ntfsprogs
+squashfs
 openssh
 parted
 pciutils
