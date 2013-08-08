@@ -72,7 +72,6 @@ curl
 dhcpcd
 dosfstools
 e2fsprogs
-eject
 expat
 python
 libnl
