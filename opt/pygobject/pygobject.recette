@@ -22,6 +22,9 @@ for correctif in $CWD/*.patch; do
 	cat ${correctif} | patch -p1
 done
 
+# On empêche 'gcc' de planter sur les avertissements :
+sed -i '/Werror=format/d' configure
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -33,24 +36,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-introspection \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
-
-# On compile pour GTK+ 3 :
-preparer_sources
-
-# Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

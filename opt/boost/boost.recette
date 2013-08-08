@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-boost}
-VERSION=${VERSION:-1.49.0}
+VERSION=${VERSION:-1.54.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-boost}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_$(echo $VERSION | sed 's/\./_/g').$EXT}

@@ -21,10 +21,14 @@ mkdir -p ${PKG}/etc/sgml
 # On corrige la compilation avec GCC >= 4.6.x :
 cat $CWD/openjade.gcc46.patch | patch -p1
 
+# On corrige 'msggen.pl' :
+cat $CWD/openjade.msggen.patch | patch -p1
+
 # On corrige l'inclusion d'un entête :
 sed -i "s/iostream.h/iostream/g" style/MultiLineInlineNote.cxx
 
 # Compilation :
+LDFLAGS+="-lm" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \

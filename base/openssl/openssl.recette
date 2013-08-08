@@ -36,8 +36,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		linux-elf \
 		shared
 	
-	make -j${JOBS} MAKEDEPPROG="${CC}" depend || make MAKEDEPPROG="${CC}" depend
-	make -j${JOBS} || make
+	make MAKEDEPPROG="${CC}" depend
+	make
 	fakeroot make install PERL=/usr/bin/perl MANDIR=/usr/man INSTALL_PREFIX=${PKG}
 fi
 
@@ -57,8 +57,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--openssldir=/etc/ssl \
 	shared
 
-make -j${JOBS} depend || make depend
-make -j${JOBS} || make
+make depend
+make
 fakeroot make install PERL=/usr/bin/perl MANDIR=/usr/man INSTALL_PREFIX=${PKG}
 
 # On veille à ne pas écraser la configuration en place :
