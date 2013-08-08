@@ -94,6 +94,7 @@ kmod
 less
 lftp
 libcap
+libcap-ng
 libelf
 libpipeline
 libusb
@@ -106,6 +107,7 @@ man-db
 nano
 net-snmp
 net-tools
+kerberos
 libevent
 libgssapi
 libtirpc
