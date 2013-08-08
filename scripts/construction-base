@@ -35,6 +35,8 @@ libtool
 nasm
 yasm
 sed
+libgpg-error
+libgcrypt
 ncurses
 dialog
 pkg-config
