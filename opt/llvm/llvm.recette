@@ -67,7 +67,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	sed -i "s|\"lib\"|\"lib${LIBDIRSUFFIX}\"|" $(find . -type f -name "*.cpp")
 	sed -i "s|ActiveLibDir = ActivePrefix + \"/lib\"|ActiveLibDir = ActivePrefix + \"/lib${LIBDIRSUFFIX}\"|g" $(find . -type f -name "*.cpp")
 	
-	make -j${JOBS} REQUIRES_RTTI=1 || make REQUIRES_RTTI=1
+	make REQUIRES_RTTI=1
 	fakeroot make install DESTDIR=${PKG}
 	
 	# On renomme et déplace 'llvm-config', renommé par "--host" et "--target" :
@@ -117,6 +117,8 @@ CC=gcc CXX=g++ \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-assertions \
+	--disable-debug-runtime \
+	--disable-expensive-checks \
 	--enable-experimental-targets=R600 \
 	--enable-optimized \
 	--enable-shared \
@@ -128,7 +130,7 @@ sed -i "s@\$(PROJ_prefix)/lib@&${LIBDIRSUFFIX}@" $(find . -type f -name "Makefil
 sed -i "s|\"lib\"|\"lib${LIBDIRSUFFIX}\"|" $(find . -type f -name "*.cpp")
 sed -i "s|ActiveLibDir = ActivePrefix + \"/lib\"|ActiveLibDir = ActivePrefix + \"/lib${LIBDIRSUFFIX}\"|g" $(find . -type f -name "*.cpp")
 
-make -j${JOBS} || make
+make
 fakeroot make install DESTDIR=${PKG}
 
 # On crée les liens génériques pour 'clang' :
