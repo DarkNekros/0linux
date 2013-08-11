@@ -1,21 +1,20 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+# Voyez le fichier LICENCES pour connaÃ®tre la licence de ce script.
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-llvm}
-VERSION=${VERSION:-3.3}
-EXT=${EXT:-tar.gz}
+VERSION=${VERSION:-3.2}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-llvm}
-WGET=(http://llvm.org/releases/$VERSION/${NAMESRC}-${VERSION}.src.${EXT}
-      http://llvm.org/releases/$VERSION/cfe-${VERSION}.src.${EXT}
-      http://llvm.org/releases/$VERSION/compiler-rt-${VERSION}.src.${EXT}
+WGET=(http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC/${NAMESRC}-${VERSION}.${EXT} # Sources de tstellar réempaquetées
+      http://llvm.org/releases/$VERSION/clang-${VERSION}.src.tar.gz
      )
 DESC="L'environnement LLVM et le compilateur Clang"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources ${NAMESRC}-${VERSION}.src.${EXT} # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -24,26 +23,22 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On supprime les sources embarquées de 'clang' :
-	rm -rf tools/clang
-	tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.tar.gz -C tools/
-	
+	# On supprime les sources embarquées de 'clang' pour les remplacer par notre archive :
+	cd tools
+	rm -rf clang clang-${VERSION}.src
+
+	# On décompacte les sources du compilateur Clang :
+	tar xf ${PKGSOURCES}/${NAMETGZ}/clang-${VERSION}.src.tar.gz
+
 	# On renomme sans la version :
-	mv tools/{cfe-${VERSION}.src,clang}
+	mv clang-${VERSION}.src clang
+	cd ..
 	
-	# On décompacte les sources du compilateur compiler-rt :
-	rm -rf projects/compiler-rt
-	tar xf ${PKGSOURCES}/${NAMETGZ}/compiler-rt-${VERSION}.src.tar.gz -C projects/
-	
-	# On renomme sans la version :
-	mv projects/compiler-rt{-${VERSION}.src,}
-	
-	# On supprime une référence au répertoire de construction :
-	sed -i 's:$(RPATH) -Wl,$(\(ToolDir\|LibDir\|ExmplDir\))::g' Makefile.rules
+	# On corrige la version absurde retournée (qui casse 'opengtl' entre autres) :
+	sed -i 's/3\.2svn/3.2/g' configure
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	CC="gcc -m32" CXX="g++ -m32" \
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -53,61 +48,50 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 		--disable-assertions \
-		--disable-debug-runtime \
-		--disable-expensive-checks \
 		--enable-experimental-targets=R600 \
 		--enable-optimized \
 		--enable-shared \
 		--enable-targets=all \
-		--host=${PKGARCH}-0linux-linux-gnu \
-		--target=${PKGARCH}-0linux-linux-gnu
+		--build=${PKGARCH}-0-linux-gnu
 	
 	# On corrige pour notre $LIBDIRSUFFIX :
 	sed -i "s@\$(PROJ_prefix)/lib@&${LIBDIRSUFFIX}@" $(find . -type f -name "Makefile*")
 	sed -i "s|\"lib\"|\"lib${LIBDIRSUFFIX}\"|" $(find . -type f -name "*.cpp")
 	sed -i "s|ActiveLibDir = ActivePrefix + \"/lib\"|ActiveLibDir = ActivePrefix + \"/lib${LIBDIRSUFFIX}\"|g" $(find . -type f -name "*.cpp")
 	
-	make REQUIRES_RTTI=1
+	make -j${JOBS} || make
 	fakeroot make install DESTDIR=${PKG}
-	
-	# On renomme et déplace 'llvm-config', renommé par "--host" et "--target" :
-	mv ${PKG}/usr/bin/{${PKGARCH}-0linux-linux-gnu-,}llvm-config
 	
 	# On corrige une référence à 'lib' dans 'llvm-config' :
 	sed -i -e "s@ABS_RUN_DIR/lib\"@ABS_RUN_DIR/lib$LIBDIRSUFFIX\"@" ${PKG}/usr/bin/llvm-config
 	
-	# On renomme les binaires et entêtes spécifiques au 32 bits :
+	# On renomme ces fichiers spécifiques à l'architecture :
+	mv ${PKG}/usr/bin/llvm-config{,-32}
 	mv ${PKG}/usr/include/llvm/Config/config{,-32}.h
 	mv ${PKG}/usr/include/llvm/Config/llvm-config{,-32}.h
-	mv ${PKG}/usr/bin/llvm-config{,-32}
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources ${NAMESRC}-${VERSION}.src.${EXT} # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On supprime les sources embarquées de 'clang' :
-rm -rf tools/clang
-tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.tar.gz -C tools/
+# On supprime les sources embarquées de 'clang' pour les remplacer par notre archive :
+cd tools
+rm -rf clang clang-${VERSION}.src
+
+# On décompacte les sources du compilateur Clang :
+tar xf ${PKGSOURCES}/${NAMETGZ}/clang-${VERSION}.src.tar.gz
 
 # On renomme sans la version :
-mv tools/{cfe-${VERSION}.src,clang}
+mv clang-${VERSION}.src clang
+cd ..
 
-# On décompacte les sources du compilateur compiler-rt :
-rm -rf projects/compiler-rt
-tar xf ${PKGSOURCES}/${NAMETGZ}/compiler-rt-${VERSION}.src.tar.gz -C projects/
-
-# On renomme sans la version :
-mv projects/compiler-rt{-${VERSION}.src,}
-
-# On supprime une référence au répertoire de construction (pour Noël je voudrais
-# un compilateur qui ne soit pas un casse-tête à empaqueter, ça existe ?) :
-sed -i 's:$(RPATH) -Wl,$(\(ToolDir\|LibDir\|ExmplDir\))::g' Makefile.rules
+# On corrige la version absurde retournée (qui casse 'opengtl' entre autres) :
+sed -i 's/3\.2svn/3.2/g' configure
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-CC=gcc CXX=g++ \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -117,25 +101,19 @@ CC=gcc CXX=g++ \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-assertions \
-	--disable-debug-runtime \
-	--disable-expensive-checks \
 	--enable-experimental-targets=R600 \
 	--enable-optimized \
 	--enable-shared \
 	--enable-targets=all \
-	--build=${PKGARCH}-0linux-linux-gnu
+	--build=${PKGARCH}-0-linux-gnu
 
 # On corrige pour notre $LIBDIRSUFFIX :
 sed -i "s@\$(PROJ_prefix)/lib@&${LIBDIRSUFFIX}@" $(find . -type f -name "Makefile*")
 sed -i "s|\"lib\"|\"lib${LIBDIRSUFFIX}\"|" $(find . -type f -name "*.cpp")
 sed -i "s|ActiveLibDir = ActivePrefix + \"/lib\"|ActiveLibDir = ActivePrefix + \"/lib${LIBDIRSUFFIX}\"|g" $(find . -type f -name "*.cpp")
 
-make
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-# On crée les liens génériques pour 'clang' :
-ln -sf clang ${PKG}/usr/bin/${PKGARCH}-0linux-linux-gnu-clang
-ln -sf clang++ ${PKG}/usr/bin/${PKGARCH}-0linux-linux-gnu-clang++
 
 # On place les binaires du 'clang-analyzer' :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer
@@ -156,13 +134,12 @@ sed -i "s|\$RealBin/sorttable.js|/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-bui
 sed -i "s|\$RealBin/scanview.css|/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scanview.css|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build
 
 if [ "${PKGARCH}" = "x86_64" ]; then
-	
-	# On renomme les binaires et entêtes spécifiques :
+	# On renomme ces fichiers spécifiques à l'architecture :
+	mv ${PKG}/usr/bin/llvm-config{,-64}
 	mv ${PKG}/usr/include/llvm/Config/config{,-64}.h
 	mv ${PKG}/usr/include/llvm/Config/llvm-config{,-64}.h
-	mv ${PKG}/usr/bin/llvm-config{,-64}
 
-	# On lie un binaire générique à l'enveloppe multiarch :
+	# On lie un binaire générique au progamme enveloppe :
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/llvm-config
 
 	# On crée les entêtes génériques :
@@ -171,22 +148,22 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 #define __STUB__LLVM_CONFIG_H__
 
 #if defined(__x86_64__)
-# include "config-64.h"
+#	include "config-64.h"
 #else
-# include "config-32.h"
+#	include "config-32.h"
 #endif
 
 #endif
 EOF
 	
 	cat > ${PKG}/usr/include/llvm/Config/llvm-config.h << "EOF"
-#ifndef __STUB__LLVMCONFIG_H__
-#define __STUB__LLVMCONFIG_H__
+#ifndef __STUB__LLVM_LLVMCONFIG_H__
+#define __STUB__LLVM_LLVMCONFIG_H__
 
 #if defined(__x86_64__)
-# include "llvm-config-64.h"
+#	include "llvm-config-64.h"
 #else
-# include "llvm-config-32.h"
+#	include "llvm-config-32.h"
 #endif
 
 #endif
@@ -197,13 +174,10 @@ installer_doc
 
 # On complète la documentation :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/clang
-cp -a tools/clang/{docs,*.txt} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/clang/ || true
+cp -a tools/clang/{docs,*.txt} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/clang/
 
 # On déplace de la doc mal placée :
-mv ${PKG}/usr/docs/llvm/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
-
-# Idem pour les manuels :
-mv ${PKG}/usr/share/man ${PKG}/usr/ || true
+mv ${PKG}/usr/docs/llvm/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
 # On supprime les archives redondantes :
 rm -f ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/*.tar.gz

@@ -122,7 +122,11 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
+	# On corrige la syntaxe de cette macro : :
+	sed -i 's@AC_DEFUN(AM_PATH_GTK,@AC_DEFUN([AM_PATH_GTK],@' gtk.m4
+	
 	# Compilation pour i686 :
+	PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig \
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
 		--prefix=/usr \
@@ -151,6 +155,9 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige la syntaxe de cette macro : :
+sed -i 's@AC_DEFUN(AM_PATH_GTK,@AC_DEFUN([AM_PATH_GTK],@' gtk.m4
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -176,7 +183,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# on lie un binaire générique au programme enveloppe :
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/gtk-query-immodules-3.0
 	
-	# On corrige pour placer la configuration de GTK+ dans un répertoire lié à l'archi
+	# On renomme la configuration de GTK+ dans un répertoire lié à l'archi
 	# et on crée un lien générique : :
 	mv ${PKG}/etc/gtk-3.0{,-64}
 	ln -sf gtk-3.0-64 ${PKG}/etc/gtk-3.0

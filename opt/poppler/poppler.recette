@@ -41,7 +41,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 		--enable-libjpeg \
-		--enable-poppler-glib \
 		--enable-poppler-qt4 \
 		--enable-xpdf-headers \
 		--enable-zlib \
@@ -68,7 +67,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-cairo-output \
 	--enable-libjpeg \
-	--enable-poppler-glib \
 	--enable-poppler-qt4 \
 	--enable-xpdf-headers \
 	--enable-zlib \
