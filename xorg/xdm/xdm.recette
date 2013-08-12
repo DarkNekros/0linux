@@ -18,12 +18,6 @@ cflags
 # On corrige le comportement de utmp et wtmp pour régler les problèmes avec 'who'
 echo "exec /usr/bin/sessreg -a -w \"/var/log/wtmp\" -u \"/run/utmp\" -x \"/usr/lib${LIBDIRSUFFIX}/X11/xdm/Xservers\" -l \$DISPLAY -h \"\" \$USER 2>/dev/null" >> config/GiveConsole
 
-# On corrige le fichier service :
-cat $CWD/xdm.service.patch | patch  -p1
-
-# Compilation :
-autoreconf -vif
-
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -37,9 +31,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-# On déplace les fichiers de cet abruti de 'systemd' :
-mv ${PKG}/usr/lib/systemd ${PKG}/usr/lib${LIBDIRSUFFIX}/
 
 installer_doc
 creer_post_installation
