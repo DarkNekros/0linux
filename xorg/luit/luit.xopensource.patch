@@ -1,0 +1,13 @@
+diff --git a/sys.c b/sys.c
+index 8463b05..5bf0491 100644
+--- a/sys.c
++++ b/sys.c
+@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
+ 
++#define _XOPEN_SOURCE 600
++
+ #ifdef HAVE_CONFIG_H
+ # include "config.h"
+ #endif
