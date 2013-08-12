@@ -96,6 +96,8 @@ glade
 glibmm
 glib-networking
 gnome-colors
+cracklib
+libpwquality
 gnome-disk-utility
 gnome-doc-utils
 gnome-icon-theme
