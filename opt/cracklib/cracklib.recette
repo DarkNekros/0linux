@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-PKGCAT=opy
+PKGCAT=opt
 NAMESRC=${NAMESRC:-cracklib}
 VERSION=${VERSION:-2.9.0}
 EXT=${EXT:-tar.gz}
