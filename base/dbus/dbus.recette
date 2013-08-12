@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-dbus}
-VERSION=${VERSION:-1.6.10}
+VERSION=${VERSION:-1.6.12}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-dbus}
 WGET=${WGET:-http://dbus.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
