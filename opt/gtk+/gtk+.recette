@@ -115,48 +115,7 @@ installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.24.20
 
 # On compile GTK+ 3 :
 preparer_sources
-
-# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
-if [ "${PKGARCH}" = "x86_64" ]; then
-	
-	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
-	cflags i686
-	
-	# On corrige la syntaxe de cette macro : :
-	sed -i 's@AC_DEFUN(AM_PATH_GTK,@AC_DEFUN([AM_PATH_GTK],@' gtk.m4
-	
-	# Compilation pour i686 :
-	PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig \
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--disable-schemas-compile \
-		--enable-xkb \
-		--build=${PKGARCH}-0linux-linux-gnu
-	
-	make -j${JOBS} || make
-	fakeroot make install DESTDIR=${PKG}
-	
-	# On renomme ce binaire spécifique à l'architecture pour l'envelopper :
-	mv ${PKG}/usr/bin/gtk-query-immodules-3.0{,-32}
-	
-	# On corrige pour placer la configuration de GTK+ dans un répertoire lié à l'archi :
-	mv ${PKG}/etc/gtk-3.0{,-32}
-fi
-
-# On refait la préparation des sources, il peut rester des déchets de la
-# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige la syntaxe de cette macro : :
-sed -i 's@AC_DEFUN(AM_PATH_GTK,@AC_DEFUN([AM_PATH_GTK],@' gtk.m4
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -174,20 +133,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-if [ "${PKGARCH}" = "x86_64" ]; then
-	
-	# On renomme ce binaire spécifique à l'architecture pour l'envelopper :
-	mv ${PKG}/usr/bin/gtk-query-immodules-3.0{,-64}
-	
-	# on lie un binaire générique au programme enveloppe :
-	ln -sf enveloppe_multiarch ${PKG}/usr/bin/gtk-query-immodules-3.0
-	
-	# On renomme la configuration de GTK+ dans un répertoire lié à l'archi
-	# et on crée un lien générique : :
-	mv ${PKG}/etc/gtk-3.0{,-64}
-	ln -sf gtk-3.0-64 ${PKG}/etc/gtk-3.0
-fi
 
 # On affecte un thème par défaut sans écraser quoi que ce soit :
 echo 'gtk-theme-name="GTK+"' > ${PKG}/etc/gtk-3.0/gtkrc.0nouveau
@@ -210,8 +155,7 @@ cat >> ${PKG}/post-install.sh << "EOF"
 if [ "$(uname -m)" = "x86_64" ]; then
 	chroot . gtk-query-immodules-2.0-32 > /etc/gtk-2.0-32/gtk.immodules 2>/dev/null
 	chroot . gtk-query-immodules-2.0-64 > /etc/gtk-2.0-64/gtk.immodules 2>/dev/null
-	chroot . gtk-query-immodules-3.0-32 > /etc/gtk-3.0-32/gtk.immodules 2>/dev/null
-	chroot . gtk-query-immodules-3.0-64 > /etc/gtk-3.0-64/gtk.immodules 2>/dev/null
+	chroot . gtk-query-immodules-3.0 > /etc/gtk-3.0/gtk.immodules 2>/dev/null
 else
 	chroot . gtk-query-immodules-2.0 > /etc/gtk-2.0/gtk.immodules 2>/dev/null
 	chroot . gtk-query-immodules-3.0 > /etc/gtk-3.0/gtk.immodules 2>/dev/null

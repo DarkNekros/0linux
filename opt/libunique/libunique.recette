@@ -3,17 +3,21 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-libunique}
-VERSION=${VERSION:-1.1.6}
+VERSION=${VERSION:-3.0.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-libunique}
-WGET=${WGET:-http://ftp.gnome.org/pub/gnome/sources/$NAMESRC/1.1/$NAMESRC-$VERSION.$EXT}
+WGET=(http://ftp.gnome.org/pub/gnome/sources/$NAMESRC/1.1/$NAMESRC-1.1.6.$EXT
+      http://ftp.gnome.org/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+     )
 DESC="Bibliothèques de gestion des instances"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On compile la version 1.1.6 :
+preparer_sources $NAMESRC-1.1.6.$EXT
 
 # On corrige pour la compilation avec les plus récents 'glib' :
 cat $CWD/libunique.gconst.patch | patch -p1
@@ -22,7 +26,28 @@ cat $CWD/libunique.gconst.patch | patch -p1
 cat $CWD/libunique.gdbus.patch | patch -p1
 
 # Compilation :
-autoreconf
+autoreconf -vif
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-dbus \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On lace la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-1.1.6
+
+# On compile la version de la recette :
+preparer_sources
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \

@@ -33,10 +33,12 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 		--disable-asserts \
-		--disable-systemd \
+		--disable-modular-tests \
 		--disable-tests \
 		--enable-inotify \
 		--enable-x11-autolaunch \
+		--with-dbus-user=messagebus \
+		--with-init-scripts=slackware \
 		--with-system-pid-file=/var/run/dbus/dbus.pid \
 		--with-system-socket=/var/run/dbus/system_bus_socket \
 		--build=${PKGARCH}-0linux-linux-gnu

@@ -35,9 +35,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--disable-modular-tests \
 		--with-pcre=system \
-		--with-python=/usr/bin/python-32 \
 		--build=${PKGARCH}-0linux-linux-gnu \
 		--host=${PKGARCH}-0linux-linux-gnu
 	
@@ -68,7 +66,6 @@ NM=nm \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-pcre=system \
-	--with-python=/usr/bin/python-64 \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

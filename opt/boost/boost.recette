@@ -21,7 +21,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--prefix=${PKG}/usr \
 	--libdir=${PKG}/usr/lib${LIBDIRSUFFIX} \
 
-fakeroot ./bjam install -j${JOBS} --without-mpi
+fakeroot ./bjam install -j${JOBS} --without-mpi || fakeroot ./bjam install -j${JOBS} --without-mpi
 
 installer_doc
 creer_post_installation

@@ -2,21 +2,18 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 PKGCAT=opt
-NAMESRC=${NAMESRC:-gnome-disk-utility}
-VERSION=${VERSION:-3.8.2}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-disk-utility}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DESC="Outils et bibliothèques pour volumes de stockage"
+NAMESRC=${NAMESRC:-libpwquality}
+VERSION=${VERSION:-1.2.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-libpwquality}
+WGET=${WGET:-https://fedorahosted.org/releases/l/i/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques d'évaluation de mots de passe aléatoires"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige la compilation avec les 'gcc' les plus récents :
-cat $CWD/gnome-disk-utility.types.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -25,7 +22,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \

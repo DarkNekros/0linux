@@ -19,8 +19,11 @@ cflags
 # On compile la version 0.10.31 :
 preparer_sources $NAMESRC-0.10.31.$EXT
 
-# Corrige un problème avec les en-têtes des noyaux Linux récents :
+# On corrige un problème avec les en-têtes des noyaux Linux récents :
 cat $CWD/gst-plugins-good.linux36.patch | patch -p1
+
+# On corrige une définition manquante pour V4L2 :
+cat $CWD/gst-plugins-good.v4l2.patch | patch -p0
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
