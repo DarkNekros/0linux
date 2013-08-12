@@ -15,6 +15,91 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On corrige les chemins de X11 codés en dur :
+	for fichier in $(grep -lr "X11R6" *); do
+		sed -i "s@/usr/X11R6@/usr@g" ${fichier}
+	done
+	
+	# On force les drapeaux d'optimisation :
+	sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& ${FLAGS}@" mkspecs/common/g++.conf
+	sed -i "s@-O2@& ${FLAGS}@" mkspecs/common/{g++,gcc}-base.conf
+	
+	# Compilation pour i686 :
+	export QT4DIR=${TMP}/${NAME}
+	export LD_LIBRARY_PATH=${QT4DIR}/lib:${LD_LIBRARY_PATH}
+	
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	QMAKSPEC=linux-g++-32 \
+	./configure \
+		-prefix /usr \
+		-confirm-license \
+		-datadir /usr/share/qt \
+		-docdir /usr/doc/${NAMETGZ}-${VERSION} \
+		-fast \
+		-importdir /usr/lib${LIBDIRSUFFIX}/qt4/imports \
+		-L/usr/lib${LIBDIRSUFFIX} \
+		-libdir /usr/lib${LIBDIRSUFFIX} \
+		-no-phonon \
+		-no-rpath \
+		-no-separate-debug-info \
+		-no-webkit \
+		-nomake demos \
+		-nomake docs \
+		-nomake examples \
+		-nomake tools \
+		-opensource \
+		-optimized-qmake \
+		-plugin-sql-sqlite \
+		-plugindir /usr/lib${LIBDIRSUFFIX}/qt4/plugins \
+		-reduce-relocations \
+		-release \
+		-translationdir /usr/share/qt/translations
+	
+	make -j${JOBS} || make
+	fakeroot make install INSTALL_ROOT=${PKG}
+	
+	# On crée un fichier pour 'pkg-config' :
+	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+	cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt.pc << EOF
+prefix=/usr/lib${LIBDIRSUFFIX}
+bindir=\${prefix}/bin
+datadir=\${prefix}/share/qt
+docdir=\${prefix}/doc
+headerdir=\${prefix}/include
+importdir=\${prefix}/lib${LIBDIRSUFFIX}/qt4/imports
+libdir=\${prefix}/lib
+moc=\${bindir}/moc
+plugindir=\${prefix}/lib${LIBDIRSUFFIX}/qt4/plugins
+qmake=\${bindir}/qmake
+sysconfdir=\${prefix}/etc
+translationdir=\${prefix}/share/qt/translations
+
+Name: Qt
+Description: Qt Configuration
+Version: ${VERSION}
+
+EOF
+
+	# On renomme ces fichiers spécifiques à l'archi pour les envelopper :
+	mv ${PKG}/usr/bin/qmake{,-32}
+	mv ${PKG}/usr/bin/uic{,-32}
+	mv ${PKG}/usr/bin/uic3{,-32}
+	mv ${PKG}/usr/bin/moc{,-32}
+	mv ${PKG}/usr/include/Qt/qconfig{,-32}.h
+	mv ${PKG}/usr/include/QtCore/qconfig{,-32}.h
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
 # On corrige les chemins de X11 codés en dur :
 for fichier in $(grep -lr "X11R6" *); do
 	sed -i "s@/usr/X11R6@/usr@g" ${fichier}
@@ -62,6 +147,49 @@ QMAKSPEC=linux-g++-${OPTMACHINE} \
 
 make -j${JOBS} || make
 fakeroot make install INSTALL_ROOT=${PKG}
+
+if [ "${PKGARCH}" = "x86_64" ]; then
+	# On renomme ces fichiers spécifiques à l'archi pour les envelopper :
+	mv ${PKG}/usr/bin/moc{,-64}
+	mv ${PKG}/usr/bin/qmake{,-64}
+	mv ${PKG}/usr/bin/uic{,-64}
+	mv ${PKG}/usr/bin/uic3{,-64}
+	mv ${PKG}/usr/include/Qt/qconfig{,-64}.h
+	mv ${PKG}/usr/include/QtCore/qconfig{,-64}.h
+
+	# On lie des binaires génériques au porgramme enveloppe :
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/moc
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/qmake
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/uic
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/uic3
+
+	# On crée des entêtes génériques :
+	cat > ${PKG}/usr/include/Qt/qconfig << "EOF"
+#ifndef __STUB__QT4_CONFIG_H__
+#define __STUB__QT4_CONFIG_H__
+
+#if defined(__x86_64__)
+#	include "qconfig-64.h"
+#else
+#	include "qconfig-32.h"
+#endif
+
+#endif
+EOF
+
+	cat > ${PKG}/usr/include/QtCore/qconfig << "EOF"
+#ifndef __STUB__QT4CORE_CONFIG_H__
+#define __STUB__QT4CORE_CONFIG_H__
+
+#if defined(__x86_64__)
+#	include "qconfig-64.h"
+#else
+#	include "qconfig-32.h"
+#endif
+
+#endif
+EOF
+fi
 
 # Certains paquets réclament 'qmake-qt4' :
 ln -sf qmake ${PKG}/usr/bin/qmake-qt4

@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-ffmpeg}
-VERSION=${VERSION:-1.1.2}
+VERSION=${VERSION:-2.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ffmpeg}
 WGET=${WGET:-http://ffmpeg.org/releases/$NAMESRC-$VERSION.$EXT}

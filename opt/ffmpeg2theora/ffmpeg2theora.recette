@@ -15,8 +15,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-sed -i 's:pp_mode_t:pp_mode:' src/ffmpeg2theora.c
-sed -i 's:pp_context_t:pp_context:' src/ffmpeg2theora.c
+# On corrige la compilation avec les 'ffmpeg' les plus récents :
+echo "#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000" >> src/ffmpeg2theora.h
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
