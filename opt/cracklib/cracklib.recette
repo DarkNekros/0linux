@@ -5,7 +5,7 @@ PKGCAT=opt
 NAMESRC=${NAMESRC:-cracklib}
 VERSION=${VERSION:-2.9.0}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libtruc}
+NAMETGZ=${NAMETGZ:-cracklib}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques de vérification de mots de passe"
 
