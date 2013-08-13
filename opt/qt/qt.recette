@@ -21,6 +21,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
+	# On enrichit nos FLAGS avec un drapeau obligatoire qui a tendance à sauter :
+	FLAGS="${FLAGS} -fvisibility=hidden"
+	
 	# On corrige les chemins de X11 codés en dur :
 	for fichier in $(grep -lr "X11R6" *); do
 		sed -i "s@/usr/X11R6@/usr@g" ${fichier}
@@ -56,7 +59,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		-no-phonon \
 		-no-rpath \
 		-no-separate-debug-info \
-		-no-webkit \
 		-nomake demos \
 		-nomake docs \
 		-nomake examples \
@@ -109,6 +111,9 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On enrichit nos FLAGS avec un drapeau obligatoire qui a tendance à sauter :
+FLAGS="${FLAGS} -fvisibility=hidden"
+
 # On corrige les chemins de X11 codés en dur :
 for fichier in $(grep -lr "X11R6" *); do
 	sed -i "s@/usr/X11R6@/usr@g" ${fichier}
@@ -143,7 +148,6 @@ QMAKSPEC=linux-g++-${OPTMACHINE} \
 	-no-phonon \
 	-no-rpath \
 	-no-separate-debug-info \
-	-no-webkit \
 	-nomake demos \
 	-nomake examples \
 	-opensource \
