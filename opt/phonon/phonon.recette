@@ -15,6 +15,12 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige avec ces correctifs des développeurs :
+cat $CWD/phonon.fix-if.patch | patch -p1
+
+sed -i 's@add_definitions(-DPHONON_LIBRARY_PATH="${PLUGIN_INSTALL_DIR}/plugins")@add_definitions(-DPHONON_LIBRARY_PATH="${CMAKE_INSTALL_PREFIX}/${PLUGIN_INSTALL_DIR}/plugins")@' \
+	phonon/CMakeLists.txt
+
 # La compilation se fait dans un répertoire dédié :
 mkdir -p build
 cd build
@@ -29,6 +35,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D MAN_INSTALL_DIR=/usr/man \
 	-D PHONON_INSTALL_QT_EXTENSIONS_INTO_SYSTEM_QT=ON \
 	-D PHONON_BUILD_DESCRIPTOR=OFF \
+	-D PHONON_BUILD_DESIGNER_PLUGIN=OFF \
 	..
 
 make -j${JOBS} || make
