@@ -29,6 +29,14 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On force les drapeaux d'optimisation :
 	sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& ${FLAGS}@" mkspecs/common/g++.conf
 	sed -i "s@-O2@& ${FLAGS}@" mkspecs/common/{g++,gcc}-base.conf
+	sed -i "/^QMAKE_LFLAGS_RPATH/s| -Wl,-rpath,||g" mkspecs/common/gcc-base-unix.conf
+	sed -i "/^QMAKE_LFLAGS\s/s|+=|+= ${LDFLAGS} -m32|g" mkspecs/common/gcc-base.conf
+	sed -i "s|-Wl,-O1|-m32 -Wl,-O1|" mkspecs/common/g++-unix.conf
+	sed -i -e "s|-O2|$CXXFLAGS -m32|" \
+		-e "/^QMAKE_RPATH/s| -Wl,-rpath,||g" \
+		-e "/^QMAKE_LINK\s/s|g++|g++ -m32|g" \
+		-e "/^QMAKE_LFLAGS\s/s|+=|+= $LDFLAGS|g" \
+		mkspecs/common/g++.conf
 	
 	# Compilation pour i686 :
 	export QT4DIR=${TMP}/${NAME}
@@ -137,7 +145,6 @@ QMAKSPEC=linux-g++-${OPTMACHINE} \
 	-no-separate-debug-info \
 	-no-webkit \
 	-nomake demos \
-	-nomake docs \
 	-nomake examples \
 	-opensource \
 	-optimized-qmake \
