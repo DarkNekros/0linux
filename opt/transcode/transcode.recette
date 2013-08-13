@@ -15,8 +15,15 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On adapate le code aux plus récents FFMMPEG :
-cat $CWD/transcode.ffmpeg.patch | patch -p1
+# On adapate le code aux plus récents 'ffmpeg' et on corrige certains problèmes
+# avec cette collection de correctifs de Gentoo :
+cat $CWD/transcode.ffmpeg.patch | patch -p0
+cat $CWD/transcode.ffmpeg-0.10.patch | patch -p0
+cat $CWD/transcode.ffmpeg-0.11.patch | patch -p1
+cat $CWD/transcode.preset-free.patch | patch -p1
+cat $CWD/transcode.libav-9.patch | patch -p0
+cat $CWD/transcode.preset-force.patch | patch -p1
+cat $CWD/transcode.ffmpeg2.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
