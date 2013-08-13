@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-ortp}
-VERSION=${VERSION:-0.20.0}
+VERSION=${VERSION:-0.22.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-ortp}
 WGET=${WGET:-http://download-mirror.savannah.gnu.org/releases/linphone/$NAMESRC/sources/$NAMESRC-$VERSION.$EXT}
