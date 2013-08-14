@@ -3,7 +3,7 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-exempi}
-VERSION=${VERSION:-2.2.0}
+VERSION=${VERSION:-2.2.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-exempi}
 WGET=${WGET:-http://libopenraw.freedesktop.org/download/$NAMESRC-$VERSION.$EXT}

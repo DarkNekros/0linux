@@ -3,7 +3,7 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-tellico}
-VERSION=${VERSION:-2.3.7}
+VERSION=${VERSION:-2.3.8}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-tellico}
 WGET=${WGET:-http://tellico-project.org/files/$NAMESRC-$VERSION.$EXT}
