@@ -3,7 +3,7 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-virtuoso}
-VERSION=${VERSION:-6.1.6}
+VERSION=${VERSION:-7.0.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-virtuoso}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-opensource-$VERSION.$EXT}

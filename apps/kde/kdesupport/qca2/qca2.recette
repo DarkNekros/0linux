@@ -19,6 +19,9 @@ cflags
 # Corrige la compilation avec gcc 4.7.x :
 cat $CWD/qca2.gcc47.patch | patch -p1
 
+# Corrige un problème d'exportation Qt :
+cat $CWD/qca2.export.patch | patch -p1
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
