@@ -177,7 +177,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/uic3
 
 	# On crée des entêtes génériques :
-	cat > ${PKG}/usr/include/Qt/qconfig << "EOF"
+	cat > ${PKG}/usr/include/Qt/qconfig.h << "EOF"
 #ifndef __STUB__QT4_CONFIG_H__
 #define __STUB__QT4_CONFIG_H__
 
@@ -190,7 +190,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 #endif
 EOF
 
-	cat > ${PKG}/usr/include/QtCore/qconfig << "EOF"
+	cat > ${PKG}/usr/include/QtCore/qconfig.h << "EOF"
 #ifndef __STUB__QT4CORE_CONFIG_H__
 #define __STUB__QT4CORE_CONFIG_H__
 
