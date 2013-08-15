@@ -16,6 +16,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# Corrige une variable qui n'est pas exporté :
+cat $CWD/strigi.export.patch | patch -p1
+
 # Compilation :
 mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

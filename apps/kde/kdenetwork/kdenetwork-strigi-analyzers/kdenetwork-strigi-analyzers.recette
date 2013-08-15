@@ -2,12 +2,12 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
-NAMESRC=${NAMESRC:-kdetoys}
-VERSION=${VERSION:-4.10.5}
+NAMESRC=${NAMESRC:-kdenetwork-strigi-analyzers}
+VERSION=${VERSION:-4.11.0}
 EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kdetoys}
+NAMETGZ=${NAMETGZ:-kdenetwork-strigi-analyzers}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
-DESC="Amusez-vous avec les jouets proposés par KDE"
+DESC="Analyseurs supplémentaires pour Strigi"
 ########################################
 
 . /usr/share/0outils/fonctions_paquets.sh

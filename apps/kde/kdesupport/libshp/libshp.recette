@@ -30,6 +30,9 @@ mkdir -p $PKG/usr/{lib${LIBDIRSUFFIX},bin,include}
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On corrige les droits d'accès délirants de l'include :
+chmod 644 $PKG/usr/include/shapefil.h
+
 installer_doc
 creer_post_installation
 stripper

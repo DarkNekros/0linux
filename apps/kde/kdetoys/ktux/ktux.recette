@@ -2,12 +2,12 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
-NAMESRC=${NAMESRC:-kdenetwork}
-VERSION=${VERSION:-4.10.5}
+NAMESRC=${NAMESRC:-ktux}
+VERSION=${VERSION:-4.11.0}
 EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kdenetwork}
+NAMETGZ=${NAMETGZ:-ktux}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
-DESC="Nombreux outils de réseau et de communication pour KDE"
+DESC="Animation mettant en scène le plus célèbre des manchots"
 ########################################
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -18,7 +18,6 @@ cflags
 
 # Compilation :
 mkdir -p build && cd build
-LDFLAGS+="-lortp" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \

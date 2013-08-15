@@ -3,10 +3,10 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-Vc}
-VERSION=${VERSION:-0.7.1}
+VERSION=${VERSION:-0.7.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-vc}
-WGET=${WGET:-http://code.compeng.uni-frankfurt.de/attachments/download/161/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://code.compeng.uni-frankfurt.de/attachments/download/164/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques de manipulation d'objets vectoriels"
 ########################################
 
