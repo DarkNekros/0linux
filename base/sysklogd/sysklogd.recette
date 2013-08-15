@@ -82,7 +82,7 @@ case "$1" in
 	'restart')
 		syslogd_stop
 		sleep 1
-		syslogd_restart
+		syslogd_start
 	;;
 	
 	*)

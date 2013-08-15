@@ -57,21 +57,17 @@ if [ -x /etc/rc.d/rc.messagebus ]; then
 	. /etc/rc.d/rc.messagebus start
 fi
 
-# Lancement des programmes pour GDK-Pixbuf, GTK+ et Pango :
+# Lancement des programmes pour GDK-Pixbuf :
 gdk-pixbuf-query-loaders --update-cache
 
-if [ ! -r etc/gtk-2.0/gtk.immodules ]; then
-	echo "Mise à jour des modules GTK+ 2..."
-	gtk-query-immodules-2.0 > /etc/gtk-2.0/gtk.immodules
-fi
-if [ ! -r etc/gtk-3.0/gtk.immodules ]; then
-	echo "Mise à jour des modules GTK+ 3..."
-	gtk-query-immodules-3.0 > /etc/gtk-3.0/gtk.immodules
+# Lancement des programmes pour les modules GTK+ :
+if [ -x /etc/rc.d/rc.gtk+ ]; then
+	. /etc/rc.d/rc.gtk+ start
 fi
 
-if [ ! -r /etc/pango/pango.modules ]; then
-	echo "Mise à jour des modules Pango..."
-	pango-querymodules > /etc/pango/pango.modules
+# Lancement des programmes pour les modules Pango :
+if [ -x /etc/rc.d/rc.pango ]; then
+	. /etc/rc.d/rc.pango start
 fi
 
 # Lancement de ConsoleKit :

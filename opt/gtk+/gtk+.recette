@@ -145,6 +145,58 @@ gtk-fallback-icon-theme = gnome
 
 EOF
 
+# On crée un fichier service pour pour mettre à jour les modules GTK+ :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.gtk+ << "EOF"
+#!/usr/bin/env bash
+
+gtk_start() {
+	# Prise en charge du multilib pour x86_64 :
+	if [ "$(uname -m)" = "x86_64" ]; then
+		if [ ! -r etc/gtk-2.0-32/gtk.immodules ]; then
+			echo "Mise à jour des modules GTK+ 2 32 bits..."
+			gtk-query-immodules-2.0-32 > /etc/gtk-2.0-32/gtk.immodules
+		fi
+		if [ ! -r etc/gtk-2.0-64/gtk.immodules ]; then
+			echo "Mise à jour des modules GTK+ 2 64 bits..."
+			gtk-query-immodules-2.0-64 > /etc/gtk-2.0-64/gtk.immodules
+		fi
+		if [ ! -r etc/gtk-3.0/gtk.immodules ]; then
+			echo "Mise à jour des modules GTK+ 3..."
+			gtk-query-immodules-3.0 > /etc/gtk-3.0/gtk.immodules
+		fi
+	else
+		if [ ! -r etc/gtk-2.0/gtk.immodules ]; then
+			echo "Mise à jour des modules GTK+ 2..."
+			gtk-query-immodules-2.0 > /etc/gtk-2.0/gtk.immodules
+		fi
+		if [ ! -r etc/gtk-3.0/gtk.immodules ]; then
+			echo "Mise à jour des modules GTK+ 3..."
+			gtk-query-immodules-3.0 > /etc/gtk-3.0/gtk.immodules
+		fi
+	fi
+}
+
+case "$1" in
+	'start')
+		gtk_start
+	;;
+	
+	'stop')
+		# On ne fait rien
+	;;
+	
+	'restart')
+		gtk_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.gtk+
+
 installer_doc
 creer_post_installation
 
