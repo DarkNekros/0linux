@@ -21,6 +21,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
+	# On corrige un problème identifié dans l'analyse des entêtes de 'boost' :
+	cat $CWD/qt.boost.patch | patch -p1
+	
 	# On enrichit nos FLAGS avec un drapeau obligatoire qui a tendance à sauter :
 	FLAGS="${FLAGS} -fvisibility=hidden"
 	
@@ -110,6 +113,9 @@ fi
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On corrige un problème identifié dans l'analyse des entêtes de 'boost' :
+cat $CWD/qt.boost.patch | patch -p1
 
 # On enrichit nos FLAGS avec un drapeau obligatoire qui a tendance à sauter :
 FLAGS="${FLAGS} -fvisibility=hidden"
