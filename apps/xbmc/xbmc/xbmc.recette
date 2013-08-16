@@ -33,6 +33,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-debug \
 	--disable-external-ffmpeg \
 	--disable-hal \
 	--disable-webserver \
@@ -43,8 +44,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-gl \
 	--enable-goom \
 	--enable-joystick \
+	--enable-libbluray \
 	--enable-mid \
 	--enable-nfs \
+	--enable-optical-drive \
 	--enable-optimizations \
 	--enable-samba \
 	--enable-texturepacker \
@@ -61,31 +64,18 @@ fakeroot make install DESTDIR=${PKG}
 mkdir -p ${PKG}/usr/share/xbmc/TexturePacker
 cp -a xbmc-xrandr ${PKG}/usr/share/xbmc/
 cp -a tools/TexturePacker/TexturePacker ${PKG}/usr/share/xbmc/TexturePacker/
-  
+
+# 'lsb_release' n'existe pas sous 0Linux :
+sed -i -e 's/which lsb_release &> \/dev\/null/\[ -f \/etc\/os-release ]/g' ${PKG}/usr/bin/xbmc
+sed -i -e "s/lsb_release -a 2> \/dev\/null | sed -e 's\/\^\/    \/'/cat \/etc\/os-release/g" ${PKG}/usr/bin/xbmc
+
 # On crée un fichier de démarrage pour lancer uniquement 'xbmc' en tant que « bureau » :
 mkdir -p ${PKG}/etc/X11/xinit
 cat > ${PKG}/etc/X11/xinit/xinitrc.xbmc << "EOF"
 exec xbmc-standalone
 
 EOF
-
 chmod 755 ${PKG}/etc/X11/xinit/xinitrc.xbmc
-
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd/system
-cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd/system/xbmc.service << "EOF"
-[Unit]
-Description=Démarrage d'une session graphique sous XBMC
-After = remote-fs.target
-
-[Service]
-Type=simple
-ExecStart =/usr/bin/xbmc-standalone -- :0 -nolisten tcp
-Restart=always
-
-[Install]
-WantedBy = multi-user.target
-
-EOF
 
 installer_doc
 creer_post_installation
