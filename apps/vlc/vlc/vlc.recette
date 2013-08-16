@@ -3,10 +3,10 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-vlc}
-VERSION=${VERSION:-2.0.7}
+VERSION=${VERSION:-2.0.8a}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-vlc}
-WGET=${WGET:-http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://download.videolan.org/pub/videolan/$NAMESRC/$(echo $VERSION | tr -d 'a')/$NAMESRC-$VERSION.$EXT}
 DESC="Le lecteur multimédia polyvalent VLC"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -18,7 +18,8 @@ cflags
 # On corrige le répertoire standard des bibliothèques :
 sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
 
-# Compilation :
+# Compilation avec FFMPEG 0.x, FFMPEG 2 est trop récent:
+PKG_CONFIG_PATH+="/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -40,12 +41,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-dvdnav \
 	--enable-faad \
 	--enable-flac \
-	--enable-id3tag \
 	--enable-libass \
 	--enable-libcddb \
 	--enable-live555 \
 	--enable-lua \
-	--enable-mozilla \
 	--enable-ncurses \
 	--enable-ogg \
 	--enable-opus \
@@ -59,13 +58,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-shout \
 	--enable-speex \
 	--enable-svg \
-	--enable-svgalib \
 	--enable-switcher \
 	--enable-telx \
 	--enable-theora \
 	--enable-twolame \
 	--enable-upnp \
-	--enable-v4l \
 	--enable-vcdx \
 	--enable-vorbis \
 	--enable-x264 \
