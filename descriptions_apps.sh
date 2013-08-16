@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Le dépôt public des paquets contenant 'apps' :
-pubrepo="/home/appzer0/0/pub/paquets"
+pubrepo="/home/appzer0/0/pub/paquets/II"
 
 # On génère les descriptions des dépôts 'apps' avec 'txt2tags' :
 for arch in arm i686 x86_64; do
