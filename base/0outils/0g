@@ -161,6 +161,18 @@ upgrade () {
     fi
 }
 
+si_pas_installe () {
+	# teste si le paquet est installé. Dans le cas contraire, l'affiche pour installation d'office :
+	read paquet || return 0
+	while [ "$paquet" ]; do
+		nom=$(basename $paquet .spack)
+		if [ ! -e $LOGDIR/$nom ]; then
+			echo ${paquet%.spack}
+		fi
+		read paquet
+	done
+}
+
 usage () {
     # Imprime l'aide et sort.
     # $f CODE
@@ -274,6 +286,8 @@ else
     if [ $f_list -eq 0 ]; then
         supprimer_obsoletes 1 "$source"
         request "$source/paquets.db" | lspkg "$pkg" "$pkgset" | upgrade $f_keep "$source"
+        # Installe d'office les nouveaux paquets (merci à myou) :
+        $CURL "$source/base/" | grep ".spack" | sed -e "s@.*>\(.*\)<.*@base/\1@" | si_pas_installe | upgrade $f_keep "$source"
     else
         supprimer_obsoletes 0 "$source"
         request "$source/paquets.db" | lspkg "$pkg" "$pkgset"

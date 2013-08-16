@@ -15,6 +15,12 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige pour s'adapter aux 'glibc' les plus récentes :
+cat $CWD/valgrind.glibc.patch | patch -p1
+
+# On régénère le système de construction :
+./autogen.sh
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \

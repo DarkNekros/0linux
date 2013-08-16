@@ -15,7 +15,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compilation :
+# Compilation avec FFMPEG 0.x et non FFMPEG 2 :
+PKG_CONFIG_PATH+="/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
