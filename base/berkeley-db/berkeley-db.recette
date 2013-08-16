@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-db}
-VERSION=${VERSION:-5.1.29}
+VERSION=${VERSION:-6.0.20}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-berkeley-db}
 WGET=${WGET:-http://download.oracle.com/berkeley-db/$NAMESRC-$VERSION.$EXT}
@@ -36,6 +36,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 LIBSO_LIBS=-lpthread make -j${JOBS} || LIBSO_LIBS=-lpthread make
 fakeroot make install docdir=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
+
+# On nettoie ça : 
+rm -rf ${PKG}/usr/docs
 
 installer_doc
 creer_post_installation

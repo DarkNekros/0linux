@@ -25,7 +25,7 @@ fakeroot python waf install --destdir=${PKG}
 
 # On veille à ne rien écraser :
 for i in ${PKG}/etc/ardour$(echo $VERSION | cut -d'.' -f1)/*; do
-	mv ${PKG}/etc/ardour$(echo $VERSION | cut -d'.' -f1)/$(basename $i){,.new}
+	mv ${PKG}/etc/ardour$(echo $VERSION | cut -d'.' -f1)/$(basename $i){,.0nouveau}
 done
 
 # On crée le raccourci bureau :
