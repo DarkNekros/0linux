@@ -29,7 +29,6 @@ if [ "${PKGARCH}" = "x86_64" ] ; then
 		-D ENABLE_SSE2=ON \
 		-D ENABLE_SSE3=ON \
 		-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-		-D CMAKE_{SHARED,MODULE,EXE}_LINKER_FLAGS='-Wl,--no-undefined -Wl,--as-needed' \
 		-D SYSCONF_INSTALL_DIR=/etc \
 		./ ../
 

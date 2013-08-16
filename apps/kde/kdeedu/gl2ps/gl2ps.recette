@@ -2,12 +2,12 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
-NAMESRC=${NAMESRC:-kanagram}
-VERSION=${VERSION:-4.11.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kanagram}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
-DESC="Jeu d'anagrammes"
+NAMESRC=${NAMESRC:-gl2ps}
+VERSION=${VERSION:-1.3.8}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-gl2ps}
+WGET=${WGET:-http://www.geuz.org/$NAMESRC/src/$NAMESRC-$VERSION.$EXT}
+DESC="Convertisseur OpenGL vers PostScript"
 ########################################
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -18,7 +18,7 @@ cflags
 
 # Compilation :
 mkdir -p build && cd build
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" LDFLAGS+=" -lm" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
@@ -26,10 +26,9 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D ENABLE_SSE=ON \
 	-D ENABLE_SSE2=ON \
 	-D ENABLE_SSE3=ON \
-	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D SYSCONF_INSTALL_DIR=/etc/kde \
-	./ ../
+	-D SYSCONF_INSTALL_DIR=/etc \
+        ./ ../
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
