@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-php}
-VERSION=${VERSION:-5.5.0}
+VERSION=${VERSION:-5.5.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-php}
 WGET=${WGET:-http://www.php.net/distributions/$NAMESRC-$VERSION.$EXT}
@@ -66,8 +66,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-bz2=shared,/usr \
 	--with-config-file-path=/etc/httpd \
 	--with-curl=shared \
-	--with-curlwrappers \
-	--with-db4=/usr \
 	--with-enchant=shared,/usr \
 	--with-freetype-dir=/usr \
 	--with-gd=shared \
