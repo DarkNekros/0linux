@@ -18,7 +18,6 @@ cflags
 
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/etc/{dbus-1/system.d,wpa_supplicant}
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd/system
 mkdir -p ${PKG}/usr/share/dbus-1/system-services
 mkdir -p ${PKG}/usr/man/man{5,8}
 mkdir -p ${PKG}/usr/{,s}bin
@@ -90,9 +89,6 @@ cp wpa_gui-qt4/wpa_gui.desktop ${PKG}/usr/share/applications/
 cp -a dbus/dbus-wpa_supplicant.conf ${PKG}/etc/dbus-1/system.d/
 cp -a dbus/fi.epitest.hostap.WPASupplicant.service ${PKG}/usr/share/dbus-1/system-services/
 cp -a dbus/fi.w1.wpa_supplicant1.service ${PKG}/usr/share/dbus-1/system-services/
-
-# On copie les fichiers pour 'systemd'
-cp -a systemd/*.service ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd/system/
 
 # On place les manuels :
 cp -a doc/docbook/*.8 ${PKG}/usr/man/man8
