@@ -28,7 +28,6 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D ENABLE_SSE3=ON \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D CMAKE_{SHARED,MODULE,EXE}_LINKER_FLAGS='-Wl,--no-undefined -Wl,--as-needed' \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	-D LINK_LYBRARIES=-lX11 \
 	./ ../
