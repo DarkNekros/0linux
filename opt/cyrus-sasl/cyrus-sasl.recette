@@ -19,8 +19,8 @@ cflags
 mkdir -p ${PKG}/var/state/saslauthd
 
 # On adapte la version à détecter de 'berkeley-db' :
-sed -i 's@if DB_VERSION_MAJOR == 4@if DB_VERSION_MAJOR > 4@g' sasldb/db_berkeley.c
-sed -i 's@if DB_VERSION_MAJOR == 4@if DB_VERSION_MAJOR > 4@g' utils/dbconverter-2.c
+sed -i 's@if DB_VERSION_MAJOR == 4.*@if DB_VERSION_MAJOR == 6@g' sasldb/db_berkeley.c
+sed -i 's@if DB_VERSION_MAJOR == 4.*@if DB_VERSION_MAJOR == 6@g' utils/dbconverter-2.c
 
 # On force notre répertoire standard pour les bibliothèques :
 sed -i "/sasldir/s/lib/&${LIBDIRSUFFIX}/" plugins/Makefile.in
