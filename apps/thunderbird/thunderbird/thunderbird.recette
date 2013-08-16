@@ -72,7 +72,6 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-zlib
 ac_add_options --build=${PKGARCH}-0linux-linux-gnu
-ac_add_options --host=${PKGARCH}-0linux-linux-gnu
 
 # Parallélisation :
 mk_add_options MOZ_MAKE_FLAGS="-j${JOBS}"

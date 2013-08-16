@@ -3,8 +3,8 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-inkscape}
-VERSION=${VERSION:-0.48.3.1}
-EXT=${EXT:-tar.gz}
+VERSION=${VERSION:-0.48.4}
+EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-inkscape}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Éditeur de graphismes vectoriels SVG"
@@ -15,8 +15,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige la compilation avec 'poppler' 0.20.x :
-cat $CWD/inkscape.poppler20.patch | patch -p1
+# Une virgule plante la compilation avec les GCC récents :
+sed -i 's@GtkWidget \*commands_toolbox,;@GtkWidget \*commands_toolbox;@' src/widgets/desktop-widget.h
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -28,6 +28,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-lcms \
+	--enable-poppler-cairo \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

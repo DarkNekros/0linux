@@ -167,7 +167,7 @@ si_pas_installe () {
 	while [ "$paquet" ]; do
 		nom=$(basename $paquet .spack)
 		if [ ! -e $LOGDIR/$nom ]; then
-			echo ${paquet%.spack}
+			echo ${nom}
 		fi
 		read paquet
 	done
