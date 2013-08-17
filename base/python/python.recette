@@ -6,7 +6,10 @@ NAMESRC=${NAMESRC:-Python}
 VERSION=${VERSION:-2.7.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-python}
-WGET=(http://www.python.org/ftp/python/$VERSION/$NAMESRC-$VERSION.$EXT
+WGET=(http://www.python.org/ftp/python/3.3.2/$NAMESRC-3.3.2.$EXT
+      http://docs.python.org/ftp/python/doc/3.3.2/python-3.3.2-docs-html.tar.bz2
+      http://docs.python.org/ftp/python/doc/3.3.2/python-3.3.2-docs-text.tar.bz2
+      http://www.python.org/ftp/python/$VERSION/$NAMESRC-$VERSION.$EXT
       http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-html.tar.bz2
       http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-text.tar.bz2
      )
@@ -15,8 +18,151 @@ DESC="Langage de programmation interprété orienté objet"
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
+
+# On compile Python 3 :
+preparer_sources $NAMESRC-3.3.2.$EXT
 cflags
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On corrige une faille de sécurité :
+	cat $CWD/python.CVE-2013-2099.patch | patch -p1
+	
+	# On corrige une idiotie :
+	sed -i "s@^# /usr/local/bin/python@#!/usr/bin/python3@" Lib/cgi.py
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-3.3.2 \
+		--enable-ipv6 \
+		--enable-shared \
+		--with-computed-gotos \
+		--with-dbmliborder=gdbm:ndbm \
+		--with-system-expat \
+		--with-system-ffi \
+		--with-threads \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On renomme ces binaires et entêtes spécifiques à l'architecture :
+	mv ${PKG}/usr/bin/python3{,-32}
+	mv ${PKG}/usr/bin/python3.3{,-32}
+	mv ${PKG}/usr/bin/python3.3m{,-32}
+	mv ${PKG}/usr/bin/python3-config{,-32}
+	mv ${PKG}/usr/bin/python3.3-config{,-32}
+	mv ${PKG}/usr/bin/python3.3m-config{,-32}
+	mv ${PKG}/usr/include/python3.3m/pyconfig{,-32}.h
+	
+	# On relie 'python3' à sa version :
+	ln -sf python3.3-32 ${PKG}/usr/bin/python3-32
+	
+	# On supprime le binaire générique 'python' (on utilise 'python2' par défaut) :
+	rm -f ${PKG}/usr/bin/python
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources $NAMESRC-3.3.2.$EXT
+cflags
+
+# On corrige une faille de sécurité :
+cat $CWD/python.CVE-2013-2099.patch | patch -p1
+
+# On corrige les sources pour intégrer notre répertoire standard de bibliothèques :
+cat $CWD/python3.lib64.patch | sed "s@lib64@lib${LIBDIRSUFFIX}@g" | patch -p1
+
+# On corrige une idiotie :
+sed -i "s@^# /usr/local/bin/python@#!/usr/bin/python3@" Lib/cgi.py
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-ipv6 \
+	--enable-shared \
+	--enable-unicode=ucs4 \
+	--with-dbmliborder=gdbm:ndbm \
+	--with-system-expat \
+	--with-system-ffi \
+	--with-threads \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install maninstall DESTDIR=${PKG}
+
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On renomme ces binaires et entêtes spécifiques à l'architecture :
+	mv ${PKG}/usr/bin/python3{,-64}
+	mv ${PKG}/usr/bin/python3.3{,-64}
+	mv ${PKG}/usr/bin/python3.3m{,-64}
+	mv ${PKG}/usr/bin/python3-config{,-64}
+	mv ${PKG}/usr/bin/python3.3-config{,-64}
+	mv ${PKG}/usr/bin/python3.3m-config{,-64}
+	mv ${PKG}/usr/include/python3.3m/pyconfig{,-64}.h
+	
+	# On relie 'python3' à sa version :
+	ln -sf python3.3-64 ${PKG}/usr/bin/python3-64
+	
+	# On supprime le binaire générique 'python' (on utilise 'python2' par défaut) :
+	rm -f ${PKG}/usr/bin/python
+	
+	# On lie des binaires génériques au programme enveloppe :
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3.3
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3.3m
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3-config
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3.3-config
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3.3m-config
+	
+	# On crée un faux entête pour s'adapter au multilib :
+	cat > ${PKG}/usr/include/python3.3m/pyconfig.h << "EOF"
+#ifndef __STUB__PY3CONFIG_H__
+#define __STUB__PY3CONFIG_H__
+
+#if defined(__x86_64__)
+#	include "pyconfig-64.h"
+#else
+#	include "pyconfig-32.h"
+#endif
+
+#endif
+
+EOF
+fi
+
+# On lie un manuel manquant :
+ln -sf python3.3.1 ${PKG}/usr/man/man1/python3.1
+
+# On installe la doc dans le répertoire dédié :
+installer_doc ${NAMETGZ}-3.3.2
+
+# Et on extrait les archives de documentation au bon endroit :
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.3.2-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.3.2/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.3.2-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.3.2/
+
+# On compile Python 2 :
+preparer_sources
+cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -26,6 +172,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On corrige une idiotie :
 	sed -i "s@^# /usr/local/bin/python@#!/usr/bin/python@" Lib/cgi.py
+	
+	# On permet au module SQLite d echarger des extensions :
+	sed -i "/SQLITE_OMIT_LOAD_EXTENSION/d" setup.py
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -40,6 +189,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--enable-ipv6 \
 		--enable-shared \
 		--enable-unicode=ucs4 \
+		--with-dbmliborder=gdbm:ndbm \
 		--with-system-expat \
 		--with-system-ffi \
 		--with-threads \
@@ -52,6 +202,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	mv ${PKG}/usr/bin/python{,-32}
 	mv ${PKG}/usr/bin/python2{,-32}
 	mv ${PKG}/usr/bin/python2.7{,-32}
+	mv ${PKG}/usr/bin/python2-config{,-32}
+	mv ${PKG}/usr/bin/python2.7-config{,-32}
 	mv ${PKG}/usr/include/python2.7/pyconfig{,-32}.h
 	
 	# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-32' :
@@ -70,6 +222,9 @@ cat $CWD/python.lib64.patch | sed "s@lib64@lib${LIBDIRSUFFIX}@g" | patch -p1
 # On corrige une idiotie :
 sed -i "s@^# /usr/local/bin/python@#!/usr/bin/python@" Lib/cgi.py
 
+# On permet au module SQLite d echarger des extensions :
+sed -i "/SQLITE_OMIT_LOAD_EXTENSION/d" setup.py
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -83,6 +238,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-ipv6 \
 	--enable-shared \
 	--enable-unicode=ucs4 \
+	--with-dbmliborder=gdbm:ndbm \
 	--with-system-expat \
 	--with-system-ffi \
 	--with-threads \
@@ -100,6 +256,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	mv ${PKG}/usr/bin/python{,-64}
 	mv ${PKG}/usr/bin/python2{,-64}
 	mv ${PKG}/usr/bin/python2.7{,-64}
+	mv ${PKG}/usr/bin/python2-config{,-64}
+	mv ${PKG}/usr/bin/python2.7-config{,-64}
 	mv ${PKG}/usr/include/python2.7/pyconfig{,-64}.h
 
 	# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-64' :
@@ -107,9 +265,14 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	ln -sf python2-64   ${PKG}/usr/bin/python-64
 
 	# On lie des binaires génériques au programme enveloppe :
-	ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python
-	ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python2
-	ln -sfv enveloppe_multiarch ${PKG}/usr/bin/python2.7
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2.7
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2-config
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2.7-config
+	
+	# On lie un binaire générique à python2-config :
+	ln -sf python2-config ${PKG}/usr/bin/python-config
 	
 	# On crée un faux entête pour s'adapter au multilib :
 	cat > ${PKG}/usr/include/python2.7/pyconfig.h << "EOF"
@@ -126,6 +289,13 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 
 EOF
 fi
+
+# On supprime une référence au répertoire de construction :
+sed -i "s@${TMP}/Python-${VERSION}:@@" ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/config/Makefile
+
+# On lie un manuel manquant et on lie le manuel 'python2' par défaut :
+ln -sf python2.7.1 ${PKG}/usr/man/man1/python2.1
+ln -sf python2.1 ${PKG}/usr/man/man1/python.1
 
 installer_doc
 

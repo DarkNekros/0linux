@@ -288,9 +288,9 @@ else
         request "$source/paquets.db" | lspkg "$pkg" "$pkgset" | upgrade $f_keep "$source"
         
         # Installe d'office les nouveaux paquets (merci à myou) :
-        $CURL "$source/base/" | grep ".spack" | sed -e "s@.*>\(.*\)<.*@base/\1@" | si_pas_installe | upgrade $f_keep "$source"
-        $CURL "$source/opt/" | grep ".spack" | sed -e "s@.*>\(.*\)<.*@opt/\1@" | si_pas_installe | upgrade $f_keep "$source"
-        $CURL "$source/xorg/" | grep ".spack" | sed -e "s@.*\"\(.*\)\".*@xorg/\1@" | si_pas_installe | upgrade $f_keep "$source"
+        $CURL "${MASTER}/paquets.db" | grep "base/" | sed -e "s@.* \(.*\) .*@base/\1.spack@" | si_pas_installe | upgrade $f_keep "$source"
+        $CURL "${MASTER}/paquets.db" | grep "opt/" | sed -e "s@.* \(.*\) .*@opt/\1.spack@" | si_pas_installe | upgrade $f_keep "$source"
+        $CURL "${MASTER}/paquets.db" | grep "xorg/" | sed -e "s@.* \(.*\) .*@xorg/\1.spack@" | si_pas_installe | upgrade $f_keep "$source"
     else
         supprimer_obsoletes 0 "$source"
         request "$source/paquets.db" | lspkg "$pkg" "$pkgset"
