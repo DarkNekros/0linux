@@ -18,6 +18,9 @@ cflags
 # On corrige des références non-existantes :
 sed -i -e 's@/usr/bin/lsb_release -d@cat /etc/os-release@' xbmc/utils/SystemInfo.cpp
 
+# On force la compilation avec les instructions SSE disponibles :
+sed -i 's@USE_SSE ?= 0@USE_SSE ?= 1@' lib/libsquish/config
+
 # On lance le script 'bootstrap' permettant de générer le nécessaire à la compilation :
 chmod +x bootstrap
 ./bootstrap 
@@ -33,12 +36,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-debug \
-	--disable-external-ffmpeg \
 	--disable-hal \
-	--disable-webserver \
+	--enable-alsa \
 	--enable-avahi \
 	--enable-dvdcss \
+	--enable-external-ffmpeg \
 	--enable-external-libraries \
 	--enable-ffmpeg-libvorbis \
 	--enable-gl \
@@ -46,14 +48,15 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-joystick \
 	--enable-libbluray \
 	--enable-mid \
+	--enable-neon \
 	--enable-nfs \
 	--enable-optical-drive \
 	--enable-optimizations \
 	--enable-samba \
-	--enable-texturepacker \
 	--enable-udev \
 	--enable-vaapi \
 	--enable-vdpau \
+	--enable-webserver \
 	--enable-xrandr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
