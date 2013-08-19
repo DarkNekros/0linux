@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-git}
-VERSION=${VERSION:-1.8.3.2}
+VERSION=${VERSION:-1.8.3.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-git}
 WGET=(http://git-core.googlecode.com/files/$NAMESRC-$VERSION.$EXT

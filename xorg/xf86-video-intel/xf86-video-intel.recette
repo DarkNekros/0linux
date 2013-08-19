@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-xf86-video-intel}
-VERSION=${VERSION:-2.21.10}
+VERSION=${VERSION:-2.21.14}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xf86-video-intel}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT}

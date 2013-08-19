@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-xrandr}
-VERSION=${VERSION:-1.4.0}
+VERSION=${VERSION:-1.4.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xrandr}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT}

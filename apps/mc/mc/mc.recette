@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-mc}
-VERSION=${VERSION:-4.8.8}
+VERSION=${VERSION:-4.8.10}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mc}
 WGET=${WGET:-http://www.midnight-commander.org/downloads/$NAMESRC-$VERSION.$EXT}

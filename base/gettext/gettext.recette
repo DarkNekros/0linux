@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-gettext}
-VERSION=${VERSION:-0.18.2.1}
+VERSION=${VERSION:-0.18.3.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-gettext}
 WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}

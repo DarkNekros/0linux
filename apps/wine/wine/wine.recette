@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-wine}
-VERSION=${VERSION:-1.5.13}
+VERSION=${VERSION:-1.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-wine}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -15,28 +15,81 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Wine 64 bits s'active via une option en x86_64 :
+# On force à lier sur la libncursesw :
+sed -i 's@libncurses@&w@g' configure
+sed -i 's@lncurses@&w@g' configure
+
+# Le multilib requiert une compilation en 2 temps :
 if [ "${PKGARCH}" = "x86_64" ]; then
-	EXTRAOPT="--enable-win64"
+	
+	# On construit dans un répertoire dédié :
+	mkdir $TMP/${NAME}/build-64
+	cd $TMP/${NAME}/build-64
+	
+	# Compilation 64 bits :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	$TMP/${NAME}/configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--enable-win64 \
+		--with-x \
+		--without-gstreamer \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	
+	# On construit dans un répertoire dédié :
+	mkdir $TMP/${NAME}/build-32
+	cd $TMP/${NAME}/build-32
+	
+	# On passe en 32 bits :
+	cflags i686
+	
+	# Compilation 32 bits :
+	CFLAGS="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" CXXFLAGS="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
+	$TMP/${NAME}/configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--with-wine64=$TMP/${NAME}/build-64 \
+		--with-x \
+		--without-gstreamer \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install prefix=${PKG}/usr libdir=/usr/lib${LIBDIRSUFFIX} dlldir=/usr/lib${LIBDIRSUFFIX}/wine
+	
+	# On installe maintenant le 64 bits :
+	cflags
+	fakeroot make install prefix=${PKG}/usr libdir=/usr/lib${LIBDIRSUFFIX} dlldir=/usr/lib${LIBDIRSUFFIX}/wine
+else
+	
+	# Compilation 32 bits native pour les autres architectures :
+	CFLAGS="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" CXXFLAGS="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
+	$TMP/${NAME}/configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--with-x \
+		--without-gstreamer \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install prefix=${PKG}/usr libdir=/usr/lib${LIBDIRSUFFIX} dlldir=/usr/lib${LIBDIRSUFFIX}/wine
 fi
-
-# Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	${EXTRAOPT} \
-	--with-x \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make depend
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation

@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-transmission}
-VERSION=${VERSION:-2.80}
+VERSION=${VERSION:-2.82}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-transmission}
 WGET=${WGET:-http://download.transmissionbt.com/files/$NAMESRC-$VERSION.$EXT}

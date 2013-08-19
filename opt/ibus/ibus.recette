@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-ibus}
-VERSION=${VERSION:-1.5.2}
+VERSION=${VERSION:-1.5.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-ibus}
 WGET=${WGET:-http://ibus.googlecode.com/files/$NAMESRC-$VERSION.$EXT}

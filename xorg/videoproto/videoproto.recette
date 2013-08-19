@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-videoproto}
-VERSION=${VERSION:-2.3.1}
+VERSION=${VERSION:-2.3.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-videoproto}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT}

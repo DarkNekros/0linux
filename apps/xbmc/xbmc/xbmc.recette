@@ -36,11 +36,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-external-ffmpeg \
 	--disable-hal \
 	--enable-alsa \
 	--enable-avahi \
 	--enable-dvdcss \
-	--enable-external-ffmpeg \
 	--enable-external-libraries \
 	--enable-ffmpeg-libvorbis \
 	--enable-gl \
@@ -60,7 +60,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-xrandr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-make -j${JOBS} || make
+make -j1
 fakeroot make install DESTDIR=${PKG}
 
 # On place des outils oubliés :

@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-libX11}
-VERSION=${VERSION:-1.6.0}
+VERSION=${VERSION:-1.6.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-libx11}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}

@@ -31,9 +31,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--enable-nouveau-experimental-api \
+		--enable-exynos-experimental-api \
+		--enable-freedreno-experimental-api \
 		--enable-omap-experimental-api \
-		--enable-vmwgfx-experimental-api \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -55,9 +55,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-nouveau-experimental-api \
+	--enable-exynos-experimental-api \
+	--enable-freedreno-experimental-api \
 	--enable-omap-experimental-api \
-	--enable-vmwgfx-experimental-api \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

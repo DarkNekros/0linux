@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-qemu}
-VERSION=${VERSION:-1.5.1}
+VERSION=${VERSION:-1.6.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-qemu}
 WGET=${WGET:-http://wiki.qemu-project.org/download/$NAMESRC-$VERSION.$EXT}

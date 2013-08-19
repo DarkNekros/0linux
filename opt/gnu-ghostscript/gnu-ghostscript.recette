@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-ghostscript}
-VERSION=${VERSION:-9.06}
+VERSION=${VERSION:-9.07}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-gnu-ghostscript}
 WGET=(http://downloads.ghostscript.com/public/$NAMESRC-$VERSION.$EXT

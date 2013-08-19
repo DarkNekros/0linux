@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-libpciaccess}
-VERSION=${VERSION:-0.13.1}
+VERSION=${VERSION:-0.13.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-libpciaccess}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}

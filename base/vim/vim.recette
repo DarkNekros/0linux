@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-vim}
-VERSION=${VERSION:-7.3} #  Indiquer ici le nombre de correctifs à appliquer
+VERSION=${VERSION:-7.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-vim}
 WGET=${WGET:-ftp://ftp.vim.org/pub/vim/unix/$NAMESRC-$VERSION.$EXT}
@@ -18,7 +18,7 @@ cflags
 # On télécharge chaque correctif :
 mkdir -p ${PKGSOURCES}/${NAMETGZ}/patches
 
-for correctif in {001..750}; do # Indiquer ici le nombre de correctifs à appliquer.
+for correctif in {001..005}; do # Indiquer ici le nombre de correctifs à appliquer.
 	if [ ! -r ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} ]; then
 		wget -vc "ftp://ftp.vim.org/pub/vim/patches/${VERSION}/${VERSION}.${correctif}" \
 			-O ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif}.part
@@ -49,7 +49,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-gui \
 	--enable-multibyte \
-	--with-compiledby=0 \
+	--with-compiledby="0Linux" \
 	--with-features=tiny \
 	--with-vim-name=minivim \
 	--without-x \
@@ -79,7 +79,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-perlinterp \
 	--enable-rubyinterp \
 	--enable-multibyte \
-	--with-compiledby=0 \
+	--with-compiledby="0Linux" \
 	--with-features=huge \
 	--without-x \
 	--build=${PKGARCH}-0linux-linux-gnu
@@ -108,7 +108,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-perlinterp \
 	--enable-rubyinterp \
 	--enable-multibyte \
-	--with-compiledby=0 \
+	--with-compiledby="0Linux" \
 	--with-features=huge \
 	--with-vim-name=gvim \
 	--with-x \

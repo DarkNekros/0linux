@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-NVIDIA}
-VERSION=${VERSION:-319.32}
+VERSION=${VERSION:-325.15}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-nvidia}
 . /usr/share/0outils/fonctions_paquets.sh

@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-scribus}
-VERSION=${VERSION:-1.4.2}
+VERSION=${VERSION:-1.4.3}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-scribus}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
