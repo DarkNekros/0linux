@@ -1,9 +1,0 @@
-[Unit]
-Description=Scripts au démarrage du système autonome
-
-[Service]
-Type=oneshot
-ExecStart=/usr/share/0outils/installateur/scripts/clavier.sh
-
-[Install]
-WantedBy=multi-user.target

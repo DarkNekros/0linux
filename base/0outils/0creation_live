@@ -222,6 +222,11 @@ rm -rf ${LIVEOS}/usr/include/*
 # Toutes les sources du noyau :
 rm -rf ${LIVEOS}/usr/src/*
 
+# Tout le 32 bits du multilib sous x86_64, inutile dans un « live » :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	find ${LIVEOS}/usr/lib -type f | xargs file 2>/dev/null | grep "32-bit" | cut -d':' -f1 | xargs rm -f {}
+fi
+
 # On ramène les bibliothèques :
 cp -a ${LIVEOS}/conserver/usr/lib${LIBDIRSUFFIX}/* ${LIVEOS}/usr/lib${LIBDIRSUFFIX}/
 
@@ -240,24 +245,25 @@ cp -ra ${LIVEOS}/conserver/kernel ${LIVEOS}/lib/modules/${VERSION_NOYAU}/
 
 # On ramène le manuel de '0g' :
 mkdir -p ${LIVEOS}/usr/man/man8
-cp ${LIVEOS}/conserver/0g.8.xz ${LIVEOS}/usr/man/man8/
+cp -a ${LIVEOS}/conserver/0g.8.xz ${LIVEOS}/usr/man/man8/
 
 # On peut supprimer notre sauvegarde :
 rm -rf ${LIVEOS}/conserver
 
+# On crée le lien critique pour 'init' en environnement « live » :
+ln -sf sbin/init ${LIVEOS}/init
+
 # On copie nos fichiers spéciaux pour le Live :
 echo -n "Copie des fichiers dans l'initrd... "
-install -m 644 ${SOURCES}/initrd/{fstab,issue} ${LIVEOS}/etc
-install -m 644 ${SOURCES}/initrd/initrd-release ${LIVEOS}/etc
-install -m 755 ${SOURCES}/initrd/profile ${LIVEOS}/etc
-install -m 644 ${SOURCES}/initrd/bash_profile ${LIVEOS}/root/.bash_profile
-
+cp -a ${SOURCES}/initrd/{fstab,hostname,issue,profile} ${LIVEOS}/etc/
+cp -a ${SOURCES}/initrd/rc.* ${LIVEOS}/etc/rc.d/
+ 
 # On place la version (date de génération du système autonome) dans le
-# fichier de bienvenue '/etc/issue' :
+# fichier du message d'accueil '/etc/issue' :
 sed -i "s@DATEGEN@${DATEFR}@" ${LIVEOS}/etc/issue
 
 # On crée un fichier vide '.hushlogin' dans le répertoire de root pour éviter
-# l'affichage du "message du jour" contenu dans '/etc/motd' :
+# l'affichage du « message du jour » contenu dans '/etc/motd' :
 touch ${LIVEOS}/root/.hushlogin
 
 # On met à jour les liens des bibliothèques :

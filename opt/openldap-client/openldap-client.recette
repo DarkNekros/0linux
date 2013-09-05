@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-openldap}
-VERSION=${VERSION:-2.4.35}
+VERSION=${VERSION:-2.4.36}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-openldap-client}
 WGET=${WGET:-ftp://ftp.openldap.org/pub/OpenLDAP/$NAMESRC-release/$NAMESRC-$VERSION.$EXT}
