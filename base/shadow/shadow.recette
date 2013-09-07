@@ -16,7 +16,9 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On ajoute un entête manquant et on supprime des messages d'avertissement
-# lors de l'ajout d'utilisateur si 'nscd' n'est pas lancé :
+# lors de l'ajout d'utilisateur si 'nscd' n'est pas lancé. On corrige également
+# les messages de crypt() qui peuvent surgir à la connexion :
+cat $CWD/shadow.crypt.patch | patch -p1
 cat $CWD/shadow.copydir.patch | patch -p1
 cat $CWD/shadow.erreur-nscd.patch | patch -p1
 
