@@ -12,20 +12,16 @@ DESC="Interfaçage Python pour GObject"
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-cflags
-
-# On compile pour GTK+ 2 :
 preparer_sources
+cflags
 
 # On corrige les sources avec les correctifs des développeurs :
 for correctif in $CWD/*.patch; do
 	cat ${correctif} | patch -p1
 done
 
-# On empêche 'gcc' de planter sur les avertissements :
-sed -i '/Werror=format/d' configure
-
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \

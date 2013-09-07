@@ -17,7 +17,7 @@
                  sub(/ ([^ ]+)?$/,"", PREV) || PREV = substr($0, 1, 70) # fix if no space is found.
                  $0 = substr($0, 1 + length(PREV))
 -                if (! sub(/^ /, "")) print "(W) l." NR": no space to cut the line!" >"/dev/stderr"
-+                if (! sub(/^ /, "")) print "(A) l." NR" : aucun espace trouvé pour scinder le texte !" >"/dev/stderr"
++                if (! sub(/^ /, "")) print "(!) l." NR" : aucun espace trouvé pour scinder le texte !" >"/dev/stderr"
                  pr(": ")
              }
              PREV = $0
@@ -29,31 +29,15 @@
  }
  
  growl () {
-@@ -57,23 +55,7 @@
+@@ -57,7 +55,7 @@
          echo "(E) $*" >&2
          exit $code
      fi
 -    echo "(W) $*" >&2
--}
--
--howto () {
--    # Print howto edit the file.
--    # $f
--    cat >&1 << E0F
--# You must edit this file just like an official slack-desc:
--#
--#    + exactly 11 lines (do not add lines or remove empty lines);
--#    + a line must not be longer than the ending ">" of the specified limit;
--#    + on each filled line, a space should be left after the first ":";
--#    + the name which begins the lines must be the one  in the final 
--#      package (ie. do not write "firefox" if the package is 
--#      "mozilla-firefox-[...].tgz", but "mozilla-firefox").
--#
--E0F
-+    echo "(A) $*" >&2
++    echo "(!) $*" >&2
  }
  
- usage () {
+ howto () {
 @@ -81,27 +63,27 @@
      # $f CODE
      [ $1 -eq 0 ] || exec 1>&2
