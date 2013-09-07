@@ -45,7 +45,7 @@
          [ $code -lt 0 ] || exit $code # exit on positive codes.
      else
 -        echo "(W) $*" >&2
-+        echo "(A) $*" >&2
++        echo "(!) $*" >&2
      fi
      return 0
  }

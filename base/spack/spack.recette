@@ -4,7 +4,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-spack}
-VERSION=${VERSION:-3.9}
+VERSION=${VERSION:-3.10}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-spack}
 WGET=${WGET:-http://requiescant.tuxfamily.org/files/$NAMESRC-$VERSION.$EXT}
@@ -30,9 +30,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sbindir=/usr/sbin
 
 fakeroot make DESTDIR=${PKG}
-
-# On modifie 'spackpkg' pour qu'il trie les fichiers à l'empaquetage :
-sed -i 's/find \* $type 2>\/dev\/null | sed/find * $type 2>\/dev\/null | sort | sed/' ${PKG}/usr/sbin/spackpkg
 
 installer_doc
 creer_post_installation
