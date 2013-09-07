@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-0outils}
-VERSION=${VERSION:-5.2}
+VERSION=${VERSION:-5.3}
 NAMETGZ=${NAMETGZ:-0outils}
 DESC="Outils « maison » pour la configuration du système"
 
@@ -12,7 +12,7 @@ DESC="Outils « maison » pour la configuration du système"
 cflags # on appelle cflags() car elle contient la détection de $PKGARCH
 
 # On crée les répertoires d'accueil :
-mkdir -p ${PKG}/{etc/0outils/0g,usr/share/0outils}
+mkdir -p ${PKG}/{etc/{0linux,0outils/0g},usr/share/0outils}
 mkdir -p ${PKG}/usr/{s,}bin
 
 # On place les scripts réservés à root :

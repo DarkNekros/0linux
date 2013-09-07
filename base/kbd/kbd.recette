@@ -87,16 +87,21 @@ cat > ${PKG}/etc/rc.d/rc.police << "EOF"
 #!/usr/bin/env bash
 
 # On charge la configuration :
-. /etc/vconsole.conf
+source /etc/0linux/police
 
 police_start() {
-	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la police : ${FONT}"
-	setfont -v ${FONT}
+	if [ ! "${POLICE}" = "" ]; then
+		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la police : ${POLICE}"
+		setfont ${POLICE}.psfu
+	else
+		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la police par défaut : lat9w-16..."
+		setfont lat9w-16.psfu
+	fi
 }
 
 police_stop() {
 	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la police par défaut : lat9w-16..."
-	setfont lat9w-16
+	setfont lat9w-16.psfu
 }
 
 case "$1" in
@@ -127,11 +132,16 @@ cat > ${PKG}/etc/rc.d/rc.clavier << "EOF"
 #!/usr/bin/env bash
 
 # On charge la configuration :
-. /etc/vconsole.conf
+source /etc/0linux/clavier
 
 clavier_start() {
-	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la disposition du clavier : ${KEYMAP}..."
-	loadkeys ${KEYMAP}
+	if [ ! "${POLICE}" = "" ]; then
+		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la disposition du clavier : ${CLAVIER}..."
+		setfont ${CLAVIER}.psfu
+	else
+		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la disposition du clavier : us..."
+		setfont lat9w-16.psfu
+	fi
 }
 
 clavier_stop() {

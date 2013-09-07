@@ -1,33 +1,208 @@
 #!/usr/bin/env bash
 
 # On nettoie  :
-unset CHOIXNOM
+unset CHOIXNOMS CHOIXCONFIG DHCPHOST NETPARAMS IPPARAM
+unset MASKPARAM GATEPARAM DNSSERVERS
+
+# L'emplacement du fichier de configuration :
+NETWORKCONFIGFILE=/etc/0linux/reseau
+
+# On crée la configuration si elle n'existe pas :
+if [ ! -r ${NETWORKCONFIGFILE} ]; then
+	cat > ${NETWORKCONFIGFILE} << "EOF"
+# Paramètres du réseau.
+#
+# Chaque section contient les paramètres suivants pour l'interface ethX:
+# IP[X]="48.4.0.12"             # Si une IP précise est à demander
+# SOUSRESEAU[X]="255.255.255.0" # Le masque de sous-réseau
+# HOTEDHCP[X]="CC-4652-A"       # Si un nom d'hôte pour DHCP est requis
+#
+# « X » étant le chiffre de l'interface réseau concernée (eth0, eth1, etc.).
+# Si la machine est reliée à un unique modem/routeur de type « box » reliée à
+# internet, la plupart sont automatisées, rendant ce fichier inutile.
+
+# IP de la passerelle par défaut :
+PASSERELLE=
+
+# Paramètres pour eth0 :
+IP[0]=
+SOUSRESEAU[0]=
+HOTEDHCP[0]=
+
+# Paramètres pour eth1 :
+IP[1]=
+SOUSRESEAU[1]=
+HOTEDHCP[1]=
+
+# Paramètres pour eth2 :
+IP[2]=
+SOUSRESEAU[2]=
+HOTEDHCP[2]=
+
+# Paramètres pour eth3 :
+IP[3]=
+SOUSRESEAU[3]=
+HOTEDHCP[3]=
+
+EOF
+fi
+
+# Cette fonction supprime les espaces superflus via 'echo' :
+crunch() {
+	read STRING;
+	echo $STRING;
+}
 
 # Boucle pour le choix du nom d'hôte et du domaine :
 while [ 0 ]; do
 	clear
 	echo -e "\033[1;32mNommage de votre machine.\033[0;0m"
 	echo ""
-	echo "Il est temps de baptiser votre machine en lui donnant un nom d'hôte."
-	echo "Le nom d'hôte désigne la machine et son identification sur le réseau."
-	echo "Évitez la ponctuation et les majuscules pour maximiser la compatibilité."
+	echo "Il est temps de baptiser votre machine en lui donnant un nom d'hôte"
+	echo "et un nom de domaine. Le nom d'hôte désigne la machine, le nom de domaine"
+	echo "désigne le réseau dont elle fait partie, fictif ou pas. Entrez ci-après un"
+	echo "nom d'hôte et un nom de domaine sous la forme « hôte domaine.com ». Le nom"
+	echo "de domaine est facultatif, un simple nom d'hôte suffit. Évitez les"
+	echo "ponctuations, accents et majuscules pour maximimser la compatibilité."
+	echo "Appuyez sur ENTRÉE pour ignorer cette étape (le nom d'hôte sera « 0linux »)."
 	echo ""
-	echo "Exemples : « monordi » ; « pcsalon » ; « saturne »"
+	echo "Exemples : pingouin exemple.fr ; ordinateur salon.chezmoi ; saturne ; etc."
 	echo ""
 	echo -n "Votre choix : "
-	read CHOIXNOM;
-	if [ "$CHOIXNOM" = "" ]; then
-		echo "Veuillez entrer un nom d'hôte."
-		sleep 2
-		unset CHOIXNOM
-		continue
-	else
-		# On envoie l'hôte en écrasant le contenu de '/etc/hostname' :
-		echo "${CHOIXNOM}" > /etc/hostname
-		
-		# On envoie l'hôte dans '/etc/hosts' pour la boucle locale :
-		sed -i "s@pingouin.exemple.fr pingouin@${CHOIXNOM}@" /etc/hosts
+	read CHOIXNOMS;
+	if [ "$CHOIXNOMS" = "" ]; then
+		CHOIXNOMS="0linux"
+	fi
+	
+	# On envoie l'hôte en écrasant le contenu de '/etc/hostname' :
+	echo "${CHOIXNOMS}" > /etc/hostname
+	
+	# On envoie l'hôte dans '/etc/hosts' pour la boucle locale :
+	sed -i "s@pingouin.exemple.fr pingouin@${CHOIXNOMS} $(echo $CHOIXNOMS | cut -d'.' -f1)" /etc/hosts
+	break
+done
+
+# Boucle de configuration du réseau :
+while [ 0 ]; do
+	if [ "${NETCONFIG}" = "ok" ]; then
 		break
+	fi
+	clear
+	echo -e "\033[1;32mConfiguration du réseau filaire.\033[0;0m"
+	echo ""
+	echo "Définissez comment votre machine se connecte au réseau."
+	echo "Si votre IP est assignée par un serveur DHCP (comme beaucoup de"
+	echo "fournisseurs d'accés ADSL/câble le font via les « box »), choisissez"
+	echo "la configuration via DHCP."
+	echo "Si vous devez renseigner une IP spécifique, accéder à un routeur, une"
+	echo "passerelle ou un serveur DNS précis, choisissez la configuration"
+	echo "manuelle."
+	echo "Si vous êtes dans un autre cas (connexion via modem par PPP/SLIP,"
+	echo "connexion sans fil uniquement, pas de réseau), apppuyez simplement"
+	echo "sur ENTRÉE pour ignorer cette étape."
+	echo ""
+	echo "1 : DHCP   - configuration automatique via DHCP"
+	echo "2 : MANUEL - configuration manuelle"
+	echo ""
+	echo -n "Votre choix : "
+	read CHOIXCONFIG;
+	if [ "$CHOIXCONFIG" = "" ]; then
+		break
+	else
+		if [ "$CHOIXCONFIG" = "1" ]; then
+			# Boucle pour la config' par DHCP :
+			while [ 0 ]; do
+				clear
+				echo -e "\033[1;32mNom de l'hôte DHCP.\033[0;0m"
+				echo ""
+				echo "Certains fournisseurs requièrent un nom d'hôte DHCP pour la"
+				echo "connexion via DHCP. Si c'est le cas, un nom a probablement été affecté"
+				echo "à votre machine par votre administrateur, lequel ressemble à quelque chose"
+				echo "comme « CC-NOMBRE-A » selon le fournisseur. Si un nom d'hôte est affecté à"
+				echo "votre machine, entrez-le ci-dessous. Si aucun nom d'hôte n'a été affecté,"
+				echo "ou que vous ne le connaissez pas, appuyez simplement sur ENTRÉE pour"
+				echo "ignorer cette étape."
+				echo ""
+				echo -n "Votre choix : "
+				read DHCPHOST;
+				if [ ! "$DHCPHOST" = "" ]; then
+					# On envoie l'hôte DHCP à la section pour eth0 :
+					sed -i "s/HOTEDHCP\[0\]=/&${DHCPHOST}/" ${NETWORKCONFIGFILE}
+				fi
+				NETCONFIG="ok"
+				break
+			done
+			
+		# Configuration manuelle :
+		else
+			while [ 0 ]; do
+				clear
+				echo -e "\033[1;32mConfiguration manuelle du réseau.\033[0;0m"
+				echo ""
+				echo "Veuillez entrer ci-dessous votre paramètres réseau, séparés par"
+				echo "des espaces. Entrez successivement votre IP, votre masque de sous-"
+				echo "réseau, puis l'IP de votre passerelle ou « box » par défaut sous"
+				echo " la forme « xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx »."
+				echo "Exemple : 192.168.0.12 255.255.255.0 192.168.0.254"
+				echo ""
+				echo -n "Votre choix : "
+				read NETPARAMS;
+				if [ "$NETPARAMS" = "" ]; then
+					break
+				else
+					
+					# L'IP :
+					IPPARAM="$(echo $NETPARAMS | crunch | cut -d' ' -f1)"
+					
+					# Le masque de sous-réseau :
+					MASKPARAM="$(echo $NETPARAMS | crunch | cut -d' ' -f2)"
+					
+					# L'IP de la passerelle :
+					GATEPARAM="$(echo $NETPARAMS | crunch | cut -d' ' -f3)"
+					
+					# Si l'utilisateur a mal entré ses paramètres :
+					if [ "$IPPARAM" = "" -o "$MASKPARAM" = "" -o "$GATEPARAM" = ""]; then
+						echo "Veuillez entrer 3 IP successives, séparées par un espace."
+						sleep 2
+						unset NETPARAMS
+						continue
+					fi
+					# On envoie les paramètres à la section pour eth0 :
+					sed -i "s/IP\[0\]=/&${IPPARAM}/" ${NETWORKCONFIGFILE}
+					sed -i "s/SOUSRESEAU\[0\]=/&${MASKPARAM}/" ${NETWORKCONFIGFILE}
+					sed -i "s/PASSERELLE=/&${GATEPARAM}/" ${NETWORKCONFIGFILE}
+					break
+				fi
+			done
+			
+			# Le serveur de noms pour '/etc/resolv.conf' :
+			while [ 0 ]; do
+				clear
+				echo -e "\033[1;32mConfiguration d 'un éventuel serveur de noms de domaine (DNS).\033[0;0m"
+				echo ""
+				echo "Si vous devez utiliser des serveurs de noms de domaine (DNS) précis"
+				echo "pour accéder au réseau, veuillez entrer ci-après 1 ou 2 de leurs IP."
+				echo "Appuyez sur ENTRÉE pour ignorer cette étape."
+				echo "Exemple : 212.27.134.42 212.27.134.50"
+				echo ""
+				echo -n "Votre choix : "
+				read DNSSERVERS;
+				DNS1="$(echo $DNSSERVERS | crunch | cut -d' ' -f1)"
+				DNS2="$(echo $DNSSERVERS | crunch | cut -d' ' -f2)"
+				if [ "$DNS1" = "" -a "$DNS2" = "" ]; then
+					break
+				else
+					# On envoie les IP à '/etc/resolv.conf' en écrasant le contenu:
+					echo "nameserver ${DNS1}" > /etc/resolv.conf
+					
+					if [ ! "$DNS2" = "" ]; then
+						echo "nameserver ${DNS2}" >> /etc/resolv.conf
+					fi
+					break
+				fi
+			done
+			NETCONFIG="ok"
+		fi
 	fi
 done
 

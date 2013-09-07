@@ -2,6 +2,9 @@
 
 unset CHOIXCLAVIER TESTCLAVIER
 
+# L'emplacement du fichier de configuration :
+KEYBOARDCONFIGFILE=/etc/0linux/clavier
+
 # Boucle pour l'affichage du menu :
 while [ ! "$TESTCLAVIER" = "1" ]; do
 	clear
@@ -73,7 +76,7 @@ while [ ! "$TESTCLAVIER" = "1" ]; do
 	esac
 	
 	# On charge le clavier :
-	loadkeys ${CHOIXCLAVIER} 1> /dev/null 2> /dev/null
+	loadkeys ${CHOIXCLAVIER} 1>/dev/null 2>/dev/null
 	
 	# Test du clavier :
 	while [ 0 ]; do
@@ -92,20 +95,18 @@ while [ ! "$TESTCLAVIER" = "1" ]; do
 		if [ "$TESTCLAVIER" = "1" ]; then
 			
 			# On crée le fichier de configuration au cas où :
-			if [ ! -r /etc/vconsole.conf ]; then
-				echo "# Ce fichier détermine la police à utiliser en mode console parmi celles" >> /etc/vconsole.conf
-				echo "# disponibles dans '/usr/share/kbd/consolefonts', ainsi que la disposition" >> /etc/vconsole.conf
-				echo "# des touches du clavier en mode console parmi celles disponibles dans" >> /etc/vconsole.conf
-				echo "# '/usr/share/kbd/keymaps/i386'." >> /etc/vconsole.conf
-				echo "FONT=" >> /etc/vconsole.conf
-				echo "KEYMAP=" >> /etc/vconsole.conf
+			if [ ! -r ${KEYBOARDCONFIGFILE} ]; then
+				echo "# Ce fichier détermine la disposition des touches du clavier en" >> ${KEYBOARDCONFIGFILE}
+				echo "# mode console parmi celles disponibles dans le répertoire"
+				echo "# '/usr/share/kbd/keymaps/i386'." >> ${KEYBOARDCONFIGFILE}
+				echo "CLAVIER=" >> ${KEYBOARDCONFIGFILE}
 			else
 				
 				# On le met à jour selon ce qu'on y trouve :
-				if [ ! "$(grep -E '^KEYMAP=' /etc/vconsole.conf)" = "" ]; then
-					sed -i -e "s@^KEYMAP=.*$@KEYMAP=${CHOIXCLAVIER}.map@" /etc/vconsole.conf
+				if [ ! "$(grep -E '^CLAVIER=' ${KEYBOARDCONFIGFILE})" = "" ]; then
+					sed -i -e "s@^CLAVIER=.*$@KEYMAP=${CHOIXCLAVIER}@" ${KEYBOARDCONFIGFILE}
 				else
-					echo "KEYMAP=${CHOIXCLAVIER}.map" >> /etc/vconsole.conf
+					echo "CLAVIER=${CHOIXCLAVIER}" >> ${KEYBOARDCONFIGFILE}
 				fi
 			fi
 			

@@ -2,6 +2,9 @@
 
 unset CONSOLEFONT TESTPOLICE
 
+# L'emplacement du fichier de configuration :
+FONTCONFIGFILE=/etc/0linux/police
+
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
 	read STRING;
@@ -60,21 +63,18 @@ while [ ! "$TESTPOLICE" = "1" ]; do
 			# Si le choix est validé, on sort du script :
 			if [ "$TESTPOLICE" = "1" ]; then
 				
-				# On crée le fichier de configuration au cas où :
-				if [ ! -r /etc/vconsole.conf ]; then
-					echo "# Ce fichier détermine la police à utiliser en mode console parmi celles" >> /etc/vconsole.conf
-					echo "# disponibles dans '/usr/share/kbd/consolefonts', ainsi que la disposition" >> /etc/vconsole.conf
-					echo "# des touches du clavier en mode console parmi celles disponibles dans" >> /etc/vconsole.conf
-					echo "# '/usr/share/kbd/keymaps/i386'." >> /etc/vconsole.conf
-					echo "FONT=" >> /etc/vconsole.conf
-					echo "KEYMAP=" >> /etc/vconsole.conf
+				# On crée le fichier de configuration s'il n'existe pas :
+				if [ ! -r ${FONTCONFIGFILE} ]; then
+					echo "# Ce fichier détermine la police à utiliser en mode console parmi celles" >> ${FONTCONFIGFILE}
+					echo "# disponibles dans '/usr/share/kbd/consolefonts'." >> ${FONTCONFIGFILE}
+					echo "POLICE=" >> ${FONTCONFIGFILE}
 				else
 					
 					# On le met à jour selon ce qu'on y trouve :
-					if [ ! "$(grep -E '^FONT=' /etc/vconsole.conf)" = "" ]; then
-						sed -i -e "s@^FONT=.*$@FONT=lat9w-${CONSOLEFONT}@" /etc/vconsole.conf
+					if [ ! "$(grep -E '^POLICE=' ${FONTCONFIGFILE})" = "" ]; then
+						sed -i -e "s@^POLICE=.*$@POLICE=lat9w-${CONSOLEFONT}.psfu@" ${FONTCONFIGFILE}
 					else
-						echo "FONT=lat9w-${CONSOLEFONT}" >> /etc/vconsole.conf
+						echo "POLICE=lat9w-${CONSOLEFONT}.psfu" >> ${FONTCONFIGFILE}
 					fi
 				fi
 				

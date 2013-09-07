@@ -26,17 +26,21 @@ Les systèmes de fichiers CHIFFRÉS sont spécifiés dans le fichier __/etc/cryp
 
 Les services du système sont gérés par de simples scripts nommés « rc.* » et rangés dans __/etc/rc.d/rc.*__.  On les rend actifs au démarrage de l'ordinateur en les rendant exécutables -chmod +x) et on les appelle en les exécutant, comme de simples scripts.
 
-= NOM D'HÔTE =[nomdhote]
+= PARAMÉTRAGE DU RÉSEAU ET NOM D'HÔTE =[arametragedureseauetnomdhote]
 
-On définit le nom d'hôte du système en rensignant le fichier __/etc/hostname__. Un outil dédié existe, **__0reseau__**, lequel sert également à la configuration globale du réseau.
+On définit le nom d'hôte ainsi que les paramètres de connexion au réseau en rensignant le fichier __/etc/0linux/reseau__. Un outil dédié existe, **__0reseau__**.
 
 = LANGUE DU SYSTÈME =[languedusysteme]
 
-On définit la langue et la localisation du système en définissant les variables ad-hoc dans le fichier __/etc/locale.conf__. Un outil dédié existe : **__0locale__**.
+On définit la langue et la localisation du système en définissant les variables $LANG et $LC_ALL dans le fichier __/etc/0linux/locale__. Un outil dédié existe : **__0locale__**.
 
-= CLAVIER ET POLICE DE LA CONSOLE VIRTUELLE =[clavieretpolicedelaconsolevirtuelle]
+= DISPOSITION DES TOUCHES DU CLAVIER POUR LA CONSOLE VIRTUELLE =[dispositiondestouchesduclavierpourlaconsolevirtuelle]
 
-On définit la disposition de touches du clavier ainsi que la police par défaut chargée dans la console en renseignant le fichier __/etc/vconsole.conf__. Le clavier et la police se définissent aussi via les outils dédié **__0clavier__** et **__0police__**, lesquels permettent de tester les dispositions de clavier et les polices de caractères.
+On définit la disposition de touches du clavier dans la console en renseignant le fichier __/etc/0linux/clavier__, contenant une variable $CLAVIER. Le clavier se définit aussi via l'outil dédié **__0clavier__**, lequel permet de tester les dispositions de clavier.
+
+= POLICE DE CARACTÈRES DE LA CONSOLE VIRTUELLE =[policedecaracteresdelaconsolevirtuelle]
+
+On définit la police d ecaractères à charger dans la console virtuelle en renseignant le fichier __/etc/0linux/police__, contenant une variable $POLICE. Le clavier se définit aussi via l'outil dédié **__0police__**, lequel permet de tester les polices de caractères disponibles.
 
 = FUSEAU HORAIRE =[fuseauhoraire]
 
@@ -46,7 +50,7 @@ Le fuseau horaire se définit avec l'outil dédié **__0horloge__**. Ces command
 
 = GESTION DES PAQUETS =[gestiondespaquets]
 
-Les paquets sont gérés par **Spack** (surtout les programmes 'spackadd' et 'spackrm') et l'outil de gestion des dépôts et mises à jour,  **0g**. Voyez leur manuel respectif pour en savoir plus.
+Les paquets sont gérés par **Spack** (en particulier les programmes 'spackadd' et 'spackrm') et l'outil de gestion des dépôts et mises à jour,  **0g**. Voyez leur manuel respectif pour en savoir plus.
 
 = AMORÇAGE DU SYSTÈME =[amorcagedusysteme]
 

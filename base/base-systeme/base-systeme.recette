@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-base-systeme}
-VERSION=${VERSION:-3.6}
+VERSION=${VERSION:-3.7}
 NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 
@@ -15,7 +15,7 @@ cflags # cflags() permet de définir $PKGARCH et $LIBDIRSUFFIX
 mkdir -p ${PKG}/{0/paquets,boot,dev,home,opt,proc,root,run,srv,sys,tmp}
 
 # Les sous-répertoires :
-mkdir -p ${PKG}/etc/{X11,modprobe.d,profile.d,skel}
+mkdir -p ${PKG}/etc/{0linux,X11,modprobe.d,profile.d,skel}
 mkdir -p ${PKG}/media/{cdrecorder0,cdrecorder1,cdrom0,cdrom1,dvd0,dvd1,floppy0,floppy1,hd0,hd1,memory0,memory1,zip0,zip1}
 mkdir -p ${PKG}/mnt/{cdrecorder,cdrom,dvd,floppy,hd,memory,tmp,zip}
 mkdir -p ${PKG}/srv/ftp

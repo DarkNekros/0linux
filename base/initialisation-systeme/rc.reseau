@@ -2,7 +2,7 @@
 # Script de lancement/arrêt/redémarrage de l'ensemble du réseau.
 
 # On lit les paramètres réseau :
-. /etc/reseau.conf
+. /etc/0linux/reseau
 
 lancer_reseau() {
 	# On active la boucle locale « loopback ». Si le réseau est disponible :
@@ -22,7 +22,7 @@ lancer_reseau() {
 		fi
 	fi
 	
-	# Pour chaque interface Ethernet configurée dans '/etc/reseau.conf' :
+	# Pour chaque interface Ethernet configurée :
 	for i in 0 1 2 3; do
 		
 		# On neutralise toute variable positionnée :

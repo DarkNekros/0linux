@@ -3,6 +3,9 @@
 # On nettoie :
 unset CHOIXLOCALE LOCALECHOISIE
 
+# L'emplacement du fichier de configuration :
+LOCALECONFIGFILE=/etc/0linux/locale
+
 while [ 0 ]; do
 	clear
 	echo -e "\033[1;32mLocalisation francophone du système.\033[0;0m"
@@ -51,17 +54,24 @@ while [ 0 ]; do
 	esac
 done
 
-# On entre la locale dans le fichier de configuration :
-if [ ! "$(grep -E '^LANG=' /etc/locale.conf)" = "" ]; then
-	sed -i -e "s/^LANG=.*$/LANG=\"${LOCALECHOISIE}\"/" /etc/locale.conf
-	sed -i -e "s/^LC_ALL=.*$/LC_ALL=\"${LOCALECHOISIE}\"/" /etc/locale.conf
-else
-	echo "LANG=\"${LOCALECHOISIE}\"" >> /etc/locale.conf
-	echo "LC_ALL=\"${LOCALECHOISIE}\"" >> /etc/locale.conf
-	echo "" >> /etc/locale.conf
+# On crée le fichier de configuration s'il n'existe pas :
+if [ ! -r /etc/0linux/locale ]; then
+	cat > /etc/0linux/locale << "EOF"
+# Localisation et langue du système. Ce fichier est renseigné via le
+# programme '0locale' ou bien manuellement.
+# La liste des « locales » supportées sur ce système sont disponibles via  :
+# 	locale -a
+
+EOF
 fi
 
-# On applique les paramètres en appelant l'outil 'localectl' de systemd :
-localectl set-locale LANG="${LOCALECHOISIE}" LC_ALL="${LOCALECHOISIE}" >/dev/null 2>&1
+# On entre la locale dans le fichier de configuration :
+if [ ! "$(grep -E '^LANG=' ${LOCALECONFIGFILE})" = "" ]; then
+	sed -i -e "s/^LANG=.*$/LANG=\"${LOCALECHOISIE}\"/" ${LOCALECONFIGFILE}
+	sed -i -e "s/^LC_ALL=.*$/LC_ALL=\"${LOCALECHOISIE}\"/" ${LOCALECONFIGFILE}
+else
+	echo "LANG=\"${LOCALECHOISIE}\"" >> ${LOCALECONFIGFILE}
+	echo "LC_ALL=\"${LOCALECHOISIE}\"" >> ${LOCALECONFIGFILE}
+fi
 
 # C'est fini.

@@ -27,8 +27,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-debug \
-	--disable-slapd \
-	--disable-slurpd \
 	--enable-crypt \
 	--enable-dynamic \
 	--enable-local \
