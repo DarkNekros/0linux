@@ -23,6 +23,8 @@ if [ "${PKGARCH}" = "i686" ]; then
 	OPTSSE3="OFF"
 elif [ "${PKGARCH}" = "x86_64" ]; then
 	OPTSSE3="ON"
+else
+	OPTSSE3="OFF"
 fi
 
 # Compilation :
