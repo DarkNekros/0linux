@@ -16,7 +16,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On corrige le fichier pour 'pkg-config' :
-sed -i 's@Libs: -L${prefix}/@LIB_DESTINATION@/ -lclucene-core@& -lclucene-shared@' src/core/libclucene-core.pc.cmake
+sed -i 's|Libs: -L${prefix}/@LIB_DESTINATION@/ -lclucene-core|& -lclucene-shared|' src/core/libclucene-core.pc.cmake
 
 # Les instructions SSE3 ne sont pas forcément sur tous les processeurs i686 :
 if [ "${PKGARCH}" = "i686" ]; then
