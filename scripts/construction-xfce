@@ -17,14 +17,16 @@ gtk-xfce-engine
 xfce4-notifyd 
 xfce4-power-manager
 xfce4-screenshooter
+xfce4-taskmanager
 orage
 terminal
 tumbler
 ristretto
 parole 
-xarchier
+xarchiver
 xfburn
 midori
+mousepad
 thunar-archive-plugin
 thunar-media-tags-plugin
 xfce4-clipman-plugin
