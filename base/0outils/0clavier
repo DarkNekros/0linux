@@ -97,7 +97,7 @@ while [ ! "$TESTCLAVIER" = "1" ]; do
 			# On crée le fichier de configuration au cas où :
 			if [ ! -r ${KEYBOARDCONFIGFILE} ]; then
 				echo "# Ce fichier détermine la disposition des touches du clavier en" >> ${KEYBOARDCONFIGFILE}
-				echo "# mode console parmi celles disponibles dans le répertoire"
+				echo "# mode console parmi celles disponibles dans le répertoire" >> ${KEYBOARDCONFIGFILE}
 				echo "# '/usr/share/kbd/keymaps/i386'." >> ${KEYBOARDCONFIGFILE}
 				echo "CLAVIER=" >> ${KEYBOARDCONFIGFILE}
 			else
