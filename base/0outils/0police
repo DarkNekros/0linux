@@ -13,7 +13,9 @@ crunch() {
 
 # Boucle pour l'affichage du menu :
 while [ ! "$TESTPOLICE" = "1" ]; do
-	clear
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	ficlear
 	echo -e "\033[1;32mChoix de la police console.\033[0;0m"
 	echo ""
 	echo "Veuillez choisir la taille de la police console souhaitée parmi la"
@@ -68,16 +70,14 @@ while [ ! "$TESTPOLICE" = "1" ]; do
 					echo "# Ce fichier détermine la police à utiliser en mode console parmi celles" >> ${FONTCONFIGFILE}
 					echo "# disponibles dans '/usr/share/kbd/consolefonts'." >> ${FONTCONFIGFILE}
 					echo "POLICE=" >> ${FONTCONFIGFILE}
-				else
-					
-					# On le met à jour selon ce qu'on y trouve :
-					if [ ! "$(grep -E '^POLICE=' ${FONTCONFIGFILE})" = "" ]; then
-						sed -i -e "s@^POLICE=.*$@POLICE=lat9w-${CONSOLEFONT}.psfu@" ${FONTCONFIGFILE}
-					else
-						echo "POLICE=lat9w-${CONSOLEFONT}.psfu" >> ${FONTCONFIGFILE}
-					fi
 				fi
 				
+				# On le met à jour selon ce qu'on y trouve :
+				if [ ! "$(grep -E '^POLICE=' ${FONTCONFIGFILE})" = "" ]; then
+					sed -i -e "s@^POLICE=.*@POLICE=lat9w-${CONSOLEFONT}.psfu@" ${FONTCONFIGFILE}
+				else
+					echo "POLICE=lat9w-${CONSOLEFONT}.psfu" >> ${FONTCONFIGFILE}
+				fi
 				break
 			
 			# Sinon, on retourne au choix de la police :

@@ -7,7 +7,9 @@ KEYBOARDCONFIGFILE=/etc/0linux/clavier
 
 # Boucle pour l'affichage du menu :
 while [ ! "$TESTCLAVIER" = "1" ]; do
-	clear
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
 	echo -e "\033[1;32mChoix de la disposition du clavier.\033[0;0m"
 	echo ""
 	echo "Tapez le code de clavier souhaité parmi la liste ci-dessous. "
@@ -80,6 +82,9 @@ while [ ! "$TESTCLAVIER" = "1" ]; do
 	
 	# Test du clavier :
 	while [ 0 ]; do
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
+		fi
 		echo -e "\033[1;32mTest de la disposition du clavier.\033[0;0m"
 		echo ""
 		echo "La nouvelle disposition est maintenant activée. Tapez tout ce que vous"
@@ -100,18 +105,16 @@ while [ ! "$TESTCLAVIER" = "1" ]; do
 				echo "# mode console parmi celles disponibles dans le répertoire" >> ${KEYBOARDCONFIGFILE}
 				echo "# '/usr/share/kbd/keymaps/i386'." >> ${KEYBOARDCONFIGFILE}
 				echo "CLAVIER=" >> ${KEYBOARDCONFIGFILE}
-			else
-				
-				# On le met à jour selon ce qu'on y trouve :
-				if [ ! "$(grep -E '^CLAVIER=' ${KEYBOARDCONFIGFILE})" = "" ]; then
-					sed -i -e "s@^CLAVIER=.*$@KEYMAP=${CHOIXCLAVIER}@" ${KEYBOARDCONFIGFILE}
-				else
-					echo "CLAVIER=${CHOIXCLAVIER}" >> ${KEYBOARDCONFIGFILE}
-				fi
 			fi
 			
+			# On le met à jour selon ce qu'on y trouve :
+			if [ ! "$(grep -E '^CLAVIER=' ${KEYBOARDCONFIGFILE})" = "" ]; then
+				sed -i -e "s@^CLAVIER=.*@CLAVIER=${CHOIXCLAVIER}@" ${KEYBOARDCONFIGFILE}
+			else
+				echo "CLAVIER=${CHOIXCLAVIER}" >> ${KEYBOARDCONFIGFILE}
+			fi
 			break
-			
+		
 		# Sinon, on retourne au choix du clavier :
 		elif  [ "$TESTCLAVIER" = "2" ]; then
 			unset CHOIXCLAVIER TESTCLAVIER
