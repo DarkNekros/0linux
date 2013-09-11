@@ -87,7 +87,11 @@ cat > ${PKG}/etc/rc.d/rc.police << "EOF"
 #!/usr/bin/env bash
 
 # On charge la configuration :
-source /etc/0linux/police
+if [ -r /etc/0linux/police ]; then
+	source /etc/0linux/police
+else
+	POLICE=""
+fi
 
 police_start() {
 	if [ ! "${POLICE}" = "" ]; then
@@ -132,15 +136,19 @@ cat > ${PKG}/etc/rc.d/rc.clavier << "EOF"
 #!/usr/bin/env bash
 
 # On charge la configuration :
-source /etc/0linux/clavier
+if [ -r /etc/0linux/clavier ]; then
+	source /etc/0linux/clavier
+else
+	CLAVIER=""
+fi
 
 clavier_start() {
-	if [ ! "${POLICE}" = "" ]; then
+	if [ ! "${CLAVIER}" = "" ]; then
 		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la disposition du clavier : ${CLAVIER}..."
-		setfont ${CLAVIER}.psfu
+		loadkeys ${CLAVIER}
 	else
 		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la disposition du clavier : us..."
-		setfont lat9w-16.psfu
+		loadkeys us
 	fi
 }
 
