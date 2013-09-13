@@ -15,7 +15,7 @@ crunch() {
 while [ ! "$TESTPOLICE" = "1" ]; do
 	if [ "${INSTALLDEBUG}" = "" ]; then
 		clear
-	ficlear
+	fi
 	echo -e "\033[1;32mChoix de la police console.\033[0;0m"
 	echo ""
 	echo "Veuillez choisir la taille de la police console souhaitée parmi la"
