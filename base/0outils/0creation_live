@@ -263,7 +263,7 @@ ln -sf sbin/init ${LIVEOS}/init
 
 # On copie nos fichiers spéciaux pour le Live :
 echo -n "Copie des fichiers dans l'initrd... "
-cp -a ${SOURCES}/initrd/{fstab,hostname,issue,profile} ${LIVEOS}/etc/
+cp -a ${SOURCES}/initrd/{fstab,issue,profile} ${LIVEOS}/etc/
 cp -a ${SOURCES}/initrd/rc.* ${LIVEOS}/etc/rc.d/
  
 # On place la version (date de génération du système autonome) dans le
