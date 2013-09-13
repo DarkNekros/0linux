@@ -47,7 +47,7 @@ if [ "$1" != "--mini" -a "$1" != "--complet" -a "$1" != "--maxi" -o ! -d "$2" -o
 fi
 
 # La version de l'image à créer sera la date d'aujourd'hui :
-VERSION="$(date +%d%m%Y)"
+LIVEVERSION="$(date +%d%m%Y)"
 
 # La date en français pour l'affichage de l'accueil :
 DATEFR="$(date '+%A %d %B %Y') à $(date '+%H:%M')"
@@ -61,6 +61,15 @@ MEDIAROOT=${MEDIAROOT:-$TMP/mediaroot}
 ISODIR=${ISODIR:-$TMP/iso}
 INITRDGZ=${INITRDGZ:-$TMP/initrd}
 NOYAU=${NOYAU:-$TMP/noyau}
+
+# On traite les erreurs éventuelles :
+if [ ! -d "${PAQUETS}" ]; then
+	echo "Erreur : ${PAQUETS} n'est pas un répertoire existant !"
+	exit 1
+elif [ ! -d "${PAQUETS}/base" -o ! -d "${PAQUETS}/opt" -o ! -d "${PAQUETS}/xorg" ]; then
+	echo "Erreur : ${PAQUETS} ne contient pas les sous-répertoires requis (base, opt et xorg) !"
+	exit 1
+fi
 
 mkdir -p $TMP
 
@@ -96,6 +105,9 @@ for paq in $(find ${PAQUETS}/base -type f \
 	-name "*.spack" | sort); do
 	spackadd --quiet --root=${LIVEOS} ${paq}
 done
+
+# On réinstalle 'base-systeme' par sécurité (utilisateurs/groupes possiblement manquants) :
+spackadd -f --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "base-systeme*")
 
 # Le noyau en dernier (appels à 'make' en post-installation) :
 spackadd --quiet --root=${LIVEOS} ${PAQUETS}/base/linux-*.spack
@@ -171,12 +183,9 @@ done
 mkdir -p ${LIVEOS}/conserver/usr/bin
 cp -a ${LIVEOS}/usr/bin/minivim ${LIVEOS}/conserver/usr/bin/
 
-# On détermine la version du noyau visé :
-VERSION_NOYAU=$(basename $(find ${LIVEOS}/boot/ -type f -name "noyau-*" | cut -d '-' -f2))
-
 # On copie les modules réseau et les firmwares en lieu sûr :
-cp -ar ${LIVEOS}/lib/firmware ${LIVEOS}/conserver
-cp -ar ${LIVEOS}/lib/modules/${VERSION_NOYAU}/kernel ${LIVEOS}/conserver
+cp -ar ${LIVEOS}/lib/firmware ${LIVEOS}/conserver/
+cp -ar ${LIVEOS}/lib/modules ${LIVEOS}/conserver/
 
 # On se garde l'unique manuel de '0g' :
 cp ${LIVEOS}/usr/man/man8/0g.8.xz ${LIVEOS}/conserver/
@@ -239,9 +248,8 @@ ln -sf vim ${LIVEOS}/usr/bin/vi
 rm -f ${LIVEOS}/etc/vimrc
 
 # On ramène les modules et les firmware : 
-mkdir -p ${LIVEOS}/lib/modules/${VERSION_NOYAU}
 cp -ra ${LIVEOS}/conserver/firmware ${LIVEOS}/lib/
-cp -ra ${LIVEOS}/conserver/kernel ${LIVEOS}/lib/modules/${VERSION_NOYAU}/
+cp -ra ${LIVEOS}/conserver/modules ${LIVEOS}/lib/
 
 # On ramène le manuel de '0g' :
 mkdir -p ${LIVEOS}/usr/man/man8
@@ -270,7 +278,7 @@ touch ${LIVEOS}/root/.hushlogin
 chroot ${LIVEOS} ldconfig
 
 # On met à jour les dépendances des modules :
-chroot ${LIVEOS} depmod -a
+chroot ${LIVEOS} depmod -a $(ls -1 /lib/modules)
 
 # On déplace et on renomme le nouveau noyau sans sa version :
 rm -f ${NOYAU}
@@ -282,11 +290,11 @@ ln -sf ../usr/share/zoneinfo/Europe/Paris ${LIVEOS}/etc/localtime
 echo "Terminé."
 
 # Chauvin jusqu'à la locale :
-echo "LANG=fr_FR.UTF-8" >> ${LIVEOS}/etc/locale.conf
-echo "LC_ALL=fr_FR.UTF-8" >> ${LIVEOS}/etc/locale.conf
+echo "LANG=fr_FR.UTF-8" > ${LIVEOS}/etc/0linux/locale
+echo "LC_ALL=fr_FR.UTF-8" > ${LIVEOS}/etc/0linux/locale
 
 # Et chauvin jusqu'à la police :
-echo "FONT=lat-9w-16" > ${LIVEOS}/etc/vconsole.conf
+echo "FONT=lat-9w-16" > ${LIVEOS}/etc/0linux/police
 
 # On crée le lien pour 'init' que le noyau lancera dès la fin de l'amorçage :
 ln -sf sbin/init ${LIVEOS}/init
@@ -316,7 +324,7 @@ mv ${MEDIAROOT}/boot/isolinux/{syslinux.cfg,isolinux.cfg}
 iconv -f UTF-8 -t CP850 ${MEDIAROOT}/boot/isolinux/isolinux.cfg > ${MEDIAROOT}/boot/isolinux/isolinux.cfg-cp850
 mv ${MEDIAROOT}/boot/isolinux/isolinux.cfg{-cp850,}
 
-# On copie les modules binaires de 'syslinux' ainsi que leurs nouvelles dépendances (depuis Syslinux 5.00) :
+# On copie les modules binaires de 'syslinux' :
 cp -a /usr/share/syslinux/{*.c32,isolinux.bin} ${MEDIAROOT}/boot/isolinux/
 chmod +x ${MEDIAROOT}/boot/isolinux/*.c32
 echo "Terminé."
@@ -334,8 +342,11 @@ fi
 # On s'assure des permissions :
 chown -R root:root ${MEDIAROOT}/* 2> /dev/null || true
 
+# On extrait les variables d'identification du système, dont $VERSION :
+source ${LIVEOS}/etc/os-release
+
 # Le nom de l'image ISO finale :
-ISONAME=${ISONAME:-0linux-$(echo ${1} | sed 's@--@@')-${VERSION}-${PKGARCH}.iso}
+ISONAME=${ISONAME:-0linux-${VERSION}-${LIVEVERSION}-$(echo ${1} | sed 's@--@@')-${PKGARCH}.iso}
 
 echo "Création de l'image finale ${ISONAME}..."
 

@@ -14,7 +14,7 @@ source /etc/os-release
 export ANSI_COLOR="${ANSI_COLOR}"
 
 # On dit bonjour :
-echo -e "\033[${ANSI_COLOR}m${PRETTY_NAME}\033[0;0m vous souhaite la bienvenue !"
+echo -e "\033[${ANSI_COLOR}m${PRETTY_NAME}\033[0;0m ${VERSION} vous souhaite la bienvenue !"
 
 # '/dev' est censé être déjà monté en devtmpfs par le noyau.
 # On monte les systèmes de fichiers virtuels sur notre système en lecture seule

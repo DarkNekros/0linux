@@ -43,11 +43,6 @@ else
 		spackadd --root=${SETUPROOT} ${MEDIACHOISI}/base/${paq}.spack &>/dev/null 2>&1
 	done
 	
-	# Un « hack » pour traiter correctement la post-installation de 'base-systeme' : on n'avait
-	# pas 'coreutils' installé, la post-install n'était donc pas traitée et des '*.0nouveau'
-	# traînaient partout. On réinstalle 'base-systeme', c'est inoffensif :
-	spackadd -f --root=${SETUPROOT} ${MEDIACHOISI}/base/base-systeme-*.spack &>/dev/null 2>&1
-	
 	# On installe tout le reste de 'base/' 'opt/' et xorg/  sauf linux* et les paquets
 	# contenant des modules noyau, qu'on installera en dernier :
 	for subdir in base opt xorg; do
@@ -65,15 +60,22 @@ else
 			spackadd --root=${SETUPROOT} ${paquet} &>/dev/null 2>&1
 		done
 	done
+	
+	# Un « hack » pour traiter correctement la post-installation de 'base-systeme' : on n'avait
+	# pas 'coreutils' installé, la post-install n'était donc pas traitée et des '*.0nouveau'
+	# traînaient partout. On réinstalle 'base-systeme', c'est inoffensif :
+	spackadd -f --root=${SETUPROOT} ${MEDIACHOISI}/base/base-systeme-*.spack &>/dev/null 2>&1
 
 	# Linux (appel à 'make' en post-installation, donc de
 	# nombreuses dépendances) :
 	spackadd --about ${MEDIACHOISI}/base/linux*.spack
 	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/base/linux*.spack &>/dev/null 2>&1
 
-	# ndiswrapper (contient un module noyau) :
-	spackadd --about ${MEDIACHOISI}/base/ndiswrapper*.spack
-	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/base/ndiswrapper*.spack &>/dev/null 2>&1
+	# ndiswrapper (contient un module noyau et un appel à 'depmod'). "|| true" sert au cas
+	# où 'ndiswrapper' serait absent (ça arrive si l'hôte n'a pas la même version du noyau
+	# et que le paquet n'est donc pas encore compilé) :
+	spackadd --about ${MEDIACHOISI}/base/ndiswrapper*.spack || true
+	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/base/ndiswrapper*.spack &>/dev/null 2>&1 || true
 fi
 
 # C'est fini !
