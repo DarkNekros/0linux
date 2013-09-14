@@ -2,11 +2,11 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
-NAMESRC=${NAMESRC:-Terminal}
-VERSION=${VERSION:-0.4.8}
+NAMESRC=${NAMESRC:-xfce4-terminal}
+VERSION=${VERSION:-0.6.2}
 EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-terminal}
-WGET=${WGET:-http://archive.xfce.org/src/apps/terminal/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMETGZ=${NAMETGZ:-xfce4-terminal}
+WGET=${WGET:-http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DESC="Émulateur de terminal pour Xfce"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -25,7 +25,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/terminal \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/xfce4-terminal \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \

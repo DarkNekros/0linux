@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-tumbler}
-VERSION=${VERSION:-0.1.25}
+VERSION=${VERSION:-0.1.27}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-tumbler}
 WGET=${WGET:-http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}

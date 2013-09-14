@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-xfce4-settings}
-VERSION=${VERSION:-4.9.5}
+VERSION=${VERSION:-4.10.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-settings}
 WGET=${WGET:-http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
@@ -27,6 +27,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-libnotify \
 	--enable-pluggable-dialogs \
+	--enable-sound-settings \
 	--enable-xcursor \
 	--enable-xrandr \
 	--build=${PKGARCH}-0linux-linux-gnu

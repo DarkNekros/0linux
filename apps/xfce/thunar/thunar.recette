@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-Thunar}
-VERSION=${VERSION:-1.4.0}
+VERSION=${VERSION:-1.6.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-thunar}
 WGET=${WGET:-http://archive.xfce.org/src/xfce/thunar/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
