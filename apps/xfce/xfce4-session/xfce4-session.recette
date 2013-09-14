@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-xfce4-session}
-VERSION=${VERSION:-4.10.0}
+VERSION=${VERSION:-4.10.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-session}
 WGET=${WGET:-http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
@@ -14,11 +14,6 @@ DESC="Gestionnaire de sessions d'Xfce"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige le comprtement avec les 'glib' récent et pour permettre la gestion de 'systemd' :
-cat $CWD/xfce4-session.systemd.patch | patch -p1
-cat $CWD/xfce4-session.async-spawn.patch | patch -p1
-cat $CWD/xfce4-session.double-free-bug.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -31,15 +26,46 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-libgnome-keyring \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On crée un lien standard pour pouvoir utiliser 'startx' ou 'xdm':
+# On crée un fichier 'xinitrc' prenant ConsoleKit en charge pour pouvoir utiliser 'startx' ou 'xdm':
 mkdir -p ${PKG}/etc/X11/xinit
-ln -sf ../../../etc/xdg/xfce4/xinitrc ${PKG}/etc/X11/xinit/xinitrc.xfce
+cat > ${PKG}/etc/X11/xinit/xinitrc.xfce << "EOF"
+#!/bin/sh
+# Cf. https://bugzilla.xfce.org/show_bug.cgi?id=8841
+
+userresources=$HOME/.Xresources
+usermodmap=$HOME/.Xmodmap
+sysresources=/etc/X11/xinit/.Xresources
+sysmodmap=/etc/X11/xinit/.Xmodmap
+
+if [ -f $sysresources ]; then
+	/usr/bin/xrdb -merge $sysresources
+fi
+
+if [ -f $sysmodmap ]; then
+	/usr/bin/xmodmap $sysmodmap
+fi
+
+if [ -f $userresources ]; then
+	/usr/bin/xrdb -merge $userresources
+fi
+
+if [ -f $usermodmap ]; then
+	/usr/bin/xmodmap $usermodmap
+fi
+
+if [ -z "$DESKTOP_SESSION" -a -x /usr/bin/ck-launch-session ]; then
+	exec ck-launch-session dbus-launch --exit-with-session /usr/bin/startxfce4
+else
+	exec dbus-launch --exit-with-session /usr/bin/startxfce4
+fi
+
+EOF
+chmod +x ${PKG}/etc/X11/xinit/*
 
 installer_doc
 creer_post_installation

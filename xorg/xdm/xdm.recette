@@ -15,7 +15,10 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige le comportement de utmp et wtmp pour régler les problèmes avec 'who'
+# On adapte 'xdm' au nouveau comportement de crypt() à partir de glibc 2.17 :
+cat $CWD/xdm.crypt.patch | patch -p1
+
+# On corrige le comportement de utmp et wtmp pour régler les problèmes avec 'who' :
 echo "exec /usr/bin/sessreg -a -w \"/var/log/wtmp\" -u \"/run/utmp\" -x \"/usr/lib${LIBDIRSUFFIX}/X11/xdm/Xservers\" -l \$DISPLAY -h \"\" \$USER 2>/dev/null" >> config/GiveConsole
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
