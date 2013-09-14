@@ -297,7 +297,7 @@ echo "LC_ALL=fr_FR.UTF-8" > ${LIVEOS}/etc/0linux/locale
 echo "FONT=lat-9w-16" > ${LIVEOS}/etc/0linux/police
 
 # On crée la configuration du réseau (DHCP par défaut) :
-cat > /etc/0linux/reseau << "EOF"
+cat > ${LIVEOS}/etc/0linux/reseau << "EOF"
 # Paramètres du réseau.
 #
 # Chaque section contient les paramètres suivants pour l'interface ethX:
