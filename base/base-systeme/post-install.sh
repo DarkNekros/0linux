@@ -1,21 +1,3 @@
-# On crée traiter_nouvelle_config(), normalement déjà comprise dans la fonction 
-# creer_post_installation mais qu'on appelle pas pour 'base-systeme' :
-traiter_nouvelle_config() {
-	NEW="$1"
-	OLD="$(dirname $NEW)/$(basename $NEW .0nouveau)"
-	
-	if [ ! -r $OLD ]; then
-		mv $NEW $OLD
-	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
-		mv $NEW $OLD
-	fi
-}
-
-# On traite chaque fichier *".0nouveau" :
-for fichier_post in /etc/*.0nouveau; do
-	traiter_nouvelle_config ${fichier_post}
-done
-
 # Si l'on dispose de Busybox (il vaudrait mieux, soit dit en passant) :
 if [ -x /usr/bin/busybox ]; then
 	BUSYBOXBIN="/usr/bin/busybox"
