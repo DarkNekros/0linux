@@ -6,7 +6,7 @@ NAMESRC=${NAMESRC:-apr}
 VERSION=${VERSION:-1.4.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-apr}
-WGET=${WGET:-http://apache.cict.fr/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://mirrors.ircam.fr/pub/apache/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques réseau « Apache Portable Runtime »"
 
 . /usr/share/0outils/fonctions_paquets.sh
