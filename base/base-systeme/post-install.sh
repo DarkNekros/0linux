@@ -11,8 +11,6 @@ traiter_nouvelle_config() {
 	fi
 }
 
-EOF
-
 # On traite chaque fichier *".0nouveau" :
 for fichier_post in /etc/*.0nouveau; do
 	traiter_nouvelle_config ${fichier_post}
