@@ -131,6 +131,11 @@ rtmpdump-*; do
 	spackadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.spack
 done
 
+# On nettoie tous les fichiers '*.0nouveau' :
+for f in $(find ${LIVEOS}/etc -type f -name "*.0nouveau"); do
+	mv -v ${f}{.0nouveau,}
+done
+
 # On copie les bibliothèques requises en dépendances pour les isoler :
 echo "Nettoyage en cours... "
 mkdir -p ${LIVEOS}/conserver/usr/lib${LIBDIRSUFFIX}
