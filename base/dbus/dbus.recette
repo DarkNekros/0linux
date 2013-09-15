@@ -47,7 +47,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	fakeroot make install DESTDIR=${PKG}
 	
 	# On nettoie le superflu :
-	rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/{dbus-1.0,systemd}
+	rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la

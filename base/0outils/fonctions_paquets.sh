@@ -296,7 +296,7 @@ traiter_nouvelle_config() {
 
 EOF
 
-	# On ajoute en post-installation tous les fichiers '*.0nouveau' qu'on trouve pour les passer à config() :
+	# On ajoute en post-installation tous les fichiers '*.0nouveau' qu'on trouve pour les passer à traiter_nouvelle_config() :
 	for fichier_post in $(find ${PKG} -type f -name "*.0nouveau"); do
 		echo "traiter_nouvelle_config $(echo ${fichier_post} | sed "s@${PKG}/@@")" >> ${PKG}/post-install.sh
 	done
