@@ -295,7 +295,7 @@ touch ${LIVEOS}/root/.hushlogin
 chroot ${LIVEOS} ldconfig
 
 # On met à jour les dépendances des modules :
-chroot ${LIVEOS} depmod -a $(ls -1 /lib/modules)
+chroot ${LIVEOS} depmod -a $(ls -1 ${LIVEOS}/lib/modules)
 
 # On déplace et on renomme le nouveau noyau sans sa version :
 rm -f ${NOYAU}
