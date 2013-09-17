@@ -115,7 +115,7 @@ spackadd --quiet --root=${LIVEOS} ${PAQUETS}/base/ndiswrapper-*.spack
 
 # xorg :
 echo "Installation du dépôt xorg... "
-spackadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{freetype*,lib*}.spack
+spackadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{fontconfig*,freetype*,lib*}.spack
 
 # opt :
 echo "Installation du dépôt opt... "
@@ -125,9 +125,12 @@ lesstif* \
 libidn-* \
 libpng-* \
 libssh2-* \
+libpcap-* \
+lzo-* \
 openldap-* \
 popt-* \
-rtmpdump-*; do
+rtmpdump-* \
+sqlite-*; do
 	spackadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.spack
 done
 
@@ -149,6 +152,7 @@ lib*curse*.so* \
 libdb-*.so* \
 libdbus-*.so* \
 libexpat.so* \
+libfontconfig*.so* \
 libfreetype.so* \
 libgcc_s.so* \
 libgcj.so* \
@@ -164,6 +168,8 @@ libgthread-*.so* \
 libidn.so* \
 liblber*.so* \
 libldap*.so* \
+liblzo*.so* \
+libpcap*.so* \
 libpcre.so* \
 libperl.so* \
 libpopt.so* \
@@ -173,7 +179,8 @@ libmpc.so* \
 libmpfr.so* \
 librtmp-*.so* \
 libnettle*.so* \
-libsasl* \
+libsasl2*.so* \
+libsqlite*.so* \
 libssh2.so* \
 libstdc++.so* \
 libtasn1.so* \
@@ -205,15 +212,19 @@ cyrus-sasl-* \
 dialog-* \
 freetype-* \
 gcc-* \
+gettext-* \
 lesstif-* \
 libssh2-* \
+lzo-* \
 openldap-client-* \
 perl-* \
 popt-* \
 python-* \
 qrencode-* \
 rtmtpdump* \
-sgml-common-*; do
+sgml-common-* \
+sqlite-* \
+vim-*; do
 	chroot ${LIVEOS} /usr/sbin/spackrm /var/log/paquets/${paq}
 done
 
