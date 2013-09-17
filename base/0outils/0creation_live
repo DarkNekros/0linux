@@ -121,6 +121,7 @@ spackadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{fontconfig*,freetype*,lib*}.s
 echo "Installation du dépôt opt... "
 for paq in \
 bc-* \
+cyrus-sasl-* \
 lesstif* \
 libidn-* \
 libpng-* \
@@ -179,7 +180,7 @@ libmpc.so* \
 libmpfr.so* \
 librtmp-*.so* \
 libnettle*.so* \
-libsasl2*.so* \
+libsasl*.so* \
 libsqlite*.so* \
 libssh2.so* \
 libstdc++.so* \
