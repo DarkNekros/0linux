@@ -31,6 +31,11 @@ if [ -x /etc/rc.d/rc.police ]; then
 	. /etc/rc.d/rc.police start
 fi
 
+# Chargement de la locale :
+if [ -x /etc/rc.d/rc.locale ]; then
+	. /etc/rc.d/rc.locale start
+fi
+
 # On lance Udev :
 if [ -x /etc/rc.d/rc.udev ]; then
 	. /etc/rc.d/rc.udev start

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# On charge la configuration :
+if [ -r /etc/0linux/locale ]; then
+	source /etc/0linux/locale
+else
+	LANG="POSIX"
+	LC_ALL="POSIX"
+fi
+
+locale_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la locale : ${LANG}"
+	export LANG=${LANG}
+	export LC_ALL=${LC_ALL}
+}
+
+locale_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Vidage de la locale..."
+	unset LANG
+	unset LC_ALL
+}
+
+case "$1" in
+	'start')
+		locale_start
+	;;
+	
+	'stop')
+		locale_stop
+	;;
+	
+	'restart')
+		locale_stop
+		sleep 1
+		locale_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.locale
