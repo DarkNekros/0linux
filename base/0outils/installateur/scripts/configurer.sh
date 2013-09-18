@@ -3,23 +3,25 @@
 # On nettoie :
 unset DISPOCLAVIER
 
+# L'emplacement du fichier de configuration :
+KEYBOARDCONFIGFILE=/etc/0linux/clavier
+
 # On définit le clavier à charger à chaque démarrage :
 DISPOCLAVIER="$(cat $TMP/choix_clavier)"
 if [ ! "${DISPOCLAVIER}" = "" ]; then
-	if [ ! -r ${SETUPROOT}/etc/vconsole.conf ]; then
-		echo "# Ce fichier détermine la police à utiliser en mode console, parmi celles" >> /etc/vconsole.conf
-		echo "# disponibles dans '/usr/share/kbd/consolefonts', ainsi que la disposition" >> /etc/vconsole.conf
-		echo "des touches du clavier en mode console, parmi celles disponibles dans"
-		echo "'/usr/share/kbd/keymaps/i386'."
-		echo "FONT=" >> ${SETUPROOT}/etc/vconsole.conf
-		echo "KEYMAP=" >> ${SETUPROOT}/etc/vconsole.conf
+	# On crée le fichier de configuration au cas où :
+	if [ ! -r ${KEYBOARDCONFIGFILE} ]; then
+		echo "# Ce fichier détermine la disposition des touches du clavier en" >> ${KEYBOARDCONFIGFILE}
+		echo "# mode console parmi celles disponibles dans le répertoire" >> ${KEYBOARDCONFIGFILE}
+		echo "# '/usr/share/kbd/keymaps/i386'." >> ${KEYBOARDCONFIGFILE}
+		echo "CLAVIER=" >> ${KEYBOARDCONFIGFILE}
 	fi
 	
 	# On le met à jour selon ce qu'on y trouve :
-	if [ ! "$(grep -E '^KEYMAP=' /etc/vconsole.conf)" = "" ]; then
-		sed -i -e "s@^KEYMAP=.*$@KEYMAP=${DISPOCLAVIER}@" ${SETUPROOT}/etc/vconsole.conf
+	if [ ! "$(grep -E '^CLAVIER=' ${KEYBOARDCONFIGFILE})" = "" ]; then
+		sed -i -e "s@^CLAVIER=.*@CLAVIER=${CHOIXCLAVIER}@" ${KEYBOARDCONFIGFILE}
 	else
-		echo "KEYMAP=${DISPOCLAVIER}" >> ${SETUPROOT}/etc/vconsole.conf
+		echo "CLAVIER=${CHOIXCLAVIER}" >> ${KEYBOARDCONFIGFILE}
 	fi
 fi
 
@@ -45,20 +47,6 @@ chroot ${SETUPROOT} 0police
 # Paramétrage du réseau :
 chroot ${SETUPROOT} 0reseau
 
-# Activation des services systemd réseau et système :
-chroot ${SETUPROOT} systemctl enable acpid          >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable avahi-daemon   >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable avahi-dnsconfd >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable cups           >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable dhcpcd         >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable getty@.service >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable gpm            >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable sshd           >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable syslog-ng      >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable upower         >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable udisks         >/dev/null 2>&1
-chroot ${SETUPROOT} systemctl enable wicd           >/dev/null 2>&1
-
 # Configuration du chargeur d'amorçage :
 . bootconfig.sh 
 
@@ -71,4 +59,4 @@ chroot ${SETUPROOT} 0bureau
 # On crée un nouvel utilisateur :
 chroot ${SETUPROOT} 0nouvel_utilisateur
 
-# C'est fini !
+# C'est fini.

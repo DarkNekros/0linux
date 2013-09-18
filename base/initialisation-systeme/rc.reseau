@@ -96,7 +96,7 @@ case "$1" in
 	'restart')
 		stopper_reseau
 		sleep 1
-		relancer_reseau
+		lancer_reseau
 	;;
 	*)
 		echo "Utilisation : $0 start|stop|restart"
