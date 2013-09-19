@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-flashplayer}
-VERSION=${VERSION:-11.2.202.297}
+VERSION=${VERSION:-11.2.202.310}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-flashplayer}
 . /usr/share/0outils/fonctions_paquets.sh
