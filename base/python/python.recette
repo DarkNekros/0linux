@@ -61,17 +61,11 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	mv ${PKG}/usr/bin/python3{,-32}
 	mv ${PKG}/usr/bin/python3.3{,-32}
 	mv ${PKG}/usr/bin/python3.3m{,-32}
-	mv ${PKG}/usr/bin/python3-config{,-32}
-	mv ${PKG}/usr/bin/python3.3-config{,-32}
-	mv ${PKG}/usr/bin/python3.3m-config{,-32}
 	mv ${PKG}/usr/include/python3.3m/pyconfig{,-32}.h
 	
 	# On relie 'python3' à sa version :
-	ln -sf python3.3-32 ${PKG}/usr/bin/python3-32
-	
-	# On lie ensemble les binaires 'python*-config' :
-	ln -sf python3.3m-config-32 ${PKG}/usr/bin/python3.3-config-32
-	ln -sf python3.3-config-32  ${PKG}/usr/bin/python3-config-32
+	ln -sf python3.3m-64 ${PKG}/usr/bin/python3.3-32
+	ln -sf python3.3-64 ${PKG}/usr/bin/python3-32
 	
 	# On supprime le binaire générique 'python' (on utilise 'python2' par défaut) :
 	rm -f ${PKG}/usr/bin/python
@@ -119,17 +113,11 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	mv ${PKG}/usr/bin/python3{,-64}
 	mv ${PKG}/usr/bin/python3.3{,-64}
 	mv ${PKG}/usr/bin/python3.3m{,-64}
-	mv ${PKG}/usr/bin/python3-config{,-64}
-	mv ${PKG}/usr/bin/python3.3-config{,-64}
-	mv ${PKG}/usr/bin/python3.3m-config{,-64}
 	mv ${PKG}/usr/include/python3.3m/pyconfig{,-64}.h
 	
 	# On relie 'python3' à sa version :
+	ln -sf python3.3m-64 ${PKG}/usr/bin/python3.3-64
 	ln -sf python3.3-64 ${PKG}/usr/bin/python3-64
-	
-	# On lie ensemble les binaires 'python*-config' :
-	ln -sf python3.3m-config-64 ${PKG}/usr/bin/python3.3-config-64
-	ln -sf python3.3-config-64  ${PKG}/usr/bin/python3-config-64
 	
 	# On supprime le binaire générique 'python' (on utilise 'python2' par défaut) :
 	rm -f ${PKG}/usr/bin/python
@@ -138,8 +126,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3.3
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3.3m
-	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python3.3m-config
-	
+		
 	# On crée un faux entête pour s'adapter au multilib :
 	cat > ${PKG}/usr/include/python3.3m/pyconfig.h << "EOF"
 #ifndef __STUB__PY3CONFIG_H__
@@ -216,10 +203,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-32' :
 	ln -sf python2.7-32 ${PKG}/usr/bin/python2-32
 	ln -sf python2-32   ${PKG}/usr/bin/python-32
-	
-	# On lie ensemble les binaires 'python*-config' :
-	ln -sf python2.7-config-32 ${PKG}/usr/bin/python2-config-32
-	ln -sf python2-config-32  ${PKG}/usr/bin/python-config-32
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
@@ -276,17 +259,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	ln -sf python2.7-64 ${PKG}/usr/bin/python2-64
 	ln -sf python2-64   ${PKG}/usr/bin/python-64
 	
-	# On lie ensemble les binaires 'python*-config' :
-	ln -sf python2.7-config-64 ${PKG}/usr/bin/python2-config-64
-	ln -sf python2-config-64  ${PKG}/usr/bin/python-config-64
-
 	# On lie des binaires génériques au programme enveloppe :
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2.7
-	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python-config
-	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2-config
-	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2.7-config
 	
 	# On crée un faux entête pour s'adapter au multilib :
 	cat > ${PKG}/usr/include/python2.7/pyconfig.h << "EOF"

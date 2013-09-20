@@ -25,8 +25,8 @@ cat $CWD/nl.euro.diff | patch -p1
 # On corrige une faute de frappe et on se demande comment ils font pour compiler :
 sed -i 's@fichero de tipos %2$dx%3$d de %1$d caracteres@fichero de tipos %dx%d de %d caracteres@' po/es.po
 
-# On génère les scripts standard, dont le 'configure' :
-autoreconf
+# On régénère le système de construction :
+autoreconf -vif
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -88,7 +88,7 @@ cat > ${PKG}/etc/rc.d/rc.police << "EOF"
 
 # On charge la configuration :
 if [ -r /etc/0linux/police ]; then
-	source /etc/0linux/police
+	. /etc/0linux/police
 else
 	POLICE=""
 fi
@@ -96,7 +96,7 @@ fi
 police_start() {
 	if [ ! "${POLICE}" = "" ]; then
 		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la police : ${POLICE}"
-		setfont ${POLICE}.psfu
+		setfont ${POLICE}
 	else
 		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Chargement de la police par défaut : lat9w-16..."
 		setfont lat9w-16.psfu
@@ -137,7 +137,7 @@ cat > ${PKG}/etc/rc.d/rc.clavier << "EOF"
 
 # On charge la configuration :
 if [ -r /etc/0linux/clavier ]; then
-	source /etc/0linux/clavier
+	. /etc/0linux/clavier
 else
 	CLAVIER=""
 fi

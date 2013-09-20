@@ -2,7 +2,7 @@
 
 # On charge la configuration :
 if [ -r /etc/0linux/locale ]; then
-	source /etc/0linux/locale
+	. /etc/0linux/locale
 else
 	LANG="POSIX"
 	LC_ALL="POSIX"
@@ -41,5 +41,3 @@ case "$1" in
 	;;
 esac
 
-EOF
-chmod +x ${PKG}/etc/rc.d/rc.locale

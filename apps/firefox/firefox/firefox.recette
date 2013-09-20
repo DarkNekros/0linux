@@ -3,16 +3,19 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-23.0.1}
+VERSION=${VERSION:-24.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-firefox}
 . /usr/share/0outils/fonctions_paquets.sh
 cflags
-WGET=${WGET:-http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.$EXT}
+WGET=(http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/source/$NAMESRC-${VERSION}.source.${EXT}
+      http://ftp.mozilla.org/pub/firefox/releases/${VERSION}/linux-$ARCH/xpi/fr.xpi
+     )
 DESC="Navigateur Web de la fondation Mozilla"
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-${VERSION}.source.${EXT}
+cflags
 
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/bin
@@ -20,26 +23,132 @@ mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/chrome/icons/default
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/{pref,profile}
 mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 
-# On copie le tout où il faut : 
-cp -ar * ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+# Ces drapeaux supplémentaires permettent d'éviter des artefacts visuels sous GTK+ :
+cat >> layout/build/Makefile.in << "EOF"
+ifdef MOZ_ENABLE_CANVAS
+EXTRA_DSO_LDOPTS += $(XLDFLAGS) -lX11 -lXrender
+endif
 
-# On crée le répertoire général pour les plugins et on le lie :
+EOF
+
+# On nettoie l'environnement (Mozilla, pitié, faites quelque chose avec votre système de compilation):
+unset \
+	DBUS_SESSION_BUS_ADDRESS \
+	MAKEFLAGS \
+	ORBIT_SOCKETDIR \
+	SESSION_MANAGER \
+	XAUTHORITY \
+	XDG_SESSION_COOKIE 
+
+# Compilation avec des CFLAGS minimalistes et l'optimisation par profilage avec une session X : 
+export \
+	BUILD_OFFICIAL="1" \
+	CFLAGS="-pipe" \
+	CXXFLAGS="-pipe" \
+	DISPLAY=:99 \
+	MOZ_MAKE_FLAGS="${JOBS}" \
+	MOZ_PGO=1 \
+	MOZ_PHOENIX="1" \
+	MOZILLA_OFFICIAL="1"
+
+# On doit compiler dans 'obj' :
+mkdir obj
+
+# On crée le '.mozconfig' avec les lignes ad-hoc dont le répertoire 'obj' et 
+# on ajoute toutes nos options (c'est péniiible) :
+cat > .mozconfig << EOF
+. \$topsrcdir/browser/config/mozconfig
+
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj
+mk_add_options PROFILE_GEN_SCRIPT='EXTRA_TEST_ARGS=10 \$(MAKE) -C \$(MOZ_OBJDIR) pgo-profile-run'
+
+ac_add_options --prefix=/usr
+ac_add_options --libdir=/usr/lib${LIBDIRSUFFIX}
+ac_add_options --disable-accessibility
+ac_add_options --disable-composer
+ac_add_options --disable-crashreporter
+ac_add_options --disable-debug
+ac_add_options --disable-installer
+ac_add_options --disable-mailnews
+ac_add_options --disable-pedantic
+ac_add_options --disable-profilesharing
+ac_add_options --disable-tests
+ac_add_options --disable-updater
+ac_add_options --enable-application=browser
+ac_add_options --enable-canvas
+ac_add_options --enable-canvas3d
+ac_add_options --enable-cpp-rtti
+ac_add_options --enable-crypto
+ac_add_options --enable-default-toolkit=cairo-gtk2
+ac_add_options --enable-faststart
+ac_add_options --enable-gconf
+ac_add_options --enable-gio
+ac_add_options --enable-libnotify
+ac_add_options --enable-official-branding
+ac_add_options --enable-optimize
+ac_add_options --enable-places
+ac_add_options --enable-printing
+ac_add_options --enable-reorder
+ac_add_options --enable-safe-browsing
+ac_add_options --enable-single-profile
+ac_add_options --enable-startup-notification
+ac_add_options --enable-smil
+ac_add_options --enable-strip
+ac_add_options --enable-svg
+ac_add_options --enable-system-cairo
+ac_add_options --enable-webm
+ac_add_options --enable-xft
+ac_add_options --enable-xinerama
+ac_add_options --with-default-mozilla-five-home=/usr/lib${LIBDIRSUFFIX}/${NAMESRC}-${VERSION}
+ac_add_options --with-system-bz2
+ac_add_options --with-system-zlib
+ac_add_options --build=${PKGARCH}-0-linux-gnu
+ac_add_options --host=${PKGARCH}-0-linux-gnu
+
+EOF
+
+# Ce répertoire vient à manquer quand la compilation est parallélisée :
+mkdir js/src/.deps
+
+# On lance Xvfb afin de disposer d'une session X pour les scripts de profilage...
+Xvfb -nolisten tcp -extension GLX -screen 0 1280x1024x24 $DISPLAY &
+dbus-launch --exit-with-session make -f client.mk profiledbuild
+kill $! || true
+
+fakeroot make -f client.mk install DESTDIR=${PKG}
+
+# On installe les fichiers de localisation française :
+cd ${PKG}/usr/lib${LIBDIRSUFFIX}/firefox-${VERSION}
+bsdtar xf $CWD/fr.xpi
+cd -
+
+# On supprime ça :
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/firefox-devel-$RELEASEVER
+
+# Et ça :
+rm -rf ${PKG}/usr/include
+
+# On crée le répertoire général pour les plugins :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
-ln -sf ../../../usr/lib${LIBDIRSUFFIX}/mozilla/plugins ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/plugins
 
 # On place nos préférences :
-cp -a $CWD/vendor.js ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/pref/
+cp -a $CWD/vendor.js ${PKG}/usr/lib${LIBDIRSUFFIX}/firefox-${VERSION}/defaults/pref/
 
-# On copie le logo et le fichier pour le bureau :
-cp -a $CWD/mozilla-firefox.desktop ${PKG}/usr/share/applications
+# On copie le raccourci pour le bureau :
 cp -a $CWD/firefox.png ${PKG}/usr/share/pixmaps
 
-# On ajoute le fichier corrigeant la CSS pour les thèmes GTK sombres et les types MIME pour Thunderbird :
+# On ajoute les différents logos et on lie les icônes par défaut :
+for i in 16 22 24 32 48 256; do
+	install -Dm644 -D browser/branding/official/default${i}.png ${PKG}/usr/share/icons/hicolor/${i}x${i}/apps/firefox.png
+done
+
+ln -sf /usr/share/icons/hicolor/256x256/apps/firefox.png ${PKG}/usr/share/pixmaps/
+install -Dm644 browser/branding/official/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/firefox-${VERSION}/icons/
+install -Dm644 browser/branding/official/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/firefox-${VERSION}/chrome/icons/default/
+
+# On ajoute le fichier corrigeant la CSS pour les thÃ¨mes GTK sombres et les types MIME pour Thunderbird :
 cp -a $CWD/userChrome.css ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/profile/
 cp -a $CWD/mimeTypes.rdf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/profile/
-
-# On lie le binaire :
-ln -sf ../../usr/lib${LIBDIRSUFFIX}/${NAMESRC}/firefox ${PKG}/usr/bin/
 
 installer_doc
 creer_post_installation
