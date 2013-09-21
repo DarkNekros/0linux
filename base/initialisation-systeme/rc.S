@@ -28,17 +28,17 @@ modprobe loop 2>/dev/null
 
 # Chargement de la police console en premier lieu :
 if [ -x /etc/rc.d/rc.police ]; then
-	. /etc/rc.d/rc.police start
+	/etc/rc.d/rc.police start
 fi
 
 # Chargement de la locale :
 if [ -x /etc/rc.d/rc.locale ]; then
-	. /etc/rc.d/rc.locale start
+	/etc/rc.d/rc.locale start
 fi
 
 # On lance Udev :
 if [ -x /etc/rc.d/rc.udev ]; then
-	. /etc/rc.d/rc.udev start
+	/etc/rc.d/rc.udev start
 fi
 
 # On active la partition d'échange (« swap ») :
@@ -62,7 +62,7 @@ fi
 
 # Chargement de la disposition des touches du clavier :
 if [ -x /etc/rc.d/rc.clavier ]; then
-	. /etc/rc.d/rc.clavier start
+	/etc/rc.d/rc.clavier start
 fi
 
 # On voit si une vérification forcée n'a pas eu lieu la dernière fois :
@@ -156,7 +156,7 @@ swapon -a
 
 # On charge les modules trouvés dans le fichier '/etc/rc.d/rc.modules' :
 if [ -x /etc/rc.d/rc.modules ]; then
-	. /etc/rc.d/rc.modules
+	/etc/rc.d/rc.modules
 fi
 
 # On paramètre le noyau si le fichier existe :
@@ -166,7 +166,7 @@ fi
 
 # On démarre FUSE :
 if [ -x /etc/rc.d/rc.fuse ]; then
-	. /etc/rc.d/rc.fuse start
+	/etc/rc.d/rc.fuse start
 fi
 
 # On vérifie tous les systèmes de fichiers hors racine :

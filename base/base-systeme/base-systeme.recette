@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-base-systeme}
-VERSION=${VERSION:-3.8}
+VERSION=${VERSION:-3.9}
 NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 
@@ -92,6 +92,7 @@ motd \
 networks \
 nsswitch.conf \
 printcap \
+profile \
 securetty \
 services \
 shells \

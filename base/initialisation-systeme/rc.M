@@ -19,12 +19,12 @@ dmesg -s 262144 >> /var/log/dmesg
 
 # Lancement de syslog :
 if [ -x /etc/rc.d/rc.syslog -a -x /usr/sbin/syslogd -a -d /var/log ]; then
-	. /etc/rc.d/rc.syslog start
+	/etc/rc.d/rc.syslog start
 fi
 
 # Lancement du réseau :
 if [ -x /etc/rc.d/rc.reseau ]; then
-	. /etc/rc.d/rc.reseau start
+	/etc/rc.d/rc.reseau start
 fi
 
 # Montage du reste des systèmes de fichiers :
@@ -39,22 +39,22 @@ chmod 1777 /tmp /var/lock /var/tmp
 
 # Lancement de SSH :
 if [ -x /etc/rc.d/rc.ntp ]; then
-	. /etc/rc.d/rc.sshd start
+	/etc/rc.d/rc.sshd start
 fi
 
 # Lancement de iptables (règles pour pare-feu rudimentaire) :
 if [ -x /etc/rc.d/rc.iptables ]; then
-	. /etc/rc.d/rc.iptables start
+	/etc/rc.d/rc.iptables start
 fi
 
 # Lancement de NTP :
 if [ -x /etc/rc.d/rc.ntp ]; then
-	. /etc/rc.d/rc.ntp start
+	/etc/rc.d/rc.ntp start
 fi
 
 # Lancement de D-Bus :
 if [ -x /etc/rc.d/rc.messagebus ]; then
-	. /etc/rc.d/rc.messagebus start
+	/etc/rc.d/rc.messagebus start
 fi
 
 # Lancement des programmes pour GDK-Pixbuf :
@@ -62,32 +62,32 @@ gdk-pixbuf-query-loaders --update-cache
 
 # Lancement des programmes pour les modules GTK+ :
 if [ -x /etc/rc.d/rc.gtk+ ]; then
-	. /etc/rc.d/rc.gtk+ start
+	/etc/rc.d/rc.gtk+ start
 fi
 
 # Lancement des programmes pour les modules Pango :
 if [ -x /etc/rc.d/rc.pango ]; then
-	. /etc/rc.d/rc.pango start
+	/etc/rc.d/rc.pango start
 fi
 
 # Lancement de ConsoleKit :
 if [ -x /etc/rc.d/rc.consolekit ]; then
-	. /etc/rc.d/rc.consolekit start
+	/etc/rc.d/rc.consolekit start
 fi
 
 # Restauration de ALSA :
 if [ -x /etc/rc.d/rc.alsa ]; then
-	. /etc/rc.d/rc.alsa start
+	/etc/rc.d/rc.alsa start
 fi
 
 # Lancement de Avahi :
 if [ -x /etc/rc.d/rc.avahi ]; then
-	. /etc/rc.d/rc.avahi start
+	/etc/rc.d/rc.avahi start
 fi
 
 # Lancement du démon SASL :
 if [ -x /etc/rc.d/rc.sasl ]; then
-  . /etc/rc.d/rc.sasl start
+	/etc/rc.d/rc.sasl start
 fi
 
 # Lancement de wicd :
@@ -102,51 +102,51 @@ fi
 
 # Lancement de MySQL :
 if [ -x /etc/rc.d/rc.mysqld ]; then
-	. /etc/rc.d/rc.mysqld start
+	/etc/rc.d/rc.mysqld start
 fi
 
 # Lancement d'Apache :
 if [ -x /etc/rc.d/rc.httpd ]; then
-	. /etc/rc.d/rc.httpd start
+	/etc/rc.d/rc.httpd start
 fi
 
 # Lancement de GPSd :
 if [ -x /etc/rc.d/rc.gpsd ]; then
-	. /etc/rc.d/rc.gpsd start
+	/etc/rc.d/rc.gpsd start
 fi
 
 # On lance RPC Bind :
 if [ -x /etc/rc.d/rc.rpcbind ]; then
-	. /etc/rc.d/rc.rpcbind start
+	/etc/rc.d/rc.rpcbind start
 fi
 # On lance NFS :
 if [ -x /etc/rc.d/rc.nfsd ]; then
-	. /etc/rc.d/rc.nfsd start
+	/etc/rc.d/rc.nfsd start
 fi
 
 # On lance « l'IP forward » :
 if [ -x /etc/rc.d/rc.ip_forward ]; then
-	. /etc/rc.d/rc.ip_forward start
+	/etc/rc.d/rc.ip_forward start
 fi
 
 # Lancement de Samba :
 if [ -x /etc/rc.d/rc.samba ]; then
-	. /etc/rc.d/rc.samba start
+	/etc/rc.d/rc.samba start
 fi
 
 # Lancement du serveur de pointage GPM :
 if [ -x /etc/rc.d/rc.gpm ]; then
-	. /etc/rc.d/rc.gpm start
+	/etc/rc.d/rc.gpm start
 fi
 
 # Lancement de CUPS :
 if [ -x /etc/rc.d/rc.cups ]; then
-	. /etc/rc.d/rc.cups start
+	/etc/rc.d/rc.cups start
 fi
 
 # Lancement du script « local » personnel :
 if [ -x /etc/rc.d/rc.local ]; then
-	. /etc/rc.d/rc.local
+	/etc/rc.d/rc.local
 fi
 
 # C'est fini !

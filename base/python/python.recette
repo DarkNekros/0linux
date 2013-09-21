@@ -195,9 +195,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	mv ${PKG}/usr/bin/python{,-32}
 	mv ${PKG}/usr/bin/python2{,-32}
 	mv ${PKG}/usr/bin/python2.7{,-32}
-	mv ${PKG}/usr/bin/python-config{,-32}
-	mv ${PKG}/usr/bin/python2-config{,-32}
-	mv ${PKG}/usr/bin/python2.7-config{,-32}
 	mv ${PKG}/usr/include/python2.7/pyconfig{,-32}.h
 	
 	# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-32' :
@@ -250,9 +247,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	mv ${PKG}/usr/bin/python{,-64}
 	mv ${PKG}/usr/bin/python2{,-64}
 	mv ${PKG}/usr/bin/python2.7{,-64}
-	mv ${PKG}/usr/bin/python-config{,-64}
-	mv ${PKG}/usr/bin/python2-config{,-64}
-	mv ${PKG}/usr/bin/python2.7-config{,-64}
 	mv ${PKG}/usr/include/python2.7/pyconfig{,-64}.h
 
 	# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-64' :

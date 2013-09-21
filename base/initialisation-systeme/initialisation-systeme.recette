@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 PKGCAT=base
-VERSION=${VERSION:-0.7}
+VERSION=${VERSION:-0.8}
 NAMETGZ=${NAMETGZ:-initialisation-systeme}
 DESC="Fichiers d'initialisation système et services de 0Linux"
 
@@ -14,13 +14,10 @@ cflags
 mkdir -p ${PKG}/etc/rc.d
 
 # On installe les scripts d'initialisation de 0linux :
-for script in rc.{4,6,K,M,S,locale,reseau}; do
+for script in rc.{4,6,K,M,S,reseau}; do
 	cp -a $CWD/${script} ${PKG}/etc/rc.d/
 	chmod 755 ${PKG}/etc/rc.d/${script}
 done
-
-# On place la configuration du réseau sans écraser quoi que ce soit :
-cp -a $CWD/reseau.conf ${PKG}/etc/reseau.conf.0nouveau
 
 # On place les chargements des modules du réseau sans écraser quoi que ce soit :
 cp -a $CWD/rc.modules ${PKG}/etc/rc.d/rc.modules.0nouveau

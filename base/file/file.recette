@@ -15,12 +15,6 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On ajoute les fichiers « magiques » de Slackware aux types connus et tant
-# pis pour la francophonie.
-cat $CWD/file.zisofs.magic >> magic/Magdir/compress
-cat $CWD/file.xz.magic >> magic/Magdir/compress
-cat $CWD/file.crdaregbin.magic >> magic/Magdir/crdaregbin
-
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -31,21 +25,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-fsect-man5 \
+	--datadir=/usr/share/file \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-# On conserve le comportement de Slackware, à savoir de multiples fichiers
-# texte permettant d'ajouter de la « magie » plus
-# tard, plutôt qu'un gros fichier moche et moins souple :
-rm -rf ${PKG}/usr/share/misc
-mkdir -p ${PKG}/usr/share/file/magic
-cp -a magic/Magdir/* ${PKG}/usr/share/file/magic
-
-# On conserve « misc », bien qu'on s'en passerait :
-ln -sf file ${PKG}/usr/share/misc
 
 installer_doc
 creer_post_installation

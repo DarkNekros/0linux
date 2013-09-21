@@ -112,6 +112,8 @@ mkdir js/src/.deps
 
 # On lance Xvfb afin de disposer d'une session X pour les scripts de profilage...
 Xvfb -nolisten tcp -extension GLX -screen 0 1280x1024x24 $DISPLAY &
+
+# Compilation :
 dbus-launch --exit-with-session make -f client.mk profiledbuild
 kill $! || true
 

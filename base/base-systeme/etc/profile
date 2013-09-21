@@ -8,6 +8,11 @@ export HOSTNAME="`cat /etc/HOSTNAME`"
 export LESSOPEN="|lesspipe.sh %s"
 export LESS="-M"
 
+# Y compris la « locale », via les variables dans la configuration de 0linux :
+. /etc/0linux/locale
+export LANG="${LANG}"
+export LC_ALL="${LC_ALL}"
+
 # Si l'utilisateur n'a pas de fichier '.inputrc', on utilise celui dans /etc.
 if [ ! -r "$HOME/.inputrc" ]; then
 	export INPUTRC=/etc/inputrc

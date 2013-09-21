@@ -2,11 +2,7 @@
 #
 # /etc/rc.d/rc.local : Initialisation locale du système.
 #
-# Placez ici les commandes à lancer à la fin de l'amorçage.
-# Pour exécuter des commandes à l'arrêt ou au redémarragede la machine,
+# Placez ici vos commandes personnalisées à lancer à la fin de l'amorçage.
+# Pour exécuter des commandes à l'arrêt ou au redémarrage de la machine,
 # vous pouvez créer un fichier /etc/rc.d/rc.local_shutdown et y placer
-# les commandes désirées.
-
-# On crée un journal en même temps que l'affichage du tty sous '/var/log/' :
-exec >  >(tee -a /var/log/$(basename $0).log)
-exec 2> >(tee -a /var/log/$(basename $0).log >&2)
+# les commandes désirées (mais n'oubliez pas de le rendre exécutable).

@@ -8,17 +8,17 @@ PATH=/sbin:/bin:/usr/bin:/usr/sbin
 
 # Chargement de la disposition des touches du clavier :
 if [ -x /etc/rc.d/rc.clavier ]; then
-	. /etc/rc.d/rc.clavier start
+	/etc/rc.d/rc.clavier start
 fi
 
 # Chargement de la police :
 if [ -x /etc/rc.d/rc.police ]; then
-	. /etc/rc.d/rc.police start
+	/etc/rc.d/rc.police start
 fi
 
 # Lancement des scripts locaux d'arrêt :
 if [ -x /etc/rc.d/rc.local_shutdown ]; then
-	. /etc/rc.d/rc.local_shutdown
+	/etc/rc.d/rc.local_shutdown
 fi
 
 # Démontage des systèmes de fichiers distants :
