@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-dhcpcd}
-VERSION=${VERSION:-5.6.8}
+VERSION=${VERSION:-6.1.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-dhcpcd}
 WGET=${WGET:-http://roy.marples.name/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT}
