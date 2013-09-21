@@ -243,21 +243,15 @@ mkdir -p      ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages
 cp -a Tools/* ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages
 
 if [ "${PKGARCH}" = "x86_64" ]; then
-	# On renomme les binaires et l'entête 64 bits :
-	mv ${PKG}/usr/bin/python{,-64}
-	mv ${PKG}/usr/bin/python2{,-64}
-	mv ${PKG}/usr/bin/python2.7{,-64}
+	# On COPIE les binaires binaires - certains paquets détestent que 'python'
+	# soit renommé :
+	cp -a ${PKG}/usr/bin/python{,-64}
+	cp -a ${PKG}/usr/bin/python2{,-64}
+	cp -a ${PKG}/usr/bin/python2.7{,-64}
+	
+	# On rneomme l'entête 64 bits :
 	mv ${PKG}/usr/include/python2.7/pyconfig{,-64}.h
 
-	# On relie 'python2' à sa version ainsi qu'un binaire générique 'python-64' :
-	ln -sf python2.7-64 ${PKG}/usr/bin/python2-64
-	ln -sf python2-64   ${PKG}/usr/bin/python-64
-	
-	# On lie des binaires génériques au programme enveloppe :
-	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python
-	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2
-	ln -sf enveloppe_multiarch ${PKG}/usr/bin/python2.7
-	
 	# On crée un faux entête pour s'adapter au multilib :
 	cat > ${PKG}/usr/include/python2.7/pyconfig.h << "EOF"
 #ifndef __STUB__PYCONFIG_H__
