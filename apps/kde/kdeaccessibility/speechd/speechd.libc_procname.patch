@@ -1,0 +1,20 @@
+diff --git a/src/server/module.c b/src/server/module.c
+index 538ba61..9193abc 100644
+--- a/src/server/module.c
++++ b/src/server/module.c
+@@ -126,12 +126,12 @@ load_output_module(char* mod_name, char* mod_prog, char* mod_cfgfile, char* mod_
+ 	}
+ 
+         if (cfg == 0){
+-            if (execlp(module->filename, "", (char *) 0) == -1){
++            if (execlp(module->filename, module->filename, (char *) 0) == -1){
+                 exit(1);
+             }
+         }else{
+-	    //if (execlp("valgrind", "" ,"--trace-children=yes", module->filename, arg1, arg2, (char *) 0) == -1){
+-	    if (execlp(module->filename, "", arg1, (char *) 0) == -1){
++	    //if (execlp("valgrind", "valgrind" ,"--trace-children=yes", module->filename, arg1, arg2, (char *) 0) == -1){
++	    if (execlp(module->filename, module->filename, arg1, (char *) 0) == -1){
+                 exit(1);
+             }
+         }

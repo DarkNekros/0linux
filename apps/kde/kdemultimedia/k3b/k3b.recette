@@ -16,8 +16,11 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Correctif permettant la compilation avec la version 0.53 de libavutils
+# Correctif permettant la compilation avec les versions >= 0.53 de libavutils :
 cat $CWD/k3b.ffmpeg-1.patch | patch -p1
+
+# Correctif pour le support de la version 2 de FFMPEG :
+cat $CWD/k3b.ffmpeg2.patch | patch -p1
 
 # Compilation :
 mkdir -p build && cd build

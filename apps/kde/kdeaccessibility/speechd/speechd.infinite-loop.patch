@@ -1,0 +1,19 @@
+## Patch by Samuel Thibault <sthibault@debian.org>:
+## I have been seeing speech-dispatcher eat 100% CPU and become unusable
+## when selecting a backend which happens to fail. This is due to the loop
+## in speak().  [...]  The attached patch is a crude fix for this but
+## works fine enough for applying to the Debian package I guess.
+
+Index: speech-dispatcher/src/server/speaking.c
+===================================================================
+--- speech-dispatcher.orig/src/server/speaking.c	2010-10-01 17:47:32.000000000 +0200
++++ speech-dispatcher/src/server/speaking.c	2010-10-01 17:47:35.000000000 +0200
+@@ -92,6 +92,8 @@
+ 		     * If some synthesizer is speaking, we must wait. */
+ 		    is_sb_speaking();
+ 		}        
++		if (revents & POLLHUP)
++		    poll_count = 1;
+ 	    }	    
+ 	}
+ 
