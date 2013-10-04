@@ -6,91 +6,89 @@
 # au préalable à l'aide de l'option --root de 'spackadd' :
 #		spackadd --root=/quelque/part/mon_chroot/ 0-toolchain-xxx-arch-x.spack
 #
-# '0-chroot' permet de compiler les paquets de façon native dans une racine
+# '0-chroot.recette' permet de compiler les paquets de façon native dans une racine
 # dédiée (utile pour les nouvelles chaînes d'outils). Il faut :
 #
 # 	- avoir ses systèmes de fichiers virtuels montés (/proc, /sys, /dev,
-#  /dev/pts et tout le toutim)
+#     et /run)
 #	- une partition d'échange « swap » (ou beaucoup de mémoire vive)
 # 	- avoir installé le paquet '0linux-toolchain-xxx-arch-x.spack' dans un
 #     répertoire spécifique et y affecter la variable SYSROOT.
-# 	- affecter RECETTES à l'emplacement des recettes de 0Linux (contenant base,
-#     opt, xorg, apps, etc.) pour pouvoir les lancer depuis le chroot
-# 	- affecter PKGSOURCES à l'emplacement des archives sources.
+# 	- pensez à monter l'emplacement des recettes et des archives_sources sous
+#     votre racine $SYSROOT au préalable. Par exemple, je stocke tout dans mon
+#     '/home' ; je fais donc avant de lancer ce script :
+#		# mkdir /chroot-0linux-x86_64/home
+#		# mount --bind /home /chroot-0linux-x86_64/home
 
 # En résumé :
-#		SYSROOT=/chroot-0linux-x86_64 \
-#		RECETTES=/home/moi/0linux \
-#		PKGSOURCES=/quelque/part/sources \
-#		./0-chroot.recette
+#		# SYSROOT=/chroot-0linux-x86_64 ./0-chroot.recette
 
-# Lancer ceci en root ! Ce script ne mâche pas le travail et ne fait aucune vérif' !
+# Être root ! Ce script ne mâche pas le travail et ne fait aucune vérif' !
 
 # Il est recommandé de NE PAS faire confiance à l'environnement et
-# de vérifier si les variables d'environnement importantes comme PATH
+# de bien vérifier si les variables d'environnement importantes comme PATH
 # contiennent bien le répertoire '/tools' une fois chrooté, sinon :
-# 	export PATH=/bin/:usr/bin:/sbin:/usr/sbin:/tools/bin:/tools/sbin:/tools/usr/bin:/tools/usr/sbin
-
-# On supprime le « hash » servant de cache à bash (quel poète) :
-set +h
+# 	export PATH=$PATH:/tools/bin:/tools/sbin:/tools/usr/bin:/tools/usr/sbin
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 # Pour définir $PKGARCH, $LIBDIRSUFFIX, etc.
 cflags
 
-# Un environnement propre :
-unset CC CXX AR AS RANLIB LD STRIP CFLAGS CXXFLAGS
-
 # Le répertoire contenant le système minimal préalablement installé par le
 # paquet '0linux-toolchain' :
 SYSROOT=${SYSROOT:-/chroot-0linux-${PKGARCH}}
 
-# La locale (C ou POSIX et pas autre chose) :
-export LC_ALL="POSIX"
-
 # On crée les emplacements en premier lieu:
-mkdir -p ${SYSROOT}/{0/paquets,boot,etc,dev/{pts,shm},home,opt,proc,root,run,srv,sys,tmp,{var/log/packages,var/run}}
-mkdir -p ${SYSROOT}/usr/{bin,dict,doc,include,info,lib${LIBDIRSUFFIX},local/{logs,paquets/${PKGARCH}},sbin,src}
+mkdir -p ${SYSROOT}/{boot,etc,dev/{pts,shm},home,media,mnt,opt,proc,root,run,srv,sys,tmp,{var/log/packages,var/run}}
+mkdir -p ${SYSROOT}/usr/{bin,dict,doc,include,info,lib${LIBDIRSUFFIX},local/{logs,paquets/${PKGARCH}},man,sbin,share,src}
+mkdir -p ${SYSROOT}/var/{lock,log,mail,spool}
+mkdir -p ${SYSROOT}/var/{opt,cache,lib{,${LIBDIRSUFFIX}}/{misc,locate},local}
+
+# Les liens sous '/usr' pour les binaires et les bibliothèques !
+ln -sf usr/bin ${SYSROOT}/bin
+ln -sf usr/sbin ${SYSROOT}/sbin
+ln -sf usr/lib${LIBDIRSUFFIX} ${SYSROOT}/lib${LIBDIRSUFFIX}
+
+# Le multilib requiert 2 répertoires distincts :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mkdir -p ${SYSROOT}/usr/lib
+	ln -sf usr/lib ${SYSROOT}/lib
+	ln -sf ../lib/locale ${SYSROOT}/usr/lib${LIBDIRSUFFIX}
+else
+	# On lie un 'lib' standard pour tous les autres cas :
+	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+		ln -sf lib${LIBDIRSUFFIX} ${SYSROOT}/usr/lib
+	fi
+fi
+
+# Ce lien francophopne est présent dans les scripts de construction de 0Linux :
 ln -sf packages ${SYSROOT}/var/log/paquets
 
 # Quelques fichiers de configuration nécessaires :
 touch ${SYSROOT}/etc/{fstab,mtab,ld.so.conf}
 
 # On monte les systèmes de fichiers virtuels de l'hôte dans le chroot :
-mount --bind /dev ${SYSROOT}/dev
-mount --bind /dev/pts ${SYSROOT}/dev/pts
-mount --bind /dev/shm ${SYSROOT}/dev/shm
+mount --bind /dev  ${SYSROOT}/dev
 mount --bind /proc ${SYSROOT}/proc
-mount --bind /sys ${SYSROOT}/sys
-mount --bind /run ${SYSROOT}/run
-
-# On copie toutes nos sources si elles existent dans le chroot, sous '/archives_sources' :
-if [ -n ${PKGSOURCES} ]; then
-	mkdir -p ${SYSROOT}/archives_sources
-	rsync -av --delete ${PKGSOURCES}/* ${SYSROOT}/archives_sources/
-fi
-
-# On copie toutes nos recettes si elles existent dans le chroot, sous '/recettes' :
-if [ -n ${RECETTES} ]; then
-	mkdir -p ${SYSROOT}/recettes
-	rsync -av --delete ${RECETTES}/* ${SYSROOT}/recettes/
-fi
+mount --bind /run  ${SYSROOT}/run
+mount --bind /sys  ${SYSROOT}/sys
 
 # Ces binaires sont essentiels car certains paquets les codent en dur. On crée
 # donc des liens sur la racine pointant vers la chaîne d'outils :
 ln -sf /tools/bin/{bash,cat,echo,env,file,gcc,grep,login,passwd,pwd,sleep,stty,tee,true} ${SYSROOT}/bin/
-ln -sf /tools/sbin/{agetty,blkid} ${SYSROOT}/sbin/
-ln -sf /tools/lib/libgcc_s.so{,.1} ${SYSROOT}/usr/lib${LIBDIRSUFFIX}/
+ln -sf /tools/sbin/{agetty,blkid}   ${SYSROOT}/sbin/
+ln -sf /tools/lib/libgcc_s.so{,.1}  ${SYSROOT}/usr/lib${LIBDIRSUFFIX}/
 ln -sf /tools/lib/libstdc++.so{,.6} ${SYSROOT}/usr/lib${LIBDIRSUFFIX}/
+ln -sf /run ${SYSROOT}/var/run
 
 if [ "${PKGARCH}" = "x86_64" ]; then
 	ln -sf /tools/lib/libgcc_s.so{,.1} ${SYSROOT}/usr/lib/
-	ln -sf /tools/lib/libstd*so* ${SYSROOT}/usr/lib/
+	ln -sf /tools/lib/libstd*so*       ${SYSROOT}/usr/lib/
 fi
 
-ln -sf /tools/lib${LIBDIRSUFFIX}/libgcc_s.so{,.1} ${CLFS}/usr/lib${LIBDIRSUFFIX}/
-ln -sf /tools/lib${LIBDIRSUFFIX}/libstd*so* ${CLFS}/usr/lib${LIBDIRSUFFIX}/
+ln -sf /tools/lib${LIBDIRSUFFIX}/libgcc_s.so{,.1} ${SYSROOT}/usr/lib${LIBDIRSUFFIX}/
+ln -sf /tools/lib${LIBDIRSUFFIX}/libstd*so*       ${SYSROOT}/usr/lib${LIBDIRSUFFIX}/
 
 # Le très important lien 'sh ' -> 'bash' :
 ln -sf bash ${SYSROOT}/bin/sh
@@ -100,7 +98,8 @@ ln -sf gcc ${SYSROOT}/usr/bin/cc
 
 # On copie les outils pour les paquets :
 mkdir -p ${SYSROOT}/usr/share/0outils
-cp -a /usr/share/0outils/fonctions_paquets.sh ${SYSROOT}/usr/share/0outils/
+cp /usr/share/0outils/fonctions_paquets.sh ${SYSROOT}/usr/share/0outils/
+chmod +x ${SYSROOT}/usr/share/0outils/fonctions_paquets.sh
 
 # On crée de quoi permettre à root d'être reconnu :
 if [ ! -f ${SYSROOT}/etc/passwd ]; then
@@ -130,13 +129,15 @@ fi
 # On spécifie certaines permissions et on crée des fichiers nécessaires au login :
 chmod 1710 ${SYSROOT}/root
 chmod 1777 ${SYSROOT}/tmp
-chmod -R 777 ${SYSROOT}/{0,usr/local/{logs,paquets}}
+chmod -R 777 ${SYSROOT}/usr/local/{logs,paquets}
 touch ${SYSROOT}/var/run/utmp ${SYSROOT}/var/log/{btmp,lastlog,wtmp}
 chgrp utmp ${SYSROOT}/var/run/utmp ${SYSROOT}/var/log/lastlog
 chmod 664 ${SYSROOT}/var/run/utmp ${SYSROOT}/var/log/lastlog
 chmod 600 ${SYSROOT}/var/log/btmp
+chown -R 0:0 ${SYSROOT}/cross-tools 
+chown -R 0:0 ${SYSROOT}/tools
 
-# On entre dans le chroot. 
+# On entre dans le chroot en vidant l'environnement.
 # On spécifie le PATH plaçant la nouvelle chaine d'outils en dernier, laquelle
 # va donc laisser le nouveau système se remplir au fur et à mesure, remplaçant la
 # chaîne d'outils progressivement. 
@@ -144,13 +145,11 @@ chmod 600 ${SYSROOT}/var/log/btmp
 chroot "${SYSROOT}" \
 	/tools/bin/env -i \
 	HOME="/root" \
-	TERM="xterm" \
+	TERM="linux" \
 	PS1="\u@CHROOT:\w\$ " \
 	PATH="/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin:/tools/sbin:/tools/usr/bin:/tools/usr/sbin" \
-	LIBDIRSUFFIX="${LIBDIRSUFFIX}" \
-	PKGARCH="${PKGARCH}" \
-	JOBS="${JOBS}" \
-	PKGSOURCES="/archives_sources" \
+	LANG="POSIX" \
+	LC_ALL="POSIX" \
 	/tools/bin/bash --login +h
 
 # On démonte les systèmes de fichiers virtuels :

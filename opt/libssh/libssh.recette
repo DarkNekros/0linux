@@ -6,13 +6,36 @@ NAMESRC=${NAMESRC:-libssh}
 VERSION=${VERSION:-0.5.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libssh}
-WGET=${WGET:-https://red.libssh.org/attachments/download/27/$NAMESRC-$VERSION.$EXT}
+WGET=(https://red.libssh.org/attachments/download/27/$NAMESRC-$VERSION.$EXT
+      http://www.libssh2.org/download/libssh2-1.4.3.$EXT
+     )
 DESC="Outils et bibliothèques d'accès aux services et clients SSH"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile 'libssh2' !
+preparer_sources libssh2-1.4.3.$EXT
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j3 || make
+fakeroot make install DESTDIR=${PKG}
+
+# On compile 'libssh' :
+preparer_sources
 cflags
 
 # La compilation se fait dans un répertoire dédié :

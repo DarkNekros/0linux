@@ -128,7 +128,6 @@ ln -sf libncursesw.so.5 ${PKG}/usr/lib${LIBDIRSUFFIX}/libncursesw.so
 ln -sf libncurses++w.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libncurses++.a
 
 # On déplace selon l'architecture et on lie les fichiers pour 'pkgconfig' :
-# On déplace selon l'architecture et on lie les fichiers pour 'pkgconfig' :
 if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 	mv ${PKG}/usr/lib/pkgconfig ${PKG}/usr/lib${LIBDIRSUFFIX}/
 fi

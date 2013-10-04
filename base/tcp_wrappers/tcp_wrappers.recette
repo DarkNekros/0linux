@@ -33,7 +33,7 @@ sed -i "s/ln -s/ln -sf/" Makefile
 # On force la prise en compte de 'lib$LIBDIRSUFFIX' :
 sed -i "s@/lib/@/lib${LIBDIRSUFFIX}/@g" Makefile
 
-# On force nos CFLAGS et le compilateur au passage :
+# On force nos CFLAGS  :
 sed -i "s@CFLAGS	= -O2@& ${FLAGS}@" Makefile
 
 # Compilation :

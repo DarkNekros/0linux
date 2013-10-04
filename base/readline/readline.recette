@@ -45,9 +45,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	make -j${JOBS} || make
 	fakeroot make install DESTDIR=${PKG}
-	
-	# Ajustement sur les permissions des bibliothèques :
-	chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/lib*.so.*
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
@@ -84,9 +81,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-# Ajustement sur les permissions des bibliothèques :
-chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/lib*.so.*
 
 installer_doc
 

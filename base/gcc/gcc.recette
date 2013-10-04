@@ -91,9 +91,6 @@ if [ ! -r ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/${PKGARCH}-0linux-linux-gnu/${VERSIO
 	cat gcc/specs > ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/${PKGARCH}-0linux-linux-gnu/${VERSION}/specs
 fi
 
-# On corrige cette permission :
-chmod 755 ${PKG}/usr/lib*/libgcc_s.so.1
-
 # Certains s'attendent à la présence de /lib/cpp :
 ln -sf ../bin/cpp ${PKG}/usr/lib${LIBDIRSUFFIX}/cpp
 

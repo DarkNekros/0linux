@@ -21,7 +21,7 @@ mkdir -p ${PKG}/var/{db,run}/nscd
 # On corrige certains problèmes de sécurité.
 # cf. http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-0242
 # cf. http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-1914
-cat $CWD/glibc.getaddrinfo-stack-overflox.patch | patch -p1
+cat $CWD/glibc.getaddrinfo-stack-overflow.patch | patch -p1
 cat $CWD/glibc.regexp-matcher-overrun.patch | patch -p1
 
 # On évite une boucle infinie :

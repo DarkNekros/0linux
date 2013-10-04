@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # On nettoie  :
-unset CHOIXNOMS CHOIXCONFIG DHCPHOST NETPARAMS IPPARAM
+unset CHOIXNOMS NOMHOTE NOMDOMAINE CHOIXCONFIG DHCPHOST NETPARAMS IPPARAM
 unset MASKPARAM GATEPARAM DNSSERVERS
 
 # L'emplacement du fichier de configuration :
@@ -62,24 +62,41 @@ while [ 0 ]; do
 	echo "et un nom de domaine. Le nom d'hôte désigne la machine, le nom de domaine"
 	echo "désigne le réseau dont elle fait partie, fictif ou pas. Entrez ci-après un"
 	echo "nom d'hôte et un nom de domaine sous la forme « hôte domaine.com ». Le nom"
-	echo "de domaine est facultatif, un simple nom d'hôte suffit. Évitez les"
-	echo "ponctuations, accents et majuscules pour maximimser la compatibilité."
-	echo "Appuyez sur ENTRÉE pour ignorer cette étape (le nom d'hôte sera « 0linux »)."
+	echo "de domaine peut être fictif. Évitez les ponctuations, accents et majuscules"
+	echo "pour maximimser la compatibilité."
+	echo "Appuyez sur ENTRÉE pour ignorer cette étape."
 	echo ""
-	echo "Exemples : pingouin exemple.fr ; ordinateur salon.chezmoi ; saturne ; etc."
+	echo "Exemples : pingouin exemple.fr ; ordinateur salon.chezmoi ; etc."
 	echo ""
 	echo -n "Votre choix : "
 	read CHOIXNOMS;
 	if [ "$CHOIXNOMS" = "" ]; then
-		CHOIXNOMS="0linux"
+		break
+	else
+		# L'hôte :
+		NOMHOTE="$(echo $CHOIXNOMS | crunch | cut -d' ' -f1)"
+		
+		# Le domaine :
+		NOMDOMAINE="$(echo $CHOIXNOMS | crunch | cut -d' ' -f2)"
+		
+		# Si le domaine est mal entré :
+		if [ "$NOMHOTE" = "" -o "$NOMDOMAINE" = "" ]; then
+			echo "Veuillez entrer un nom d'hôte et un nom de domaine, en les séparant"
+			echo "par un espace, sous la forme « hôte domaine.com »."
+			echo ""
+			echo "Exemples : pingouin exemple.fr ; ordinateur salon.chezmoi ; etc."
+			sleep 3
+			unset CHOIXNOMS
+			continue
+		else
+			# On envoie l'hôte en écrasant le contenu de '/etc/hostname' :
+			echo "${NOMHOTE}.${NOMDOMAINE}" > /etc/hostname
+			
+			# On envoie l'hôte dans '/etc/hosts' pour la boucle locale :
+			sed -i "s@pingouin.exemple.fr pingouin@${NOMHOTE}.${NOMDOMAINE} ${NOMHOTE}@" /etc/hosts
+			break
+		fi
 	fi
-	
-	# On envoie l'hôte en écrasant le contenu de '/etc/hostname' :
-	echo "${CHOIXNOMS}" > /etc/hostname
-	
-	# On envoie l'hôte dans '/etc/hosts' pour la boucle locale :
-	sed -i "s@pingouin.exemple.fr pingouin@${CHOIXNOMS} $(echo $CHOIXNOMS | cut -d'.' -f1)" /etc/hosts
-	break
 done
 
 # Boucle de configuration du réseau :

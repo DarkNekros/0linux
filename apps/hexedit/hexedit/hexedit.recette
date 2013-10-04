@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-PKGCAT=base
-NAMESRC=${NAMESRC:-gobject-introspection}
-VERSION=${VERSION:-1.38.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gobject-introspection}
-WGET=${WGET:-http://ftp.gnome.org/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DESC="Outil d'abstraction des objets C"
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-hexedit}
+VERSION=${VERSION:-1.2.13}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-hexedit}
+WGET=${WGET:-http://rigaux.org/$NAMESRC-${VERSION}.src.${EXT}}
+DESC="Éditeur hexadécimal pour Linux"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -28,7 +28,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+fakeroot make install prefix=${PKG}/usr
 
 installer_doc
 creer_post_installation

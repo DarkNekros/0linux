@@ -19,12 +19,10 @@ cflags
 tar xvf lsof_${VERSION}_src.tar
 cd lsof_${VERSION}_src
 
-echo n | CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS} -ltirpc" \
+echo n | CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./Configure linux
 
-# Compilation sur 'libtirpc' :
-sed -i -e 's@-llsof@-llsof -ltirpc@' Makefile lib/Makefile
-
+# Compilation :
 make -j${JOBS} || make
 
 # On copie le binaire et le manuel :
@@ -32,8 +30,6 @@ mkdir -p ${PKG}/usr/{bin,man/man8}
 cp -a lsof ${PKG}/usr/bin/
 chmod 755 ${PKG}/usr/bin/lsof
 cp -a lsof.8 ${PKG}/usr/man/man8/
-
-cd -
 
 installer_doc
 creer_post_installation

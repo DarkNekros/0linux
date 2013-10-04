@@ -2,16 +2,16 @@
 # par les interpréteurs (shells) de type « Bourne » et assimilés.
 
 # On positionne quelques variables d'environnement :
-export MINICOM="-c on"
-export MANPATH=/usr/local/man:/usr/man
-export HOSTNAME="`cat /etc/HOSTNAME`"
-export LESSOPEN="|lesspipe.sh %s"
-export LESS="-M"
+HOSTNAME="$(cat /etc/hostname)"
+LESS="-M"
+LESSOPEN="|lesspipe.sh %s"
+MANPATH=/usr/local/man:/usr/man
+MINICOM="-c on"
 
 # Y compris la « locale », via les variables dans la configuration de 0linux :
 . /etc/0linux/locale
-export LANG="${LANG}"
-export LC_ALL="${LC_ALL}"
+LANG="${LANG}"
+LC_ALL="${LC_ALL}"
 
 # Si l'utilisateur n'a pas de fichier '.inputrc', on utilise celui dans /etc.
 if [ ! -r "$HOME/.inputrc" ]; then
@@ -19,28 +19,25 @@ if [ ! -r "$HOME/.inputrc" ]; then
 fi
 
 # On positionne la variable $PATH par défaut du système :
-PATH="/usr/local/bin:/usr/bin:/bin:/usr/games"
+PATH="/usr/local/bin:/usr/bin:/bin"
 
 # Pour root, on s'assure d'ajouter au $PATH les répertoires /usr/local/sbin, 
 # /usr/sbin et /sbin car ils peuvent manquer :
 if [ "`id -u`" = "0" ]; then
-	echo $PATH | grep /usr/local/sbin 1> /dev/null 2> /dev/null
-	if [ ! $? = 0 ]; then
-		PATH=/usr/local/sbin:/usr/sbin:/sbin:$PATH
+	if [ "$(echo $PATH | grep /usr/local/sbin)" = "" ]; then
+		PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
 	fi
 fi
 
 # On positionne par défaut la variable $TERM à 'linux' :
-if [ "$TERM" = "" -o "$TERM" = "unknown" ]; then
-	TERM=linux
-fi
+TERM=linux
 
-# Ceci concerne ksh. On le garde dans un coin, sait-on jamais :
-#if [ "$SHELL" = "/bin/ksh" ]; then
-#  VISUAL=emacs
-#  VISUAL=gmacs
-#  VISUAL=vi
-#fi
+# Ceci concerne le shell 'ksh'. On le garde dans un coin, sait-on jamais :
+if [ "$SHELL" = "/bin/ksh" ]; then
+	#export VISUAL=emacs
+	#export VISUAL=gmacs
+	export VISUAL=vi
+fi
 
 # Notre invite de commande par défaut. On garde les invites pour d'autres shells
 # au cas où :
@@ -56,26 +53,18 @@ else
 	PS1='\u@\h:\w\$ '
 fi
 PS2='> '
-export PATH DISPLAY LESS TERM PS1 PS2
+
+# On exporte toutes ces variables :
+export HOSTNAME LANG LC_ALL LESS LESSOPEN MANPATH MINICOM PATH PS1 PS2 TERM
 
 # On spécifie le masque par défaut lors des créations de fichiers :
 umask 022
 
-# On notifie l'utilisateur s'il a du courriel si les programmes appropriés
-# sont installés :
-if [ -x /usr/bin/biff ]; then
-	biff y 2> /dev/null
-fi
-
-# On exécute tout script se terminant en « .sh » trouvé dans /etc/profile.d :
-for script in /etc/profile.d/*.sh ; do
-	if [ -x $script ]; then
-		. $script
+# On exécute tout script se terminant en « .sh » trouvé dans '/etc/profile.d' :
+for profilescript in /etc/profile.d/*.sh ; do
+	if [ -x $profilescript ]; then
+		. $profilescript
 	fi
 done
-unset script
 
-# Pour les utilisateurs normaux, on ajoute le répertoire courant à la variable $PATH :
-if [ ! "`id -u`" = "0" ]; then
-	PATH="$PATH:."
-fi
+# C'est fini.

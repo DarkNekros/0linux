@@ -93,6 +93,9 @@ mv ${PKG}/etc/udev/udev.conf{,.0nouveau}
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/udev/rules.d/65-0linux-permissions.rules << "EOF"
 # Règles des permissions du système et du matériel pris en charge par Udev.
 
+# On crée un lien générique pour les souris (GPM utilise '/dev/mouse') :
+KERNEL=="mice", SYMLINK+="mouse"
+
 # Les disques non-'fd*' appartiennent au groupe 'disk'
 KERNEL!="fd*", SUBSYSTEM=="block", GROUP="disk"
 

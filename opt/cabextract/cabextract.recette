@@ -29,6 +29,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On copie la « magie » pour 'file' :
+mkdir -p ${PKG}/usr/share/file/magic
+cat doc/magic > ${PKG}/usr/share/file/magic/cab
+
 installer_doc
 
 # On complète la documentation :

@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-cairo}
-VERSION=${VERSION:-1.12.14}
+VERSION=${VERSION:-1.12.16}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-cairo}
 WGET=${WGET:-http://cairographics.org/releases/$NAMESRC-$VERSION.$EXT}
@@ -21,8 +21,12 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
+	# La suite de tests contient une dépendance circulaire GTK+-Cairo, on la supprime :
+	sed -i '/noinst_PROGRAMS = cairo-test-suite$(EXEEXT) # always build/d' test/Makefile.am
+	autoreconf -vif
+	
 	# Compilation pour i686 :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	CFLAGS="${FLAGS} -Wall" CXXFLAGS="${FLAGS} -Wall" \
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -44,8 +48,12 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La suite de tests contient une dépendance circulaire GTK+-Cairo, on la supprime :
+sed -i '/noinst_PROGRAMS = cairo-test-suite$(EXEEXT) # always build/d' test/Makefile.am
+autoreconf -vif
+
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS} -Wall" CXXFLAGS="${FLAGS} -Wall" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -54,10 +62,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-gobject \
-	--enable-pdf \
-	--enable-ps \
-	--enable-svg \
 	--enable-tee \
 	--enable-xcb \
 	--build=${PKGARCH}-0linux-linux-gnu

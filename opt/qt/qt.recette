@@ -107,6 +107,9 @@ EOF
 	mv ${PKG}/usr/bin/moc{,-32}
 	mv ${PKG}/usr/include/Qt/qconfig{,-32}.h
 	mv ${PKG}/usr/include/QtCore/qconfig{,-32}.h
+	
+	# On lie un 'qmake-qt4' dont certains paquets ont besoin :
+	ln -sf qmake-32 ${PKG}/usr/bin/qmake-qt4-32
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
@@ -175,10 +178,14 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	mv ${PKG}/usr/bin/uic3{,-64}
 	mv ${PKG}/usr/include/Qt/qconfig{,-64}.h
 	mv ${PKG}/usr/include/QtCore/qconfig{,-64}.h
+	
+	# On lie un 'qmake-qt4' dont certains paquets ont besoin :
+	ln -sf qmake-64 ${PKG}/usr/bin/qmake-qt4-64
 
 	# On lie des binaires génériques au porgramme enveloppe :
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/moc
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/qmake
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/qmake-qt4
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/uic
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/uic3
 
@@ -208,10 +215,10 @@ EOF
 
 #endif
 EOF
+else
+	# On lie un 'qmake-qt4' dont certains paquets ont besoin :
+	ln -sf qmake ${PKG}/usr/bin/qmake-qt4
 fi
-
-# Certains paquets réclament 'qmake-qt4' :
-ln -sf qmake ${PKG}/usr/bin/qmake-qt4
 
 # Ce paquet est sale... :
 rm -rf ${PKG}/usr/{demos,examples,tests}

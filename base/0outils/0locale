@@ -65,13 +65,20 @@ if [ ! -r /etc/0linux/locale ]; then
 EOF
 fi
 
-# On entre la locale dans le fichier de configuration :
+# On entre ou modifie les variables dans le fichier de configuration :
 if [ ! "$(grep -E '^LANG=' ${LOCALECONFIGFILE})" = "" ]; then
 	sed -i -e "s/^LANG=.*$/LANG=\"${LOCALECHOISIE}\"/" ${LOCALECONFIGFILE}
-	sed -i -e "s/^LC_ALL=.*$/LC_ALL=\"${LOCALECHOISIE}\"/" ${LOCALECONFIGFILE}
 else
 	echo "LANG=\"${LOCALECHOISIE}\"" >> ${LOCALECONFIGFILE}
+fi
+if [ ! "$(grep -E '^LC_ALL=' ${LOCALECONFIGFILE})" = "" ]; then
+	sed -i -e "s/^LC_ALL=.*$/LC_ALL=\"${LOCALECHOISIE}\"/" ${LOCALECONFIGFILE}
+else
 	echo "LC_ALL=\"${LOCALECHOISIE}\"" >> ${LOCALECONFIGFILE}
 fi
+
+# On active la locale choisie :
+export LANG="${LOCALECHOISIE}"
+export LC_ALL="${LOCALECHOISIE}"
 
 # C'est fini.

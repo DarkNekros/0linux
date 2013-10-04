@@ -28,10 +28,12 @@ compiler_installer() {
 		# On se place dans le répertoire de la recette en paramètre :
 		cd $(dirname ${1})
 		
-		# On construit et on installe le paquet :
+		# On construit et on installe le paquet, avec ou sans 'sudo' :
+		SUDOBINAIRE=""
+		[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
 		bash -ex $(basename ${1}) && \
 			find /usr/local/paquets/$(uname -m)/{apps,base,opt,xorg} -name "$(basename ${1} .recette)-*-*-*.spack" -print | \
-			xargs sudo /usr/sbin/spackadd
+			xargs ${SUDOBINAIRE} /usr/sbin/spackadd
 	)
 }
 

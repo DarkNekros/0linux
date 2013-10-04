@@ -62,7 +62,7 @@ eawpats
 ebook-tools
 ed
 eggdbus
-eigen2
+eigen
 enca
 enchant
 enet
@@ -312,6 +312,7 @@ openjpeg
 openldap-client
 openslp
 opensp
+opus
 orbit2
 orc
 ortp

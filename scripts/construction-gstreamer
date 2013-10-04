@@ -1,0 +1,8 @@
+gstreamer
+gsst-plugins-base
+gst-plugins-good
+gst-plugins-bad
+gst-plugins-ugly
+gst-libav
+gst-python
+phonon-gstreamer

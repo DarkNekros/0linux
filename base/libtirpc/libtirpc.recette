@@ -25,8 +25,7 @@ chmod +x autogen.sh
 autoreconf -vifs
 
 # Compilation :
-LDFLAGS="-I/usr/include/gssglue" \
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS} -I/usr/include/gssglue" CXXFLAGS="${FLAGS} -I/usr/include/gssglue" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \

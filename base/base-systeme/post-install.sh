@@ -121,7 +121,7 @@ baseuid=(
 # Pas de fichiers 'passwd' ou 'group' ? On crée le minimum syndical :
 if [ ! -f etc/passwd ]; then
 	cat > etc/passwd << "EOF"
-root:x:0:0:Super Utilisateur:/root:/usr/bin/bash
+root:x:0:0:Super Utilisateur:/root:/bin/bash
 bin:x:1:1:Utilisateur bin:/usr/bin:/usr/bin/false
 daemon:x:2:2:Utilisateur daemon:/usr/sbin:/usr/bin/false
 adm:x:3:4:Utilisateur adm:/var/log:/usr/bin/false
@@ -132,7 +132,7 @@ halt:x:7:0:Utilisateur halt:/usr/sbin:/usr/sbin/halt
 mail:x:8:12:Utilisateur mail:/:/usr/bin/false
 news:x:9:13:Utilisateur news:/usr/lib/news:/usr/bin/false
 uucp:x:10:14:Utilisateur uucp:/var/spool/uucppublic:/usr/bin/false
-operator:x:11:0:Utilisateur operator:/root:/usr/bin/bash
+operator:x:11:0:Utilisateur operator:/root:/bin/bash
 games:x:12:100:Utilisateur des jeux:/usr/share/games:/usr/bin/false
 ftp:x:14:50:Utilisateur FTP:/home/ftp:/usr/bin/false
 smmsp:x:25:25:Utilisateur smmsp:/var/spool/clientmqueue:/usr/bin/false

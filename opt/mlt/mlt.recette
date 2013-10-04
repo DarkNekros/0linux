@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-mlt}
-VERSION=${VERSION:-0.8.8}
+VERSION=${VERSION:-0.9.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-mlt}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -33,6 +33,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--avformat-swscale \
 	--avformat-vdpau \
 	--enable-gpl \
+	--enable-gpl3 \
 	--qimage-includedir=/usr/include/Qt \
 	--qimage-libdir=/usr/lib${LIBDIRSUFFIX}/ \
 	--build=${PKGARCH}-0linux-linux-gnu

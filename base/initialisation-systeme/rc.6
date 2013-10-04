@@ -42,7 +42,7 @@ fi
 umount -v -a -l -f -r -t nfs,smbfs,cifs
 
 # On tue tous les processus :
-killall5 -15 
+killall5 -15
 killall5 -9
 
 # On enregistre notre graine de génération de nombres aléatoires en utilisant
@@ -65,7 +65,7 @@ swapoff -a
 sync
 
 # On démonte ce qui reste :
-umount -v -a -t no,proc,sysfs,tmpfs
+umount -v -a -t no,proc,sysfs
 
 # On éteind ou redémarre la machine :
 if [ "$commande" = "reboot" ]; then
@@ -76,4 +76,4 @@ else
 	poweroff
 fi
 
-# C'est fini !
+# C'est fini.

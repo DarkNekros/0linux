@@ -69,9 +69,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	fakeroot make install DESTDIR=${PKG}
 	
-	# On renomme le binaire sans la version pour l'envelopper plus tard :
+	# On renomme les binaires spécifiques à l'archi pour les envelopper plus tard :
 	mv ${PKG}/usr/bin/perl{,-32}
-	mv ${PKG}/usr/bin/perl{${VERSION},-32}
+	mv ${PKG}/usr/bin/perl${VERSION}{,-32}
 	
 	# On évite d'écraser 'perllocal.pod' :
 	if [ -r ${PKG}/usr/lib${LIBDIRSUFFIX}/perl5/perllocal.pod ]; then
@@ -138,7 +138,7 @@ ln -sf s2p ${PKG}/usr/bin/psed
 # On renomme les binaires 64 bits pour les envelopper :
 if [ "${PKGARCH}" = "x86_64" ]; then
 	mv ${PKG}/usr/bin/perl{,-64}
-	mv ${PKG}/usr/bin/perl{${VERSION},-64}
+	mv ${PKG}/usr/bin/perl${VERSION}{,-64}
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/perl
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/perl${VERSION}
 else

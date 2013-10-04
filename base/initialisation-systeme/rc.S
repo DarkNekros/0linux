@@ -7,6 +7,9 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 export PATH
 
+# On s'assure de la prise en charge de l'UTF-8 :
+unicode_start
+
 # On charge les variables d'identification du système :
 source /etc/os-release
 
@@ -132,10 +135,6 @@ else
 	echo -n "Appuyez sur ENTRÉE pour continuer le démarrage."
 	read blabla;
 fi
-
-# Tout '/etc/mtab' est forcément obsolète, on le supprime et on en crée un neuf :
-rm -f /etc/mtab*
-touch /etc/mtab
 
 # On remonte la partition racine pour générer un nouveau fichier /etc/mtab :
 mount -v -w -o remount /

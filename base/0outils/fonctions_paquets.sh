@@ -424,8 +424,8 @@ empaqueter() {
 	
 	# On déplace les fichiers '*-gdb.py' sous une arborescence dédiée à 'gdb' :
 	for fichiergdb in $(find ${PKG}/usr/lib* -type f -name "*-gdb.py" 2>/dev/null); do
-		mkdir -p ${PKG}/usr/share/gdb/auto-load/$($(echo dirname ${fichiergdb}) | sed 's@${PKG}@@')
-		cp -a ${fichiergdb} ${PKG}/usr/share/gdb/auto-load/$($(echo dirname ${fichiergdb}) | sed 's@${PKG}@@')/
+		mkdir -p ${PKG}/usr/share/gdb/auto-load/$($(echo dirname ${fichiergdb}) | sed "s@${PKG}@@")
+		cp -a ${fichiergdb} ${PKG}/usr/share/gdb/auto-load/$($(echo dirname ${fichiergdb}) | sed "s@${PKG}@@")/
 		rm -f ${fichiergdb}
 	done
 	

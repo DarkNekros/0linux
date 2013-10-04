@@ -3,10 +3,10 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-vlc}
-VERSION=${VERSION:-2.0.8a}
+VERSION=${VERSION:-2.1.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-vlc}
-WGET=${WGET:-http://download.videolan.org/pub/videolan/$NAMESRC/$(echo $VERSION | tr -d 'a')/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
 DESC="Le lecteur multimédia polyvalent VLC"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -36,7 +36,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-avcodec \
 	--enable-avformat \
 	--enable-dc1394 \
-	--enable-dv \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
@@ -48,9 +47,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-ncurses \
 	--enable-ogg \
 	--enable-opus \
-	--enable-pvr \
-	--enable-qt4 \
-	--enable-real \
 	--enable-realrtsp \
 	--enable-run-as-root \
 	--enable-schroedinger \
@@ -58,7 +54,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-shout \
 	--enable-speex \
 	--enable-svg \
-	--enable-switcher \
 	--enable-telx \
 	--enable-theora \
 	--enable-twolame \

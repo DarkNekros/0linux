@@ -6,7 +6,13 @@ NAMESRC=${NAMESRC:-vim}
 VERSION=${VERSION:-7.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-vim}
-WGET=${WGET:-ftp://ftp.vim.org/pub/vim/unix/$NAMESRC-$VERSION.$EXT}
+WGET=(
+      ftp://ftp.vim.org/pub/vim/unix/$NAMESRC-$VERSION.$EXT
+      ftp://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.spl
+      ftp://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.sug
+      ftp://ftp.vim.org/pub/vim/runtime/spell/fr.utf-8.spl
+      ftp://ftp.vim.org/pub/vim/runtime/spell/fr.utf-8.sug
+     )
 DESC="Le puissant éditeur de texte « Vi IMproved »"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -18,7 +24,7 @@ cflags
 # On télécharge chaque correctif :
 mkdir -p ${PKGSOURCES}/${NAMETGZ}/patches
 
-for correctif in {001..005}; do # Indiquer ici le nombre de correctifs à appliquer.
+for correctif in {001..045}; do # Indiquer ici le nombre de correctifs à appliquer.
 	if [ ! -r ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} ]; then
 		wget -vc "ftp://ftp.vim.org/pub/vim/patches/${VERSION}/${VERSION}.${correctif}" \
 			-O ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif}.part
@@ -75,10 +81,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-acl \
 	--enable-cscope \
 	--enable-gpm \
+	--enable-multibyte \
 	--enable-pythoninterp \
 	--enable-perlinterp \
 	--enable-rubyinterp \
-	--enable-multibyte \
 	--with-compiledby="0Linux" \
 	--with-features=huge \
 	--without-x \
@@ -104,10 +110,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-cscope \
 	--enable-gpm \
 	--enable-gui=gtk2 \
+	--enable-multibyte \
 	--enable-pythoninterp \
 	--enable-perlinterp \
 	--enable-rubyinterp \
-	--enable-multibyte \
 	--with-compiledby="0Linux" \
 	--with-features=huge \
 	--with-vim-name=gvim \
@@ -121,7 +127,7 @@ fakeroot make install VIMRTDIR= DESTDIR=${PKG}
 ln -sf gvim ${PKG}/usr/bin/gview
 
 # On ajoute le dictionnaire pour le français en encodage UTF-8 :
-cp -a $CWD/fr.utf-8.* ${PKG}/usr/share/vim/spell/
+cp -a ${PKGSOURCES}/${NAMETGZ}/*.utf-8.* ${PKG}/usr/share/vim/spell/
 
 # On copie le vimrc à sa place :
 cp -a runtime/vimrc_example.vim ${PKG}/usr/share/vim

@@ -51,7 +51,6 @@ file
 util-linux
 coreutils
 bash
-dash
 diffutils
 findutils
 gawk

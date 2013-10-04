@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-LibreOffice}
-VERSION=${VERSION:-4.1.0}
+VERSION=${VERSION:-4.1.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libreoffice}
 . /usr/share/0outils/fonctions_paquets.sh
@@ -38,9 +38,7 @@ cd $TMP/${NAME}/RPMS
 rm -rf {JavaSetup.jar,installdata,setup}
 rm -rf {userland,jre-*-linux-*.rpm}
 
-# On ramène les menus à la Freedesktop avec les autres RPM et on se débarrasse
-# de la mise à jour en ligne :
-mv desktop-integration/libreoffice$(echo $VERSION | cut -d'.' -f1-2)*-freedesktop-menus-${VERSION}-*.noarch.rpm .
+# On se débarrasse de la mise à jour en ligne :
 rm -f *onlineupdate*.rpm
 
 # On extrait chaque RPM :
