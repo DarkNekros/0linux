@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-speech-dispatcher}
+VERSION=${VERSION:-0.7.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-speechd}
+WGET=${WGET:-http://devel.freebsoft.org/pub/projects/speechd/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques de synthèse vocale"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Corrige ujne boucle infinie dans certains cas :
+cat $CWD/speechd.infinite-loop.patch | patch -p1
+
+# Permet d'installer la documentation : 
+cat $CWD/speechd.install-doc.patch | patch -p1
+
+# Corrige la compilation avec une libc récente :
+cat $CWD/speechd.libc_procname.patch | patch -p1
+
+# Installe des fichiers supplémentaires pour la synthèse des langues non anglaise :
+cat $CWD/speechd.pico-generic.patch | patch -p1
+
+# Corrige l'appel de l'executable espeack :
+cat $CWD/speechd.espeack.patch | patch -p1
+
+# Compilation :
+autoreconf -vif
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMETGZ} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-about-distro}
+VERSION=${VERSION:-1.0.0}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-about-distro}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+DESC="Affiche des informations sur la distribution utilisé"
+########################################
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+mkdir -p build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D BUILD_TESTS=OFF \
+	-D ENABLE_SSE=ON \
+	-D ENABLE_SSE2=ON \
+	-D ENABLE_SSE3=ON \
+	-D KDE4_BUILD_TESTS=FALSE \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D SYSCONF_INSTALL_DIR=/etc/kde \
+	-D BUILD_KTEXTEDITOR=ON \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+# On crée la configuration spécifique à 0linux :
+mkdir -p $PKG/usr/share/config
+cat > $PKG/usr/share/config/kcm-about-distrorc << "EOF"
+[General]
+LogoPath=/usr/share/pixmaps/0linux.png
+Website=http://0.tuxfamily.org
+
+EOF
+
+mkdir -p $PKG/etc
+cat > $PKG/etc/lsb-release << "EOF"
+DISTRIB_ID=0linux
+DISTRIB_RELEASE=II
+DISTRIB_DESCRIPTION="0Linux II"
+
+EOF
+
+# Installation du logo :
+mkdir -p $PKG/usr/share/pixmaps
+cp $CWD/0linux.png $PKG/usr/share/pixmaps
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

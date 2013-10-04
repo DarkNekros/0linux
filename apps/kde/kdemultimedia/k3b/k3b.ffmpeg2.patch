@@ -1,0 +1,24 @@
+--- k3b-2.0.2/plugins/decoder/ffmpeg/k3bffmpegwrapper.h~	2011-01-15 21:47:29.000000000 +0100
++++ k3b-2.0.2/plugins/decoder/ffmpeg/k3bffmpegwrapper.h	2013-08-29 21:14:40.621518962 +0200
+@@ -18,7 +18,9 @@
+ 
+ #include "k3bmsf.h"
+ 
+-
++#ifndef AVCODEC_MAX_AUDIO_FRAME_SIZE
++#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000
++#endif
+ 
+ /**
+  * Create with K3bFFMpegWrapper::open
+--- k3b-2.0.2/plugins/decoder/ffmpeg/k3bffmpegwrapper.cpp~	2013-08-29 21:10:02.754685572 +0200
++++ k3b-2.0.2/plugins/decoder/ffmpeg/k3bffmpegwrapper.cpp	2013-08-29 21:15:11.658576297 +0200
+@@ -129,7 +129,7 @@
+ 
+     // open the codec on our context
+     kDebug() << "(K3bFFMpegFile) found codec for " << m_filename;
+-    if( ::avcodec_open( codecContext, d->codec ) < 0 ) {
++    if( ::avcodec_open2( codecContext, d->codec, NULL ) < 0 ) {
+         kDebug() << "(K3bFFMpegDecoderFactory) could not open codec.";
+         return false;
+     }

@@ -3,8 +3,8 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-calligra}
-VERSION=${VERSION:-2.7.1}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-2.7.3}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-calligra}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}
 DESC="Calligra : la suite bureautique et artistique complète pour KDE"
@@ -36,15 +36,6 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	-D BUILD_active=OFF \
-	-D KdepimLibs_DIR=/usr/lib$LIBDIRSUFFIX/cmake/KdepimLibs \
-	-D NepomukCore_DIR=/usr/lib$LIBDIRSUFFIX/cmake/NepomukCore \
-	-D KActivities_DIR=/usr/lib$LIBDIRSUFFIX/cmake/KActivities \
-	-D OKULAR_CORE_LIBRARY=/usr/lib$LIBDIRSUFFIX/libokularcore.so \
-	-D OKULAR_INCLUDE_DIR=/usr/include/okular \
-	-D NEPOMUK2_ADDONTOLOGYCLASSES_FILE=/usr/lib$LIBDIRSUFFIX/cmake/NepomukCore/Nepomuk2AddOntologyClasses.cmake \
-	-D Vc_DIR=/usr/lib$LIBDIRSUFFIX/cmake/Vc \
-	-D GSL_CONFIG=/usr/bin/gsl-config \
-	-D PSTOEDIT_EXECUTABLE=/usr/bin/pstoedit \
 	-D WITH_Pstoedit=ON \
 	-D WITH_Vc=$VC_OPT \
 	./ ../

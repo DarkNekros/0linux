@@ -3,10 +3,10 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-kvirc}
-VERSION=${VERSION:-4.2.0}
+VERSION=${VERSION:-4.3.1_r6296}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-kvirc}
-WGET=${WGET:-ftp://ftp.kvirc.de/pub/$NAMESRC/$VERSION/source/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.kvirc.de/pub/$NAMESRC/snapshots/source/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT}
 DESC="KVIRC : un puissant client IRC pour KDE"
 ########################################
 
@@ -15,6 +15,12 @@ DESC="KVIRC : un puissant client IRC pour KDE"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On ajoute la catégorie KDE au fichier desktop :
+sed -i "s/=Qt;/=KDE;Qt;/" cmake/kvirc4.desktop.cmake
+
+# Permet la compilation avec des noyaux récent :
+cat $CWD/kvirc.linux-32.patch | patch -p1
 
 # Compilation :
 mkdir -p build && cd build

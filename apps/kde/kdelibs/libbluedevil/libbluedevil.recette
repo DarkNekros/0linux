@@ -3,8 +3,8 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-libbluedevil}
-VERSION=${VERSION:-1.9.3}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-1.9.4}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-libbluedevil}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques pour l'utilisation de périphériques Bluetooth"

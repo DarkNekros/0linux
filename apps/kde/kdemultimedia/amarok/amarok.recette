@@ -3,7 +3,7 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-amarok}
-VERSION=${VERSION:-2.7.1}
+VERSION=${VERSION:-2.8.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-amarok}
 WGET=${WGET:-http://download.kde.org/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}

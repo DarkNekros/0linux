@@ -1,0 +1,18 @@
+Auteur : Geoffray Levasseur <fatalerrors@geoffray-levasseur.org>
+Permet de compiler kvirc avec un noyau linux >= 3.2
+
+--- kvirc-4.3.1-r6296.orig/src/kvilib/ext/avdevice/videodevice.cpp	2012-01-13 13:53:32.000000000 +0000
++++ kvirc-4.3.1-r6296/src/kvilib/ext/avdevice/videodevice.cpp		2013-09-22 08:46:59.968901157 +0000
+@@ -3089,8 +3089,12 @@
+ 		case V4L2_CID_GAIN:			return __tr("Gain");
+ 		case V4L2_CID_HFLIP:			return __tr("Horizontal Flip");
+ 		case V4L2_CID_VFLIP:			return __tr("Vertical Flip");
++#ifdef V4L2_CID_HCENTER			// removed since kernel 3.2.0
+ 		case V4L2_CID_HCENTER:			return __tr("Horizontal Center");
++#endif
++#ifdef V4L2_CID_VCENTER			// removed since kernel 3.2.0
+ 		case V4L2_CID_VCENTER:			return __tr("Vertical Center");
++#endif
+ #ifdef V4L2_CID_POWER_LINE_FREQUENCY	// since kernel 2.6.25
+ 		case V4L2_CID_POWER_LINE_FREQUENCY:	return __tr("Power Line Frequency");
+ 		case V4L2_CID_HUE_AUTO:			return __tr("Automatic Hue");
