@@ -3,10 +3,10 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-cfitsio}
-VERSION=${VERSION:-3350}
+VERSION=${VERSION:-3.350}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-cfitsio}
-WGET=${WGET:-http://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/$NAMESRC$VERSION.$EXT}
+WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques permettant de lire des fichiers de données de la NASA"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -28,10 +28,11 @@ cflags
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On installe des docs supplémentaires
-cp *.doc *.pdf ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
-
 installer_doc
+
+# On installe des docs supplémentaires :
+cp -a *.doc *.pdf ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
 creer_post_installation
 stripper
 empaqueter
