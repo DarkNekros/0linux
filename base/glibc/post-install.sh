@@ -1,7 +1,7 @@
 # On passe à la nouvelle libc. 
 
 # On copie les nouvelles bibliothèques venant du tampon :
-for newlib in usr/eglibc_tampon/*.newlib; do
+for newlib in usr/libc_tampon/*.newlib; do
 	busybox cp -af ${newlib} usr/libARCH/
 done
 
@@ -25,7 +25,7 @@ for newlib in usr/libARCH/*.newlib ; do
 done
 
 # On peut supprimer la libc tampon :
-busybox rm -rf usr/eglibc_tampon
+busybox rm -rf usr/libc_tampon
 
 # On recrée les liens à la main  :
 busybox ln -sf            libc-VERSION.so usr/libARCH/libc.so.6 
@@ -47,7 +47,7 @@ busybox ln -sf                libnsl.so.1 usr/libARCH/libnsl.so
 busybox ln -sf   libnss_compat-VERSION.so usr/libARCH/libnss_compat.so.2
 busybox ln -sf         libnss_compat.so.2 usr/libARCH/libnss_compat.so
 busybox ln -sf       libnss_db-VERSION.so usr/libARCH/libnss_db.so.2
-busybox ln -sf     libnss_db-VERSION.so.2 usr/libARCH/libnss_db.so
+busybox ln -sf             libnss_db.so.2 usr/libARCH/libnss_db.so
 busybox ln -sf      libnss_dns-VERSION.so usr/libARCH/libnss_dns.so.2
 busybox ln -sf            libnss_dns.so.2 usr/libARCH/libnss_dns.so
 busybox ln -sf    libnss_files-VERSION.so usr/libARCH/libnss_files.so.2
@@ -71,5 +71,5 @@ busybox ln -sf               libutil.so.1 usr/libARCH/libutil.so
 # On met à jour l'éditeur de liens :
 ldconfig -r . 2>/dev/null
 
-# On recharge 'init' (c'est en fait 'systemd' qui s'en occupe à présent) :
+# On recharge 'init' :
 usr/sbin/telinit u 2>/dev/null
