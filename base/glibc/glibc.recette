@@ -136,23 +136,23 @@ fakeroot make -j${JOBS} localedata/install-locales install_root=${PKG}
 
 # On déplace toutes les bibliothèques dans un répertoire (hors bibliothèques)
 # qui fera tampon pour des mises à niveau transparentes :
-mkdir -p ${PKG}/usr/eglibc_tampon
-mv ${PKG}/lib${LIBDIRSUFFIX}/*so* ${PKG}/usr/eglibc_tampon/ || true
-mv ${PKG}/usr/lib${LIBDIRSUFFIX}/*so* ${PKG}/usr/eglibc_tampon/
+mkdir -p ${PKG}/usr/libc_tampon
+mv ${PKG}/lib${LIBDIRSUFFIX}/*so* ${PKG}/usr/libc_tampon/ || true
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/*so* ${PKG}/usr/libc_tampon/
 
 # Sauf celle-ci qu'on remet en place :
-mv ${PKG}/usr/eglibc_tampon/libSegFault.so ${PKG}/usr/lib${LIBDIRSUFFIX}/
+mv ${PKG}/usr/libc_tampon/libSegFault.so ${PKG}/usr/lib${LIBDIRSUFFIX}/
 
 # On ne conserve que les bibliothèques dynamiques et les liens :
-rm -f ${PKG}/usr/eglibc_tampon/*.{a,map}
+rm -f ${PKG}/usr/libc_tampon/*.{a,map}
 
 # On supprime tous les liens symboliques, on les créera nous-même en post-installation :
-find ${PKG}/usr/eglibc_tampon -type l -delete || true
+find ${PKG}/usr/libc_tampon -type l -delete || true
 find ${PKG}/lib${LIBDIRSUFFIX} -type l -delete || true
 find ${PKG}/usr/lib${LIBDIRSUFFIX} -type l -delete || true
 
 # On renomme ce qui reste avec une extension '.newlib' :
-for newlib in ${PKG}/usr/eglibc_tampon/*; do
+for newlib in ${PKG}/usr/libc_tampon/*; do
 	mv ${newlib}{,.newlib}
 done
 
@@ -186,7 +186,7 @@ stripper
 empaqueter
 
 # On nettoie derrière nous :
-rm -rf $TMP/eglibc-build*
+rm -rf $TMP/glibc-build*
 rm -f $TMP/{i686,${PKGARCH}}
 
 # C'est fini.
