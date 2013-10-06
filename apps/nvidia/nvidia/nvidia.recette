@@ -42,6 +42,9 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+# On corrige la compilation avec Linux 3.11 et plus :
+sed -i 's@#define NV_NUM_PHYSPAGES                num_physpages@#define NV_NUM_PHYSPAGES                totalram_pages@' kernel/nv-linux.h
+
 # On compile le module noyau :
 cd kernel
 SYSSRC=/lib/modules/$(uname -r)/build make module
