@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-freeciv}
-VERSION=${VERSION:-2.3.2}
+VERSION=${VERSION:-2.4.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-freeciv}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
