@@ -37,12 +37,19 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	HAVE_IP_TOOLS=1 HAVE_MII=1 \
 	make 
-	
+
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	HAVE_IP_TOOLS=1 HAVE_MII=1 \
+	make -j${JOBS} hostname || \
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	HAVE_IP_TOOLS=1 HAVE_MII=1 \
 	make hostname
 
 fakeroot make update BASEDIR=${PKG}
+
+# On inclut le programme de Slackware pour l'extraction de données réseau :
+cc -O2 -o ${PKG}/bin/ipmask $CWD/ipmask.c
+chmod 755 ${PKG}/bin/ipmask
 
 # On déplace ces binaires où il faut :
 mv ${PKG}/{,s}bin ${PKG}/usr/
@@ -59,6 +66,9 @@ ln -sf hostname ${PKG}/usr/bin/ypdomainname
 # On déplace les manuels :
 mv ${PKG}/usr/share/man ${PKG}/usr/
 rm -rf ${PKG}/usr/share
+
+# On copie le manuel de 'ipmask' :
+cp -a $CWD/ipmask.8 ${PKG}/usr/man/man8/
 
 installer_doc
 creer_post_installation

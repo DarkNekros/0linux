@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-17.0.8}
+VERSION=${VERSION:-24.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-thunderbird}
 . /usr/share/0outils/fonctions_paquets.sh

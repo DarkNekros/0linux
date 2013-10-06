@@ -78,11 +78,6 @@ EOF
 
 installer_doc
 creer_post_installation
-
-# On complète la post-installation :
-echo "chown polkitd etc/polkit-1/rules.d" >> ${PKG}/post-install.sh
-echo "chown polkitd usr/share/polkit-1/rules.d" >> ${PKG}/post-install.sh
-
 stripper
 empaqueter
 

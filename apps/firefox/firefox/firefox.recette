@@ -148,7 +148,7 @@ ln -sf /usr/share/icons/hicolor/256x256/apps/firefox.png ${PKG}/usr/share/pixmap
 install -Dm644 browser/branding/official/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/firefox-${VERSION}/icons/
 install -Dm644 browser/branding/official/default16.png ${PKG}/usr/lib${LIBDIRSUFFIX}/firefox-${VERSION}/chrome/icons/default/
 
-# On ajoute le fichier corrigeant la CSS pour les thÃ¨mes GTK sombres et les types MIME pour Thunderbird :
+# On ajoute le fichier corrigeant la CSS pour les thèmes GTK sombres et les types MIME pour Thunderbird :
 cp -a $CWD/userChrome.css ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/profile/
 cp -a $CWD/mimeTypes.rdf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/profile/
 

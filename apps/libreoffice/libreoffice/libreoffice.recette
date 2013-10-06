@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-LibreOffice}
-VERSION=${VERSION:-4.1.1}
+VERSION=${VERSION:-4.1.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libreoffice}
 . /usr/share/0outils/fonctions_paquets.sh

@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-base-systeme}
-VERSION=${VERSION:-3.9}
+VERSION=${VERSION:-4.0}
 NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 
@@ -131,9 +131,9 @@ txt2tags -t man  -o ${PKG}/usr/man/man7/0linux.7                     $CWD/0linux
 # On crée ce fichier pour identifier le système :
 cat > ${PKG}/etc/os-release << "EOF"
 NAME=0Linux
-VERSION="II"
+VERSION="zeta"
 ID=0linux
-VERSION_ID=II
+VERSION_ID=zeta
 PRETTY_NAME="0Linux"
 ANSI_COLOR="1;32"
 HOME_URL="http://0linux.org/"

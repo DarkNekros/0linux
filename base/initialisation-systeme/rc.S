@@ -108,18 +108,7 @@ if [ ! $LECTURESEULE = non ]; then
 
 	# On remonte le système de fichiers racine en lecture-écriture :
 	echo "Remontage du système de fichiers racine en mode lecture-écriture."
-	mount -v -w -n -o remount /
-
-	# Traitement des erreurs de montage :
-	if [ $? -gt 0 ] ; then
-		echo "IMPORTANT : Échec à la tentative de montage du système de fichiers"
-		echo "racine en lecture-écriture. Nous avons là un sérieux probléme."
-		echo
-		echo "Veuillez appuyer sur ENTRÉE pour continuer puis redémarrez après avoir"
-		echo "examiné sérieusement votre machine et sa configuration."
-		read blabla;
-	fi
-	
+	mount -v -n -w -o remount /
 else
 	echo "Évaluation du système de fichiers racine : lecture-écriture."
 	echo ""
@@ -137,7 +126,8 @@ else
 fi
 
 # On remonte la partition racine pour générer un nouveau fichier /etc/mtab :
-mount -v -w -o remount /
+rm -f /etc/mtab /etc/mtab~ /etc/mtab.tmp && touch /etc/mtab
+mount -v -f -w  /
 
 # Ces répertoires viennent souvent à manquer, on s'assure qu'ils sont bien là :
 mkdir -p /dev/{pts,shm}
