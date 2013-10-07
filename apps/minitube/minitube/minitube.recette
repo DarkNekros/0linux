@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-minitube}
-VERSION=${VERSION:-2.0}
+VERSION=${VERSION:-2.1.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-minitube}
 WGET=${WGET:-http://flavio.tordini.org/files/$NAMESRC/$NAMESRC-$VERSION.$EXT}
