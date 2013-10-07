@@ -22,8 +22,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
+	--mandir=${PKG}/usr/man \
+	--infodir=${PKG}/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 

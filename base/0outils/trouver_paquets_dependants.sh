@@ -24,9 +24,9 @@ chercher_dep() {
 				# On supprime le champ ajouté par 'grep', le répertoire des listes, ainsi que 'version-arch-compteur' pour
 				# ne garder que le nom des paquets, qu'on trie dans l'ordre alphabétique et sans doublon, dont on supprime
 				# le paquet concerné :
-				done | sed -e 's@:.*$@@' -e 's@/var/log/paquets/@@' -e 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n | sed -e "/^${paquet}$/d" | sort -u
+				done | sed -e 's@:.*$@@' -e 's@/var/log/paquets/@@' -e 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n | sed -e "/^${paquet}$/d"
 			fi
-		done
+		done | sort -u
 	done
 }
 

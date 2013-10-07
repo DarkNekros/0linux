@@ -4,7 +4,7 @@
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-ddrescue}
 VERSION=${VERSION:-1.17}
-EXT=${EXT:-tar.gz}
+EXT=${EXT:-tar.lz}
 NAMETGZ=${NAMETGZ:-ddrescue}
 WGET=${WGET:-http://ftp.gnu.org/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Génération d'images pour disques durs endommagés"

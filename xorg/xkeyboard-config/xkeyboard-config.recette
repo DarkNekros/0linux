@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-xkeyboard-config}
-VERSION=${VERSION:-2.9}
+VERSION=${VERSION:-2.10.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xkeyboard-config}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/data/$NAMESRC/$NAMESRC-$VERSION.$EXT}

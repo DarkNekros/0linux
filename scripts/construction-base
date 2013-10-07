@@ -2,6 +2,7 @@ busybox
 base-systeme
 tzdata
 glibc
+enveloppe_multiarch
 0outils
 spack
 man-pages
@@ -10,6 +11,7 @@ zlib
 gzip
 bzip2
 xz
+lzip
 tar
 gmp
 mpfr

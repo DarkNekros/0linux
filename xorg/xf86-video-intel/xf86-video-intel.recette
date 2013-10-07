@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-xf86-video-intel}
-VERSION=${VERSION:-2.21.14}
+VERSION=${VERSION:-2.21.15}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xf86-video-intel}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT}
@@ -14,19 +14,6 @@ DESC="Pilotes graphiques pour X11"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On supprime une inclusion et une fonction obsolètes :
-grep -r -l '#include "mibstore.h"' * 2>/dev/null | while read fichier ; do
-	sed -i "s@#include \"mibstore.h\"@@g" $fichier
-done
-
-grep -r -l '#include <mibstore.h>' * 2>/dev/null | while read fichier ; do
-	sed -i "s@#include <mibstore.h>@@g" $fichier
-done
-
-grep -r -l 'miInitializeBackingStore(pScreen);' * 2>/dev/null | while read fichier ; do
-	sed -i "s@miInitializeBackingStore(pScreen);@@g" $fichier
-done
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

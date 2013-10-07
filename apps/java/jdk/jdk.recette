@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-jdk}
-VERSION=${VERSION:-7u25}
+VERSION=${VERSION:-7u40}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-jdk}
 
