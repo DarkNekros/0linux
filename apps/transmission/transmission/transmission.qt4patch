@@ -1,0 +1,74 @@
+Index: /trunk/qt/README.txt
+===================================================================
+--- /trunk/qt/README.txt	(revision 14162)
++++ /trunk/qt/README.txt	(revision 14163)
+@@ -37,7 +37,7 @@
+ BUILDING ON UNIX
+ 
+-   1. Prerequisites: Qt >= 5 and its development packages
++   1. Prerequisites: Qt >= 4.6 and its development packages
+    2. Build Transmission as normal
+-   3. In the qt/ directory, type "qmake qtr.pro" or "qmake-qt5 qtr.pro"
++   3. In the qt/ directory, type "qmake qtr.pro" (or "qmake-qt4 qtr.pro", or "qmake-qt5 qtr.pro")
+    4. In the qt/ directory, type "make"
+    5. In the qt/ directory, as root, type "INSTALL_ROOT=/usr make install"
+Index: /trunk/qt/favicon.cc
+===================================================================
+--- /trunk/qt/favicon.cc	(revision 14162)
++++ /trunk/qt/favicon.cc	(revision 14163)
+@@ -15,5 +15,10 @@
+ #include <QNetworkReply>
+ #include <QNetworkRequest>
+-#include <QStandardPaths>
++
++#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
++ #include <QDesktopServices>
++#else
++ #include <QStandardPaths>
++#endif
+ 
+ #include "favicon.h"
+@@ -41,5 +46,11 @@
+ Favicons :: getCacheDir( )
+ {
+-    const QString base = QStandardPaths::writableLocation (QStandardPaths::CacheLocation);
++    const QString base =
++#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
++        QDesktopServices::storageLocation( QDesktopServices::CacheLocation );
++#else
++        QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
++#endif
++
+     return QDir( base ).absoluteFilePath( "favicons" );
+ }
+Index: /trunk/qt/file-tree.cc
+===================================================================
+--- /trunk/qt/file-tree.cc	(revision 14162)
++++ /trunk/qt/file-tree.cc	(revision 14163)
+@@ -886,5 +886,10 @@
+     {
+       setColumnHidden (i, (i<FIRST_VISIBLE_COLUMN) || (LAST_VISIBLE_COLUMN<i));
++
++#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
++      header()->setResizeMode(i, QHeaderView::Interactive);
++#else
+       header()->setSectionResizeMode(i, QHeaderView::Interactive);
++#endif
+     }
+ 
+Index: /trunk/qt/qtr.pro
+===================================================================
+--- /trunk/qt/qtr.pro	(revision 14162)
++++ /trunk/qt/qtr.pro	(revision 14163)
+@@ -13,6 +13,10 @@
+ 
+ CONFIG += qt thread debug link_pkgconfig
+-QT += network dbus widgets
++QT += network dbus
+ PKGCONFIG = fontconfig libcurl openssl libevent
++
++greaterThan(QT_MAJOR_VERSION, 4) {
++    QT += widgets
++}
+ 
+ TRANSMISSION_TOP = ..

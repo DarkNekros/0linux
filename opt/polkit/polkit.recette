@@ -49,7 +49,7 @@ mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d/
 cat > ${PKG}//etc/polkit-1/localauthority/50-local.d/20-montages-plugdev.pkla << "EOF"
 [plugdev pour les montages]
 Identity=unix-group:plugdev
-Action=org.freedesktop.udisks.*;org.freedesktop.udisks2.*
+Action=org.freedesktop.udisks*
 ResultAny=yes
 ResultInactive=yes
 ResultActive=yes

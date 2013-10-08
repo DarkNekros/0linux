@@ -15,6 +15,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On permet la compilation sans Qt5 (merci à mikdld) :
+cat $CWD/transmission.qt4.patch | patch -p1
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
