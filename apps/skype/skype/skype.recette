@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-skype}
+VERSION=${VERSION:-4.2.0.11}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-skype}
+WGET=${WGET:-http://download.skype.com/linux/$NAMESRC-$VERSION.$EXT}
+DESC="Programme pair-à-pair de transmission voix/vidéo sur IP"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+PKG=$TMP/build/${NAMETGZ}
+mkdir -p ${PKG}/etc/dbus-1/system.d
+mkdir -p ${PKG}/usr/bin
+mkdir -p ${PKG}/usr/share/{applications,pixmaps,skype}
+
+# On copie le binaire :
+cp -a skype ${PKG}/usr/bin
+chmod 0755 ${PKG}/usr/bin/skype
+
+# On copie les ressources, avatars et sons :
+cp -a {avatars,lang,sounds} ${PKG}/usr/share/skype
+
+# On copie le raccourci :
+cat skype.desktop > $PKG/usr/share/applications/skype.desktop
+
+# On copie l'icôe :
+cat icons/SkypeBlue_48x48.png > ${PKG}/usr/share/pixmaps/skype.png
+
+# On copie la configuration D-BUS :
+cat skype.conf > ${PKG}/etc/dbus-1/system.d/skype.conf
+
+# On corrige les permissions des sons :
+chmod 644 ${PKG}/usr/share/skype/sounds/*
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
