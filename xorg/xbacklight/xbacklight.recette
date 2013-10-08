@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-xbacklight}
-VERSION=${VERSION:-1.2.0}
+VERSION=${VERSION:-1.2.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xbacklight}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT}

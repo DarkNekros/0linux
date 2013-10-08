@@ -3,15 +3,58 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-sqlite}
-VERSION=${VERSION:-3.7.17}
+VERSION=${VERSION:-3.8.0.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sqlite}
-WGET=${WGET:-http://www.sqlite.org/2013/$NAMESRC-autoconf-3071602.$EXT} # Numéro de version différente !
+WGET=${WGET:-http://www.sqlite.org/2013/$NAMESRC-autoconf-3080002.$EXT} # Numéro de version différente !
 DESC="Moteur de bases de données SQL autonome"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS} -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_COLUMN_METADATA=1 \
+	-DSQLITE_ENABLE_UNLOCK_NOTIFY -DSQLITE_SECURE_DELETE" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# Compilation de l'extension Tcl « TEA » :
+	cd tea
+	
+	CFLAGS="${FLAGS} -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_COLUMN_METADATA=1 \
+	-DSQLITE_ENABLE_UNLOCK_NOTIFY -DSQLITE_SECURE_DELETE" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--build=${PKGARCH}-0linux-linux-gnu
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
@@ -31,9 +74,9 @@ CFLAGS="${FLAGS} -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_COLUMN_METADATA=1 \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# Compilation de l'extension Tcl « TEA » :
 cd tea
 
-# Compilation de l'extension Tcl « TEA » :
 CFLAGS="${FLAGS} -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_COLUMN_METADATA=1 \
 -DSQLITE_ENABLE_UNLOCK_NOTIFY -DSQLITE_SECURE_DELETE" \
 ./configure \
@@ -48,8 +91,6 @@ CFLAGS="${FLAGS} -DSQLITE_ENABLE_FTS3=1 -DSQLITE_ENABLE_COLUMN_METADATA=1 \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-cd -
 
 installer_doc
 creer_post_installation
