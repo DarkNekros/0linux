@@ -1,111 +1,42 @@
 #!/usr/bin/env bash
 
-unset X11DM CHOIXDM
+unset RUNLEVEL4 XDE XINITRC
 
-# Si l'on est root, on définit le gestionnaire de connexion graphique par défaut :
+# Si l'on est root :
 if [ "$(whoami)" = "root" ]; then
 	while [ 0 ]; do
 		clear
-		echo -e "\033[1;32mChoix du gestionnaire de connexion graphique.\033[0;0m"
+		echo -e "\033[1;32mChoix du type de démarrage.\033[0;0m"
 		echo ""
-		echo "Veuillez entrer le code du gestionnaire de connexion par défaut"
-		echo "qui servira à vous connecter et à choisir le type d'environnement"
-		echo "graphique à démarrer."
+		echo "Souhaitez-vous que le système démarre automatiquement en mode graphique"
+		echo "(niveau d'exécution 4) ou voulez-vous limiter le démarrage au mode"
+		echo "console (niveau d'exécution 3) ? Entrez le numéro approprié parmi"
+		echo "la liste suivante (appuyez sur ENTRÉE pour ignorer cette étape et"
+		echo "accepter le choix CONSOLE par défaut) :"
 		echo ""
-		echo "Appuyez sur ENTRÉE pour ignorer cette étape."
-		echo ""
-
-			echo "0 : Console  - Ne pas démarrer X et utiliser la console."
-		# On teste la présence de fichiers service des gestionnaires :
-		if [ -r /usr/lib/systemd/system/entrance.service -o -r /etc/systemd/system/entrance.service ]; then
-			echo "1 : Entrance - Gestionnaire complet fourni avec Enlightenment"
-		fi
-		if [ -r /usr/lib/systemd/system/gdm.service -o -r /etc/systemd/system/gdm.service ]; then
-			echo "2 : GDM      - Gestionnaire complet en GTK+ fourni avec GNOME"
-		fi
-		if [ -r /usr/lib/systemd/system/kdm.service -o -r /etc/systemd/system/kdm.service ]; then
-			echo "3 : KDM      - Gestionnaire complet en Qt fourni avec KDE"
-		fi
-		if [ -r /usr/lib/systemd/system/lightdm.service -o -r /etc/systemd/system/lightdm.service ]; then
-			echo "4 : LightDM  - Gestionnaire léger indépendant compatible tous bureaux"
-		fi
-		if [ -r /usr/lib/systemd/system/lxdm.service -o -r /etc/systemd/system/lxdm.service ]; then
-			echo "5 : LXDM     - Gestionnaire léger fourni avec l'environnement LXDE"
-		fi
-		if [ -r /usr/lib/systemd/system/slim.service -o -r /etc/systemd/system/slim.service ]; then
-			echo "6 : Slim     - Gestionnaire léger indépendant personnalisable"
-		fi
-		if [ -r /usr/lib/systemd/system/xdm.service -o -r /etc/systemd/system/xdm.service ]; then
-			echo "7 : XDM      - Gestionnaire rudimentaire fourni avec X (ne gère pas les sessions)"
-		fi
-		
+		echo "1 : GRAPHIQUE - Chargement auto du Gestionnaire de connexion graphique"
+		echo "2 : CONSOLE   - Mode texte classique, démarrage graphique manuel"
 		echo ""
 		echo -n "Votre choix : "
-		read CHOIXDM;
-		case "$CHOIXDM" in
-		"")
-			# Si rien n'est activé, 'systemd' va bloquer au démarrage commme un abruti qu'il est.
-			# On scanne toutes les unités et on active 'multi-user.target' si rien d'autre n'est activé :
-			if [ "$(systemctl is-enabled entrance)" = "disabled" -a \
-				 "$(systemctl is-enabled gdm)" = "disabled" -a \
-				 "$(systemctl is-enabled kdm)" = "disabled" -a \
-				 "$(systemctl is-enabled lightdm)" = "disabled" -a \
-				 "$(systemctl is-enabled lxdm)" = "disabled" -a \
-				 "$(systemctl is-enabled slim)" = "disabled" -a \
-				 "$(systemctl is-enabled xdm)" = "disabled" -a \
-				 "$(systemctl is-enabled multi-user.target)" = "disabled" ]; then
-				X11DM="multi-user.target"
+		read RUNLEVEL4;
+		if [ "$RUNLEVEL4" = "" ]; then
+			break
+		else
+			if [ "$RUNLEVEL4" = "2" ]; then
+				break
+			elif [ "$RUNLEVEL4" = "1" ]; then
+				# On modifie '/etc/inittab :
+				sed -i "s/id:3:initdefault/id:4:initdefault/" /etc/inittab
+				break
+			else
+				echo "Veuillez entrer un chiffre entre 1 et 2 uniquement."
+				unset RUNLEVEL4
+				sleep 2
+				continue
 			fi
-			break
-		;;
-		"0")
-			X11DM="multi-user.target"
-			break
-		;;
-		"1")
-			X11DM="entrance"
-			break
-		;;
-		"2")
-			X11DM="gdm"
-			break
-		;;
-		"3")
-			X11DM="kdm"
-			break
-		;;
-		"4")
-			X11DM="lightdm"
-			break
-		;;
-		"5")
-			X11DM="lxdm"
-			break
-		;;
-		"6")
-			X11DM="slim"
-			break
-		;;
-		"7")
-			X11DM="xdm"
-			break
-		;;
-		*)
-			echo "Veuillez entrer un numéro valide (entre 1 et 7) ou appuyez"
-			echo "sur ENTRÉE."
-			sleep 2
-			unset CHOIXDM
-			continue
-		esac
+		fi
 	done
-	
-	# On active le gestionnaire de connexion choisi à l'aide de 'systemd' :
-	if [ -n "${X11DM}" ]; then
-		systemctl enable ${X11DM} >/dev/null 2>&1
-	fi
 fi
-
-unset XDE XINITRC
 
 # On propose un bureau à activer par défaut pour 'xdm' ou 'startx' :
 while [ 0 ]; do
@@ -123,32 +54,25 @@ while [ 0 ]; do
 	
 	# On teste la présence de fichiers de démarrage X pour chaque bureau :
 	if [ -r /etc/X11/xinit/xinitrc.e ]; then
-		echo "1 : Enlightenment - Environnement graphique léger original"
-		echo "    Original, scriptable et modulaire."
+		echo "1 : Enlightenment - Environnement graphique léger original."
 	fi
 	if [ -r /etc/X11/xinit/xinitrc.fluxbox ]; then
-		echo "2 : Fluxbox       - Gestionnaire de fenêtres léger"
-		echo "    Épuré et basé sur BlackBox, pour utilisateurs avertis."
+		echo "2 : Fluxbox       - Gestionnaire de fenêtres léger pour avertis."
 	fi
 	if [ -r /etc/X11/xinit/xinitrc.kde ]; then
-		echo "3 : KDE           - Environnement de bureau convivial complet"
-		echo "    Bureau complet en Qt contenant de nombreux logiciels."
+		echo "3 : KDE           - Environnement de bureau convivial complet."
 	fi
 	if [ -r /etc/X11/xinit/xinitrc.razor-qt ]; then
-		echo "4 : Razor-qt      - Environnement de bureau léger"
-		echo "    Alternative légère à KDE en Qt."
+		echo "4 : Razor-qt      - Environnement de bureau léger alternatif à KDE."
 	fi
 	if [ -r /etc/X11/xinit/xinitrc.twm ]; then
 		echo "5 : twm           - Gestionnaire de fenêtres basique."
-		echo "    Rudimentaire, fourni en standard avec X."
 	fi
 	if [ -r /etc/X11/xinit/xinitrc.xbmc ]; then
-		echo "6 : XBMC          - Centre multimédia autonome"
-		echo "    Environnement multimédia de type « Media center »."
+		echo "6 : XBMC          - Centre multimédia autonome (ou « Media Center »)."
 	fi
 	if [ -r /etc/X11/xinit/xinitrc.xfce ]; then
-		echo "7 : Xfce          - Environnement de bureau léger"
-		echo "    Bureau en GTK+ classique et complet. Alternative légère à GNOME."
+		echo "7 : Xfce          - Environnement de bureau léger alternatif à GNOME."
 	fi
 	
 	echo ""
