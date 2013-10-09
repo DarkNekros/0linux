@@ -93,9 +93,9 @@ sed -i -e "s:$PKG::g" $PKG/usr/lib$LIBDIRSUFFIX/fpc/$VERSION/ide/text/fp.cfg
 echo -e "#ifdef cpux86_64\n# for x86_64 use -fPIC by default\n-Cg\n#endif" >> "$PKG/etc/fpc.cfg"
 
 # On renome les fichiers de configuration
-mv $PKG/etc/fpc.cfg{,0nouveau}
-mv $PKG/etc/fppkg.cfg{,0nouveau}
-mv $PKG/etc/fppkg/default{,0nouveau}
+mv $PKG/etc/fpc.cfg{,.0nouveau}
+mv $PKG/etc/fppkg.cfg{,.0nouveau}
+mv $PKG/etc/fppkg/default{,.0nouveau}
 
 # On installe la doc
 cp -a $TMP/$NAMESRC-$VERSION.$FPARCH-linux/doc/* $PKG/usr/doc/$NAMETGZ-$VERSION
