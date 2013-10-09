@@ -3,10 +3,10 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-openimageio}
-VERSION=${VERSION:-1.1}
+VERSION=${VERSION:-1.2}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-openimageio}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC/${NAMESRC}-${VERSION}.${EXT}}
+WGET=${WGET:-http://0linux.geoffray-levasseur.org/${NAMESRC}-${VERSION}.${EXT}}
 DESC="Bibliothèques de lecture et écriture d'images par plug-in"
 
 . /usr/share/0outils/fonctions_paquets.sh
