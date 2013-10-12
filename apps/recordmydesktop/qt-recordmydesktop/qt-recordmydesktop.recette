@@ -15,6 +15,13 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige la détection de PyQt :
+cat $CWD/qt-recordmydesktop.pyqt4.patch | patch -p1
+sed -i -e '/^PKG_CHECK_MODULES/d' configure.ac
+
+# On doit donc régénérer le système de construction :
+autoreconf -vif
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \

@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-PyQt-x11-gpl}
-VERSION=${VERSION:-4.10.1}
+VERSION=${VERSION:-4.10.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-pyqt}
 WGET=${WGET:-http://prdownloads.sourceforge.net/pyqt/$NAMESRC-$VERSION.$EXT}
@@ -29,7 +29,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 QMAKESPEC=linux-g++-${GPP} \
 python configure.py \
 	--confirm-license \
-	--destdir=$(echo ${PYTHONLIB} | sed s#/lib/#/lib${LIBDIRSUFFIX}/#)
+	--destdir=${PYTHONLIB}
 
 # On supprime l'édition de liens en relatif :
 sed -i -e "s@-Wl,-rpath,/usr/lib${LIBDIRSUFFIX}@@g" -e "s@-Wl,-rpath,.* @@g" $(find . -type f -name "Makefile")
