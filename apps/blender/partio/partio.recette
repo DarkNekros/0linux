@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
+NAMESRC=${NAMESRC:-partio}
+VERSION=${VERSION:-1.1.0}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-partio}
+WGET=${WGET:-http://0linux.geoffray-levasseur.org/${NAMESRC}-${VERSION}.${EXT}}
+DESC="Bibliothèques de gestion d'entrée / sortie pour particules graphiques"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Empèche pleins de problèmes d'installation :
+sed -i "s@/src/py/partio.py@/py/partio.py@" src/py/CMakeLists.txt
+sed -i "/(src\/doc)/d" CMakeLists.txt
+
+# Si Walt Disney savait faire des CMakeFiles ça se saurait (prefixe délirant) :
+sed -i "/EXECUTE_PROCESS/d" CMakeLists.txt
+sed -i "/SET(CMAKE_INSTALL_PREFIX/d" CMakeLists.txt
+
+# Compilation :
+# Contrairement à l'usage avec CMake, ne pas créer de répertoire de compilation séparé sinon ça foire
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	./
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Les bibliothèques sont mal placés en x86_64 :
+if [ $LIBDIRSUFFIX ] ; then
+	mv $PKG/usr/lib{,$LIBDIRSUFFIX}
+fi
+
+# On vire les tests pour les développeur du projet :
+rm -rf ${PKG}/usr/test
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
