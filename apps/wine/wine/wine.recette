@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-wine}
-VERSION=${VERSION:-1.6}
+VERSION=${VERSION:-1.7.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-wine}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -51,7 +51,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	cflags i686
 	
 	# Compilation 32 bits :
-	CFLAGS="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" CXXFLAGS="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
+	CFLAGS+="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
+	CXXFLAGS+="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
 	$TMP/${NAME}/configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -69,12 +70,14 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	fakeroot make install prefix=${PKG}/usr libdir=/usr/lib${LIBDIRSUFFIX} dlldir=/usr/lib${LIBDIRSUFFIX}/wine
 	
 	# On installe maintenant le 64 bits :
+	cd $TMP/${NAME}/build-64
 	cflags
 	fakeroot make install prefix=${PKG}/usr libdir=/usr/lib${LIBDIRSUFFIX} dlldir=/usr/lib${LIBDIRSUFFIX}/wine
 else
 	
 	# Compilation 32 bits native pour les autres architectures :
-	CFLAGS="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" CXXFLAGS="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
+	CFLAGS+="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
+	CXXFLAGS+="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
 	$TMP/${NAME}/configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
