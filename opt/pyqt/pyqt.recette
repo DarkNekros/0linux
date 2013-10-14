@@ -15,27 +15,29 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On définit l'emplacement des modules Python :
-PYTHONLIB=$( python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' )
+# On corrige la détection de Phonon :
+sed -i 's@generate_code("phonon")@generate_code("phonon", extra_include_dirs=["/usr/include/phonon"])@g' configure.py
 
-# L'appel au compilateur change selon l'architecture :
-if [ "${PKGARCH}" = "i686" ]; then
-	GPP=32
-elif [ "${PKGARCH}" = "x86_64" ]; then
-	GPP=64
-fi
+# On corrige une inclusion absurde :
+grep -r -l '/usr/mkspecs/linux-g++' * 2>/dev/null | while read fichier ; do
+	sed -i "s@/usr/mkspecs/linux-g++@/usr/share/qt/mkspecs/linux-g++@g" $fichier
+done
 
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-QMAKESPEC=linux-g++-${GPP} \
+# Compilation :
+export QTDIR="/usr/lib${LIBDIRSUFFIX}/qt4"
+export CFLAGS="${FLAGS}"
+export CXXFLAGS="${FLAGS}"
+
 python configure.py \
 	--confirm-license \
-	--destdir=${PYTHONLIB}
+	--verbose
 
-# On supprime l'édition de liens en relatif :
-sed -i -e "s@-Wl,-rpath,/usr/lib${LIBDIRSUFFIX}@@g" -e "s@-Wl,-rpath,.* @@g" $(find . -type f -name "Makefile")
+# On corrige une inclusion absurde :
+grep -r -l '/usr/mkspecs/linux-g++' * 2>/dev/null | while read fichier ; do
+	sed -i "s@/usr/mkspecs/linux-g++@/usr/share/qt/mkspecs/linux-g++@g" $fichier
+done
 
-# Pas de parallélisation pour ce paquet :
-make
+make -j${JOBS} || make
 
 # INSTALL_ROOT est requis pour le module QtDesigner :
 fakeroot make install INSTALL_ROOT=${PKG} DESTDIR=${PKG}

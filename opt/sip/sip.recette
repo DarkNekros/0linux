@@ -15,17 +15,28 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On définit l'emplacement des modules Python :
-PYTHONLIB=$( python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' )
+# On corrige pour le respect de LIBDIRSUFFIX :
+sed -i "/lib_dir/s:\"lib\":\"lib${LIBDIRSUFFIX}\":" configure.py
+
+# Compilation avec Python 3 :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python3 configure.py
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On re-prépare les sources pour compiler avec Python 2 :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
 
 # On corrige pour le respect de LIBDIRSUFFIX :
 sed -i "/lib_dir/s:\"lib\":\"lib${LIBDIRSUFFIX}\":" configure.py
 
-# Compilation :
+# Compilation avec Python 2 :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-python configure.py --destdir=${PYTHONLIB}
+python configure.py
 
-make -j${JOBS} LINK='$(CXX)' || make LINK='$(CXX)'
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc

@@ -400,6 +400,13 @@ empaqueter() {
 		rm -rf ${PKG}/usr/share/pkgconfig
 	fi
 	
+	# On corrige les chemins contenant '/lib' codés en dur (et ils sont nombreux) :
+	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+		grep -E -r -l '/lib$' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/*.pc 2>/dev/null | while read fichier ; do
+			sed -i "s@/lib@/lib${LIBDIRSUFFIX}@g" $fichier
+		done
+	fi
+	
 	# On affecte des permissions correctes aux bibliothèques partagées :
 	find ${PKG}/lib* ${PKG}/usr/lib* -type f \! -perm 755 -iname "*.so*" 2>/dev/null | xargs file 2>/dev/null | grep "shared object" | cut -f 1 -d : | xargs chmod 755  2>/dev/null || true
 	
@@ -422,7 +429,8 @@ empaqueter() {
 	# On rend les fichiers profils exécutables :
 	find ${PKG}/etc/profile.d -type f -exec chmod 755 {} \; 2>/dev/null || true
 	
-	# On déplace les fichiers '*-gdb.py' sous une arborescence dédiée à 'gdb' :
+	# On déplace les fichiers '*-gdb.py' sous une arborescence dédiée à 'gdb', 
+	# sinon 'ldconfig' va se plaindre :
 	for fichiergdb in $(find ${PKG}/usr/lib* -type f -name "*-gdb.py" 2>/dev/null); do
 		mkdir -p ${PKG}/usr/share/gdb/auto-load/$($(echo dirname ${fichiergdb}) | sed "s@${PKG}@@")
 		cp -a ${fichiergdb} ${PKG}/usr/share/gdb/auto-load/$($(echo dirname ${fichiergdb}) | sed "s@${PKG}@@")/
