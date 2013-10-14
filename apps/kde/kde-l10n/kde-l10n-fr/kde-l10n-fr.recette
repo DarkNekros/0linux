@@ -3,7 +3,7 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-kde-l10n-fr}
-VERSION=${VERSION:-4.11.1}
+VERSION=${VERSION:-4.11.2}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kde-l10n-fr}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/kde-l10n/$NAMESRC-$VERSION.$EXT}
