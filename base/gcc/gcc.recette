@@ -15,6 +15,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées. 
 cflags
 
+# On corrige l'analyseur avec C++98 avec ce correctif des développeurs :
+cat $CWD/gcc.parse-c++98.patch | patch -p1
+
 # On se débarrasse du script 'fixincludes' :
 sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
 

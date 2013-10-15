@@ -18,24 +18,21 @@ cflags
 # On corrige la détection de Phonon :
 sed -i 's@generate_code("phonon")@generate_code("phonon", extra_include_dirs=["/usr/include/phonon"])@g' configure.py
 
+# On supprime le profil pour Python 3 :
+rm -r pyuic/uic/port_v3
+
 # On corrige une inclusion absurde :
-grep -r -l '/usr/mkspecs/linux-g++' * 2>/dev/null | while read fichier ; do
+grep -r -l '/usr/mkspecs/linux-g++' $TMP/${NAME} 2>/dev/null | while read fichier ; do
 	sed -i "s@/usr/mkspecs/linux-g++@/usr/share/qt/mkspecs/linux-g++@g" $fichier
 done
 
 # Compilation :
-export QTDIR="/usr/lib${LIBDIRSUFFIX}/qt4"
-export CFLAGS="${FLAGS}"
-export CXXFLAGS="${FLAGS}"
-
-python configure.py \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python configure-ng.py \
 	--confirm-license \
+	--qsci-api \
+	--trace \
 	--verbose
-
-# On corrige une inclusion absurde :
-grep -r -l '/usr/mkspecs/linux-g++' * 2>/dev/null | while read fichier ; do
-	sed -i "s@/usr/mkspecs/linux-g++@/usr/share/qt/mkspecs/linux-g++@g" $fichier
-done
 
 make -j${JOBS} || make
 

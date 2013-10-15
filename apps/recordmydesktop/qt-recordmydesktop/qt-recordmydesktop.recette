@@ -19,6 +19,7 @@ cflags
 cat $CWD/qt-recordmydesktop.jack.patch | patch -p0
 cat $CWD/qt-recordmydesktop.pyqt4.patch | patch -p1
 sed -i -e '/^PKG_CHECK_MODULES/d' configure.ac
+sed -i -e 's@^export PYQT4_VERSION=.*$@export PYQT4_VERSION=4.10.3@' configure.ac
 
 # On doit donc régénérer le système de construction :
 autoreconf -vif
