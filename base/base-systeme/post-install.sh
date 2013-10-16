@@ -78,7 +78,6 @@ basegid=(
 		"console:101"
 		"polkitd:102"
 		"gdm:120"
-		"systemd-journal:190"
 		"vboxusers:215"
 		)
 
@@ -106,7 +105,7 @@ baseuid=(
 		"gdm:42:42:Utilisateur GDM:/var/state/gdm:/usr/bin/false"
 		"avahi:44:44:Utilisateur Avahi:/dev/null:/usr/bin/false"
 		"oprofile:51:51:Utilisateur oprofile:/usr/bin:/usr/bin/false"
-		"tomcat:66:66:Utiliasteur Tomcat:/var/lib/tomcat:/usr/bin/false"
+		"tomcat:66:66:Utilisateur Tomcat:/var/lib/tomcat:/usr/bin/false"
 		"dovenull:74:74:Utiliateur non fiable pour dovecot:/var/empty:/usr/bin/false"
 		"dovecot:76:76:Utiliateur dovecot:/var/empty:/usr/bin/false"
 		"apache:80:80:Utilisateur Apache httpd:/srv/httpd:/usr/bin/false"
@@ -208,7 +207,6 @@ nobody:x:98:nobody
 nogroup:x:99:
 users:x:100:
 console:x:101:
-systemd-journal:x:190:
 vboxusers:x:215:
 lock:x:54:
 dovenull:x:74:

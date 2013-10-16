@@ -144,6 +144,11 @@ if [ -x /etc/rc.d/rc.cups ]; then
 	/etc/rc.d/rc.cups start
 fi
 
+# Lancement de VirtualBox :
+if [ -x /etc/rc.d/rc.vboxdrv ]; then
+	/etc/rc.d/rc.vboxdrv start
+fi
+
 # Lancement du script « local » personnel :
 if [ -x /etc/rc.d/rc.local ]; then
 	/etc/rc.d/rc.local
