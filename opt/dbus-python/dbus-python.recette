@@ -12,6 +12,29 @@ DESC="Interfaçage D-Bus - Python"
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
+
+# Compilation avec Python 3 :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+PYTHON=/usr/bin/python3 \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-html-docs=no \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Compilation avec Python 2 :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 

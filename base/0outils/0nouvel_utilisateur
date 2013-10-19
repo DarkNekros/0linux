@@ -80,7 +80,7 @@ fi
 
 # On crée maintenant l'utilisateur sans oublier les groupes supplémentaires :
 # NOTA : mettre '/usr/bin/bash' casse pas mal de programmes idiots qui lisent '/etc/shells' sans tester :
-useradd ${USERNM} -M -u ${USERID} -g users -G audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,systemd-journal,vboxusers,video,wheel -s /bin/sh
+useradd ${USERNM} -M -u ${USERID} -g users -G audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,vboxusers,video,wheel -s /bin/sh
 
 # On peut maintenant modifier les permissions :
 chown ${USERNM}.users /home/${USERNM}

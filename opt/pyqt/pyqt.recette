@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-PyQt-x11-gpl}
-VERSION=${VERSION:-4.10.3}
+VERSION=${VERSION:-4.9.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-pyqt}
 WGET=${WGET:-http://prdownloads.sourceforge.net/pyqt/$NAMESRC-$VERSION.$EXT}
@@ -18,21 +18,24 @@ cflags
 # On corrige la détection de Phonon :
 sed -i 's@generate_code("phonon")@generate_code("phonon", extra_include_dirs=["/usr/include/phonon"])@g' configure.py
 
-# On supprime le profil pour Python 3 :
-rm -r pyuic/uic/port_v3
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python configure.py \
+	--confirm-license \
+	--qsci-api \
+	--trace \
+	--verbose
 
 # On corrige une inclusion absurde :
 grep -r -l '/usr/mkspecs/linux-g++' $TMP/${NAME} 2>/dev/null | while read fichier ; do
 	sed -i "s@/usr/mkspecs/linux-g++@/usr/share/qt/mkspecs/linux-g++@g" $fichier
 done
 
-# Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-python configure-ng.py \
-	--confirm-license \
-	--qsci-api \
-	--trace \
-	--verbose
+# On supprime un répertoire de bibliothèques supplémentaire auquel il ne faut 
+# pas se lier en multilib sur x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	sed -i "s@-L/usr/lib@@g" $(find $TMP/${NAME} -type f -name "*.mk")
+fi
 
 make -j${JOBS} || make
 
@@ -41,7 +44,6 @@ fakeroot make install INSTALL_ROOT=${PKG} DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
-stripper
 empaqueter
 
 # C'est fini.

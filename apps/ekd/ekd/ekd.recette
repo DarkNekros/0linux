@@ -41,8 +41,13 @@ cp -a $CWD/ekd.desktop ${PKG}/usr/share/applications/
 # On place son icône :
 cp -a ${PKG}/usr/share/ekd/icone_ekd.png ${PKG}/usr/share/pixmaps/
 
-# On corrige le chemin dans le « binaire » 'ekd' :
-sed -i 's@/tmp/build/ekd@@' ${PKG}/usr/bin/ekd
+# On corrige le chemin dans le « binaire » 'ekd' (il contient $PKG) :
+cat > ${PKG}/usr/bin/ekd << "EOF"
+#!/bin/sh
+cd /usr/share/ekd && python ekd_gui.py
+
+EOF
+chmod +x ${PKG}/usr/bin/ekd
 
 installer_doc
 creer_post_installation

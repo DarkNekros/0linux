@@ -30,9 +30,9 @@ cat $CWD/python.CVE-2013-2099.patch | patch -p1
 cat $CWD/python3.lib64.patch | sed "s@lib64@lib${LIBDIRSUFFIX}@g" | patch -p1
 
 # On corrige une idiotie :
-sed -i "s@local/bin/python@#bin/python3@" Lib/cgi.py
+sed -i "s@local/bin/python@bin/python3@" Lib/cgi.py
 
-# Compilation (on conserve l'optimisation interne -O3 :
+# Compilation (on conserve l'optimisation interne -O3) :
 CFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" CXXFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" \
 ./configure \
 	--prefix=/usr \
@@ -76,7 +76,7 @@ cflags
 cat $CWD/python.lib64.patch | sed "s@lib64@lib${LIBDIRSUFFIX}@g" | patch -p1
 
 # On corrige une idiotie :
-sed -i "s@local/bin/python@#bin/python2@" Lib/cgi.py
+sed -i "s@local/bin/python@bin/python2@" Lib/cgi.py
 
 # On corrige un chemin de bianire non existant :
 sed -i "s/python2.3/python2/g" \

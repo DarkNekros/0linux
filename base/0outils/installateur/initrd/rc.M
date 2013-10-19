@@ -20,7 +20,7 @@ fi
 
 # On tente d'activer le réseau :
 if [ -x /etc/rc.d/rc.reseau ]; then
-	. /etc/rc.d/rc.reseau
+	. /etc/rc.d/rc.reseau start
 fi
 
 # Montage du reste des systèmes de fichiers :

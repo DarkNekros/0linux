@@ -42,10 +42,8 @@ else
 		spackadd --root=${SETUPROOT} ${MEDIACHOISI}/base/${paq}.spack 2>/dev/null
 	done
 	
-	# On installe tout le reste de 'base/' 'opt/' et xorg/  sauf linux* et les paquets
-	# contenant des modules noyau, qu'on installera en dernier :
-	for subdir in base opt xorg; do
-		for paquet in $(find ${MEDIACHOISI}/${subdir} -type f \( \
+	# On installe tout le reste de 'base/' sauf Linux qu'on installera en dernier :
+	for paquet in $(find ${MEDIACHOISI}/base -type f \( \
 		-name "*.spack" \
 		\! -name "base-systeme-*" \
 		\! -name "bash-*" \
@@ -53,22 +51,24 @@ else
 		\! -name "glibc-*" \
 		\! -name "linux-*" \
 		\! -name "ncurses-*" \
-		\! -name "ndiswrapper-*" \
 		\! -name "readline-*" \
 		\! -name "sgml-*" \) | sort) ; do
 			spackadd --root=${SETUPROOT} ${paquet} 2>/dev/null
-		done
 	done
+	
+	# On réinstalle 'base-systeme' par sécurité (utilisateurs/groupes possiblement manquants) :
+	spackadd -f --root=${SETUPROOT} ${MEDIACHOISI}/base/base-systeme-*.spack 2>/dev/null 1>/dev/null
+	
+	# On installe tout 'opt/' :
+	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/opt/*.spack 2>/dev/null
+	
+	# On installe tout 'xorg/' :
+	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/xorg/*.spack 2>/dev/null
 	
 	# Linux (appel à 'make' en post-installation, donc de
 	# nombreuses dépendances) :
 	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/base/linux-*.spack 2>/dev/null
 
-	# ndiswrapper (contient un module noyau et un appel à 'depmod'). "|| true" sert au cas
-	# où 'ndiswrapper' serait absent (ça arrive si l'hôte n'a pas la même version du noyau
-	# et que le paquet n'est donc pas encore compilé) :
-	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/base/ndiswrapper-*.spack 2>/dev/null || true
-	
 	# On nettoie tous les fichiers '*.0nouveau' :
 	for f in $(find ${SETUPROOT}/etc -type f -name "*.0nouveau"); do
 		mv ${f} $(dirname ${f})/$(basename ${f} .0nouveau)

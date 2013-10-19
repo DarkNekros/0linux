@@ -24,6 +24,9 @@ fakeroot scons prefix=${PKG}/usr install
 # On renomme le répertoire des bibliothèques :
 mv ${PKG}/usr/lib{,${LIBDIRSUFFIX}}
 
+# On reporte ce changement dans le « binaire » :
+sed -i "s@lib_compiled='lib/mypaint/'@lib_compiled='lib${LIBDIRSUFFIX}/mypaint/'@" ${PKG}/usr/bin/mypaint
+
 installer_doc
 creer_post_installation
 stripper

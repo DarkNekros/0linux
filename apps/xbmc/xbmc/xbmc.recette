@@ -25,6 +25,9 @@ sed -i 's@USE_SSE ?= 0@USE_SSE ?= 1@' lib/libsquish/config
 chmod +x bootstrap
 ./bootstrap 
 
+# On utilise notre Python système :
+export PYTHON_VERSION=2
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -60,7 +63,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-xrandr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-make -j1
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On place des outils oubliés :
