@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Fond noir :
+xsetroot -solid "#000000" -cursor_name left_ptr
+
+# Fond d'écran :
+display -window root /usr/lib64/X11/xdm/xdm-0linux/background.png
+
+# Les boutons d'extinction/redémarrage :
+/usr/lib64/X11/xdm/xdm-0linux/buttons -geometry -0-0 &
+
+# L'heure :
+xclock -bg black -fg white &
+
+## Un terminal éventuel :
+# xconsole -daemon -geometry 640x200-0+0
