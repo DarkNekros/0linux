@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-gtk+}
-VERSION=${VERSION:-3.8.1}
+VERSION=${VERSION:-3.10.2}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gtk+}
 WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.24/$NAMESRC-2.24.20.$EXT

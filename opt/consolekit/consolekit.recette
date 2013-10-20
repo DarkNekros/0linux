@@ -63,9 +63,9 @@ consolekit_start() {
 
 consolekit_stop() {
 	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de ConsoleKit..."
-	if [ -f /var/run/ConsoleKit/pid ]; then
-		kill -HUP $(cat /var/run/ConsoleKit/pid)
-		rm -f /var/run/ConsoleKit/pid
+	if [ -f /run/ConsoleKit/pid ]; then
+		kill -HUP $(cat /run/ConsoleKit/pid)
+		rm -f /run/ConsoleKit/pid
 	fi
 }
 

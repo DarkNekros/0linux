@@ -17,4 +17,5 @@ gnome-online-accounts
 geocode-glib
 gnome-settings-daemon
 gnome-session
-libgdm
+nautilus
+
