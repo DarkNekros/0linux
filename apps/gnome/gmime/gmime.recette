@@ -25,6 +25,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-smime \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
