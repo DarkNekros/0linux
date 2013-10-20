@@ -49,7 +49,7 @@ mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d/
 cat > ${PKG}//etc/polkit-1/localauthority/50-local.d/20-montages-plugdev.pkla << "EOF"
 [plugdev pour les montages]
 Identity=unix-group:plugdev
-Action=org.freedesktop.udisks*
+Action=org.freedesktop.udisks2.filesystem-*;org.freedesktop.udisks2.eject-*
 ResultAny=yes
 ResultInactive=yes
 ResultActive=yes
@@ -61,7 +61,7 @@ cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/10-networkmanager-netdev.pkl
 Identity=unix-group:netdev
 Action=org.freedesktop.NetworkManager.*
 ResultAny=yes
-ResultInactive=no
+ResultInactive=yes
 ResultActive=yes
 
 EOF
@@ -71,7 +71,7 @@ cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/30-alimentation-upower.pkla 
 Identity=unix-group:power
 Action=org.freedesktop.upower.*
 ResultAny=yes
-ResultInactive=no
+ResultInactive=yes
 ResultActive=yes
 
 EOF
