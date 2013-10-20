@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 PKGCAT=base
-VERSION=${VERSION:-0.8}
+VERSION=${VERSION:-0.8.1}
 NAMETGZ=${NAMETGZ:-initialisation-systeme}
 DESC="Fichiers d'initialisation système et services de 0Linux"
 

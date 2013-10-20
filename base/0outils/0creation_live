@@ -39,7 +39,7 @@ if [ "$1" != "--mini" -a "$1" != "--complet" -a "$1" != "--maxi" -o ! -d "$2" -o
 	echo "	$0 --complet /quelque/part/paquets/"
 	echo ""
 	echo "Créer une image maximale du système autonome (base, opt, xorg ET dépôts"
-	echo "'apps/' inclus intégralement - attentionà la taille finale, c'est très lourd) :"
+	echo "'apps/' inclus intégralement - attention à la taille finale, c'est lourd) :"
 	echo "	$0 --maxi /quelque/part/paquets/contenant/aussi/le/depot/apps"
 	echo ""
 	echo ""
@@ -48,6 +48,9 @@ fi
 
 # La version de l'image à créer sera la date d'aujourd'hui :
 LIVEVERSION="$(date +%d%m%Y)"
+
+# On extrait les variables d'identification du système, dont $VERSION :
+source ${LIVEOS}/etc/os-release
 
 # La date en français pour l'affichage de l'accueil :
 DATEFR="$(date '+%A %d %B %Y') à $(date '+%H:%M')"
@@ -283,9 +286,12 @@ echo -n "Copie des fichiers dans l'initrd... "
 cp -a ${SOURCES}/initrd/{fstab,issue,profile} ${LIVEOS}/etc/
 cp -a ${SOURCES}/initrd/rc.* ${LIVEOS}/etc/rc.d/
  
-# On place la version (date de génération du système autonome) dans le
-# fichier du message d'accueil '/etc/issue' :
-sed -i "s@DATEGEN@${DATEFR}@" ${LIVEOS}/etc/issue
+# On place la date de génération du système autonome et la version
+# de la distribution dans le fichier du message d'accueil '/etc/issue' :
+sed -i \
+	-e "s@DATEGEN@${DATEFR}@" \
+	-e "s@VERSIONDISTRIB@${VERSION}@" \
+	${LIVEOS}/etc/issue
 
 # On crée un fichier vide '.hushlogin' dans le répertoire de root pour éviter
 # l'affichage du « message du jour » contenu dans '/etc/motd' :
@@ -351,6 +357,10 @@ HOTEDHCP[3]=
 
 EOF
 
+# On modifie '/etc/inittab' pour supprimer le paramètre qui empêche le vidage
+# de l'écran (simplement moche sur le live) :
+sed -i 's@--noclear@@g' ${LIVEOS}/etc/inittab
+
 # On crée le lien pour 'init' que le noyau lancera dès la fin de l'amorçage :
 ln -sf sbin/init ${LIVEOS}/init
 
@@ -396,9 +406,6 @@ fi
 
 # On s'assure des permissions :
 chown -R root:root ${MEDIAROOT}/* 2> /dev/null || true
-
-# On extrait les variables d'identification du système, dont $VERSION :
-source ${LIVEOS}/etc/os-release
 
 # Le nom de l'image ISO finale :
 ISONAME=${ISONAME:-0linux-${VERSION}-${LIVEVERSION}-$(echo ${1} | sed 's@--@@')-${PKGARCH}.iso}
