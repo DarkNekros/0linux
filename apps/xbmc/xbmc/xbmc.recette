@@ -18,9 +18,6 @@ cflags
 # On corrige des références non-existantes :
 sed -i -e 's@/usr/bin/lsb_release -d@cat /etc/os-release@' xbmc/utils/SystemInfo.cpp
 
-# On force la compilation avec les instructions SSE disponibles :
-sed -i 's@USE_SSE ?= 0@USE_SSE ?= 1@' lib/libsquish/config
-
 # On lance le script 'bootstrap' permettant de générer le nécessaire à la compilation :
 chmod +x bootstrap
 ./bootstrap 
@@ -63,7 +60,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-xrandr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-make -j${JOBS} || make
+make -j1
 fakeroot make install DESTDIR=${PKG}
 
 # On place des outils oubliés :
