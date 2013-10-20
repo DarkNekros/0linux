@@ -30,6 +30,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On supprime ce fichier générique :
+rm -f ${PKG}/etc/X11/xinit/xinitrc
+
 installer_doc
 creer_post_installation
 stripper
