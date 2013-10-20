@@ -29,6 +29,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-animation \
+	--enable-animationrtl \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
