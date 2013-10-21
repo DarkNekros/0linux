@@ -32,6 +32,11 @@ if [ $LIBDIRSUFFIX ] ; then
 	mv $PKG/usr/lib{,$LIBDIRSUFFIX}
 fi
 
+# Un sous répertoire lib dans lib, c'est mal :
+mv $PKG/usr/lib$LIBDIRSUFFIX{/lib/*,}
+rm -rf $PKG/usr/lib$LIBDIRSUFFIX/lib
+
+
 installer_doc
 creer_post_installation
 stripper
