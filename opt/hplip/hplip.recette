@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-hplip}
-VERSION=${VERSION:-3.12.11}
+VERSION=${VERSION:-3.13.10}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-hplip}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}

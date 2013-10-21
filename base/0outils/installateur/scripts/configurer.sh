@@ -29,7 +29,7 @@ fi
 if [ -r ${SETUPROOT}/etc/X11/xorg.conf.d/90-keyboard.conf ]; then
 	DISPOCLAVIERXORG="$(cat $TMP/choix_clavier_xorg)"
 	if [ ! "${DISPOCLAVIERXORG}" = "" ]; then
-		sed -i -e "s@Option \"xkb_layout\".*$@Option \"xkb_layout\" \"${DISPOCLAVIERXORG}\"@" ${SETUPROOT}/etc/X11/xorg.conf.d/90-keyboard.conf
+		sed -i "s@Option \"xkb_layout\" \"us\"@Option \"xkb_layout\" \"${DISPOCLAVIERXORG}\"@" ${SETUPROOT}/etc/X11/xorg.conf.d/90-keyboard.conf
 	fi
 fi
 
