@@ -24,11 +24,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D LIB_INSTALL_DIR=lib${LIBDIRSUFFIX} \
 	./ ../src
 
-make -j${JOBS} 
-
-# Évite un vilain bug de gcc :
-rm python/CMakeFiles/PyOpenImageIO.dir/py_*.o
-make
+make -j${JOBS} && make
 fakeroot make install DESTDIR=${PKG}
 
 # Les libs sont mal placés :
