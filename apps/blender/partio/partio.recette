@@ -39,6 +39,10 @@ if [ $LIBDIRSUFFIX ] ; then
 	mv $PKG/usr/lib{,$LIBDIRSUFFIX}
 fi
 
+# Un sous répertoire lib dans lib... On est gâté avec ce paquet :
+mv $PKG/usr/lib$LIBDIRSUFFIX{/lib/*,}
+rm -rf $PKG/usr/lib$LIBDIRSUFFIX/lib
+
 # On vire les tests pour les développeur du projet :
 rm -rf ${PKG}/usr/test
 
