@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-polkit-gnome}
-VERSION=${VERSION:-0.105}
+VERSION=${VERSION:-0.102}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-polkit-gnome}
 WGET=${WGET:-http://ftp.gnome.org/pub/gnome/sources/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}

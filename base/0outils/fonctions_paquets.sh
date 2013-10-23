@@ -416,6 +416,11 @@ empaqueter() {
 	# On affecte des permissions aux raccourcis de type '*.desktop' :
 	find ${PKG}/usr -type f \! -perm 644 -name "*.desktop" -exec chmod 644 {} \; 2>/dev/null || true
 	
+	# On affecte la permission à ce répertoire spéciale pour 'polkit' :
+	if [ -d ${PKG}/etc/polkit-1/localauthority ]; then
+		chmod 700 ${PKG}/etc/polkit-1/localauthority
+	fi
+	
 	# On déplace toute doc éventuellement mal placée :
 	if [ -d ${PKG}/usr/share/doc ]; then
 		cp -ar ${PKG}/usr/share/doc ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/

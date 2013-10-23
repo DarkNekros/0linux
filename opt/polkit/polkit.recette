@@ -43,41 +43,18 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On crée le fichier de permissions pour les groupes dont l'utilisateur normal
-# est censé faire partie (notamment via '0nouvel_utilisateur') :
-mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d/
-cat > ${PKG}//etc/polkit-1/localauthority/50-local.d/20-montages-plugdev.pkla << "EOF"
-[plugdev pour les montages]
-Identity=unix-group:plugdev
-Action=org.freedesktop.udisks2.filesystem-*;org.freedesktop.udisks2.eject-*
-ResultAny=yes
-ResultInactive=yes
-ResultActive=yes
-
-EOF
-
-cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/10-networkmanager-netdev.pkla << "EOF"
-[groupe netdev pour NetworkManager]
-Identity=unix-group:netdev
-Action=org.freedesktop.NetworkManager.*
-ResultAny=yes
-ResultInactive=yes
-ResultActive=yes
-
-EOF
-
-cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/30-alimentation-upower.pkla << "EOF"
-[groupe power pour l'hibernation et la mise en veille]
-Identity=unix-group:power
-Action=org.freedesktop.upower.*
-ResultAny=yes
-ResultInactive=yes
-ResultActive=yes
-
-EOF
-
 installer_doc
 creer_post_installation
+
+# On complète la post-installation pour les permissions :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On corrige une permission :
+chown -R polkitd var/lib/polkit-1
+
+EOF
+
+
 stripper
 empaqueter
 

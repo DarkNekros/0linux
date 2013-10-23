@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-udisks}
-VERSION=${VERSION:-2.1.0}
+VERSION=${VERSION:-2.1.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-udisks}
 WGET=(http://hal.freedesktop.org/releases/$NAMESRC-1.0.4.tar.gz
@@ -59,6 +59,19 @@ if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 	cp -ar ${PKG}/usr/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
 	rm -rf ${PKG}/usr/lib
 fi
+
+# On place les fichiers pour 'polkit' permettant aux utilisateurs du groupe
+# 'plugdev' de monter/éjecter les volumes amovibles :
+mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d
+cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/20-udisks2.pkla << "EOF"
+[udisks2 plugdev mount]
+Identity=unix-group:plugdev
+Action=org.freedesktop.udisks2.*
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
+
+EOF
 
 installer_doc
 creer_post_installation

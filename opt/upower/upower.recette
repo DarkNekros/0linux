@@ -31,6 +31,19 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On place le fichier pour 'polkit' permettant aux utilisateurs du groupe
+# 'power' de redémarrer le système, mettre en veille ou en hibernation, etc. :
+mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d
+cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/30-upower.pkla << "EOF"
+[groupe power]
+Identity=unix-group:power
+Action=org.freedesktop.upower.*
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
+
+EOF
+
 installer_doc
 creer_post_installation
 stripper
