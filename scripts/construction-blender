@@ -1,6 +1,9 @@
-yaml
 yaml-cpp
 partio
 openimageio
+opencolorio
 opencollada
+libunwind
+gflags
+glog
 blender
