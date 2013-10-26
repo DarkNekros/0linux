@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-mkvtoolnix}
-VERSION=${VERSION:-6.2.0}
+VERSION=${VERSION:-6.5.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-mkvtoolnix}
 WGET=${WGET:-http://www.bunkus.org/videotools/$NAMESRC/sources/$NAMESRC-$VERSION.$EXT}
@@ -16,7 +16,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
