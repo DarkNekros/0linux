@@ -26,6 +26,9 @@ cat $CWD/pxe.pidfile.patch | patch -p1
 ## Problèmes avec GCC 4 ou supérieur :
 cat $CWD/pxe.gcc4.patch | patch -p1
 
+# On utilise le même chemin pour le serveur que tftp-hpa :
+sed -i "s@/tftpboot@/srv/tftp@" pxe.conf
+
 # Compilation :
 autoreconf -vif || true
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -43,25 +46,60 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 
 # Installation manuelle :
-mkdir -p $PKG/{etc,usr/sbin,usr/lib$LIBDIRSUFFIX/systemd/system}
+mkdir -p $PKG/{etc,usr/sbin}
 cp -a pxe $PKG/usr/sbin/pxe
 cp pxe.conf $PKG/etc/pxe.conf.0nouveau
 
-# Installation du fichier systemd :
-cat > $PKG/usr/lib${LIBDIRSUFFIX}/systemd/system/pxe.service << "EOF"
-[Unit]
-Description=Système de démarrage réseau
-After=syslog.target network.target dhcpcd.target tftpd.target
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.pxe << "EOF"
+#!/usr/bin/env bash
 
-[Service]
-Type=forking
-PIDFile=/var/run/pxe.pid
-ExecStart=/usr/sbin/pxe
+pxe_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de tftp-hpa..."
+	in.tftpd -s /srv/tftp -P /var/run/tftpd.pid &
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de PXE..."
+	pxe -d &
+}
 
-[Install]
-WantedBy=multi-user.target
+pxe_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de tftp-hpa..."
+	if [ -r /var/run/tftpd.pid ]; then
+		kill $(cat /var/run/tftpd.pid)
+	else
+		killall in.tftpd
+	fi
+	sleep 1
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de PXE..."
+	killall pxe
+}
+
+case "$1" in
+	'start')
+		pxe_start
+	;;
+	
+	'stop')
+		pxe_stop
+	;;
+	
+	'restart')
+		pxe_stop
+		sleep 1
+		pxe_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
 
 EOF
+
+# Dans apps donc activé par défaut :
+chmod +x ${PKG}/etc/rc.d/rc.pxe
 
 installer_doc
 creer_post_installation

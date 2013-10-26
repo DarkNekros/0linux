@@ -35,28 +35,6 @@ mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/systemd/system \
 	$PKG/var/tftpboot \
 	$PKG/srv/tftp
 
-# On crée les fichiers systemd :
-cat > $PKG/usr/lib${LIBDIRSUFFIX}/systemd/system/tftpd.service << "EOF"
-[Unit]
-Description=Serveur de fichier pour le démarrage réseau
-
-[Service]
-ExecStart=/usr/sbin/in.tftpd -s /srv/tftp/
-StandardInput=socket
-StandardOutput=inherit
-StandardError=journal
-
-EOF
-
-cat > $PKG/usr/lib${LIBDIRSUFFIX}/systemd/system/tftpd.socket << "EOF"
-[Socket]
-ListenDatagram=69
-
-[Install]
-WantedBy=sockets.target
-
-EOF
-
 installer_doc
 creer_post_installation
 stripper
