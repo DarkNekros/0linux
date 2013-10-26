@@ -2,12 +2,12 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
-NAMESRC=${NAMESRC:-colamd}
-VERSION=${VERSION:-2.8.0}
+NAMESRC=${NAMESRC:-gflags}
+VERSION=${VERSION:-2.0.0}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-colamd}
-WGET=${WGET:-http://dev.gentoo.org/~bicatali/distfiles/$NAMESRC-$VERSION.$EXT}
-DESC="Algorithme de gestion de colonnes"
+NAMETGZ=${NAMETGZ:-gflags}
+WGET=${WGET:-http://gflags.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+DESC="Module de drapeau en ligne de commande pour le langage C++"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

@@ -7,7 +7,7 @@ VERSION=${VERSION:-0.3.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-glog}
 WGET=${WGET:-http://google-glog.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
-DESC="Algorithme de gestion de colonnes"
+DESC="Bibliothèque de gestion de fichiers log pour C++"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
