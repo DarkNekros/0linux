@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-stellarium}
-VERSION=${VERSION:-0.12.1}
+VERSION=${VERSION:-0.12.4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-stellarium}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
