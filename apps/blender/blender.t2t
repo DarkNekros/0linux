@@ -1,6 +1,6 @@
 Description du dépôt @blender
-fatalerrors - jeff.levasseur@free.fr
-Juin 2013
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Octobre 2013
 
 = Description de @blender =
 
@@ -23,7 +23,7 @@ Blender est également doté d'un moteur physique permettant la gestion de parti
 
 = Le dépôt @blender pour 0linux =
 
-Le dépôt contient le logiciel Blender complet, accompagné des ses modèles, de ses exemples et de sa documentation, ainsi que les bibliothèques OpenCollada, OpenImageIO et OpenShadingLanguage.
+Le dépôt contient le logiciel Blender complet, accompagné des ses modèles, de ses exemples et de sa documentation, ainsi que les bibliothèques nécessaires.
 
 = Installation sous 0linux =
 
