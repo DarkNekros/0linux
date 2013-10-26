@@ -16,6 +16,21 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On utilise le colamd installé :
+cat $CWD/blender.unbundle.colamd.patch | patch -p1
+
+# Pas de binreloc, plus problématique qu'autre chose :
+cat $CWD/blender.remove.binreloc.patch | patch -p1
+
+# On utilise le glog installé :
+cat $CWD/blender.unbundle.glog.patch | patch -p1
+
+# On utilise le eigen3 installé :
+cat $CWD/blender.unbundle.eigen3.patch | patch -p1
+
+# Corrige une règle d'installation dangeureuse :
+cat $CWD/blender.install.rules.patch | patch -p1
+
 # Compilation :
 mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -27,13 +42,15 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D PYTHON_LIBRARY=python3.3m \
 	-D PYTHON_INCLUDE_DIRS=/usr/include/python3.3m \
 	-D PYTHON_VERSION=3.3 \
+	-D CMAKE_SKIP_RPATH=ON \
 	-D WITH_CODEC_FFMPEG=ON \
 	-D WITH_CODEC_SNDFILE=ON \
 	-D WITH_CYCLES=ON \
 	-D WITH_FFTW3=ON \
 	-D WITH_GAMEENGINE=ON \
 	-D WITH_INSTALL_PORTABLE=OFF \
-    -D WITH_JACK=ON \
+	-D WITH_JACK=ON \
+	-D WITH_JACK_DYNLOAD=ON \
 	-D WITH_MOD_OCEANSIM=ON \
 	-D WITH_OPENCOLLADA=ON \
 	-D WITH_PLAYER=ON \

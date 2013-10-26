@@ -2,12 +2,12 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
-NAMESRC=${NAMESRC:-yaml}
-VERSION=${VERSION:-0.1.4}
+NAMESRC=${NAMESRC:-colamd}
+VERSION=${VERSION:-2.8.0}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-yaml}
-WGET=${WGET:-http://pyyaml.org/download/libyaml/$NAMESRC-$VERSION.$EXT}
-DESC="Parseur de méta-données"
+NAMETGZ=${NAMETGZ:-colamd}
+WGET=${WGET:-http://dev.gentoo.org/~bicatali/distfiles/$NAMESRC-$VERSION.$EXT}
+DESC="Algorithme de gestion de colonnes"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
