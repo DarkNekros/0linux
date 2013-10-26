@@ -168,6 +168,9 @@ step
 xbase
 libvisio
 libqtgtl
+yaml-cpp
+partio
+openimageio
 opencolorio
 vc
 calligra

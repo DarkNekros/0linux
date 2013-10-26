@@ -6,4 +6,6 @@ opencollada
 libunwind
 gflags
 glog
+suitesparseconfig
+colamd
 blender
