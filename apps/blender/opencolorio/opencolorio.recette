@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
+PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-OpenColorIO}
 VERSION=${VERSION:-1.0.9}
 EXT=${EXT:-tar.bz2}
