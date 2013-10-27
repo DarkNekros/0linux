@@ -3,7 +3,7 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-calligra-l10n-fr}
-VERSION=${VERSION:-2.7.3}
+VERSION=${VERSION:-2.7.4}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-calligra-l10n-fr}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/calligra-$VERSION/calligra-l10n/$NAMESRC-$VERSION.$EXT}
