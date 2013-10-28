@@ -18,7 +18,7 @@ for f in $(find /etc -type f -name "*.0nouveau" 2>/dev/null) ; do
 			echo "Fichier original : ${ORIG}"
 			echo "Nouveau fichier  : ${f}"
 			echo "Voici les différences trouvées :"
-			echo "$(diff -uN ${ORIG} ${f} | more)"
+			echo "$(diff -uN ${ORIG} ${f} | less)"
 			echo ""
 			echo "Que voulez-vous faire du nouveau fichier ?"
 			echo "1 : ÉCRASER   - renommer le nouveau fichier et écraser votre configuration existante"
