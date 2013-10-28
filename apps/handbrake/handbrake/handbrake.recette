@@ -41,7 +41,7 @@ cat $CWD/handbrake.use-unpatched-a52.patch | patch -p1
 cat $CWD/handbrake.add-gmodule-to-gtk-configure.patch | patch -p1
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 ./configure \
 	--prefix=/usr \
 	--disable-gtk-update-checks \
