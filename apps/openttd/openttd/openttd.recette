@@ -25,6 +25,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
     --man-dir=/man \
     --doc-dir=/doc/${NAMETGZ}-${VERSION} \
     --personal-dir=.openttd \
+    --with-freetype \
+    --with-fontconfig \
     --install-dir=${PKG}
 
 make -j${JOBS} || make
