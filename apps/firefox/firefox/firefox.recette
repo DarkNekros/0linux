@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-24.0}
+VERSION=${VERSION:-25.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-firefox}
 . /usr/share/0outils/fonctions_paquets.sh
