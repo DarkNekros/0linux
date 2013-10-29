@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-0outils}
-VERSION=${VERSION:-5.9}
+VERSION=${VERSION:-6.0}
 NAMETGZ=${NAMETGZ:-0outils}
 DESC="Outils « maison » pour la configuration du système"
 
