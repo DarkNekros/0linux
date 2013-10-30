@@ -3,7 +3,7 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-media-player-info}
-VERSION=${VERSION:-18}
+VERSION=${VERSION:-21}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-media-player-info}
 WGET=${WGET:-http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT}
