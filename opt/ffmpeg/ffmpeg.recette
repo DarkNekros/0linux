@@ -6,69 +6,12 @@ NAMESRC=${NAMESRC:-ffmpeg}
 VERSION=${VERSION:-2.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ffmpeg}
-WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.8.$EXT
-      http://ffmpeg.org/releases/$NAMESRC-$VERSION.$EXT
-     )
+WGET=${WGET:-http://ffmpeg.org/releases/$NAMESRC-$VERSION.$EXT}
 DESC="Solution de traitement de flux audio et vidéo"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-
-# On compile 'ffmpeg' 0.x :
-preparer_sources $NAMESRC-0.10.8.$EXT
-cflags
-
-# Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--incdir=/usr/include/ffmpeg-0.x \
-	--libdir=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x \
-	--shlibdir=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x \
-	--disable-debug \
-	--mandir=/usr/man \
-	--enable-avfilter \
-	--enable-frei0r \
-	--enable-gpl \
-	--enable-libass \
-	--enable-libcdio \
-	--enable-libdc1394 \
-	--enable-libfaac \
-	--enable-libgsm \
-	--enable-libmodplug \
-	--enable-libmp3lame \
-	--enable-libopencore_amrnb \
-	--enable-libopencore_amrwb \
-	--enable-libopencv \
-	--enable-librtmp \
-	--enable-libschroedinger \
-	--enable-libspeex \
-	--enable-libtheora \
-	--enable-libv4l2 \
-	--enable-libvorbis \
-	--enable-libvpx \
-	--enable-libx264 \
-	--enable-libxvid \
-	--enable-nonfree \
-	--enable-openal \
-	--enable-postproc \
-	--enable-pthreads \
-	--enable-shared \
-	--enable-version3 \
-	--enable-x11grab
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
-
-# On ajoute les bibliothèques à 'ld' 
-mkdir -p ${PKG}/etc/ld.so.conf.d
-echo "/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/" > ${PKG}/etc/ld.so.conf.d/ffmpeg-0.x.conf
-
-# On installe la doc dans un sous-répertoire dédié :
-installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-0.10.8
-
-# On compile 'ffmpeg' :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 

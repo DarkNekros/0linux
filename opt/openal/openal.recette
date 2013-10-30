@@ -15,12 +15,17 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources
+cflags
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_C_FLAGS="${FLAGS}" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_VERBOSE_MAKEFILE:BOOL="on" \
 	-DLIB_SUFFIX=${LIBDIRSUFFIX}
 
 make -j${JOBS} || make
