@@ -33,6 +33,22 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On installe l'icone et on crée le fichier pour le menu :
+mkdir -p $PKG/usr/share/{pixmaps,applications}
+cp -a $CWD/$NAMESRC.png $PKG/usr/share/pixmaps/$NAMETGZ.png
+cat > $PKG/usr/share/applications/$NAMETGZ.desktop << EOF
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=dosbox Emulator
+GenericName=Emulator
+Comment=An emulator to run old DOS games
+Icon=dosbox
+Exec=dosbox
+Terminal=false
+Categories=Emulator;Application;
+EOF
+
 installer_doc
 creer_post_installation
 stripper
