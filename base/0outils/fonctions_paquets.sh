@@ -3,7 +3,22 @@
 # Configuration de base :
 set -e
 umask 022
+
+# Le répertoire courant :
 CWD=$(pwd)
+
+# Emplacement où on compile et on empaquète :
+MARMITE=${MARMITE:-/tmp/0-marmite}
+
+# ...et où on stocke les journaux de compilation :
+MARMITELOGS=${MARMITELOGS:-${MARMITE}/logs}
+
+# Emplacement où on stocke les archives sources :
+PKGSOURCES=${PKGSOURCES:-${CWD}}
+
+# On crée la marmite :
+mkdir -p ${MARMITE}
+mkdir -p ${MARMITELOGS}
 
 # Si cette variable n'est pas vide, c'est qu'on appelle d'une recette :
 if [ -n "${NAMETGZ}" ]; then
@@ -11,41 +26,25 @@ if [ -n "${NAMETGZ}" ]; then
 	# On crée un journal complet automatiquement en plus des messages à l'écran.
 	# Voir http://stackoverflow.com/a/11886837 - c'est en fait loin d'être
 	# évident à faire depuis un script.
-	rm -f /usr/local/logs/${NAMETGZ}-${VERSION}.log
-	exec >  >(tee -a /usr/local/logs/${NAMETGZ}-${VERSION}.log)
-	exec 2> >(tee -a /usr/local/logs/${NAMETGZ}-${VERSION}.log >&2)
+	rm -f ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log
+	exec >  >(tee -a ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log)
+	exec 2> >(tee -a ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log >&2)
 	
 	# On place également un marqueur d'échec, qu'on effacera une fois le script terminé avec succès :
-	echo "" > /usr/local/logs/${NAMETGZ}-${VERSION}.log.echec
-	
-	# Si les variables critiques ne sont pas renseignées :
-	# Emplacement où on stocke les archives sources :
-	if [ -z "${PKGSOURCES}" ]; then
-		PKGSOURCES=${CWD}
-	fi
+	echo "" > ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log.echec
 	
 	# On crée le répertoire des archives sources :
 	mkdir -p ${PKGSOURCES}/${NAMETGZ}
 	
-	# Emplacement où on compile et on empaquète : :
-	if [ -z "${MARMITE}" ]; then
-		MARMITE=/tmp/0-marmite
-	fi
-	
-	# On nettoie tout ancien paquet ou sources qui traînent :
-	rm -rf ${MARMITE}/*
-	
 	# Emplacement où on déballe les sources pour les compiler :
-	if [ -z "${TMP}" ]; then
-		TMP=${MARMITE}/${NAMETGZ}/sources
-		mkdir -p ${TMP}
-	fi
+	TMP=${TMP:-${MARMITE}/${NAMETGZ}/sources}
 	
 	# Emplacement des fichiers finaux à empaqueter :
-	if [ -z "${PKG}" ]; then
-		PKG=${MARMITE}/${NAMETGZ}/paquet
-		mkdir -p ${PKG}
-	fi
+	PKG=${PKG:-${MARMITE}/${NAMETGZ}/paquet}
+	
+	# On nettoie tout ancien paquet ou sources qui traînent :
+	rm -rf   ${PKG} ${TMP}
+	mkdir -p ${PKG} ${TMP}
 	
 	# On crée le répertoire de doc, parfois manquant :
 	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
@@ -67,10 +66,8 @@ if [ -n "${NAMETGZ}" ]; then
 else
 	# Pour tous les autres cas, on appelle les 'fonctions_paquets.sh' depuis un script autre qu'une recette :
 	# Emplacement où on compile et on empaquète : :
-	if [ -z "${TMP}" ]; then
-		TMP=/tmp/0-marmite
-		mkdir -p ${TMP}
-	fi
+	TMP=${TMP:-${MARMITE}}
+	mkdir -p ${TMP}
 fi
 
 telecharger_sources() {
@@ -498,10 +495,10 @@ empaqueter() {
 	xz ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/deps
 	
 	# On place le journal dans la doc sous forme compressée :
-	if [ -r /usr/local/logs/${NAMETGZ}-${VERSION}.log ]; then
-		cp /usr/local/logs/${NAMETGZ}-${VERSION}.log ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+	if [ -r ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log ]; then
+		cp ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 		xz ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/${NAMETGZ}-${VERSION}.log
-		rm -f /usr/local/logs/${NAMETGZ}-${VERSION}.log
+		rm -f ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log
 	fi
 	
 	# On compresse tous les manuels :
@@ -526,7 +523,7 @@ empaqueter() {
 	
 	# Paquet créé avec succès à ce stade, on supprime le marqueur d'échec :
 	if [ -n "${NAMETGZ}" ]; then
-		rm -f /usr/local/logs/${NAMETGZ}-${VERSION}.log.echec
+		rm -f ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log.echec
 	fi
 	
 	# Empaquetage !
