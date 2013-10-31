@@ -9,7 +9,7 @@ Elle effectue automatiquement les mises à jour en ligne de l'application ainsi 
 
 = Le dépôt @steam pour 0linux =
 
-Le dépôt contient le logiciel Steam complet. Il est recommandé d'utiliser un pilote graphique performant pour profiter des jeux 3D de façon optimale. Pensez au dépôt @nvidia pour les possesseurs de puces graphiques Nvidia. Pour les puces AMD, il faudra se contenter d'installer manuellement les pilotes depuis le site d'AMD, 0Linux ne proposant aucun dépôt por ce type de puces.
+Le dépôt contient le logiciel Steam complet. Il est recommandé d'utiliser un pilote graphique performant pour profiter des jeux 3D de façon optimale. Pensez au dépôt @nvidia pour les possesseurs de puces graphiques Nvidia. Pour les puces AMD, il faudra se contenter d'installer manuellement les pilotes depuis le site d'AMD, 0Linux ne proposant aucun dépôt pour ce type de puces.
 
 = Installation sous 0linux =
 

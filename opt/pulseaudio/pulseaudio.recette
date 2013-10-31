@@ -83,8 +83,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On se fiche d'écraser toute configuration existante, ce paquet est un poids
+# 1- On se fiche d'écraser toute configuration existante, ce paquet est un poids
 # mort dans 0Linux, en tout cas pour le moment.
+
+# 2- On supprime les messages de D-Bus (l'utilisateur 'pulse' n'existe pas) ainsi
+# que le complètement pour Bash (qui fait planter XDM entre autres...) :
+rm -rf ${PKG}/etc/dbus-1 ${PKG}/etc/bash_completion.d
 
 installer_doc
 creer_post_installation
