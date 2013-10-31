@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-blender}
-VERSION=${VERSION:-2.68a}
+VERSION=${VERSION:-2.69}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-blender}
 WGET=${WGET:-http://download.blender.org/source/$NAMESRC-$VERSION.$EXT}
