@@ -15,6 +15,71 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation i686 en 3 passes pour avoir les binaires 'fftw3', 'fftw3f' et 'fftw3l' :
+	CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--enable-shared \
+		--enable-threads \
+		--build=${PKGARCH}-0linux-linux-gnu
+
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	make clean
+
+	CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--enable-shared \
+		--enable-threads \
+		--enable-float \
+		--build=${PKGARCH}-0linux-linux-gnu
+
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	make clean
+
+	CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--enable-shared \
+		--enable-threads \
+		--enable-long-double \
+		--build=${PKGARCH}-0linux-linux-gnu
+
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources
+cflags
+
 # Compilation en 3 passes pour avoir les binaires 'fftw3', 'fftw3f' et 'fftw3l' :
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 ./configure \
