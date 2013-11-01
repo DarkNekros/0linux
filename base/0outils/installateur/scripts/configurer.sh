@@ -3,8 +3,9 @@
 # On nettoie :
 unset DISPOCLAVIER
 
-# L'emplacement du fichier de configuration :
-KEYBOARDCONFIGFILE=/etc/0linux/clavier
+# L'emplacement des fichiers de configuration :
+KEYBOARDCONFIGFILE=${SETUPROOT}/etc/0linux/clavier
+XORGKEYBOARDCONFIGFILE=${SETUPROOT}/etc/X11/xorg.conf.d/90-keyboard.conf
 
 # On définit le clavier à charger à chaque démarrage :
 DISPOCLAVIER="$(cat $TMP/choix_clavier)"
@@ -25,11 +26,11 @@ if [ ! "${DISPOCLAVIER}" = "" ]; then
 	fi
 fi
 
-# On modifie '90-keyboard.conf' pour y insérer le clavier à charger sous X :
-if [ -r ${SETUPROOT}/etc/X11/xorg.conf.d/90-keyboard.conf ]; then
+# On modifie la configuration pour y insérer le clavier à charger sous X :
+if [ -r ${XORGKEYBOARDCONFIGFILE} ]; then
 	DISPOCLAVIERXORG="$(cat $TMP/choix_clavier_xorg)"
 	if [ ! "${DISPOCLAVIERXORG}" = "" ]; then
-		sed -i "s@Option \"xkb_layout\" \"us\"@Option \"xkb_layout\" \"${DISPOCLAVIERXORG}\"@" ${SETUPROOT}/etc/X11/xorg.conf.d/90-keyboard.conf
+		sed -i "s@Option \"xkb_layout\" \"us\"@Option \"xkb_layout\" \"${DISPOCLAVIERXORG}\"@" ${XORGKEYBOARDCONFIGFILE}
 	fi
 fi
 
