@@ -2,7 +2,7 @@
 
 # On nettoie :
 rm -f $TMP/choix_media
-unset BLAH ABANDON SPACKBASE
+unset BLAH SPACKBASE
 
 # Boucle d'affichage du menu :
 while [ 0 ]; do
@@ -65,23 +65,20 @@ while [ 0 ]; do
 					echo "en vain. Démontage..."
 					sleep 2
 					umount /mnt/cdrom 2>/dev/null
-					continue
+					touch $TMP/depot_invalide
+					break
 				fi
 			fi
-		else
-			echo "Aucun disque n'a été trouvé. Retour au menu... "
-			ABANDON=1
-			sleep 2
-			break
 		fi
-	done
-	
-	if [ ${ABANDON} -eq 1 ]; then
+		
+		# La boucle est passée en entier, on est donc en situation d'échec au montage :
+		echo "Aucun disque n'a été trouvé. Retour au menu... "
 		
 		# On place un marqueur d'échec pour redemander un média dans le menu MÉDIA :
 		touch $TMP/depot_invalide
+		sleep 2
 		break
-	fi
+	done
 done
 
 # C'est fini !
