@@ -23,12 +23,12 @@ if [ ! "$(whoami)" = "root" ]; then
 fi
 
 # On analyse la ligne de commande :
-if [ "$1" != "--mini" -a "$1" != "--complet" -a "$1" != "--maxi" -o ! -d "$2" -o  "$2" = "" ]; then
+if [ "$1" != "--mini" -a "$1" != "--base" -a "$1" != "--maxi" -o ! -d "$2" -o  "$2" = "" ]; then
 	echo "$0 : "
 	echo "Crée un système autonome (ou système « live ») pour média"
 	echo "amovible (DVD, clé USB, etc.), contenant le noyau, un système minimal,"
 	echo "l'installateur et éventuellement les paquets du système 0linux."
-	echo "'$0' doit être suivie de l'option --mini, --base, --maxi ou --tout,"
+	echo "'$0' doit être suivie de l'option --mini, --base ou --maxi,"
 	echo "puis de l'emplacement des paquets (contenant les répertoires 'base/',"
 	echo "'opt/', 'xorg/' et éventuellement 'apps/')"
 	echo ""
