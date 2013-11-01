@@ -66,6 +66,7 @@ while [ 0 ]; do
 					umount /mnt/cdrom 2>/dev/null
 					continue
 				fi
+			fi
 		else
 			echo "Aucun disque n'a été trouvé. Retour au menu... "
 			ABANDON=1
