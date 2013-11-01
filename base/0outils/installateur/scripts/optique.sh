@@ -15,8 +15,8 @@ while [ 0 ]; do
 	echo ""
 	
 	# On recherche les lecteurs optique :
-	for optique in /dev/sr{0,1,2,3}; do
-		mount -o ro -t iso9660 ${optique} /mnt/cdrom 2>/dev/null
+	for optique in 0 1 2 3; do
+		mount -o ro /dev/sr${optique} /mnt/cdrom 2>/dev/null
 		
 		# Périphérique trouvé :
 		if [ $? = 0 ]; then
@@ -27,6 +27,7 @@ while [ 0 ]; do
 			echo ""
 			echo "Un disque a été trouvé dans ${optique}."
 			echo ""
+			sleep 2
 			
 			# Si le volume contient un paquet 'base/base-systeme-$(uname -m)', alors
 			# on considère qu'on tient là notre support d'installation :
@@ -51,7 +52,7 @@ while [ 0 ]; do
 				
 				# On vérifie que 'base-systeme' se trouve bien dans un dépôt 'base' :
 				if [ "$(basename $(dirname ${SPACKBASE}))" = "base" ]; then
-					echo "$(dirname (dirname ${SPACKBASE}))" > $TMP/choix_media
+					echo "$(dirname $(dirname ${SPACKBASE}))" > $TMP/choix_media
 					echo "Un dépôt de paquets a été trouvé sur ce volume !"
 					
 					# On supprime tout marqueur d'échec éventuellement présent :
@@ -62,7 +63,7 @@ while [ 0 ]; do
 					echo "Le volume ne contient pas de dépôt de paquets valide :"
 					echo " j'ai recherché 'base/base-systeme-*-$(uname -m)-*.spack',"
 					echo "en vain. Démontage..."
-					sleep 4
+					sleep 2
 					umount /mnt/cdrom 2>/dev/null
 					continue
 				fi
