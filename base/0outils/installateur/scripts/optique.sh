@@ -5,7 +5,8 @@ rm -f $TMP/choix_media
 unset BLAH SPACKBASE
 
 # Boucle d'affichage du menu :
-while [ 0 ]; do
+while [ ! -r $TMP/choix_media ]; do
+	
 	if [ "${INSTALLDEBUG}" = "" ]; then
 		clear
 	fi
@@ -70,15 +71,19 @@ while [ 0 ]; do
 				fi
 			fi
 		fi
-		
-		# La boucle est passée en entier, on est donc en situation d'échec au montage :
+	done
+	
+	# On contrôle l'état de la détection avant de quitter :
+	if [ -r $TMP/depot_invalide ]; then
+		echo "Le dépôt est invalide. Retour au menu... "
+		sleep 2
+		break
+	elif [ ! -r $TMP/choix_media ]; then
 		echo "Aucun disque n'a été trouvé. Retour au menu... "
-		
-		# On place un marqueur d'échec pour redemander un média dans le menu MÉDIA :
 		touch $TMP/depot_invalide
 		sleep 2
 		break
-	done
+	fi
 done
 
 # C'est fini !
