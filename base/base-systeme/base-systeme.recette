@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-base-systeme}
-VERSION=${VERSION:-4.2}
+VERSION=${VERSION:-4.2.1}
 NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 

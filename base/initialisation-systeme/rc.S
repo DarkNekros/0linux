@@ -162,6 +162,9 @@ touch           /run/utmp
 chmod 664       /run/utmp
 chown root:utmp /run/utmp
 
+# On crée un 'lock' sous '/run' car '/var/lock' ne pointe sur rien pour le moment:
+mkdir -p /run/lock
+
 # On charge les modules trouvés dans le fichier '/etc/rc.d/rc.modules' :
 if [ -x /etc/rc.d/rc.modules ]; then
 	/etc/rc.d/rc.modules

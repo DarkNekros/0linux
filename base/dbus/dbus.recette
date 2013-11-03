@@ -39,8 +39,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--enable-x11-autolaunch \
 		--with-dbus-user=messagebus \
 		--with-init-scripts=slackware \
-		--with-system-pid-file=/var/run/dbus/dbus.pid \
-		--with-system-socket=/var/run/dbus/system_bus_socket \
+		--with-system-pid-file=/run/dbus/dbus.pid \
+		--with-system-socket=/run/dbus/system_bus_socket \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -73,12 +73,18 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-x11-autolaunch \
 	--with-dbus-user=messagebus \
 	--with-init-scripts=slackware \
-	--with-system-pid-file=/var/run/dbus/dbus.pid \
-	--with-system-socket=/var/run/dbus/system_bus_socket \
+	--with-system-pid-file=/run/dbus/dbus.pid \
+	--with-system-socket=/run/dbus/system_bus_socket \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+if [ "${PKGARCH}" = "x86_64" ] && [ "${LIBDIRSUFFIX}" != "" ]; then
+	# On supprime les binaires 32 bits pour les lier au 64 bits :
+	rm -rf ${PKG}/usr/lib/dbus-1.0
+	ln -sf ../lib${LIBDIRSUFFIX}/dbus-1.0 ${PKG}/usr/lib/
+fi
 
 # On crée le fichier service :
 rm -f ${PKG}/etc/rc.d/*
@@ -87,7 +93,8 @@ cat > ${PKG}/etc/rc.d/rc.messagebus << "EOF"
 
 messagebus_start() {
 	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de D-BUS..."
-	rm -f $(dirname /var/run/dbus/dbus.pid)/*
+	mkdir -p /run/dbus
+	rm -f $(dirname /run/dbus/dbus.pid)/*
 	if ! ps axc | grep -qw dbus-daemon ; then
 		dbus-uuidgen --ensure
 		dbus-daemon --system 1>/dev/null
@@ -97,11 +104,11 @@ messagebus_start() {
 
 messagebus_stop() {
 	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de D-BUS..."
-	if [ -e /var/run/dbus/dbus.pid ]; then
-		kill $(cat /var/run/dbus/dbus.pid) 1>/dev/null 2>/dev/null
+	if [ -e /run/dbus/dbus.pid ]; then
+		kill $(cat /run/dbus/dbus.pid) 1>/dev/null 2>/dev/null
 		killall dbus-daemon 1>/dev/null 2>/dev/null
 	fi
-	rm -f /var/run/dbus/dbus.pid
+	rm -f /run/dbus/dbus.pid
 }
 
 messagebus_restart() {
@@ -112,8 +119,8 @@ messagebus_restart() {
 
 messagebus_reload() {
 	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Relecture de la configuration de D-BUS..."
-	if [ -e /var/run/dbus/dbus.pid ]; then
-		kill -HUP $(cat /var/run/dbus/dbus.pid)
+	if [ -e /run/dbus/dbus.pid ]; then
+		kill -HUP $(cat /run/dbus/dbus.pid)
 	else
 		killall -HUP dbus-daemon
 	fi
@@ -146,6 +153,9 @@ esac
 
 EOF
 chmod +x ${PKG}/etc/rc.d/rc.messagebus
+
+# On s'assure que ce répertoire ne manque pas après l'installation du paquet :
+mkdir -p ${PKG}/run/dbus
 
 installer_doc
 creer_post_installation

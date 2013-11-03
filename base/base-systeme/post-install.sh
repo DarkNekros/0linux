@@ -281,7 +281,7 @@ done
 # On s'assure que '/var/run' et '/var/lock' pointent bien sur '/run', quitte à
 # déplacer des fichiers : :
 if [ ! -L var/run ]; then
-	${BUSYBOXBIN} mv -t run/ var/run/* 
+	${BUSYBOXBIN} cp -ar var/run/* run/
 	${BUSYBOXBIN} rm -rf var/{lock,run}
 	${BUSYBOXBIN} ln -sf ../run var/
 	${BUSYBOXBIN} ln -sf ../run/lock var/
