@@ -93,6 +93,9 @@ esac
 EOF
 chmod +x ${PKG}/etc/rc.d/rc.consolekit
 
+# Ce répertoire est vide :
+rm -rf ${PKG}/var/run
+
 installer_doc
 creer_post_installation
 stripper

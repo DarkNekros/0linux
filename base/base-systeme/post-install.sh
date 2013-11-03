@@ -278,8 +278,17 @@ for ((i = 0; i < ${#baseuid[@]}; i++)); do
 	fi
 done
 
+# On s'assure que '/var/run' et '/var/lock' pointent bien sur '/run', quitte à
+# déplacer des fichiers : :
+if [ ! -L var/run ]; then
+	${BUSYBOXBIN} mv -t run/ var/run/* 
+	${BUSYBOXBIN} rm -rf var/{lock,run}
+	${BUSYBOXBIN} ln -sf ../run var/
+	${BUSYBOXBIN} ln -sf ../run/lock var/
+fi
+
 # On s'assure des permissions :
-chown root.utmp var/run/utmp* var/log/wtmp* >/dev/null 2>&1
-chmod 664 var/run/utmp* >/dev/null 2>&1
+chown root.utmp run/utmp* var/log/wtmp* >/dev/null 2>&1
+chmod 664 run/utmp* >/dev/null 2>&1
 chown root.shadow etc/shadow* etc/gshadow* >/dev/null 2>&1
 chgrp ftp srv/ftp >/dev/null 2>&1

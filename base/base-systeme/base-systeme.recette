@@ -19,12 +19,12 @@ mkdir -p ${PKG}/etc/{0linux,X11,modprobe.d,profile.d,skel}
 mkdir -p ${PKG}/media/{cdrecorder0,cdrecorder1,cdrom0,cdrom1,dvd0,dvd1,floppy0,floppy1,hd0,hd1,memory0,memory1,zip0,zip1}
 mkdir -p ${PKG}/mnt/{cdrecorder,cdrom,dvd,floppy,hd,memory,tmp,zip}
 mkdir -p ${PKG}/srv/ftp
-mkdir -p ${PKG}/usr/{bin,dict,doc,include,info,lib${LIBDIRSUFFIX},local/{logs,paquets},sbin,src}
+mkdir -p ${PKG}/usr/{bin,dict,doc,include,info,lib${LIBDIRSUFFIX},local/paquets,sbin,src}
 mkdir -p ${PKG}/usr/man/man{1,2,3,4,5,6,7,8,9,n}
 mkdir -p ${PKG}/usr/share/{games,wallpapers}
 mkdir -p ${PKG}/run/lock
 mkdir -p ${PKG}/var/{cache,empty,local,mail,opt,spool,tmp}
-mkdir -p ${PKG}/var/{lock,log/{packages,removed_packages,removed_scripts,setup,scripts},run}
+mkdir -p ${PKG}/var/log/{packages,removed_packages,removed_scripts,setup,scripts}}
 
 # Le cas du multilib sous x86_64 : '/usr/lib' n'est pas un lien :
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -36,10 +36,10 @@ fi
 chmod 1710 ${PKG}/root
 
 # Les répertoires temporaires :
-chmod 1777 ${PKG}/{var/lock,var/tmp,tmp}
+chmod 1777 ${PKG}/{var/tmp,tmp}
 
-# La hiérarchie pour les paquets et les journaux des '0outils' :
-chmod -R 777 ${PKG}/{0,usr/local/{logs,paquets}}
+# La hiérarchie pour les paquets compilés par recettes :
+chmod -R 777 ${PKG}/usr/local/paquets
 
 # /srv/ftp, certains démons FTP refusant de se lancer si les droits en écriture existent :
 chmod 555 ${PKG}/srv/ftp
@@ -75,10 +75,14 @@ ln -sf hd         ${PKG}/mnt/disque_dur
 ln -sf wallpapers ${PKG}/usr/share/papiers_peints
 ln -sf games      ${PKG}/usr/share/jeux
 
-# Quelques liens standard :
+# Quelques liens standard pour la doc :
 ln -sf ../doc  ${PKG}/usr/share/doc
 ln -sf ../info ${PKG}/usr/share/info
 ln -sf ../man  ${PKG}/usr/share/man
+
+# Et les liens vers de '/var' vers le tmpfs '/run' :
+ln -sf ../run ${PKG}/var/
+ln -sf ../run/lock ${PKG}/var/
 
 # On copie tous les fichiers de configuration en veillant à ne rien écraser :
 for configuration in $CWD/etc/*; do

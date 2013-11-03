@@ -143,6 +143,25 @@ mount -v /dev/shm
 # On active les espaces d'échange (« swap »), qui peuvent être des fichiers :
 swapon -a
 
+# Un peu de nettoyage :
+rm -f /etc/nologin /etc/forcefsck /etc/fastboot /tmp/.Xauth* 1>/dev/null 2>/dev/null
+
+# On crée /tmp/{.ICE-unix,.X11-unix} s'il sont absents :
+if [ ! -e /tmp/.ICE-unix ]; then
+	mkdir -p /tmp/.ICE-unix
+	chmod 1777 /tmp/.ICE-unix
+fi
+
+if [ ! -e /tmp/.X11-unix ]; then
+	mkdir -p /tmp/.X11-unix
+	chmod 1777 /tmp/.X11-unix
+fi
+
+# On crée un nouvel 'utmp' sain sous '/run' :
+touch           /run/utmp
+chmod 664       /run/utmp
+chown root:utmp /run/utmp
+
 # On charge les modules trouvés dans le fichier '/etc/rc.d/rc.modules' :
 if [ -x /etc/rc.d/rc.modules ]; then
 	/etc/rc.d/rc.modules
@@ -166,23 +185,6 @@ fsck -V $FORCEFSCK -C -R -A -a
 # n'est pas encore activé à ce stade). devpts, sysfs et proc sont déjà montés :
 echo "Montage des sytèmes de fichiers locaux..."
 mount -v -a -F -t nonnfs,nonnfs3,nonnfs4,nosmbfs,nocifs,noproc,nosysfs,nodevpts
-
-# Un peu de nettoyage :
-rm -f /etc/nologin /etc/forcefsck /etc/fastboot /tmp/.Xauth* 1>/dev/null 2>/dev/null
-
-# On crée /tmp/{.ICE-unix,.X11-unix} s'il sont absents :
-if [ ! -e /tmp/.ICE-unix ]; then
-	mkdir -p /tmp/.ICE-unix
-	chmod 1777 /tmp/.ICE-unix
-fi
-
-if [ ! -e /tmp/.X11-unix ]; then
-	mkdir -p /tmp/.X11-unix
-	chmod 1777 /tmp/.X11-unix
-fi
-
-# On crée un nouvel 'utmp' sain :
-touch /var/run/utmp
 
 # Si random-seed est présent, on « crée du hasard » :
 if [ -f /etc/random-seed ]; then

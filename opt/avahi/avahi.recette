@@ -15,6 +15,10 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On supprime les avertissements et on ajoute un drapeau manquant :
+sed -i  '/^Libs:/s:$: -ldbus-1:' avahi-client.pc.in
+sed -i 's:-DG[^ ]*_DISABLE_DEPRECATED=1::g' -i avahi-ui/Makefile.*
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 MOC_QT4=/usr/bin/moc-qt4 \
@@ -81,6 +85,9 @@ esac
 
 EOF
 chmod +x ${PKG}/etc/rc.d/rc.avahi
+
+# Ce répertoire est vide :
+rm -rf ${PKG}/var/run
 
 installer_doc
 
