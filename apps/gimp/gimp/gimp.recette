@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-gimp}
-VERSION=${VERSION:-2.8.6}
+VERSION=${VERSION:-2.8.8}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gimp}
 WGET=${WGET:-ftp://ftp.gimp.org/pub/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
