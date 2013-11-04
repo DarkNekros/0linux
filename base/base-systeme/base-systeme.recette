@@ -24,7 +24,7 @@ mkdir -p ${PKG}/usr/man/man{1,2,3,4,5,6,7,8,9,n}
 mkdir -p ${PKG}/usr/share/{games,wallpapers}
 mkdir -p ${PKG}/run/lock
 mkdir -p ${PKG}/var/{cache,empty,local,mail,opt,spool,tmp}
-mkdir -p ${PKG}/var/log/{packages,removed_packages,removed_scripts,setup,scripts}}
+mkdir -p ${PKG}/var/log/{packages,removed_packages,removed_scripts,setup,scripts}
 
 # Le cas du multilib sous x86_64 : '/usr/lib' n'est pas un lien :
 if [ "${PKGARCH}" = "x86_64" ]; then
