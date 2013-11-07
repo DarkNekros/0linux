@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-enlightenment}
-VERSION=${VERSION:-0.17.2}
+VERSION=${VERSION:-0.17.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-enlightenment}
 WGET=${WGET:-http://download.enlightenment.org/releases/$NAMESRC-$VERSION.$EXT}
