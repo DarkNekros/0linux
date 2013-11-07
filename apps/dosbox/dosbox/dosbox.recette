@@ -40,13 +40,16 @@ cat > $PKG/usr/share/applications/$NAMETGZ.desktop << EOF
 [Desktop Entry]
 Type=Application
 Encoding=UTF-8
-Name=dosbox Emulator
-GenericName=Emulator
+Name=DosBox Emulator
+Name[fr]=Émulateur DosBox
+GenericName=DosBox
+GenericName[Fr]=DosBox
 Comment=An emulator to run old DOS games
+Comment[fr]=Un émulateur pour jouer à de vieux jeux pour DOS
 Icon=dosbox
 Exec=dosbox
 Terminal=false
-Categories=Emulator;Application;
+Categories=Emulator;Application;Games
 EOF
 
 installer_doc
