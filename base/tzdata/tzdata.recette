@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-tzdata}
-VERSION=${VERSION:-2013g}
+VERSION=${VERSION:-2013h}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-tzdata}
 WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${EXT}
