@@ -18,4 +18,6 @@ elif grep -q ^flags.*\\\<svm\\\> /proc/cpuinfo; then
 	modprobe kvm_amd
 fi
 
-# Ajoutez ci-après vos modules supplémentaires :
+# Ajoutez vos propres commandes dans des fichiers « * .conf » sous
+# '/etc/modprobe.d' plutôt qu'ici, car le fichier 'rc.modules' sera écrasé à
+# chaque mise à jour du paquet 'initialisation-systeme'.
