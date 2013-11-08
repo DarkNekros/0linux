@@ -87,9 +87,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install BUILDROOT=${PKG}
 
-# On nettoie tous les scripts SysV  :
-rm -rf ${PKG}/etc/rc*.d
-rm -rf ${PKG}/etc/init.d
+# On copie le script d'initialisation au bon endroit et on nettoie :
+mv ${PKG}/etc/rc.d/init.d/cups ${PKG}/etc/rc.d/rc.cups
+chmod 755 ${PKG}/etc/rc.d/rc.cups
+rm -rf ${PKG}/etc/rc.d/init.d 
 
 # On corrige le raccourci bureau :
 sed -i 's@^Exec=htmlview http://localhost:631/@Exec=xdg-open http://localhost:631/@g' ${PKG}/usr/share/applications/cups.desktop
