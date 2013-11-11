@@ -21,6 +21,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
+	# On force le respect de nos CFLAGS :
+	export OPTIMIZER=${FLAGS}
+	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
@@ -45,6 +48,9 @@ fi
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On force le respect de nos CFLAGS :
+export OPTIMIZER=${FLAGS}
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
