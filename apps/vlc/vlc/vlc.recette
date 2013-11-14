@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-vlc}
-VERSION=${VERSION:-2.1.0}
+VERSION=${VERSION:-2.1.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-vlc}
 WGET=${WGET:-http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
