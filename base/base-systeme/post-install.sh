@@ -82,7 +82,7 @@ basegid=(
 		)
 
 baseuid=(
-		"root:0:0:Super Utilisateur:/root:/usr/bin/bash"
+		"root:0:0:Super Utilisateur:/root:/bin/bash"
 		"bin:1:1:Utilisateur bin:/usr/bin:/usr/bin/false"
 		"daemon:2:2:Utilisateur daemon:/usr/sbin:/usr/bin/false"
 		"adm:3:4:Utilisateur adm:/var/log:/usr/bin/false"
