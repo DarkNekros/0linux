@@ -6,6 +6,7 @@ compositeproto
 damageproto
 dmxproto
 dri2proto
+dri3proto
 evieext
 fixesproto
 fontcacheproto
@@ -13,12 +14,14 @@ fontsproto
 glproto
 inputproto
 kbproto
+presentproto
 printproto
 randrproto 
 recordproto
 renderproto
 resourceproto
 scrnsaverproto
+spice-protocol
 trapproto
 videoproto
 windowswmproto
@@ -207,6 +210,7 @@ xf86-video-ati
 xf86-video-cirrus
 xf86-video-dummy
 xf86-video-fbdev
+xf86-video-freedreno
 xf86-video-geode
 xf86-video-glint
 xf86-video-i128
@@ -217,6 +221,7 @@ xf86-video-modesetting
 xf86-video-neomagic
 xf86-video-nv
 xf86-video-openchrome
+xf86-video-qxl
 xf86-video-r128
 xf86-video-savage
 xf86-video-siliconmotion

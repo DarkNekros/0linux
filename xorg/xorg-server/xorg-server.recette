@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-xorg-server}
-VERSION=${VERSION:-1.14.3}
+VERSION=${VERSION:-1.14.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xorg-server}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/xserver/$NAMESRC-$VERSION.$EXT}
@@ -14,9 +14,6 @@ DESC="Le serveur graphique X11"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige une faille de sécurité datant de 1993 et récemment découverte :
-cat $CWD/xorg-server.use-after-free.patch | patch -p1
 
 # On force X à démarrer avec un écran noir et non un gris chiné moche :
 sed -i 's@0x88, 0x22, 0x44, 0x11@0x00, 0x00, 0x00, 0x00@' dix/window.c

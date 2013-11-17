@@ -3,18 +3,19 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-llvm}
-VERSION=${VERSION:-3.2}
-EXT=${EXT:-tar.xz}
+VERSION=${VERSION:-3.3}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-llvm}
-WGET=(http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC/${NAMESRC}-${VERSION}.${EXT} # Sources de tstellar réempaquetées
-      http://llvm.org/releases/$VERSION/clang-${VERSION}.src.tar.gz
+WGET=(http://llvm.org/releases/${VERSION}/${NAMESRC}-${VERSION}.src.${EXT}
+      http://llvm.org/releases/${VERSION}/cfe-${VERSION}.src.${EXT}
+      http://llvm.org/releases/${VERSION}/compiler-rt-${VERSION}.src.${EXT}
      )
 DESC="L'environnement LLVM et le compilateur Clang"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources ${NAMESRC}-${VERSION}.src.${EXT}
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -23,19 +24,16 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On supprime les sources embarquées de 'clang' pour les remplacer par notre archive :
-	cd tools
-	rm -rf clang clang-${VERSION}.src
-
-	# On décompacte les sources du compilateur Clang :
-	tar xf ${PKGSOURCES}/${NAMETGZ}/clang-${VERSION}.src.tar.gz
-
-	# On renomme sans la version :
-	mv clang-${VERSION}.src clang
-	cd ..
+	# On supprime les sources embarquées de 'clang' :
+	rm -rf tools/clang
+	tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.tar.gz -C tools/
 	
-	# On corrige la version absurde retournée (qui casse 'opengtl' entre autres) :
-	sed -i 's/3\.2svn/3.2/g' configure
+	# On renomme sans la version :
+	mv tools/{cfe-${VERSION}.src,clang}
+	
+	# On décompacte les sources du compilateur compiler-rt :
+	rm -rf projects/compiler-rt
+	tar xf ${PKGSOURCES}/${NAMETGZ}/compiler-rt-${VERSION}.src.tar.gz -C projects/
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -48,6 +46,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 		--disable-assertions \
+		--disable-expensive-checks \
 		--enable-experimental-targets=R600 \
 		--enable-optimized \
 		--enable-shared \
@@ -73,22 +72,19 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources ${NAMESRC}-${VERSION}.src.${EXT}
 cflags
 
-# On supprime les sources embarquées de 'clang' pour les remplacer par notre archive :
-cd tools
-rm -rf clang clang-${VERSION}.src
-
-# On décompacte les sources du compilateur Clang :
-tar xf ${PKGSOURCES}/${NAMETGZ}/clang-${VERSION}.src.tar.gz
+# On supprime les sources embarquées de 'clang' :
+rm -rf tools/clang
+tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.tar.gz -C tools/
 
 # On renomme sans la version :
-mv clang-${VERSION}.src clang
-cd ..
+mv tools/{cfe-${VERSION}.src,clang}
 
-# On corrige la version absurde retournée (qui casse 'opengtl' entre autres) :
-sed -i 's/3\.2svn/3.2/g' configure
+# On décompacte les sources du compilateur compiler-rt :
+rm -rf projects/compiler-rt
+tar xf ${PKGSOURCES}/${NAMETGZ}/compiler-rt-${VERSION}.src.tar.gz -C projects/
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -101,6 +97,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-assertions \
+	--disable-expensive-checks \
 	--enable-experimental-targets=R600 \
 	--enable-optimized \
 	--enable-shared \
@@ -172,12 +169,10 @@ fi
 
 installer_doc
 
-# On complète la documentation :
+# On complète la documentation s'il y en a :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/clang
-cp -a tools/clang/{docs,*.txt} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/clang/
-
-# On déplace de la doc mal placée :
-mv ${PKG}/usr/docs/llvm/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a tools/clang/{docs,*.txt} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/clang/ || true
+mv ${PKG}/usr/docs/llvm/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On supprime les archives redondantes :
 rm -f ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/*.tar.gz

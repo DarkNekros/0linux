@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-MesaLib}
-VERSION=${VERSION:-9.1.6}
+VERSION=${VERSION:-9.2.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mesa}
 WGET=${WGET:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT}

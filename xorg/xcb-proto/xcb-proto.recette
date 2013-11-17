@@ -3,7 +3,7 @@
 
 PKGCAT=xorg
 NAMESRC=${NAMESRC:-xcb-proto}
-VERSION=${VERSION:-1.8}
+VERSION=${VERSION:-1.9}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xcb-proto}
 WGET=${WGET:-http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT}

@@ -15,8 +15,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige l'édition de liens :
-sed -i 's@set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXEC_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")@set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")@' CMakeLists.txt
+# On corrige pour LLVM 3.3 :
+cat $CWD/opengtl.llvm33.patch | patch -p1
 
 # La compilation se fait dans un répertoire dédié :
 mkdir -p build
