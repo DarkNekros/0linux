@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-gnuchess}
-VERSION=${VERSION:-6.0.3}
+VERSION=${VERSION:-6.1.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-gnuchess}
 WGET=${WGET:-http://ftp.gnu.org/pub/gnu/chess/$NAMESRC-$VERSION.$EXT}
