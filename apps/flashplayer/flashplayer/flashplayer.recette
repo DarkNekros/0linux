@@ -26,25 +26,25 @@ else
 		# On installe le greffon 32 bits pour le multilib :
 		cflags i686
 		
-		# ON force un suffixe pour éviter que le 64 bits n'écrase notre 32 bits :
+		# ON force un suffixe pour éviter que le 64 bits n'écrase tout :
 		LIBDIRSUFFIX="32"
-		
-		# On crée le répertoire d'accueil :
-		mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 		
 		# On décompacte le tout dans $PKG :
 		tar xf ${PKGSOURCES}/${NAMETGZ}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.i386.${EXT} -C ${PKG}
-		
-		# On déplace le greffon au bon emplacement :
-		mv ${PKG}/libflashplayer.so ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 		
 		# On renomme le répertoire des bibliothèques...
 		mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/kde4
 		cp -a ${PKG}/usr/lib/kde4/kcm_adobe_flash_player.so ${PKG}/usr/lib${LIBDIRSUFFIX}/kde4/
 		rm -rf ${PKG}/usr/lib
 		
+		# On crée le répertoire d'accueil du greffon :
+		mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/flashplayer/
+		
+		# On déplace le greffon au bon emplacement :
+		mv ${PKG}/libflashplayer.so ${PKG}/usr/lib${LIBDIRSUFFIX}/flashplayer/
+		
 		# On s'assure de la permission du greffon :
-		chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins/*.so
+		chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/flashplayer/*.so
 	fi
 	
 	cflags
@@ -62,7 +62,7 @@ else
 	if [ "${PKGARCH}" = "x86_64" ]; then
 		
 		# Ce répertoire contient depuis peu un lien vers le 64 bits... :
-		rm -rf ${PKG}/usr/lib
+		find ${PKG}/usr/lib -type l -delete
 		
 		if [ "${LIBDIRSUFFIX}" != "64" ]; then
 			mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/kde4
@@ -95,15 +95,10 @@ EOF
 	# On ramène tout fichier texte qui se serait perdu :
 	mv ${PKG}/*.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 	
-	# On corrige le suffixe du multilib :
+	# On déplace le multilib le cas échéant :
 	if [ "${PKGARCH}" = "x86_64" ]; then
-		cflags i686
-		
-		# On renomme :
-		mv ${PKG}/usr/lib{32,${LIBDIRSUFFIX}}
-		
-		# On repasse enfin en 64 bits :
-		cflags
+		rm -rf ${PKG}/usr/lib
+		mv ${PKG}/usr/lib{32,}
 	fi
 fi
 
