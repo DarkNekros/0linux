@@ -44,7 +44,7 @@ cp -a $CWD/r.png ${PKG}/usr/share/pixmaps
 cp -a $CWD/r.desktop ${PKG}/usr/share/applications
 
 # On efface des fichiers assez mal placés qui seront installés avec la doc :
-rm -f $PKG/usr/lib64/R/{NEWS.*,COPYING,SVN-REVISION}
+rm -f $PKG/usr/lib${LIBDIRSUFFIX}/R/{NEWS.*,COPYING,SVN-REVISION}
 
 installer_doc
 creer_post_installation
