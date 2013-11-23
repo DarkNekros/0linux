@@ -3,7 +3,7 @@
 
 PKGCAT="apps/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-httpd}
-VERSION=${VERSION:-2.4.6}
+VERSION=${VERSION:-2.4.7}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-httpd}
 WGET=${WGET:-http://mirrors.ircam.fr/pub/apache/$NAMESRC/$NAMESRC-$VERSION.$EXT}
