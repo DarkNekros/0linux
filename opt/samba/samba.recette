@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-samba}
-VERSION=${VERSION:-4.0.8}
+VERSION=${VERSION:-4.1.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-samba}
 WGET=${WGET:-http://ftp.samba.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -19,8 +19,6 @@ cflags
 mkdir -p ${PKG}/etc/samba
 mkdir -p ${PKG}/var/spool/samba
 
-cd source3
-
 # Compilation avec 'libtirpc' :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 LDFLAGS+="-ltirpc" \
@@ -33,32 +31,75 @@ LDFLAGS+="-ltirpc" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-gnutls \
+	--with-acl-support \
+	--with-ads \
 	--with-configdir=/etc/samba \
+	--with-ldap \
 	--with-lockdir=/var/cache/samba \
 	--with-logfilebase=/var/log/samba \
 	--with-piddir=/run \
 	--with-privatedir=/etc/samba/private \
-	--with-swatdir=/usr/share/swat \
+	--with-winbind \
 	--build=${PKGARCH}-0linux-linux-gnu
 
+# La parallélisation fonctionne différemment dans ce paquet :
+MAXJOBS=${JOBS}
+export JOBS MAXJOBS
+
 make -j${JOBS} || make
-fakeroot make install-everything DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
-# On place le fichier de configuration sans rien écraser :
-cp ../examples/smb.conf.default ${PKG}/etc/samba/smb.conf.0nouveau
+# On place le fichier de configuration d'exemple :
+cp -a examples/smb.conf.default ${PKG}/etc/samba/
 
-# À FAIRE : écrire rc.samba+ ordre des lancements des démons à déduire :
-## On monte les partages Samba :
-#	if [ ! "$(cat /etc/fstab | grep -v '^#' | grep -w -E 'cifs|smbfs')" = "" ]; then
-#		echo "Montage des systèmes de fichiers distants Samba..."
-#		mount -R -a -t cifs,smbfs
-#	fi
-#/usr/sbin/swat
-#/usr/sbin/winbindd -D (+ nmbd ?)
-#/usr/sbin/smbd -D 
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.samba << "EOF"
+#!/usr/bin/env bash
+
+samba_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage des démons Samba.."
+	if [ -r /etc/samba/smb.conf ]; then
+		smbd -D
+		nmbd -D
+	fi
+}
+
+samba_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt des démons Samba..."
+	killall smbd nmbd
+}
+
+case "$1" in
+	'start')
+		samba_start
+	;;
+	
+	'stop')
+		samba_stop
+	;;
+	
+	'restart')
+		samba_stop
+		sleep 1
+		samba_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 {start|stop|restart}"
+		exit 1
+	;;
+
+esac
+
+EOF
 
 # Ce répertoire a besoin du bit « sticky » :
 chmod 1777 ${PKG}/var/spool/samba
+
+# Ce répertoire doit être sécurisé :
+chmod 700 $PKG/etc/samba/private
   
 installer_doc
 creer_post_installation

@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-openssh}
-VERSION=${VERSION:-6.2p2}
+VERSION=${VERSION:-6.4p1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssh}
 WGET=${WGET:-ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/$NAMESRC-$VERSION.$EXT}
