@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-ruby}
-VERSION=${VERSION:-2.0.0p247}
+VERSION=${VERSION:-2.0.0p353}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ruby}
 WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$(echo $VERSION | sed -e 's/p.*$/-&/').$EXT}
