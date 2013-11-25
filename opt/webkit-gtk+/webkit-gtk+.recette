@@ -3,7 +3,7 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-webkitgtk}
-VERSION=${VERSION:-2.0.4}
+VERSION=${VERSION:-2.2.2}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-webkit-gtk+}
 WGET=(

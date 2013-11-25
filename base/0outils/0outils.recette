@@ -3,7 +3,7 @@
 
 PKGCAT=base
 NAMESRC=${NAMESRC:-0outils}
-VERSION=${VERSION:-6.1}
+VERSION=${VERSION:-6.2}
 NAMETGZ=${NAMETGZ:-0outils}
 DESC="Outils « maison » pour la configuration du système"
 
@@ -36,7 +36,8 @@ chmod 755 ${PKG}/usr/bin/*
 
 # On place les fonctions pour l'empaquetage :
 cp -a $CWD/fonctions_paquets.sh ${PKG}/usr/share/0outils/
-chmod 755 ${PKG}/usr/share/0outils/fonctions_paquets.sh
+cp -a $CWD/trouver_dependances.sh ${PKG}/usr/share/0outils/
+chmod 755 ${PKG}/usr/share/0outils/*.sh
 
 # On place les fichiers du système autonome, scripts et fichiers d'amorçage :
 cp -a $CWD/installateur ${PKG}/usr/share/0outils/

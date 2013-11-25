@@ -4,9 +4,25 @@
 # Utilisation :
 #	trouver_paquets_dependants.sh gnu-ghostscript libpng wicd
 
-[ $(uname -m) = i686 ] && LIBDIRSUFFIX=32
-[ $(uname -m) = x86_64 ] && LIBDIRSUFFIX=64
-[ $(uname -m) = arm ] && LIBDIRSUFFIX=arm
+cflags() {
+	PKGARCH="$(uname -m)"
+		
+	if [ ${PKGARCH} = "i686" ]; then
+		LIBDIRSUFFIX=""
+	
+	# x86 64 bits :
+	elif [ ${PKGARCH} = "x86_64" ]; then
+		LIBDIRSUFFIX="64"
+	
+	# ARM v7-a :
+	elif [ ${PKGARCH} = "arm" ]; then
+		LIBDIRSUFFIX=""
+	
+	# Tout le reste :
+	else
+		LIBDIRSUFFIX=""
+	fi
+}
 
 chercher_dep() {
 	for paquet in $@; do
@@ -30,12 +46,8 @@ chercher_dep() {
 	done
 }
 
+cflags
+
 for paq in $@; do
-	NIVEAU=$(( $(chercher_dep $paq | wc -l) +1 ))
-	if [ $NIVEAU -eq 1 ]; then
-		echo "# $paq est niveau ${NIVEAU}."
-	else
-		echo "# $paq est niveau ${NIVEAU}. Il dépend de :"
-		chercher_dep $paq
-	fi
+	chercher_dep $paq
 done
