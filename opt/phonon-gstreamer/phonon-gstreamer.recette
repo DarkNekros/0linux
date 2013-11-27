@@ -3,13 +3,13 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-phonon-backend-gstreamer}
-VERSION=${VERSION:-4.6.3}
+VERSION=${VERSION:-4.7.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-phonon-gstreamer}
-WGET=${WGET:-http://download.kde.org/stable/phonon/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/phonon/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Intefaçage GStreamer pour Phonon"
 
-. /usr/share/0outils/fonctions_paquets.sh # On inclut les fonctions isolées
+. /usr/share/0outils/fonctions_paquets.sh
  
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -26,7 +26,6 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
 	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D CMAKE_SKIP_RPATH=ON \
 	..
 
 make -j${JOBS} || make
