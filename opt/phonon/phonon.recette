@@ -3,10 +3,10 @@
 
 PKGCAT=opt
 NAMESRC=${NAMESRC:-phonon}
-VERSION=${VERSION:-4.6.0}
+VERSION=${VERSION:-4.7.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-phonon}
-WGET=${WGET:-http://ftp.kde.org/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
 DESC="Couche d'abstraction et bibliothèques multimédia pour Qt"
 
 . /usr/share/0outils/fonctions_paquets.sh # On inclut les fonctions isolées
@@ -15,9 +15,7 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige avec ces correctifs des développeurs :
-cat $CWD/phonon.fix-if.patch | patch -p1
-
+# On corrige les chemins d'installation :
 sed -i 's@add_definitions(-DPHONON_LIBRARY_PATH="${PLUGIN_INSTALL_DIR}/plugins")@add_definitions(-DPHONON_LIBRARY_PATH="${CMAKE_INSTALL_PREFIX}/${PLUGIN_INSTALL_DIR}/plugins")@' \
 	phonon/CMakeLists.txt
 
@@ -44,6 +42,9 @@ fakeroot make install DESTDIR=${PKG}
 # On corrige le fichier pour 'pkg-config' :
 sed -i -e 's@includedir}$@& -I\${includedir}/phonon@' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/phonon.pc
 
+# On corrige un chemin dans le fichier pour 'cmake' :
+sed -i -e 's@${currentDir}/../../../@/usr/@' ${PKG}/usr/lib64/cmake/phonon/PhononConfig.cmake
+
 # On veille à lier le répertoires des « backends » de Phonon à KDE4 :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/qt4/plugins/
 ln -sf ../../kde4/plugins/phonon_backend ${PKG}/usr/lib${LIBDIRSUFFIX}/qt4/plugins/
@@ -53,4 +54,4 @@ creer_post_installation
 stripper
 empaqueter
 
-#C'est fini.
+# C'est fini.
