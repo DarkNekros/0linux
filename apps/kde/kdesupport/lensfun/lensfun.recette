@@ -3,7 +3,7 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-lensfun}
-VERSION=${VERSION:-0.2.7}
+VERSION=${VERSION:-0.2.8}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-lensfun}
 WGET=${WGET:-http://download.berlios.de/$NAMESRC/$NAMESRC-$VERSION.$EXT}

@@ -3,7 +3,7 @@
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-soprano}
-VERSION=${VERSION:-2.9.3}
+VERSION=${VERSION:-2.9.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-soprano}
 WGET=${WGET:-http://prdownloads.sourceforge.net/project/$NAMESRC/Soprano/$VERSION/$NAMESRC-$VERSION.$EXT}
