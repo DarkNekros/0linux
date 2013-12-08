@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-enca}
+VERSION=${VERSION:-1.14}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-enca}
+WGET=${WGET:-http://dl.cihar.com/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Convertisseur et détecteur d'encodages"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-external \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+# On force la création de liens symboliques :
+sed -i 's/ln -s/ln -sf/g' $(find . -type f -name "Makefile")
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

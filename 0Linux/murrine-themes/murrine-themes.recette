@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-murrine-themes}
+VERSION=${VERSION:-0.98.4}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-murrine-themes}
+WGET=${WGET:-http://ftp.debian.org/debian/pool/main/m/$NAMESRC/${NAMESRC}_${VERSION}.$EXT}
+DESC="Ensemble de thèmes GTK+ pour Murrine"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On installe chaque thème GTK+ en le renommant de façon plus logique :
+install -D -m644 usr/share/themes/Albatross/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Albatross/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/Bluebird/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Bluebird/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/greybird/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Greybird/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/Kiwi/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Kiwi/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaAquaIsh/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-AquaIsh/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaAzul/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Azul/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaBlau/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Blau/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaBleu/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Bleu/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaBlu/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Blu/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaBlue/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Blue/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaCandido/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Candido/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaCandy/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Candy/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaCappuccino/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Cappuccino/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaChrome/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Chrome/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaCream/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Cream/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaCrystal/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Crystal/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaCrystalCurve/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-CrystalCurve/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaCrystalHuman/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-CrystalHuman/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaCrystalLine/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-CrystalLine/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaEalm/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Ealm/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaElement/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Element/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaFancyCandy/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-FancyCandy/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaGilouche/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Gilouche/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaLoveGray/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-LoveGray/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaNeoGraphite/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-NeoGraphite/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/MurrinaVerdeOlivo/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-VerdeOlivo/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/Murrine-Gray/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Gray/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/Murrine-Light/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Light/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/Murrine-Sky/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Sky/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/NOX/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-NOX/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/Orangine/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Orangine/gtk-2.0/gtkrc
+install -D -m644 usr/share/themes/shearwater/gtk-2.0/gtkrc \
+	${PKG}/usr/share/themes/Murrine-Shearwater/gtk-2.0/gtkrc
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

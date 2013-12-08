@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-tcl}
+VERSION=${VERSION:-8.5.14}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-tcl}
+WGET=${WGET:-http://prdownloads.sourceforge.net/${NAMESRC}/${NAMESRC}${VERSION}-src.$EXT}
+DESC="Langage de script interactif"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+cd unix
+
+# On corrige le chemin des bibliothèques  :
+sed -i "/sprintf(installLib/s:\"lib:&${LIBDIRSUFFIX}:" tclUnixInit.c
+sed -i -e "/TCL_PACKAGE_PATH=/s:=.*:=\"/usr/lib${LIBDIRSUFFIX}\":" \
+	-e "/^TCL_LIBRARY=/s:=.*:='/usr/lib${LIBDIRSUFFIX}/tcl\$(VERSION)':" \
+	configure
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--enable-man-symlinks \
+	--enable-shared \
+	--enable-threads \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-private-headers DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

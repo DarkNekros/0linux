@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-flex}
+VERSION=${VERSION:-2.5.37}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-flex}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Générateur d'analyseur lexical"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée le prédécesseur 'lex' via un script mimant son
+# fonctionnement :
+cat > ${PKG}/usr/bin/lex << "EOF"
+#!/usr/bin/env bash
+exec /usr/bin/flex -l "$@"
+
+EOF
+
+chmod -v 755 $PKG/usr/bin/lex
+
+# Puis on crée la vieillissante bibliothèque 'lex' via un lien :
+ln -sf libfl.a $PKG/usr/lib${LIBDIRSUFFIX}/libl.a
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

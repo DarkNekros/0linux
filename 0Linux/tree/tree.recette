@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-tree}
+VERSION=${VERSION:-1.6.0}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-tree}
+WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/t/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT}
+DESC="Programme de listing en arborescence des répertoires"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée le répertoire d'accueil :
+mkdir -p ${PKG}/usr/bin
+mkdir -p ${PKG}/usr/man/man1
+mkdir -p ${PKG}/usr/man/fr/man1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+
+# 'make install' à la main !
+cp -a tree ${PKG}/usr/bin
+cp -a doc/tree.1 ${PKG}/usr/man/man1
+cp -a doc/tree.1.fr ${PKG}/usr/man/fr/man1/tree.1
+chmod 755 ${PKG}/usr/bin/*
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

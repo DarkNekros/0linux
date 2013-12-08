@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-libmad}
+VERSION=${VERSION:-0.15.1b}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-libmad}
+WGET=${WGET:-http://prdownloads.sourceforge.net/mad/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothqèues pour le format MPEG Layer 2"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige la méthode d'optimisation qui date, qui date... :
+cat $CWD/libmad.optimize.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée un fichier .pc pour 'pkg-config' :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/mad.pc << "EOF"
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/libARCH
+includedir=${prefix}/include
+
+Name: mad
+Description: MPEG audio decoder
+Requires:
+Version: 0.15.1b
+Libs: -L${libdir} -lmad
+Cflags: -I${includedir}
+
+EOF
+
+# On le corrige pour LIBDIRSUFFIX :
+sed -i "s@ARCH@${LIBDIRSUFFIX}@" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/mad.pc
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-ghostscript}
+VERSION=${VERSION:-9.07}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-gnu-ghostscript}
+WGET=(http://downloads.ghostscript.com/public/$NAMESRC-$VERSION.$EXT
+      http://prdownloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz
+      http://ftp.gnu.org/pub/gnu/ghostscript/gnu-gs-fonts-other-6.0.tar.gz
+     )
+DESC="Bibliothèques, interpréteurs et pilotes PostScript et PDF"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-system-libtiff \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+make so
+fakeroot make install DESTDIR=${PKG}
+fakeroot make soinstall DESTDIR=${PKG}
+
+# On déballe les polices supplémentaires :
+tar xf ${PKGSOURCES}/${NAMETGZ}/ghostscript-fonts-std-8.11.tar.gz -C ${PKG}/usr/share/ghostscript
+tar xf ${PKGSOURCES}/${NAMETGZ}/gnu-gs-fonts-other-6.0.tar.gz -C ${PKG}/usr/share/ghostscript
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-rtmpdump}
+VERSION=${VERSION:-2.4}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-rtmpdump}
+WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de téléchargement de flux RTMP"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On ajoute l'installation des fichiers pour 'pkg-config' :
+sed -i -e 's@all:	librtmp.a.*$@& librtmp.pc@' librtmp/Makefile
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" XCFLAGS="${FLAGS}" \
+make \
+	prefix=/usr \
+	libdir=/usr/lib${LIBDIRSUFFIX}
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" XCFLAGS="${FLAGS}" \
+fakeroot make install \
+	prefix=/usr \
+	libdir=/usr/lib${LIBDIRSUFFIX} \
+	DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

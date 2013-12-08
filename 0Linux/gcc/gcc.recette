@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-gcc}
+VERSION=${VERSION:-4.8.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-gcc}
+WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}
+DESC="La suite de compilateurs de GNU"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées. 
+cflags
+
+# On se débarrasse du script 'fixincludes' :
+sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+
+# On empêche l'installation de la libffi, obsolète et en conflit avec 'libffi' :
+sed -i 's/\(install.*:\) install-.*recursive/\1/' libffi/Makefile.in
+sed -i 's/\(install-data-am:\).*/\1/' libffi/include/Makefile.in
+
+# On se passe de 'libiberty' (présente dans 'binutils') :
+sed -i 's/install_to_$(INSTALL_DEST) //' libiberty/Makefile.in
+
+# On s'assure de la bonne version dans ce fichier spécial :
+echo $VERSION > gcc/BASE-VER
+
+# On crée un répertoire séparé pour la compilation :
+rm -rf $TMP/${NAMETGZ}-build
+mkdir -p $TMP/${NAMETGZ}-build
+cd $TMP/${NAMETGZ}-build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+$TMP/${NAME}/configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--disable-cloog-version-check \
+	--disable-install-libiberty \
+	--disable-libstdcxx-pch \
+	--disable-libunwind-exceptions \
+	--disable-ppl-version-check \
+	--enable-__cxa_atexit \
+	--enable-checking=release \
+	--enable-clocale=gnu \
+	--enable-cloog-backend=isl \
+	--enable-languages=c,c++,fortran,go,lto,objc,obj-c++ \
+	--enable-libstdcxx-time \
+	--enable-shared \
+	--enable-threads=posix \
+	--with-system-zlib \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	
+	# Pour éviter les échecs de la suite de tests :
+	# (cf. http://gcc.gnu.org/bugzilla/show_bug.cgi?id=31827)
+	ulimit -s 32768 || true
+	make -k check 2>&1 || true
+	
+	# On se fait également un résumé concis des tests :
+	$TMP/${NAME}/contrib/test_summary 2>&1 || true
+fi
+
+make -j${JOBS} info
+fakeroot make -j${JOBS} install DESTDIR=${PKG}
+fakeroot make -j${JOBS} -i install-info DESTDIR=${PKG}
+
+# Certains paramètres changent selon l'architecture :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	REPARCH="amd64"
+elif [ "${PKGARCH}" = "i686" ]; then
+	REPARCH="i386"
+elif [ "${PKGARCH}" = "arm" ]; then
+	REPARCH="armv7hl"
+else
+	REPARCH="${PKGARCH}"
+fi
+
+# On s'assure que le très important fichier « specs » soit présent :
+if [ ! -r ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/${PKGARCH}-0linux-linux-gnu/${VERSION}/specs ]; then
+	cat gcc/specs > ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/${PKGARCH}-0linux-linux-gnu/${VERSION}/specs
+fi
+
+# Certains s'attendent à la présence de /lib/cpp :
+ln -sf ../bin/cpp ${PKG}/usr/lib${LIBDIRSUFFIX}/cpp
+
+# On crée le lien 'cc' vers 'gcc' :
+ln -sf gcc ${PKG}/usr/bin/cc
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

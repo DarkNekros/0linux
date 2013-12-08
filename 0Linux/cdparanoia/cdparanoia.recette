@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-cdparanoia}
+VERSION=${VERSION:-10.2}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-cdparanoia}
+WGET=${WGET:-http://downloads.xiph.org/releases/$NAMESRC/${NAMESRC}-III-${VERSION}.src.$EXT}
+DESC="Outils d'extraction de pistes de CD audio"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On corrige la compilation :
+	cat $CWD/cdparanoia.gcc.patch | patch -p0
+	cat $CWD/cdparanoia.int16.patch | patch -p1
+	
+	# Compilation pour i686 :
+	autoreconf -vif
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install prefix=${PKG}/usr LIBDIR=${PKG}/usr/lib${LIBDIRSUFFIX} MANDIR=${PKG}/usr/man
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources
+cflags
+
+# On corrige la compilation :
+cat $CWD/cdparanoia.gcc.patch | patch -p0
+cat $CWD/cdparanoia.int16.patch | patch -p1
+
+# Compilation :
+autoreconf -vif
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install prefix=${PKG}/usr LIBDIR=${PKG}/usr/lib${LIBDIRSUFFIX} MANDIR=${PKG}/usr/man
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

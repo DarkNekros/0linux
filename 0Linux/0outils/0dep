@@ -1,0 +1,125 @@
+#!/bin/sh
+#
+# 0DEP - cherche les paquets requis par les exécutables trouvés.
+
+# Copyright (c) 2013 Sébastien Boillod <sbb at tuxfamily dot org>.
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+# === Library ==================================================================
+
+findelves () {
+    # Print the dynamic library list the given stuff is linked to.
+    # $f FILE OR DIRECTORY
+    find "$@" -type f | awk -v sh="/bin/sh -s" '{'"$LDDAWK"' | sh }
+                                                END{close(sh);print "#"}'
+}
+
+getopt () {
+    # Extrait les options de la ligne de commande.
+    # $f
+    awk 'BEGIN{if (ARGC < 2) exit 2
+                for (i=x=1; i < ARGC; i++) {
+                    if (sub(/^-/,"",ARGV[i]))
+                        exit (ARGV[i] ~ /h/) ? 1 : 2
+                }
+              }' "$@"
+    # NOTE1: on ne supporte pas la syntaxe "--", car un argument commençant
+    #        par un tiret sera compris par find comme une option.
+    # NOTE2: la seule option valide est -h, qui provoque l'arrêt du script.
+}
+
+growl () {
+    # Print error message on stderr and exit if a non-null code is given.
+    # $f CODE, MESSAGE
+    local code=$1; shift 1
+    if [ $code -ne 0 ]; then
+        echo "(E) $*" >&2
+        exit $code
+    fi
+    echo "(W) $*" >&2
+}
+
+makeldd () {
+    # Récupère les ld* sous forme de disjonctions imprimées via awk.
+    # $f
+    local ldd=$(which ldd 2>/dev/null)
+    [ "$ldd" ] || growl 1 "Ne peut trouver ldd."
+    awk '/^RTLDLIST=/{gsub(/^[^=]+=|"|[\t ]+$/,"");
+                      gsub(/[\t ]+/," --list \"$0\" || ");
+                      print "print \""$0" --list \"$0"; exit OK=1}
+                      END {exit OK ? 0 : 1}' "$ldd" || \
+                          growl 1 "$ldd: variable RTLDLIST inexploitable!"
+}
+
+searchlogs () {
+    # Look for the dynamic libraries in the package logs.
+    # $f
+    [ "$(ls "$LOGDIR")" ] || return 0 # no output: SCRIPTDIR will also be empty.
+    awk '(NR == FNR) {gsub(/[^\/]*\/\.\.\//, "") # corrige les chemins relatifs
+                      if (sub(/^\//,"",$3) && !($3 in ELF)) {
+                          ELF[$3]; print $3
+                      } else if ($0 == "#") {
+                        print
+                      }
+                      next
+                     }
+         (FNR < 2) {STAGE=0; next}
+         (STAGE != 1) {if ((STAGE == 0) && ($0 == "./")) STAGE=1; next}
+         ($0 in ELF) {STAGE=2; gsub(/^.*\/|-[^-]+-[^-]+-[^-]+$/,"", FILENAME)
+                      print FILENAME >"/dev/stderr"}' - $LOGDIR/*
+}
+
+searchscripts () {
+    # Look for the dynamic libraries in the package scripts.
+    # $f
+    [ "$(ls "$SCRIPTDIR")" ] || return 0
+    awk '(STAGE == 0) {(($0 == "#") && (STAGE=1)) || ELF[$0]; next}
+         (STAGE > 1) {if (FNR < 2) STAGE=1; next}
+         /^\( *cd *[^ \t]+ *; *rm -rf *[^ \t]+ *\) *$/ {
+         if (($3"/"$7) in ELF) {
+                gsub(/^.*\/|-[^-]+-[^-]+-[^-]+$/,"", FILENAME)
+                print FILENAME
+                STAGE=2
+            }
+         }' - $SCRIPTDIR/*
+}
+
+strippkg () {
+    # Exclut les paquets demandé et assure que chaque paquet n'a qu'une entrée.
+    # $f
+    awk 'BEGIN{for (i=1; i < ARGC; i++) GOT[ARGV[i]]; split("-", ARGV)}
+         ($0 in GOT){next}{print; GOT[$0]}' $XPKG | sort
+}
+
+usage () {
+    # Print the help digest & exit.
+    # $f CODE
+    [ $1 -eq 0 ] || exec 1>&2
+    cat >&1 << EOF
+0dep -h|<fichier/répertoire> ...
+EOF
+    exit $1
+}
+
+# === Main =====================================================================
+export LC_ALL="C"
+LOGDIR="/var/log/packages"
+SCRIPTDIR="/var/log/scripts"
+XPKG="$XPKG glibc" # la liste des paquets qu'on veut ignorer.
+getopt "$@" || usage $(($? -1))
+
+LDDAWK="$(makeldd)" || exit 1
+( findelves "$@" 2>/dev/null | searchlogs | searchscripts ) 2>&1 | strippkg
+
+# EoF

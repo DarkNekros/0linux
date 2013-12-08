@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-openldap}
+VERSION=${VERSION:-2.4.36}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-openldap-client}
+WGET=${WGET:-ftp://ftp.openldap.org/pub/OpenLDAP/$NAMESRC-release/$NAMESRC-$VERSION.$EXT}
+DESC="Outils et bibliothèques pour le protocole OpenLDAP"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var/lib \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/openldap \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-debug \
+	--enable-crypt \
+	--enable-dynamic \
+	--enable-local \
+	--enable-proctitle \
+	--enable-wrappers \
+	--enable-syslog \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make depend
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On supprime la configuration par défaut et on s'assure de ne pas en écraser une plus ancienne  :
+rm -f ${PKG}/etc/openldap/ldap.conf.default
+mv ${PKG}/etc/openldap/ldap.conf{,.0nouveau}
+
+# On évite une erreur avec les certificats auto-signés :
+echo "" >> ${PKG}/etc/openldap/ldap.conf.0nouveau
+echo "# On évite une erreur avec les certificats auto-signés :" >> ${PKG}/etc/openldap/ldap.conf.0nouveau
+echo "TLS_REQCERT allow" >> ${PKG}/etc/openldap/ldap.conf.0nouveau
+echo "" >> ${PKG}/etc/openldap/ldap.conf.0nouveau
+
+installer_doc
+
+# On complète la documentation :
+cp -a doc/{drafts,guide,rfc} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

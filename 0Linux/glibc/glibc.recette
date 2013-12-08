@@ -1,0 +1,191 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-glibc}
+VERSION=${VERSION:-2.17}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-glibc}
+WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques système vitales"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/var/{db,run}/nscd
+
+# On corrige certains problèmes de sécurité.
+# cf. http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-0242
+# cf. http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-1914
+cat $CWD/glibc.getaddrinfo-stack-overflow.patch | patch -p1
+cat $CWD/glibc.regexp-matcher-overrun.patch | patch -p1
+
+# On évite une boucle infinie :
+cat $CWD/glibc.boucle-infinie.patch | patch -p1
+
+# On ne compile pas les fuseaux horaires, un paquet s'en charge :
+sed -i 's/localedata timezone rt/localedata rt/' Makeconfig
+
+# On active la parallélisation :
+sed -i "s@# PARALLELMFLAGS = -j 4@PARALLELMFLAGS = -j${JOBS}@" Makefile.in
+
+# On compile pour la prise en charge du multilib en i686 pour x86_64 uniquement :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits :
+	cflags i686
+	
+	# On crée un répertoire séparé pour la compilation 32 bits :
+	rm -rf $TMP/${NAMESRC}-build${LIBDIRSUFFIX}
+	mkdir -p $TMP/${NAMESRC}-build${LIBDIRSUFFIX}
+	cd $TMP/${NAMESRC}-build${LIBDIRSUFFIX}
+	
+	# Ce lien aide dans le processus de compilation selon l'hôte et la machine ciblée :
+	ln -sf ${NAMESRC}-build${LIBDIRSUFFIX} $TMP/${PKGARCH}
+		
+	# On ajoute notre répertoire de bibliothèques à la config' :
+	echo "slibdir=/usr/lib${LIBDIRSUFFIX}" >> configparms
+	
+	# Sur i686, ce drapeau permet de régler certains problèmes avec Xen :
+	EXTRAFLAG="-mno-tls-direct-seg-refs"
+	
+	# Compilation 32 bits avec une optimisation maximale :
+	CFLAGS="${FLAGS} -g -O3 ${EXTRAFLAG}" CXXFLAGS="${FLAGS} -g -O3 ${EXTRAFLAG}" \
+	$TMP/${NAME}/configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--enable-add-ons=libidn,nptl \
+		--enable-kernel=3.1.0 \
+		--enable-profile \
+		--enable-stackguard-randomization \
+		--with-__thread \
+		--with-tls \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make -j${JOBS} install install_root=${PKG}
+	
+	cd -
+	
+	cat >> ${PKG}/etc/ld.so.conf << EOF
+/usr/local/lib${LIBDIRSUFFIX}
+/usr/lib${LIBDIRSUFFIX}
+/opt/lib${LIBDIRSUFFIX}
+
+EOF
+
+fi
+
+# On repasse en natif :
+cflags
+
+# On crée un répertoire séparé pour la compilation :
+rm -rf $TMP/${NAMESRC}-build${LIBDIRSUFFIX}
+mkdir -p $TMP/${NAMESRC}-build${LIBDIRSUFFIX}
+cd $TMP/${NAMESRC}-build${LIBDIRSUFFIX}
+
+# Ce lien aide dans le processus de compilation selon l'hôte et la machine ciblée :
+ln -sf ${NAMESRC}-build $TMP/${PKGARCH}
+
+# On ajoute notre répertoire de bibliothèques à la config' :
+echo "slibdir=/usr/lib${LIBDIRSUFFIX}" >> configparms
+
+# Sur i686, ce drapeau permet de régler certains problèmes avec Xen :
+if [ "${PKGARCH}" = "i686" ]; then
+	EXTRAFLAG="-mno-tls-direct-seg-refs"
+fi
+
+# Compilation avec une optimisation maximale :
+CFLAGS="${FLAGS} -g -O3 ${EXTRAFLAG}" CXXFLAGS="${FLAGS} -g -O3 ${EXTRAFLAG}" \
+$TMP/${NAME}/configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--enable-add-ons=libidn,nptl \
+	--enable-kernel=3.1.0 \
+	--enable-obsolete-rpc \
+	--enable-profile \
+	--enable-stackguard-randomization \
+	--with-__thread \
+	--with-tls \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	cp  $TMP/${NAME}/iconvdata/gconv-modules iconvdata
+	make -k check 2>&1 || true # On ne quitte pas sur les erreurs rencontrées
+fi
+
+fakeroot make -j${JOBS} install install_root=${PKG}
+fakeroot make -j${JOBS} localedata/install-locales install_root=${PKG}
+
+# On déplace toutes les bibliothèques dans un répertoire (hors bibliothèques)
+# qui fera tampon pour des mises à niveau transparentes :
+mkdir -p ${PKG}/usr/libc_tampon
+mv ${PKG}/lib${LIBDIRSUFFIX}/*so* ${PKG}/usr/libc_tampon/ || true
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/*so* ${PKG}/usr/libc_tampon/
+
+# Sauf celle-ci qu'on remet en place :
+mv ${PKG}/usr/libc_tampon/libSegFault.so ${PKG}/usr/lib${LIBDIRSUFFIX}/
+
+# On ne conserve que les bibliothèques dynamiques et les liens :
+rm -f ${PKG}/usr/libc_tampon/*.{a,map}
+
+# On supprime tous les liens symboliques, on les créera nous-même en post-installation :
+find ${PKG}/usr/libc_tampon -type l -delete || true
+find ${PKG}/lib${LIBDIRSUFFIX} -type l -delete || true
+find ${PKG}/usr/lib${LIBDIRSUFFIX} -type l -delete || true
+
+# On renomme ce qui reste avec une extension '.newlib' :
+for newlib in ${PKG}/usr/libc_tampon/*; do
+	mv ${newlib}{,.newlib}
+done
+
+# On place la configuration de nscd :
+cp -a $TMP/${NAME}/nscd/nscd.conf ${PKG}/etc/
+
+# On nettoie :
+rm -f ${PKG}/etc/ld.so.cache
+
+# On crée un '/etc/ld.so.conf' large et on ajoute une ligne 'include' incluant 
+# les fichiers présents dans 'ld.so.conf.d' :
+mkdir -p ${PKG}/etc/ld.so.conf.d
+cat >> ${PKG}/etc/ld.so.conf << EOF
+/usr/local/lib${LIBDIRSUFFIX}
+/usr/lib${LIBDIRSUFFIX}
+/opt/lib${LIBDIRSUFFIX}
+include /etc/ld.so.conf.d/*.conf
+
+EOF
+
+# On n'appelle surtout pas 'creer_post_installation', laquelle appelle 'ldconfig'.
+# On crée donc toute la post-installation à la main :
+cat $CWD/post-install.sh >> ${PKG}/post-install.sh
+
+# On remplace tous les marqueurs par $LIBDIRSUFFIX et $VERSION :
+sed -i "s@ARCH@${LIBDIRSUFFIX}@g" ${PKG}/post-install.sh
+sed -i "s@VERSION@${VERSION}@g"   ${PKG}/post-install.sh
+
+installer_doc
+stripper
+empaqueter
+
+# On nettoie derrière nous :
+rm -rf $TMP/glibc-build*
+rm -f $TMP/{i686,${PKGARCH}}
+
+# C'est fini.

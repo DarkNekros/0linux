@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-duma}
+VERSION=${VERSION:-2.5.15}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-duma}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_$(echo ${VERSION} | tr '.' '_').$EXT}
+DESC="Outil de surveillance de gestion de mémoire"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make
+
+fakeroot make install MAN_INSTALL_DIR=${PKG}/usr/man DOC_INSTALL_DIR=${PKG}/usr/doc/${NAMETGZ}-${VERSION} \
+libdir=${PKG}/usr/lib${LIBDIRSUFFIX} prefix=${PKG}/usr
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-pm-utils}
+VERSION=${VERSION:-1.4.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-pm-utils}
+WGET=(http://pm-utils.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
+      http://pm-utils.freedesktop.org/releases/pm-quirks-20100619.$EXT
+     )
+DESC="Outils de gestion de l'énergie"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On décompresse les « quirks » vidéo où il faut :
+tar xf ${PKGSOURCES}/${NAMETGZ}/pm-quirks-20100619.$EXT -C ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

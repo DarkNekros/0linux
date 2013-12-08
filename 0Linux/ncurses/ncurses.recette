@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-ncurses}
+VERSION=${VERSION:-5.9}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-ncurses}
+WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques d'affichage « new curses »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--disable-termcap \
+		--enable-pc-files \
+		--enable-symlinks \
+		--enable-widec \
+		--with-manpage-format=normal \
+		--with-normal \
+		--with-pkg-config=/usr/lib${LIBDIRSUFFIX}/pkgconfig \
+		--with-shared \
+		--without-ada \
+		--without-debug \
+		--without-gpm \
+		--without-profile \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On va utiliser le stratagème de LFS pour tromper les applications qui ne veulent
+	# pas de notre 'ncurses' « wide-character » et celles qui ne sont compatibles qu'avec
+	# la vieillissante 'libcurses'.
+	# Le stratagème :
+	for bibliotheque in ncurses form panel menu; do
+		rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${bibliotheque}.so
+		echo "INPUT(-l${bibliotheque}w)" > ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${bibliotheque}.so
+		ln -sf lib${bibliotheque}w.a ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${bibliotheque}.a
+	done
+
+	ln -sf libncursesw.so.5 ${PKG}/usr/lib${LIBDIRSUFFIX}/libncursesw.so
+
+	# On lie à la bibliothèque statique :
+	ln -sf libncurses++w.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libncurses++.a
+
+	# On déplace selon l'architecture et on lie les fichiers pour 'pkgconfig' :
+	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+		mv ${PKG}/usr/lib/pkgconfig ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	fi
+
+	for bibliotheque in ncurses ncurses++ form panel menu; do
+		ln -sf ${bibliotheque}w.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/${bibliotheque}.pc
+	done
+
+	# On reste compatible avec les vieilleries :
+	rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/libcursesw.so
+	echo "INPUT(-lncursesw)" > ${PKG}/usr/lib${LIBDIRSUFFIX}/libcursesw.so
+	ln -sf libncurses.so ${PKG}/usr/lib${LIBDIRSUFFIX}/libcurses.so
+	ln -sf libncursesw.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libcursesw.a
+	ln -sf libncurses.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libcurses.a
+	ln -sf ncursesw5-config ${PKG}/usr/bin/ncurses5-config
+	ln -sf ../share/terminfo ${PKG}/usr/lib${LIBDIRSUFFIX}/terminfo
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--disable-termcap \
+	--enable-pc-files \
+	--enable-symlinks \
+	--enable-widec \
+	--with-manpage-format=normal \
+	--with-gpm \
+	--with-normal \
+	--with-pkg-config=/usr/lib${LIBDIRSUFFIX}/pkgconfig \
+	--with-shared \
+	--without-ada \
+	--without-debug \
+	--without-profile \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On va utiliser le stratagème de LFS pour tromper les applications qui ne veulent
+# pas de notre 'ncurses' « wide-character » et celles qui ne sont compatibles qu'avec
+# la vieillissante 'libcurses'.
+# Le stratagème :
+for bibliotheque in ncurses form panel menu; do
+	rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${bibliotheque}.so
+	echo "INPUT(-l${bibliotheque}w)" > ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${bibliotheque}.so
+	ln -sf lib${bibliotheque}w.a ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${bibliotheque}.a
+done
+
+ln -sf libncursesw.so.5 ${PKG}/usr/lib${LIBDIRSUFFIX}/libncursesw.so
+
+# On lie à la bibliothèque statique :
+ln -sf libncurses++w.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libncurses++.a
+
+# On déplace selon l'architecture et on lie les fichiers pour 'pkgconfig' :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	mv ${PKG}/usr/lib/pkgconfig ${PKG}/usr/lib${LIBDIRSUFFIX}/
+fi
+
+for bibliotheque in ncurses ncurses++ form panel menu; do
+	ln -sf ${bibliotheque}w.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/${bibliotheque}.pc
+done
+
+# On reste compatible avec les vieilleries :
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/libcursesw.so
+echo "INPUT(-lncursesw)" > ${PKG}/usr/lib${LIBDIRSUFFIX}/libcursesw.so
+ln -sf libncurses.so ${PKG}/usr/lib${LIBDIRSUFFIX}/libcurses.so
+ln -sf libncursesw.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libcursesw.a
+ln -sf libncurses.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libcurses.a
+ln -sf ncursesw5-config ${PKG}/usr/bin/ncurses5-config
+ln -sf ../share/terminfo ${PKG}/usr/lib${LIBDIRSUFFIX}/terminfo
+
+# On renomme l'en-tête 'termcap.h' pour ne rien écraser :
+mv ${PKG}/usr/include/termcap.h ${PKG}/usr/include/termcap-ncurses.h
+
+installer_doc
+
+# On complète la documentation :
+cp -a TO-DO doc/ ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

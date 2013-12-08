@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-libcuefile}
+VERSION=${VERSION:-r475}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-libcuefile}
+WGET=${WGET:-http://files.musepack.net/source/${NAMESRC}_${VERSION}.$EXT}
+DESC="Outils et bibliothèques Musepack pour les fichiers 'cue'"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On complète le fichier 'CMakeLists.txt' auquel il manque les entêtes... :
+echo 'INSTALL(FILES ${libcuefile_SOURCE_DIR}/include/cuetools/cuefile.h ${libcuefile_SOURCE_DIR}/include/cuetools/cd.h ${libcuefile_SOURCE_DIR}/include/cuetools/cdtext.h DESTINATION include/cuetools)' >> src/CMakeLists.txt
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake \
+	-G "Unix Makefiles" \
+	-DCMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-DCMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX}
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

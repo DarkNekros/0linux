@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-live}
+VERSION=${VERSION:-2013.03.07}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-live555}
+WGET=${WGET:-http://www.live555.com/liveMedia/public/${NAMESRC}.${VERSION}.$EXT}
+DESC="Outils et bibliothèque pour flux en streaming"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/{bin/live,lib${LIBDIRSUFFIX}}
+mkdir -p ${PKG}/usr/include/{BasicUsageEnvironment,UsageEnvironment,groupsock,liveMedia}
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/{BasicUsageEnvironment,UsageEnvironment,groupsock,liveMedia}
+
+# Le script permettant de générer les Makefiles dépend de l'architecture :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	EXTRAARCH="-64bit"
+fi
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./genMakefiles linux${EXTRAARCH}
+
+make -j${JOBS} || make
+
+# On installe manuellement :
+for i in BasicUsageEnvironment UsageEnvironment groupsock liveMedia; do
+	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${i}
+	mkdir -p ${PKG}/usr/include/${i}
+	cp -a ${i}/*.a ${PKG}/usr/lib${LIBDIRSUFFIX}/${i}/
+	cp -a ${i}/include/*.hh ${PKG}/usr/include/${i}/
+done
+
+find testProgs/* -perm -755 -exec cp -a {} ${PKG}/usr/bin/live/ \;
+find mediaServer/* -perm -755 -exec cp -a {} ${PKG}/usr/bin/live/ \;
+
+# On nettoie :
+rm -f ${PKG}/usr/bin/live/COPYING
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

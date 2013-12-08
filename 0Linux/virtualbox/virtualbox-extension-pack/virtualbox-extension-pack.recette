@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-Oracle_VM_VirtualBox_Extension_Pack}
+VERSION=${VERSION:-4.3.0}
+NAMETGZ=${NAMETGZ:-virtualbox-extension-pack}
+WGET=${WGET:-http://download.virtualbox.org/virtualbox/$VERSION/${NAMESRC}-${VERSION}.vbox-extpack}
+DESC="Bibliothèques et outils supplémentaires pour VirtualBox"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags # Pour définir $LIBDIRSUFFIX
+
+# On crée le répertoire d'accueil :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
+
+# On extrait l'archive au bon emplacement :
+tar xvf ${PKGSOURCES}/${NAMETGZ}/Oracle_VM_VirtualBox_Extension_Pack-${VERSION}.vbox-extpack \
+	-C ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
+
+installer_doc
+
+# On complète la documentation :
+cp -a ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/ExtPack-license.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

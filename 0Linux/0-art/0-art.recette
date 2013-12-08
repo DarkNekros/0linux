@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-0-art}
+VERSION=${VERSION:-25102012}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-0-art}
+WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+DESC="Créations originales de gentils contributeurs pour 0"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On copie tous les papiers peints :
+mkdir -p ${PKG}/usr/share/wallpapers/
+cp -a *.{jpg,png} ${PKG}/usr/share/wallpapers/
+
+installer_doc
+
+# On place la documentation :
+cp -a LISEZMOI* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

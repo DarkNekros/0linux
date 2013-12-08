@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-samba}
+VERSION=${VERSION:-4.1.1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-samba}
+WGET=${WGET:-http://ftp.samba.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Clients et serveurs Samba pour les protocoles SMB, CIFS et Active Directory"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/etc/samba
+mkdir -p ${PKG}/var/spool/samba
+
+# Compilation avec 'libtirpc' :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+LDFLAGS+="-ltirpc" \
+./configure \
+	--enable-fhs \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-gnutls \
+	--with-acl-support \
+	--with-ads \
+	--with-configdir=/etc/samba \
+	--with-ldap \
+	--with-lockdir=/var/cache/samba \
+	--with-logfilebase=/var/log/samba \
+	--with-piddir=/run \
+	--with-privatedir=/etc/samba/private \
+	--with-winbind \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+# La parallélisation fonctionne différemment dans ce paquet :
+MAXJOBS=${JOBS}
+export JOBS MAXJOBS
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place le fichier de configuration d'exemple :
+cp -a examples/smb.conf.default ${PKG}/etc/samba/
+
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.samba << "EOF"
+#!/usr/bin/env bash
+
+samba_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage des démons Samba.."
+	if [ -r /etc/samba/smb.conf ]; then
+		smbd -D
+		nmbd -D
+	fi
+}
+
+samba_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt des démons Samba..."
+	killall smbd nmbd
+}
+
+case "$1" in
+	'start')
+		samba_start
+	;;
+	
+	'stop')
+		samba_stop
+	;;
+	
+	'restart')
+		samba_stop
+		sleep 1
+		samba_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 {start|stop|restart}"
+		exit 1
+	;;
+
+esac
+
+EOF
+
+# Ce répertoire a besoin du bit « sticky » :
+chmod 1777 ${PKG}/var/spool/samba
+
+# Ce répertoire doit être sécurisé :
+chmod 700 $PKG/etc/samba/private
+  
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

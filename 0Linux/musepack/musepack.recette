@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-musepack_src}
+VERSION=${VERSION:-r475}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-musepack}
+WGET=${WGET:-http://files.musepack.net/source/${NAMESRC}_${VERSION}.$EXT}
+DESC="Outils et bibliothèques pour le format Musepack"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+mkdir build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D BUILD_TESTS=OFF \
+	-D ENABLE_SSE=ON \
+	-D ENABLE_SSE2=ON \
+	-D ENABLE_SSE3=ON \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D LIBRARY_OUTPUT_PATH=${PKG}/usr/lib${LIBDIRSUFFIX} \
+	-D SYSCONF_INSTALL_DIR=/etc \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Nettoyage
+rm -rf ${PKG}/usr/include/mpc/.svn
+
+# On crée un lien réclamé par certains paquets (k3b) :
+ln -sf mpc ${PKG}/usr/include/mpcdec
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

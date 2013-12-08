@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-mdadm}
+VERSION=${VERSION:-3.2.6}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-mdadm}
+WGET=${WGET:-https://www.kernel.org/pub/linux/utils/raid/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de gestion de volumes RAID logiciels"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+fakeroot make install MANDIR=/usr/man DESTDIR=${PKG}
+
+# On prend garde à ne rien écraser :
+if [ -e ${PKG}/etc/mdadm.conf ]; then
+	mv ${PKG}/etc/mdadm.conf{,0nouveau}
+fi
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-avahi}
+VERSION=${VERSION:-0.6.31}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-avahi}
+WGET=${WGET:-http://avahi.org/download/$NAMESRC-$VERSION.$EXT}
+DESC="Service DNS avec découverte automatique"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On supprime les avertissements et on ajoute un drapeau manquant :
+sed -i  '/^Libs:/s:$: -ldbus-1:' avahi-client.pc.in
+sed -i 's:-DG[^ ]*_DISABLE_DEPRECATED=1::g' -i avahi-ui/Makefile.*
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+MOC_QT4=/usr/bin/moc-qt4 \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-mono \
+	--disable-qt3 \
+	--enable-compat-howl \
+	--enable-compat-libdns_sd \
+	--with-avahi-group=avahi \
+	--with-avahi-priv-access-group=netdev \
+	--with-avahi-user=avahi \
+	--with-distro=none \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée NOTRE fichier service :
+mkdir -p ${PKG}/etc/rc.d
+rm -f ${PKG}/etc/rc.d/rc.*
+cat > ${PKG}/etc/rc.d/rc.avahi << "EOF"
+#!/usr/bin/env bash
+
+avahi_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage des démons Avahi..."
+	/usr/sbin/avahi-daemon -D
+	/usr/sbin/avahi-dnsconfd -D
+}
+
+avahi_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt des démons Avahi..."
+	/usr/sbin/avahi-daemon -k
+	/usr/sbin/avahi-dnsconfd -k
+}
+
+case "$1" in
+	'start')
+		avahi_start
+	;;
+	
+	'stop')
+		avahi_stop
+	;;
+	
+	'restart')
+		avahi_stop
+		sleep 1
+		avahi_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.avahi
+
+# Ce répertoire est vide :
+rm -rf ${PKG}/var/run
+
+installer_doc
+
+# On complète la documentation :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a docs/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

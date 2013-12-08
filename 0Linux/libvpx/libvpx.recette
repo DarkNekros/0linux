@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-libvpx}
+VERSION=${VERSION:-1.1.0}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-libvpx}
+WGET=${WGET:-http://webm.googlecode.com/files/${NAMESRC}-v${VERSION}.$EXT}
+DESC="Le codec vidéo libre VP8/WebM"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Certaines options diffèrent selon l'architecture :
+if [ "${PKGARCH}" = "i686" ]; then
+	OPTPIC=""
+	OPTTARGET="x86"
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	OPTPIC="--enable-pic"
+	OPTTARGET="x86_64"
+fi
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--disable-debug \
+	--disable-debug-libs \
+	${OPTPIC} \
+	--enable-postproc \
+	--enable-shared \
+	--enable-vp8 \
+	--target=${OPTTARGET}-linux-gcc
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

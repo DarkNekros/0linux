@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-serf}
+VERSION=${VERSION:-1.3.0}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-serf}
+WGET=${WGET:-http://serf.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliotheques réseau pour apr"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+scons PREFIX=/usr
+fakeroot scons PREFIX=${PKG}/usr install
+
+# On déplace ça le cas échéant :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	cp -ar ${PKG}/usr/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	rm -rf ${PKG}/usr/lib
+fi
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

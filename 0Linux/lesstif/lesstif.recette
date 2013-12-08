@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-lesstif}
+VERSION=${VERSION:-0.95.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-lesstif}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Une implémentation libre de OSF/Motif®"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Certains chemins sont codés en dur :
+sed -i -e 's:-L$L/lib:-L@libdir@:' -e 's:-L/usr/X11R6/lib:$XL:' \
+	-e "s@/lib@/lib${LIBDIRSUFFIX}@g" scripts/motif-config.in
+
+sed -i 's|mwmddir = $(libdir)/X11/mwm|mwmddir = $(sysconfdir)/mwm|' clients/Motif-2.1/mwm/Makefile.in
+sed -i 's|libdir = $(exec_prefix)/lib|libdir = @libdir@|' lib/Dt/Makefile.in
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-debug \
+	--enable-build-21 \
+	--enable-build-Xlt \
+	--enable-build-Xbae \
+	--enable-production \
+	--enable-shared \
+	--enable-static \
+	--enable-xbae-24bit \
+	--enable-xbae-row-heights \
+	--with-xdnd \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make rootdir=/usr/doc/${NAMETGZ}-${VERSION}
+fakeroot make install rootdir=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
+
+# On met ces fichiers pour 'imake' à leur place :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/X11
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/LessTif/config ${PKG}/usr/lib${LIBDIRSUFFIX}/X11/
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/LessTif
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << EOF
+# Ajout de LessTif à 'host.def' s'il est absent :
+mkdir -p usr/lib${LIBDIRSUFFIX}/X11/config
+touch usr/lib${LIBDIRSUFFIX}/X11/config/host.def
+
+if ! grep LessTif usr/lib${LIBDIRSUFFIX}/X11/config/host.def 1> /dev/null 2> /dev/null ; then
+	cat usr/lib${LIBDIRSUFFIX}/LessTif/config/host.def >> usr/lib${LIBDIRSUFFIX}/X11/config/host.def
+fi
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

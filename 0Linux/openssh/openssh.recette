@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-openssh}
+VERSION=${VERSION:-6.4p1}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-openssh}
+WGET=${WGET:-ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/$NAMESRC-$VERSION.$EXT}
+DESC="Serveur et clients sécurisés OpenSSH"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc/ssh \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/sbin \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-default-path=/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin \
+	--with-md5-passwords \
+	--with-privsep-path=/var/empty \
+	--with-privsep-user=sshd \
+	--with-tcp-wrappers \
+	--without-pam \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée le répertoire spécifié dans l'option « PrivilegeSeparation » :
+mkdir -p ${PKG}/var/empty
+
+# On supprime les clés, elles sont uniques à chaque machine :
+rm -f ${PKG}/etc/ssh/*_key*}
+
+# On installe les fichiers de configuration sans rien écraser :
+mv ${PKG}/etc/ssh/ssh_config{,.0nouveau}
+mv ${PKG}/etc/ssh/sshd_config{,.0nouveau}
+
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.sshd << "EOF"
+#!/usr/bin/env bash
+
+sshd_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de SSH..."
+	if [ ! -r /etc/ssh/ssh_host_key ]; then
+		/usr/bin/ssh-keygen -t rsa1 -f /etc/ssh/ssh_host_key -N '' 
+	fi
+	if [ ! -f /etc/ssh/ssh_host_dsa_key ]; then
+		/usr/bin/ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -N ''
+	fi
+	if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
+		/usr/bin/ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
+	fi
+	if [ ! -f /etc/ssh/ssh_host_ecdsa_key ]; then
+		/usr/bin/ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -N ''
+	fi
+	
+	/usr/sbin/sshd &
+}
+
+sshd_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de SSH..."
+	
+	# On évite de tuer une session SSH active :
+	if [ -r /var/run/sshd.pid ]; then
+		kill $(cat /var/run/sshd.pid)
+	else
+		killall sshd
+	fi
+}
+
+case "$1" in
+	'start')
+		sshd_start
+	;;
+	
+	'stop')
+		sshd_stop
+	;;
+	
+	'restart')
+		sshd_stop
+		sleep 1
+		sshd_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.sshd
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

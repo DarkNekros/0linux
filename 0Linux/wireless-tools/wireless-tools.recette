@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-wireless_tools}
+VERSION=${VERSION:-29}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-wireless-tools}
+WGET=${WGET:-http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/${NAMESRC}.${VERSION}.$EXT}
+DESC="Outils pour réseaux sans fil"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On ajoute les cibles de compilation pour les bibliothèques dynamiques et statiques :
+sed -i 's#install:: $(IWLIB_INSTALL) install-bin install-hdr install-man#& install-dynamic install-static#' Makefile
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+
+fakeroot make install PREFIX=${PKG}/usr INSTALL_LIB=${PKG}/usr/lib${LIBDIRSUFFIX}
+
+installer_doc
+
+# On complète la documentation (le fichier francophone README.fr est en ISO-8859-1) :
+mv ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/README.fr{,.iso-8859-1}
+iconv -f iso88591 \
+	-t utf8 \
+	${PKG}/usr/doc/${NAMETGZ}-${VERSION}/README.fr.iso-8859-1 \
+	> ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/README.fr.utf-8
+
+# On crée un lien francophone :
+ln -sf README.fr.utf-8 ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/LISEZMOI
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

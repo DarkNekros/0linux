@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-udisks}
+VERSION=${VERSION:-2.1.1}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-udisks}
+WGET=(http://hal.freedesktop.org/releases/$NAMESRC-1.0.4.tar.gz
+     http://udisks.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
+     )
+DESC="Service de gestion de périphériques de stockage"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+cflags
+
+# On compile la version 1.0.4 :
+preparer_sources $NAMESRC-1.0.4.tar.gz
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/udisks \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On compile la version de la recette :
+preparer_sources
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/udisks2 \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On déplace ça le cas échéant :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	cp -ar ${PKG}/usr/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	rm -rf ${PKG}/usr/lib
+fi
+
+# On place les fichiers pour 'polkit' permettant aux utilisateurs du groupe
+# 'plugdev' de monter/éjecter les volumes amovibles :
+mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d
+cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/20-udisks2.pkla << "EOF"
+[udisks2 plugdev mount]
+Identity=unix-group:plugdev
+Action=org.freedesktop.udisks2.*;org.freedesktop.UDisks2.*
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

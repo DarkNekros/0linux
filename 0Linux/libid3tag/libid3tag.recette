@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-libid3tag}
+VERSION=${VERSION:-0.15.1b}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-libid3tag}
+WGET=${WGET:-http://prdownloads.sourceforge.net/mad/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques de manipulation de tags ID3"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée un fichier pour 'pkgconfig' :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/id3tag.pc << "EOF"
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/libARCH
+includedir=${prefix}/include
+
+Name: libid3tag
+Description: ID3 tag manipulation library
+Version: VERSION
+
+Libs: -L${libdir} -lid3tag
+Cflags: -I${includedir}
+
+EOF
+
+# On le corrige avec $LIBDIRSUFFIX et $VERSION :
+sed -i "s@ARCH@${LIBDIRSUFFIX}@" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/id3tag.pc
+sed -i "s@VERSION@${VERSION}@" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/id3tag.pc
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
+

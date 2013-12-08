@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-cfitsio}
+VERSION=${VERSION:-3.350}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-cfitsio}
+WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques permettant de lire des fichiers de données de la NASA"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+
+# On installe des docs supplémentaires :
+cp -a *.doc *.pdf ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

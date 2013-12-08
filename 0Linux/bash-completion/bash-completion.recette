@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-bash-completion}
+VERSION=${VERSION:-2.1}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-bash-completion}
+WGET=${WGET:-http://bash-completion.alioth.debian.org/files/$NAMESRC-$VERSION.$EXT}
+DESC="Complètement automatique de la ligne de commande pour Bash"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Ces définitions sont fournies par d'autres paquets ou concernent d'autres distributions :
+rm -f ${PKG}/usr/share/bash-completion/completions/makepkg
+rm -f ${PKG}/usr/share/bash-completion/completions/nmcli
+rm -f ${PKG}/usr/share/bash-completion/completions/cal
+rm -f ${PKG}/usr/share/bash-completion/completions/chsh
+rm -f ${PKG}/usr/share/bash-completion/completions/dmesg
+rm -f ${PKG}/usr/share/bash-completion/completions/eject
+rm -f ${PKG}/usr/share/bash-completion/completions/hd
+rm -f ${PKG}/usr/share/bash-completion/completions/hexdump
+rm -f ${PKG}/usr/share/bash-completion/completions/hwclock
+rm -f ${PKG}/usr/share/bash-completion/completions/ionice
+rm -f ${PKG}/usr/share/bash-completion/completions/look
+rm -f ${PKG}/usr/share/bash-completion/completions/ncal
+rm -f ${PKG}/usr/share/bash-completion/completions/newgrp
+rm -f ${PKG}/usr/share/bash-completion/completions/renice
+rm -f ${PKG}/usr/share/bash-completion/completions/rtcwake
+rm -f ${PKG}/usr/share/bash-completion/completions/su
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

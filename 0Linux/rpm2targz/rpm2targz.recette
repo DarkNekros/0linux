@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-rpm2targz}
+VERSION=${VERSION:-9.0.0.4g}
+EXT=${EXT:-tar.lzma}
+NAMETGZ=${NAMETGZ:-rpm2targz}
+WGET=${WGET:-http://gentoo.osuosl.org/distfiles/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de conversion RPM vers .tar.gz"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

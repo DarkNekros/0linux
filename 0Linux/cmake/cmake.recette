@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-cmake}
+VERSION=${VERSION:-2.8.11.2}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-cmake}
+WGET=${WGET:-http://www.cmake.org/files/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+DESC="Système de compilation multiplateforme"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Un répertoire dédié à la compilation est conseillé :
+mkdir build && cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+../bootstrap \
+	--prefix=/usr \
+	--docdir=/doc/${NAMETGZ}-${VERSION} \
+	--parallel=${JOBS} \
+	--system-libs
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+cd -
+
+# On place les fichiers syntaxe pour 'vim' et 'emacs' :
+mkdir -p ${PKG}/usr/share/{emacs/site-lisp,vim/{indent,syntax}}
+
+cp Docs/cmake-indent.vim ${PKG}/usr/share/vim/indent/
+cp Docs/cmake-syntax.vim ${PKG}/usr/share/vim/syntax/
+cp Docs/cmake-mode.el ${PKG}/usr/share/emacs/site-lisp/
+  
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

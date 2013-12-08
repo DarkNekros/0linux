@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+# Merci à Seb pour sa constance !
+
+NAMESRC=${NAMESRC:-spack}
+VERSION=${VERSION:-3.10}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-spack}
+WGET=${WGET:-http://requiescant.tuxfamily.org/files/$NAMESRC-$VERSION.$EXT}
+DESC="Suite d'outils et gestionnaire de paquets"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On applique les traductions françaises à 'spackadd' et 'spackpkg' ainsi que
+# la traduction et les modifications pour 0linux à 'spackdesc' :
+cat $CWD/spackadd.patch | patch -p1
+cat $CWD/spackpkg.patch | patch -p1
+cat $CWD/spackdesc.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin
+
+fakeroot make DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

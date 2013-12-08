@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-gutenprint}
+VERSION=${VERSION:-5.2.9}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-gutenprint}
+WGET=${WGET:-http://prdownloads.sourceforge.net/gimp-print/$NAMESRC-$VERSION.$EXT}
+DESC="Ensemble de pilotes d'impression"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-samples \
+	--with-cups \
+	--with-gimp2 \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+
+# On complète la documentation :
+mv ${PKG}/usr/share/${NAMESRC}/doc/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+rmdir ${PKG}/usr/share/${NAMESRC}/doc
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

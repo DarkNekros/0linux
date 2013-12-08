@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-nasm}
+VERSION=${VERSION:-2.10.07}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-nasm}
+WGET=${WGET:-http://www.nasm.us/pub/$NAMESRC/releasebuilds/$VERSION/$NAMESRC-$VERSION.$EXT}
+DESC="Les assembleur et désassembleur pour x86 NASM et NDISASM"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install INSTALLROOT=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

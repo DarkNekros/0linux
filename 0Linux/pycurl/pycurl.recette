@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-pycurl}
+VERSION=${VERSION:-7.19.0}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-pycurl}
+WGET=${WGET:-http://pycurl.sourceforge.net/download/$NAMESRC-$VERSION.$EXT}
+DESC="Interfaçage Python pour Curl"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+fakeroot python setup.py install --curl-config=/usr/bin/curl-config --prefix ${PKG}/usr
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

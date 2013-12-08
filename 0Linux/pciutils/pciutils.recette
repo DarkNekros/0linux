@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-pciutils}
+VERSION=${VERSION:-3.2.0}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-pciutils}
+WGET=(
+      ftp://ftp.kernel.org/pub/software/utils/$NAMESRC/$NAMESRC-$VERSION.$EXT
+      http://pci-ids.ucw.cz/v2.2/pci.ids
+     )
+DESC="Outils pour matériel PCI"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} \
+	PREFIX=/usr \
+	SBINDIR=/usr/sbin \
+	LIBDIR=/usr/lib${LIBDIRSUFFIX} \
+	MANDIR=/usr/man \
+	ZLIB=no \
+	SHARED=yes \
+	OPT="$FLAGS"
+
+fakeroot make install install-lib \
+	PREFIX=/usr \
+	SBINDIR=/usr/sbin \
+	LIBDIR=/usr/lib${LIBDIRSUFFIX} \
+	MANDIR=/usr/man \
+	SHARED=yes \
+	DESTDIR=${PKG}
+
+# On supprime le fichier des ID PCI s'il est présent dans l'archive :
+rm -f ${PKG}/usr/share/pci.ids*
+
+# ... Et on y copie le nôtre, plus récent :
+cat ${PKGSOURCES}/${NAMETGZ}/pci.ids > ${PKG}/usr/share/pci.ids
+
+# On renomme le fichier des IDafin de toujours télécharger le plus récent :
+mv ${PKGSOURCES}/${NAMETGZ}/pci{,-$(date +%d%m%Y)}.ids
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

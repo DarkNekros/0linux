@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-libgcrypt}
+VERSION=${VERSION:-1.5.3}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-libgcrypt}
+WGET=${WGET:-ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques GNU pour la cryptographie"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On corrige 'libgcrypt-config' pour le multilib :
+	cat $CWD/libgcrypt.multilib.patch | patch -p1
+	
+	# Puis on modifie le marqueur "MULTILIBDIR" avec notre répertoire suffixé :
+	sed -i "s@MULTILIBDIR@lib${LIBDIRSUFFIX}@g" src/libgcrypt-config.in
+	
+	# On corrige les appels à l'assembleur :
+	sed -i 's@GNUPG_SYS_SYMBOL_UNDERSCORE()@LT_SYS_SYMBOL_USCORE@' configure.ac
+	sed -i 's@if test x$ac_cv_sys_symbol_underscore = xyes; then@if test x$sys_symbol_underscore = xyes; then@' mpi/config.links
+	
+	# On utilise l'assembleur 32 bits :
+	sed -i 's/path="amd64"/path="i586 i386"/g' mpi/config.links
+	
+	# Compilation pour i686 :
+	autoreconf -vif
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure --enable-maintainer-mode  \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige 'libgcrypt-config' pour le multilib :
+cat $CWD/libgcrypt.multilib.patch | patch -p1
+
+# Puis on modifie le marqueur "MULTILIBDIR" avec notre répertoire suffixé :
+sed -i "s@MULTILIBDIR@lib${LIBDIRSUFFIX}@g" src/libgcrypt-config.in
+
+# On corrige les appels à l'assembleur :
+sed -i 's@GNUPG_SYS_SYMBOL_UNDERSCORE()@LT_SYS_SYMBOL_USCORE@' configure.ac
+sed -i 's@if test x$ac_cv_sys_symbol_underscore = xyes; then@if test x$sys_symbol_underscore = xyes; then@' mpi/config.links
+
+# Compilation :
+autoreconf -vif
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

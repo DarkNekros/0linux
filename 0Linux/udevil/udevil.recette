@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-udevil}
+VERSION=${VERSION:-0.4.1}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-udevil}
+WGET=${WGET:-https://raw.github.com/IgnorantGuru/$NAMESRC/pkg/$VERSION/$NAMESRC-$VERSION.$EXT}
+DESC="Gestionnaire de montage automatique de volumes amovibles"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-systemd \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# 'udevil' doit être setuid :
+chmod 4755 ${PKG}/usr/bin/udevil
+
+# On copie notre fichier francisé 'udevil.conf' :
+cp $CWD/udevil.conf ${PKG}/etc/udevil/
+
+# On veille à ne rien écraser :
+mv ${PKG}/etc/udevil/udevil.conf{,.0nouveau}
+
+# On ajoute les systèmes de fichiers autorisés à la configuration :
+FSOK="btrfs, cifs, curlftpfs, davfs, ext2, ext3, ext4, exfat, fat, file, ftpfs,"
+FSOK=${FSOK}", fuse, fuseblk, fusectl, iso9660, jfs, msdos, ntfs, ramfs,"
+FSOK=${FSOK}", reiserfs, sshfs, tmpfs, udf, umsdos, vfat, xfs, zfs"
+sed -i "s@^allowed_types.*@allowed_types = ${ALLOWED_FS}@" ${PKG}/etc/udevil/udevil.conf.0nouveau
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation avec les permissions :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On définit les permissions de 'udevil' pour le groupe 'plugdev' :
+chown root:plugdev usr/bin/udevil
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-razorqt}
+VERSION=${VERSION:-0.5.2}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-razor-qt}
+WGET=${WGET:-http://razor-qt.org/downloads/$NAMESRC-$VERSION.$EXT}
+DESC="Environnement de bureau très léger basé sur Qt"
+########################################
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+mkdir -p build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D CMAKE_{SHARED,MODULE,EXE}_LINKER_FLAGS='-Wl,--no-undefined -Wl,--as-needed' \
+	-D SYSCONF_INSTALL_DIR=/etc/razor-qt \
+	-D BUNDLE_XDG=OFF \
+	-D SITE="http://0.tuxfamily.org/" \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+# On crée le fichier xinitrc pour xorg :
+mkdir -p $PKG/etc/X11/xinit
+echo startrazor > $PKG/etc/X11/xinit/xinitrc.razor-qt
+chmod +x $PKG/etc/X11/xinit/xinitrc.razor-qt
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

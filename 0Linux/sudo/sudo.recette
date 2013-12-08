@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-sudo}
+VERSION=${VERSION:-1.8.7}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-sudo}
+WGET=${WGET:-http://www.sudo.ws/$NAMESRC/dist/$NAMESRC-$VERSION.$EXT}
+DESC="Outil de gestion de privilèges utilisateurs"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sbindir=/usr/sbin \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-noargs-shell \
+	--enable-shell-sets-home \
+	--with-all-insults \
+	--with-env-editor \
+	--with-passprompt="Mot de passe pour %p : " \
+	--without-pam \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place notre fichier de config' et on s'assure de ne rien écraser :
+rm -f ${PKG}/etc/sudoers
+cp $CWD/sudoers ${PKG}/etc/sudoers.0nouveau
+
+# On s'assure d'une permission :
+chmod 755 ${PKG}/var
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+# On s'assure des permissions :
+chmod 4711 usr/bin/sudo
+chmod 0755 usr/sbin/visudo
+chmod 0440 /etc/sudoers 2>/dev/null
+chmod 0640 /etc/sudoers.0nouveau 2>/dev/null
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

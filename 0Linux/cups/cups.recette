@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-cups}
+VERSION=${VERSION:-1.6.3}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-cups}
+WGET=${WGET:-http://www.cups.org/software/$VERSION/$NAMESRC-$VERSION-source.$EXT}
+DESC="Le système d'impression « Common Unix Printing System »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On corrige une condition concernant 'libusb' :
+	sed -i 's@if test x$enable_libusb = xyes -o $uname@if test x$enable_libusb = xyes -a $uname@' config-scripts/cups-common.m4
+	
+	# On régénère les scripts de construction :
+	aclocal -I config-scripts
+	autoconf -I config-scripts
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--disable-avahi \
+		--disable-dbus \
+		--disable-gnutls \
+		--disable-gssapi \
+		--enable-libusb=no \
+		--with-optim="${FLAGS}" \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install BUILDROOT=${PKG}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige une condition concernant 'libusb' :
+sed -i 's@if test x$enable_libusb = xyes -o $uname != Darwin; then@if test x$enable_libusb = xyes -a $uname != Darwin; then@' config-scripts/cups-common.m4
+
+# On régénère les scripts de construction :
+aclocal -I config-scripts
+autoconf -I config-scripts
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-pam \
+	--enable-avahi \
+	--enable-dbus \
+	--enable-gnutls \
+	--enable-ssl=yes \
+	--enable-threads \
+	--with-docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-logdir=/var/log/cups \
+	--without-php \
+	--with-optim="${FLAGS}" \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install BUILDROOT=${PKG}
+
+# On copie le script d'initialisation au bon endroit et on nettoie :
+mv ${PKG}/etc/rc.d/init.d/cups ${PKG}/etc/rc.d/rc.cups
+chmod 755 ${PKG}/etc/rc.d/rc.cups
+rm -rf ${PKG}/etc/rc.d/init.d 
+
+# On corrige le raccourci bureau :
+sed -i 's@^Exec=htmlview http://localhost:631/@Exec=xdg-open http://localhost:631/@g' ${PKG}/usr/share/applications/cups.desktop
+
+# On crée un fichier pour l'actualisation des journaux :
+mkdir -p ${PKG}/etc/logrotate.d
+cat > ${PKG}/etc/logrotate.d/cups << "EOF"
+/var/log/cups/*log {
+	missingok
+	notifempty
+	delaycompress
+	postrotate
+		kill -HUP `cat /var/run/cups.pid 2>/dev/null` 2>/dev/null || true
+	endscript
+}
+
+EOF
+
+# On prend garde à n'écraser aucun fichier de configuration :
+for fichierconfig in $(find ${PKG}/etc/cups/ -type f); do
+	mv ${fichierconfig}{,.0nouveau}
+done
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+chgrp lp etc/cups/*.conf*
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

@@ -37,7 +37,6 @@ env
 echo "---"
 sleep 10
 
-PKGCAT=toolchain
 NAMESRC=${NAMESRC:-0linux-toolchain}
 VERSION=${VERSION:-$(date +%d%m%Y)}
 NAMETGZ=${NAMETGZ:-0linux-toolchain}

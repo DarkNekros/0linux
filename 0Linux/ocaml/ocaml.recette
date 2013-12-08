@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-ocaml}
+VERSION=${VERSION:-3.12.1}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-ocaml}
+WGET=${WGET:-http://caml.inria.fr/pub/distrib/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+DESC="Le langage Objective Caml"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	-prefix /usr \
+	-bindir /usr/bin \
+	-libdir /usr/lib${LIBDIRSUFFIX}/ocaml \
+	-mandir /usr/man \
+	-cc "gcc ${FLAGS}" \
+	-aspp "gcc ${FLAGS} -c" \
+	-host ${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} world || make world
+make -j${JOBS} opt || make opt
+make -j${JOBS} opt.opt || make opt.opt
+
+fakeroot make install \
+	BINDIR=${PKG}/usr/bin \
+	LIBDIR=${PKG}/usr/lib${LIBDIRSUFFIX}/ocaml \
+	MANDIR=${PKG}/usr/man
+
+# On corrige une référence au paquet :
+sed -i "s@${PKG}@@" ${PKG}/usr/lib${LIBDIRSUFFIX}/ocaml/ld.conf
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

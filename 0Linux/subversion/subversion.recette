@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-subversion}
+VERSION=${VERSION:-1.8.1}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-subversion}
+WGET=${WGET:-http://apache.crihan.fr/dist/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Système de contrôle de versions centralisé"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-apr=/usr \
+	--with-apr-util=/usr \
+	--with-neon=/usr \
+	--with-serf=/usr \
+	--with-ssl \
+	--with-swig \
+	--with-zlib=/usr \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+# On force $LIBDIRSUFFIX :
+sed -i "s@/usr/lib/@/usr/lib${LIBDIRSUFFIX}/@g" Makefile
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-docs DESTDIR=${PKG}
+
+# On installe les interfaçages à Python :
+make -j${JOBS} swig-py
+fakeroot make install-swig-py DESTDIR=${PKG}
+
+# On crée le répertoire d'accueil :
+PYTHONLIB=$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()')
+mkdir -p ${PKG}/${PYTHONLIB}
+
+# On déplace tout ce qui est mal placé et on nettoie:
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/svn-python/* ${PKG}/${PYTHONLIB}
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/svn-python
+
+# On installe les interfaçages à Perl :
+make -j${JOBS} swig-pl-lib
+fakeroot make install-swig-pl-lib DESTDIR=${PKG}
+
+(
+	cd subversion/bindings/swig/perl/native
+	perl Makefile.PL
+	fakeroot make install_vendor DESTDIR=${PKG}
+)
+
+# On s'assure de bien placer les '*.pod' :
+eval $(perl '-V:archlib')
+mv ${PKG}/$archlib/perllocal.pod ${PKG}/$archlib/subversion.pod
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

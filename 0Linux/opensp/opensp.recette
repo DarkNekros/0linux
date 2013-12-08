@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-OpenSP}
+VERSION=${VERSION:-1.5.2}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-opensp}
+WGET=${WGET:-http://prdownloads.sourceforge.net/openjade/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques d'analyse et de validation SGML et XML"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige une erreur de segmentation ennuyante :
+cat $CWD/opensp-sigsegv.patch | patch -p1
+
+# On corrige quelques problèmes de syntaxe :
+sed -i 's:32,:253,:' lib/Syntax.cxx
+sed -i 's:LITLEN          240 :LITLEN          8092:' unicode/{gensyntax.pl,unicode.syn}
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--disable-doc-build \
+	--enable-default-catalog=/etc/sgml/catalog \
+	--enable-default-search-path=/usr/share/sgml \
+	--enable-http \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make pkgdatadir=/usr/share/sgml/${NAMETGZ}-${VERSION}
+fakeroot make install DESTDIR=${PKG}
+
+# On relie OpenJade à OpenSP :
+ln -sf libosp.so ${PKG}/usr/lib${LIBDIRSUFFIX}/libsp.so
+
+# On renomme 'osx' en 'osgml2xml' et on n'oublie pas de créer un lien :
+mv -f ${PKG}/usr/bin/{osx,osgml2xml}
+ln -sf osgml2xml ${PKG}/usr/bin/osx
+
+# On crée tous les liens symboliques vers les binaires en "o*" :
+for binaire in nsgmls sgmlnorm spam spcat spent sgml2xml ; do
+	rm -f ${PKG}/usr/bin/${binaire}
+	ln -sf o${binaire} ${PKG}/usr/bin/${binaire}
+done
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

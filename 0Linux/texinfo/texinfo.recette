@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-texinfo}
+VERSION=${VERSION:-4.13a}
+EXT=${EXT:-tar.lzma}
+NAMETGZ=${NAMETGZ:-texinfo}
+WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Système de documentation GNU"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-tex TEXMF=${PKG}/usr/share/texmf
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On met à jour la doc « info » du système :
+rm -f usr/info/dir
+
+for f in usr/info/*; do
+	install-info ${f} usr/info/dir 2>/dev/null
+done
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

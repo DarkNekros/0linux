@@ -32,7 +32,7 @@ compiler_installer() {
 		SUDOBINAIRE=""
 		[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
 		bash -ex $(basename ${1}) && \
-			find /usr/local/paquets/$(uname -m)/{apps,base,opt,xorg} -name "$(basename ${1} .recette)-*-*-*.spack" -print | \
+			find /usr/local/paquets/$(uname -m)/ -name "$(basename ${1} .recette)-*-*-*.spack" -print | \
 			xargs ${SUDOBINAIRE} /usr/sbin/spackadd
 	)
 }
@@ -46,7 +46,7 @@ for param in $@; do
 			
 		# Si le paramètre est un répertoire existant dans apps/ (cas des sous-dépôts de kde) :
 		elif [ -d ${param} ]; then
-			for fichier_recette in $(find .. -type f -name "$(basename ${param}).recette"); do
+			for fichier_recette in $(find ../{0Linux,abonnements} -type f -name "$(basename ${param}).recette"); do
 				compiler_installer ${fichier_recette}
 			done
 			
@@ -54,7 +54,7 @@ for param in $@; do
 		elif [ ! "$(echo ${param} | grep -E '^@' )" = "" ]; then
 			if [ -f construction-$(echo ${param} | sed s/@//) ]; then
 				for fichier_liste in $(cat construction-$(echo ${param} | sed s/@//)); do
-					for recette_trouvee in $(find ../{apps,base,opt,xorg} -type f -name "$(basename ${fichier_liste}).recette"); do
+					for recette_trouvee in $(find ../{0Linux,abonnements} -type f -name "$(basename ${fichier_liste}).recette"); do
 						compiler_installer ${recette_trouvee}
 					done
 				done
@@ -62,7 +62,7 @@ for param in $@; do
 			
 		# Si on a autre chose (un paquet individuel ou un paramètre invalide) :
 		else
-			for recette in $(find ../{apps,base,opt,xorg} -type f -name "${param}.recette"); do
+			for recette in $(find ../0Linux -type f -name "${param}.recette"); do
 				compiler_installer ${recette}
 			done
 		fi

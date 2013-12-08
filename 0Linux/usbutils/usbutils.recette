@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-usbutils}
+VERSION=${VERSION:-0.86}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-usbutils}
+WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+DESC="Outils pour matériel USB"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On déplace '/usr/share/pkgconfig', sûrement spécifié en dur :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+mv ${PKG}/usr/share/pkgconfig/* ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+rm -rf ${PKG}/usr/share/pkgconfig
+
+# On supprime le fichier des ID s'il est présent :
+rm -f ${PKG}/usr/share/usb.ids*
+
+# ... Et on y copie le nôtre, plus récent :
+cat $CWD/usb.ids > ${PKG}/usr/share/usb.ids
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

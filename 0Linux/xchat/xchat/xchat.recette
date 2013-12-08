@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-xchat}
+VERSION=${VERSION:-2.8.8}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-xchat}
+WGET=${WGET:-http://xchat.org/files/source/2.8/$NAMESRC-$VERSION.$EXT}
+DESC="Client de discussion IRC"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige les entêtes pour les plus récents Glib :
+cat $CWD/xchat.glib.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-tcl=/usr/lib${LIBDIRSUFFIX} \
+	--enable-ipv6 \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

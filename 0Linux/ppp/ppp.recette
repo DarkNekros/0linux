@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-ppp}
+VERSION=${VERSION:-2.4.5}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-ppp}
+WGET=${WGET:-http://samba.org/ftp/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Protocole réseau « Point-to-Point Protocol »"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On force la prise en compte de $LIBDIRSUFFIX :
+sed -i "/LIBDIR =/s:/lib:&${LIBDIRSUFFIX}:g" $(grep -lr "LIBDIR =" *)
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+# Le préfixe "/usr" est ignoré :
+fakeroot make install DESTDIR=${PKG}/usr
+
+# On copie les fichiers de configuration veille à ne rien écraser :
+mkdir -p ${PKG}/etc/ppp
+cp -a etc.ppp/chap-secrets ${PKG}/etc/ppp/chap-secrets.0nouveau
+cp -a etc.ppp/options ${PKG}/etc/ppp/options.0nouveau
+cp -a etc.ppp/pap-secrets ${PKG}/etc/ppp/pap-secrets.0nouveau
+
+# On déplace les manuels :
+mv -f ${PKG}/usr/share/man ${PKG}/usr/
+rm -rf ${PKG}/usr/share
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

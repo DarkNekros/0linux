@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-dbus}
+VERSION=${VERSION:-1.6.12}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-dbus}
+WGET=${WGET:-http://dbus.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Bus de messages système"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--libexecdir=/usr/lib${LIBDIRSUFFIX}/dbus-1.0 \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--disable-asserts \
+		--disable-modular-tests \
+		--disable-tests \
+		--enable-inotify \
+		--enable-x11-autolaunch \
+		--with-dbus-user=messagebus \
+		--with-init-scripts=slackware \
+		--with-system-pid-file=/run/dbus/dbus.pid \
+		--with-system-socket=/run/dbus/system_bus_socket \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On nettoie le superflu :
+	rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On permet à root d'exécuter D-BUS (sacrilège...) :
+cat $CWD/dbus.autoriser-root.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/dbus-1.0 \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-inotify \
+	--enable-x11-autolaunch \
+	--with-dbus-user=messagebus \
+	--with-init-scripts=slackware \
+	--with-system-pid-file=/run/dbus/dbus.pid \
+	--with-system-socket=/run/dbus/system_bus_socket \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+if [ "${PKGARCH}" = "x86_64" ] && [ "${LIBDIRSUFFIX}" != "" ]; then
+	# On supprime les binaires 32 bits pour les lier au 64 bits :
+	rm -rf ${PKG}/usr/lib/dbus-1.0
+	ln -sf ../lib${LIBDIRSUFFIX}/dbus-1.0 ${PKG}/usr/lib/
+fi
+
+# On crée le fichier service :
+rm -f ${PKG}/etc/rc.d/*
+cat > ${PKG}/etc/rc.d/rc.messagebus << "EOF"
+#!/usr/bin/env bash
+
+messagebus_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de D-BUS..."
+	mkdir -p /run/dbus
+	rm -f $(dirname /run/dbus/dbus.pid)/*
+	if ! ps axc | grep -qw dbus-daemon ; then
+		dbus-uuidgen --ensure
+		dbus-daemon --system 1>/dev/null
+		
+	fi
+}
+
+messagebus_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de D-BUS..."
+	if [ -e /run/dbus/dbus.pid ]; then
+		kill $(cat /run/dbus/dbus.pid) 1>/dev/null 2>/dev/null
+		killall dbus-daemon 1>/dev/null 2>/dev/null
+	fi
+	rm -f /run/dbus/dbus.pid
+}
+
+messagebus_restart() {
+	messagebus_stop
+	sleep 1 
+	messagebus_start
+}
+
+messagebus_reload() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Relecture de la configuration de D-BUS..."
+	if [ -e /run/dbus/dbus.pid ]; then
+		kill -HUP $(cat /run/dbus/dbus.pid)
+	else
+		killall -HUP dbus-daemon
+	fi
+}
+
+case "$1" in
+	'start')
+		messagebus_start
+	;;
+	
+	'stop')
+		messagebus_stop
+	;;
+	
+	'restart')
+		messagebus_stop
+		sleep 1
+		messagebus_start
+	;;
+	
+	'reload')
+		messagebus_reload
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart|reload"
+		exit 1
+	;;
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.messagebus
+
+# On s'assure que ce répertoire ne manque pas après l'installation du paquet :
+mkdir -p ${PKG}/run/dbus
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << EOF
+
+chown root:messagebus usr/lib${LIBDIRSUFFIX}/dbus-1.0/dbus-daemon-launch-helper
+chmod 4750 usr/lib${LIBDIRSUFFIX}/dbus-1.0/dbus-daemon-launch-helper
+chown messagebus var/lib/dbus
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

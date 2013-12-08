@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-hdparm}
+VERSION=${VERSION:-9.43}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-hdparm}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Contrôle des paramètres ATA/SATA des disques durs"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make
+
+fakeroot make install DESTDIR=${PKG}
+
+# On déplace le manuel où il faut :
+mv ${PKG}/usr/share/man ${PKG}/usr/
+rm -rf ${PKG}/usr/share
+
+# On copie les 2 binaires contribués :
+cp -a contrib/{idectl,ultrabayd} ${PKG}/sbin
+chmod 755 ${PKG}/sbin/*
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

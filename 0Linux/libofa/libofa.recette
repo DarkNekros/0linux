@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-libofa}
+VERSION=${VERSION:-0.9.3}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-libofa}
+WGET=${WGET:-http://musicip-libofa.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques de génération d'empreintes audio"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Correctifs successifs pour les différentes version de GCC + curl >= 7.21
+cat $CWD/libofa.gcc4.patch | patch -p0
+cat $CWD/libofa.gcc43.patch | patch -p1
+cat $CWD/libofa.gcc44.patch | patch -p1
+cat $CWD/libofa.gcc45.patch | patch -p1
+cat $CWD/libofa.gcc47.patch | patch -p1
+sed -i '/#include <curl\/types.h>/d' examples/protocol.cpp
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

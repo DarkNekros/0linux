@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-x264-snapshot}
+VERSION=${VERSION:-20130208}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-x264}
+WGET=${WGET:-ftp://ftp.videolan.org/pub/videolan/x264/snapshots/${NAMESRC}-${VERSION}-2245.$EXT} # Version différente !
+DESC="Bibliothèques de codage de flux X264/AVC"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-shared \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+fakeroot make install bindir=/usr/bin \
+	libdir=/usr/lib${LIBDIRSUFFIX} \
+	includedir=/usr/include \
+	DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

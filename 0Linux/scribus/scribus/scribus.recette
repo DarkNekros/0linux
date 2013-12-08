@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-scribus}
+VERSION=${VERSION:-1.4.3}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-scribus}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Éditeur pour la Publication Assistée par Ordinateur (PAO)"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake \
+	-DCMAKE_C_FLAGS="${FLAGS}" \
+	-DCMAKE_CXX_FLAGS="${FLAGS}" \
+	-DCMAKE_INSTALL_PREFIX:PATH=/usr \
+	-DLIB_INSTALL_DIR:PATH=/usr/lib${LIBDIRSUFFIX} \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
+	-DRENDER_LIB=CAIRO
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On déplace les manuels :
+mv ${PKG}/usr/share/man ${PKG}/usr/
+
+# On place le fichier pour le raccourci :
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+cp -a scribus.desktop ${PKG}/usr/share/applications/
+
+# ...qui a d'ailleurs besoin d'une correction :
+sed -i 's|Icon=scribus|Icon=/usr/share/scribus/icons/scribus.png|' ${PKG}/usr/share/applications/scribus.desktop
+
+# On place l'icône en créant un lien standard :
+ln -sf ../scribus/icons/scribus.png ${PKG}/usr/share/pixmaps/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

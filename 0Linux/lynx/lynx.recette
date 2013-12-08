@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-lynx}
+VERSION=${VERSION:-2.8.7}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-lynx}
+WGET=${WGET:-http://lynx.isc.org/$NAMESRC$VERSION/$NAMESRC$VERSION.$EXT}
+DESC="Navigateur Web en mode texte"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige le chemin /usr/lib${LIBDIRSUFFIX} plutôt que le « /usr/local/lib » codé en dur :
+sed -i "s#usr/local/lib/#usr/lib${LIBDIRSUFFIX}/#g" userdefs.h
+
+# On applique le correctif Slackware pour que les couleurs piquent moins les yeux :
+cat $CWD/lynx.cfg.diff | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" CPPFLAGS+="-I$KRB/include -I/usr/include/openssl" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc/lynx \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--enable-nls \
+	--enable-locale-charset \
+	--enable-ipv6 \
+	--enable-widec \
+	--with-bzlib \
+	--with-ssl \
+	--with-zlib \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-help DESTDIR=${PKG}
+fakeroot make install-doc DESTDIR=${PKG}
+
+# On corrige le fichier de configuration pour prendre en charge la « locale »
+# du système et affecter 'vim' à l'édition (l'éditeur par défaut est bogué).
+# On ajoute également la mise en cache des cookies : 
+sed -i 's/#\(LOCALE_CHARSET\):FALSE/\1:TRUE/' ${PKG}/etc/lynx/lynx.cfg
+sed -i 's/#\(DEFAULT_EDITOR\):/\1:vi/' ${PKG}/etc/lynx/lynx.cfg
+sed -i 's/#\(PERSISTENT_COOKIES\):FALSE/\1:TRUE/' ${PKG}/etc/lynx/lynx.cfg
+
+installer_doc
+
+# On lie la doc à '/usr/doc/lynx-$VERSION' et on supprime des doublons :
+ln -sf ../../share/lynx/{lynx_doc,lynx_help} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+rm -f ${PKG}/usr/share/lynx_help/{COPYING,COPYHEADER}
+rm -f ${PKG}/usr/share/lynx_doc/{COPYING,COPYHEADER}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

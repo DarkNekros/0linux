@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-xkeyboard-config}
+VERSION=${VERSION:-2.10.1}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-xkeyboard-config}
+WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/data/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Configuration de claviers pour X11"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-xkb-base=/etc/X11/xkb \
+	--with-xkb-rules-symlink=xfree86,xorg \
+	--enable-compat-rules \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée un lien de '/usr/share/X11/xkb' vers '/etc/X11/xkb' :
+mkdir -p ${PKG}/usr/share/X11
+ln -sf ../../../../etc/X11/xkb ${PKG}/usr/share/X11/xkb 
+
+installer_doc
+
+# On complète la documentation :
+cp -a docs/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

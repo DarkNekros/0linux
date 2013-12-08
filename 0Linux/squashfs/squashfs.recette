@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-squashfs}
+VERSION=${VERSION:-4.2}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-squashfs}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}${VERSION}.$EXT}
+DESC="Outils pour le système de fichiers  squashfs"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+cd squashfs-tools
+
+# On active la prise en charge des format 'xz' et 'lzo' :
+sed -i -e 's@^#XZ_SUPPORT = 1@XZ_SUPPORT = 1@' -e 's@^#LZO_SUPPORT = 1@LZO_SUPPORT = 1@' Makefile
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+
+# On place les binaires qu'on rend exécutables :
+mkdir -p ${PKG}/usr/sbin
+cp mksquashfs unsquashfs ${PKG}/usr/sbin/
+chmod 755 ${PKG}/usr/sbin/*
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

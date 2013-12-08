@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-audacity}
+VERSION=${VERSION:-2.0.5}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-audacity}
+WGET=${WGET:-http://audacity.googlecode.com/files/$NAMESRC-minsrc-$VERSION.$EXT}
+DESC="Éditeur audio"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation avec FFMPEG 0.x et non FFMPEG 2 :
+PKG_CONFIG_PATH+="/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

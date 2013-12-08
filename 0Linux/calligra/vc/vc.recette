@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-Vc}
+VERSION=${VERSION:-0.7.3}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-vc}
+WGET=${WGET:-http://code.compeng.uni-frankfurt.de/attachments/download/174/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques de manipulation d'objets vectoriels"
+########################################
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Vc ne se compilera que sur x86_64 (dans les autres archi le paquet sera presque vide sauf doc):
+if [ "${PKGARCH}" = "x86_64" ] ; then
+	# Compilation :
+	mkdir -p build && cd build
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	cmake -D CMAKE_BUILD_TYPE=Release \
+		-D CMAKE_SKIP_RPATH=ON \
+		-D CMAKE_INSTALL_PREFIX=/usr \
+		-D BUILD_TESTING=OFF \
+		-D ENABLE_SSE=ON \
+		-D ENABLE_SSE2=ON \
+		-D ENABLE_SSE3=ON \
+		-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+		-D SYSCONF_INSTALL_DIR=/etc \
+		./ ../
+
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	cd ../
+	
+	# Le LIBDIRSUFFIX n'est pas pris en compte :
+	if [ $LIBDIRSUFFIX ] ; then
+		cp -a $PKG/usr/lib{/*,$LIBDIRSUFFIX}
+		rm -rf $PKG/usr/lib
+	fi
+	
+	# On corrige le fichier de configuration pour x64 :
+	sed -i "s|/usr/lib|/usr/lib${LIBDIRSUFFIX}|g" $PKG/usr/lib$LIBDIRSUFFIX/cmake/Vc/VcConfig.cmake
+fi
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

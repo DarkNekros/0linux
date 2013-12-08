@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-apache-log4cxx}
+VERSION=${VERSION:-0.10.0}
+EXT=${EXT:-tar.gz} 
+NAMETGZ=${NAMETGZ:-log4cxx}
+WGET=${WGET:-http://apache.cict.fr/logging/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques de journalisation avancée pour C++"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige la compilation avec GCC 4.3.x et 4.4.x :
+cat ${CWD}/log4cxx.gcc43.patch | patch -p1
+cat ${CWD}/log4cxx.gcc44.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

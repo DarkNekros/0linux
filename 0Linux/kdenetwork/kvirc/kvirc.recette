@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-kvirc}
+VERSION=${VERSION:-4.3.1_r6296}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-kvirc}
+WGET=${WGET:-ftp://ftp.kvirc.de/pub/$NAMESRC/snapshots/source/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT}
+DESC="KVIRC : un puissant client IRC pour KDE"
+########################################
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On ajoute la catégorie KDE au fichier desktop :
+sed -i "s/=Qt;/=KDE;Qt;/" cmake/kvirc4.desktop.cmake
+
+# Permet la compilation avec des noyaux récent :
+cat $CWD/kvirc.linux-32.patch | patch -p1
+
+# Compilation :
+mkdir -p build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D BUILD_TESTS=OFF \
+	-D ENABLE_SSE=ON \
+	-D ENABLE_SSE2=ON \
+	-D ENABLE_SSE3=ON \
+	-D KDE4_BUILD_TESTS=FALSE \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D SYSCONF_INSTALL_DIR=/etc/kde \
+	-D WANT_KDE4=ON \
+	-D WANT_PHONON=ON \
+	-D WANT_PERL=ON \
+	-D WANT_PYTHON=ON \
+	-D WANT_DCC_VIDEO=ON \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

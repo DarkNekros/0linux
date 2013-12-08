@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-eigen}
+VERSION=${VERSION:-3.1.4}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-eigen}
+WGET=(http://bitbucket.org/$NAMESRC/$NAMESRC/get/2.0.17.${EXT}
+      http://bitbucket.org/$NAMESRC/$NAMESRC/get/$VERSION.$EXT
+     )
+DESC="Bibliothèques C++ d'algèbre linéaire"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources 2.0.17.${EXT}
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On déplace les fichiers pour 'pkgconfig' :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+cp -a ${PKG}/usr/share/pkgconfig ${PKG}/usr/lib${LIBDIRSUFFIX}/
+rm -rf ${PKG}/usr/share/pkgconfig
+
+# On installe la documentation dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/2.0.17
+
+preparer_sources $VERSION.$EXT
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On déplace les fichiers pour 'pkgconfig' :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+cp -a ${PKG}/usr/share/pkgconfig ${PKG}/usr/lib${LIBDIRSUFFIX}/
+rm -rf ${PKG}/usr/share/pkgconfig
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

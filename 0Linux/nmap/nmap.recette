@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-nmap}
+VERSION=${VERSION:-6.40}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-nmap}
+WGET=${WGET:-http://nmap.org/dist/$NAMESRC-$VERSION.$EXT}
+DESC="Outil de découverte réseau et d'audit de la sécurité"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On ne montre l'icône que si l'aplication est exécutable :
+echo 'TryExec=/usr/bin/pygtk-demo' >> zenmap/install_scripts/unix/zenmap.desktop
+echo 'TryExec=/usr/bin/pygtk-demo' >> zenmap/install_scripts/unix/zenmap-root.desktop
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Non, merci :
+rm -f ${PKG}/usr/bin/uninstall_zenmap
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

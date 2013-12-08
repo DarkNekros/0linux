@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-syslinux}
+VERSION=${VERSION:-5.10}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-syslinux}
+WGET=${WGET:-http://www.kernel.org/pub/linux/utils/boot/syslinux/$NAMESRC-$VERSION.$EXT}
+DESC="La collection de chargeurs d'amorçage Syslinux"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" make -j${JOBS} || make
+fakeroot make -i install INSTALLROOT=${PKG}
+
+# On copie le binaire bien pratique 'syslinux-nomtools' :
+cp -a $(find . -name "syslinux-nomtools" -print) ${PKG}/usr/bin
+chmod 755 ${PKG}/usr/bin/syslinux-nomtools
+
+# On copie la configuration d'extlinux et les modules servant à amorcer le système :
+mkdir ${PKG}/boot
+cp -ra $CWD/extlinux ${PKG}/boot/
+cp -a ${PKG}/usr/share/syslinux/*.c32 ${PKG}/boot/extlinux/
+chmod +x ${PKG}/boot/extlinux/*.c32
+
+# On convertit l'encodage de 'extlinux.conf'
+iconv -f UTF-8 -t CP850 ${PKG}/boot/extlinux/extlinux.conf > ${PKG}/boot/extlinux/extlinux.conf-cp850
+mv ${PKG}/boot/extlinux/extlinux.conf{-cp850,}
+
+# On veille à ne rien écraser :
+mv ${PKG}/boot/extlinux/extlinux.conf{,.0nouveau}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-pango}
+VERSION=${VERSION:-1.34.0}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-pango}
+WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques de rendu de texte"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS} -lfontconfig" CXXFLAGS="${FLAGS} -lfontconfig" \
+	FONTCONFIG_CFLAGS="-I/usr/include/fontconfig" \
+	FONTCONFIG_LIBS="/usr/lib${LIBDIRSUFFIX}/libfontconfig.so" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--with-xft \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	LDFLAGS+=" -lfontconfig " make -j${JOBS} || LDFLAGS+=" -lfontconfig " make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On renomme ce binaire spécifique à l'archi pour l'envelopper :
+	mv ${PKG}/usr/bin/pango-querymodules{,-32}
+	
+	# On crée un répertoire dédié pour la configuration :
+	mkdir -p ${PKG}/etc/pango-32
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS} -lfontconfig" CXXFLAGS="${FLAGS} -lfontconfig" \
+FONTCONFIG_CFLAGS="-I/usr/include/fontconfig" \
+FONTCONFIG_LIBS="/usr/lib${LIBDIRSUFFIX}/libfontconfig.so" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--with-xft \
+	--with-included-modules=basic-fc \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+LDFLAGS+=" -lfontconfig " make -j${JOBS} || LDFLAGS+=" -lfontconfig " make
+fakeroot make install DESTDIR=${PKG}
+
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On renomme ce binaire spécifique à l'archi pour l'envelopper :
+	mv ${PKG}/usr/bin/pango-querymodules{,-64}
+
+	# On lie un binaire générique au programme enveloppe :
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/pango-querymodules
+
+	# On crée un répertoire dédié pour la configuration :
+	mkdir -p ${PKG}/etc/pango-64
+
+	# On crée un lien générique :
+	ln -sf pango-64 ${PKG}/etc/pango
+else
+	
+	# On crée le répertoire de configuration :
+	mkdir -p ${PKG}/etc/pango
+fi
+
+# On crée un fichier service pour pour mettre à jour les modules GTK+ :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.pango << "EOF"
+#!/usr/bin/env bash
+
+pango_start() {
+	# Prise en charge du multilib pour x86_64 :
+	if [ "$(uname -m)" = "x86_64" ]; then
+		if [ ! -r etc/pango-32/pango.modules ]; then
+			echo "Mise à jour des modules Pango 32 bits..."
+			pango-querymodules-32 > /etc/pango-32/pango.modules
+		fi
+		if [ ! -r etc/pango-64/pango.modules ]; then
+			echo "Mise à jour des modules Pango 64 bits..."
+			pango-querymodules-64 > /etc/pango-64/pango.modules
+		fi
+	else
+		if [ ! -r etc/pango/pango.modules ]; then
+			echo "Mise à jour des modules Pango..."
+			pango-querymodules > /etc/pango/pango.modules
+		fi
+	fi
+}
+
+case "$1" in
+	'start')
+		pango_start
+	;;
+	
+	'stop')
+		# On ne fait rien
+	;;
+	
+	'restart')
+		pango_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.pango
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On régénère les modules Pango :
+if [ "$(uname -m)" = "x86_64" ]; then
+	rm -f etc/pango-32/pango.modules
+	chroot . pango-querymodules-32 > /etc/pango-32/pango.modules 2>/dev/null
+	rm -f etc/pango-64/pango.modules
+	chroot . pango-querymodules-64 > /etc/pango-64/pango.modules 2>/dev/null
+else
+	rm -f etc/pango/pango.modules
+	chroot . pango-querymodules > /etc/pango/pango.modules 2>/dev/null
+fi
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

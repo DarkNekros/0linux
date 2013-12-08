@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-libmatroska}
+VERSION=${VERSION:-1.4.0}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-libmatroska}
+WGET=${WGET:-http://dl.matroska.org/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Bibliothèques multimédia Matroska"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige le chemin des bibliothèques :
+sed -i "s@^libdir=\$(prefix)/lib@&${LIBDIRSUFFIX}@" make/linux/Makefile
+
+cd make/linux
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} sharedlib || make sharedlib
+
+fakeroot make install prefix=${PKG}/usr
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

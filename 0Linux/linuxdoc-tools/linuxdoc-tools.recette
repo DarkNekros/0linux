@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-linuxdoc-tools}
+VERSION=${VERSION:-0.9.68}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-linuxdoc-tools}
+WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/l/$NAMESRC/${NAMESRC}_${VERSION}.$EXT}
+DESC="Outils et convertisseurs de formats de documentation"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On applique le correctif de Fedora, concernant le format A4, et celui pour
+# $LIBDIRSUFFIX :
+cat $CWD/linuxdoc-tools-0.9.13-letter.patch | patch -p1
+cat $CWD/linuxdoc-tools.libdir.patch | sed -i -e "s:@@MULTILIB_DIR@@:lib${LIBDIRSUFFIX}:g" | patch -p1
+sed -i "75s/^/\/\//" rtf-fix/rtf2rtf.l
+
+# On modifie le PATH pour en retire 'tex', non fourni et qui pose problème :
+ORIGINALPATH=$PATH
+export PATH=$( echo $PATH | sed -e 's?:/usr/share/texmf/bin??g' -e 's?/usr/share/texmf/bin:??g' )
+
+# Comfiguration :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+# On passe dans 'entity-map' pour configurer avant la compilation effective :
+(
+	cd entity-map
+	autoconf
+	./configure --prefix=/usr
+)
+
+# On corrige l'emplacement de la doc codé en dur :
+sed -i "s?share/doc/linuxdoc-tools?doc/$NAMETGZ-$VERSION?g" Makefile
+
+# Compilation :
+make -j${JOBS} || make
+fakeroot make install LINUXDOCDOC=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
+
+# On installe tous les scripts supplémentaires de Debian :
+for i in info latex txt; do \
+	cp -a debian/addition/sgml2$i ${PKG}/usr/bin/sgml2$i
+	chmod 755 ${PKG}/usr/bin/sgml2$i
+done
+
+# On installe la page info en sus :
+mkdir -p ${PKG}/usr/info
+cat debian/linuxdoc-tools.info-base doc/guide.info > ${PKG}/usr/info/linuxdoc-sgml.info
+
+# Ouf ! On peut restaurer le PATH originel :
+export PATH=$ORIGINALPATH
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

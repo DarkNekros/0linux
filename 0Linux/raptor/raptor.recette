@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-raptor2}
+VERSION=${VERSION:-2.0.8}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-raptor}
+WGET=(http://librdf.org/dist/source/raptor-1.4.21.$EXT
+     http://librdf.org/dist/source/$NAMESRC-$VERSION.$EXT
+    )
+DESC="Bibliothèques d'analyse XML/RDF"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+cflags
+
+# On compile raptor 1 :
+preparer_sources raptor-1.4.21.$EXT
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/1.4.21
+
+# On compile raptor 2 :
+preparer_sources
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

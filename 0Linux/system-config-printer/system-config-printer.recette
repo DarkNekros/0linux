@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-system-config-printer}
+VERSION=${VERSION:-1.3.12}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-system-config-printer}
+WGET=${WGET:-http://cyberelk.net/tim/data/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+DESC="Outil d'administration du serveur d'impression CUPS"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-udev-rules \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On déplace les règles Udev où il faut :
+mv ${PKG}/etc/udev ${PKG}/usr/lib${LIBDIRSUFFIX}/
+
+# On continue comme Slackware de résister à PAM. Il faut juste faire partie du groupe 'lp' :
+sed -i -e 's@at_console="true"@group="lp"@g' ${PKG}/etc/dbus-1/system.d/com.redhat.NewPrinterNotification.conf
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
