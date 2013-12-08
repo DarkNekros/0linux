@@ -5,7 +5,7 @@ NAMESRC=${NAMESRC:-akonadi}
 VERSION=${VERSION:-1.10.3_1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-akonadi}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/src/$NAMESRC-$(echo $VERSION | sed "s/_/-).$EXT}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/src/$NAMESRC-$(echo $VERSION | sed "s/_/-/").$EXT}
 DESC="Services de gestion des informations personnelles"
 ########################################
 
