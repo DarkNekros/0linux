@@ -448,19 +448,11 @@ empaqueter() {
 		rm -f ${fichiergdb}
 	done
 	
-	# on déduit le type de paquets, régulier ou bien de type abonnement (ou méta-paquet) :
-	RECETTEBASEDIR="$(echo $(dirname ${CWD}))"
-	if [ ! "$(echo ${RECETTEBASEDIR} | grep abonnements)" = "" ]; then
-		PKGTYPE="abonnements"
-	else
-		PKGTYPE="0Linux"
-	fi
-	
 	# On déduit l'emplacement du paquet selon l'emplacement de la recette elle-même :
-	PKGBASEDIR="$(echo ${RECETTEBASEDIR} | sed -e 's@^.*/0Linux/@@' -e 's@^.*/abonnements/@@')/$(basename $CWD)"
+	PKGBASEDIR="$(echo ${CWD} | sed 's/^.*0Linux\/\(.*$\)/\1/p' -n)"
 	
 	# On déduit le répertoire cible du paquet  :
-	OUT="/usr/local/paquets/${PKGARCH}/${PKGTYPE}/${PKGBASEDIR}"
+	OUT="/usr/local/paquets/${PKGARCH}/${PKGBASEDIR}"
 	mkdir -p ${OUT}
 	
 	# On nettoie tout paquet similaire présent dans le dépôt sur l'hôte :
