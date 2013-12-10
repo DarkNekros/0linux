@@ -15,8 +15,16 @@
 # 	construction-xorg
 #
 # Exemple : construire et installer les dépôts @kde et @gimp, le paquet 'libpng' ainsi
-# que tous les paquets se trouvant sous ../opt/ et tous les paquets commençant par « alsa » :
-# 	./construction.sh @kde @gimp libpng ../opt/* alsa*
+# que tous les paquets commençant par « alsa » :
+# 	./construction.sh @kde @gimp libpng alsa*
+#
+# Deux options spéciales existent :
+#
+# 0g tout              : compile/installe toutes les recettes.
+# 0g tout-completer    : compile/installe toutes les recettes mais ignore les paquets
+#                        déjà compilés dans '/usr/local/paquets' (permet de s'assurer
+#                        que le dépôt est complet)
+
 
 # La fonction de construction/installation de chaque paquet :
 # $f RECETTE
@@ -32,7 +40,7 @@ compiler_installer() {
 		SUDOBINAIRE=""
 		[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
 		bash -ex $(basename ${1}) && \
-			find /usr/local/paquets/$(uname -m)/ -name "$(basename ${1} .recette)-*-*-*.spack" -print | \
+			find /usr/local/paquets/$(uname -m)/ -type d -name "$(echo $(basename ${1} .recette | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)\.spack$/\1/p' -n ))"  | \
 			xargs ${SUDOBINAIRE} /usr/sbin/spackadd
 	)
 }
@@ -40,31 +48,43 @@ compiler_installer() {
 for param in $@; do
 	
 	if [ -n ${param} ]; then
-		# Si le paramètre est un fichier existant :
-		if [ -f ${param} ]; then
-			compiler_installer ${param}
+		
+		# Si on doit tout compiler :
+		if [ "${param}" = "tout" ]; then
+			for recette in $(find ../0Linux -type f -name "*.recette" | sort); do
+				compiler_installer ${recette}
+			done 
+		elif [ "${param}" = "tout-completer" ]; then
 			
-		# Si le paramètre est un répertoire existant dans apps/ (cas des sous-dépôts de kde) :
-		elif [ -d ${param} ]; then
-			for fichier_recette in $(find ../{0Linux,abonnements} -type f -name "$(basename ${param}).recette"); do
-				compiler_installer ${fichier_recette}
-			done
+			# Si on doit tout compiler mais qu'on doit ignorer tout paquet déjà compilé :
+			for recette in $(find ../0Linux -type f -name "*.recette" | sort); do
+				CHECKPKGDIR="$(find /usr/local/paquets/$(uname -m)/ -type d -name "$(echo $(basename ${recette} .recette))")"
+				if [ "$(find ${CHECKPKGDIR} -type f -name *.spack)" = "" ]; then
+					compiler_installer ${recette}
+				fi
+			done 
+		else
 			
-		# Si le paramètre commence par un « @ », on recherche une liste :
-		elif [ ! "$(echo ${param} | grep -E '^@' )" = "" ]; then
-			if [ -f construction-$(echo ${param} | sed s/@//) ]; then
-				for fichier_liste in $(cat construction-$(echo ${param} | sed s/@//)); do
-					for recette_trouvee in $(find ../{0Linux,abonnements} -type f -name "$(basename ${fichier_liste}).recette"); do
-						compiler_installer ${recette_trouvee}
+			# Si le paramètre est un fichier existant :
+			if [ -f ${param} ]; then
+				compiler_installer ${param}
+				
+			# Si le paramètre commence par un « @ », on recherche une liste :
+			elif [ ! "$(echo ${param} | grep -E '^@' )" = "" ]; then
+				if [ -f construction-$(echo ${param} | sed s/@//) ]; then
+					for fichier_liste in $(cat construction-$(echo ${param} | sed s/@//)); do
+						for recette_trouvee in $(find ../0Linux -type f -name "$(basename ${fichier_liste}).recette"); do
+							compiler_installer ${recette_trouvee}
+						done
 					done
+				fi
+				
+			# Si on a autre chose (un paquet individuel ou un paramètre invalide) :
+			else
+				for recette in $(find ../0Linux -type f -name "${param}.recette"); do
+					compiler_installer ${recette}
 				done
 			fi
-			
-		# Si on a autre chose (un paquet individuel ou un paramètre invalide) :
-		else
-			for recette in $(find ../0Linux -type f -name "${param}.recette"); do
-				compiler_installer ${recette}
-			done
 		fi
 	fi
 done

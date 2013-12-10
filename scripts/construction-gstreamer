@@ -6,3 +6,4 @@ gst-plugins-ugly
 gst-libav
 gst-python
 phonon-gstreamer
+qt-gstreamer
