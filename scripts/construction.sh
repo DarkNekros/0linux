@@ -39,9 +39,7 @@ compiler_installer() {
 		# On construit et on installe le paquet, avec ou sans 'sudo' :
 		SUDOBINAIRE=""
 		[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
-		bash -ex $(basename ${1}) && \
-			find /usr/local/paquets/$(uname -m)/ -type d -name "$(echo $(basename ${1} .recette | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)\.spack$/\1/p' -n ))"  | \
-			xargs ${SUDOBINAIRE} /usr/sbin/spackadd
+		bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd $(find /usr/local/paquets/$(uname -m)/ -type d -name "$(basename ${1} .recette)")/*.spack
 	)
 }
 
