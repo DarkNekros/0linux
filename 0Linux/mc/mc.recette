@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-mc}
+VERSION=${VERSION:-4.8.10}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-mc}
+WGET=${WGET:-http://www.midnight-commander.org/downloads/$NAMESRC-$VERSION.$EXT}
+DESC="Gestionnaire de fichiers en mode texte et interpréteur"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige l'ouverture des archives créées avec 'cpio' et 'tar' :
+sed -i 's@tmp_vpath = vfs_path_from_str (s);@tmp_vpath = vfs_path_from_str_flags (s, VPF_NO_CANON);@' \
+	src/vfs/cpio/cpio.c \
+	src/vfs/tar/tar.c
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-background \
+	--enable-charset \
+	--enable-largefile \
+	--with-edit \
+	--with-gpm-mouse \
+	--with-mmap \
+	--enable-vfs-smb \
+	--with-vfs \
+	--with-x \
+	--without-debug \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On adapte aux plus récents 'infozip' :
+sed -i 's|op_has_zipinfo = 0|op_has_zipinfo = 1|' ${PKG}/usr/lib${LIBDIRSUFFIX}/mc/extfs.d/uzip
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

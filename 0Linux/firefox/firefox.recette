@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-firefox}
+VERSION=${VERSION:-26.0}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-firefox}
+. /usr/share/0outils/fonctions_paquets.sh
+cflags
+WGET=${WGET:-http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.$EXT}
+DESC="Navigateur Web de la fondation Mozilla"
+
+telecharger_sources
+preparer_sources
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/usr/bin
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/chrome/icons/default
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/{pref,profile}
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+
+# On copie le tout où il faut : 
+cp -ar * ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+
+# On place nos préférences :
+cp -a $CWD/vendor.js ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/pref/
+
+# On copie le logo et le fichier pour le bureau :
+cp -a $CWD/mozilla-firefox.desktop ${PKG}/usr/share/applications
+cp -a $CWD/firefox.png ${PKG}/usr/share/pixmaps
+
+# On ajoute le fichier corrigeant la CSS pour les thèmes GTK sombres et les types MIME pour Thunderbird :
+cp -a $CWD/userChrome.css ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/profile/
+cp -a $CWD/mimeTypes.rdf ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/defaults/profile/
+
+# On lie le binaire :
+ln -sf ../../usr/lib${LIBDIRSUFFIX}/${NAMESRC}/firefox ${PKG}/usr/bin/
+
+# On crée le répertoire général pour les plugins :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
+
+# On crée le répertoire local à Firefox pour les plugins (merci Mozilla d'avoir déplacé ce répertoire, z'en faites exprès ?) :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/browser/
+
+# On lie le répertoire local au général :
+ln -sf ../../../../usr/lib${LIBDIRSUFFIX}/mozilla/plugins ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/browser/
+
+installer_doc
+creer_post_installation
+empaqueter
+
+# C'est fini.

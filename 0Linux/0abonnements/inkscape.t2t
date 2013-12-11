@@ -1,0 +1,21 @@
+Description du dépôt @inkscape
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @inkscape =
+
+Inkscape est un programme renommé de dessin vectoriel. Il charge et sauvegarde des fichiers au format SVG (« Scalable Vector Graphics », ou graphismes vectoriels redimensionnables), un standard maintenu par le consortium W3C.
+
+L'interface utilisateur d'Inkscape est similaire à celle de Corel Draw et d'autres programmes de dessin reconnus. Elle offre des outils pour tracer rectangles, ellipses, objets de texte, images matricielles et courbes à main levée. Les images vectorielles et matricielles bénéficient toutes les deux de la transparence alpha et peuvent être transformées arbitrairement.
+
+Inkscape gère l'édition simultanée de plusieurs fichiers, voire de plusieurs copies d'un même fichier. Les graphismes peuvent être imprimés et exportés en images matricielles PNG. 
+
+= Le dépôt @inkscape pour 0linux =
+
+Le dépôt contient le logiciel Inkscape ainsi que des greffons supplémentaires comme Sozi ou Pixelsnap.
+
+= Installation sous 0linux =
+
+``# 0g @inkscape``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

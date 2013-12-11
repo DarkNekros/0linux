@@ -1,0 +1,17 @@
+Description du dépôt @ogmtools
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Juin 2013
+
+= Description de @ogmtools =
+
+OGMTools est un ensemble d'outils en ligne de commande destinés à la création, la modification et la vérification de fichiers vidéo au format OGM.
+
+= Le dépôt @ogmtools pour 0linux =
+
+Le dépôt contient la suite d'outils ogmtools et leurs documentations.
+
+= Installation sous 0linux =
+
+``# 0g @ogmtools``
+
+% Contenu maintenu par fatalerrors.

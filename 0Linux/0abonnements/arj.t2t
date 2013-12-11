@@ -1,0 +1,17 @@
+Description du dépôt @arj
+appzer0 - appzer0@free.fr
+Mai 2013
+
+= Description de @arj =
+
+Une version « open source » de l'archiveur ARJ. Cette version a été créée avec la volonté de préserver une compatibilité maximale et de conserver l'ensemble des fonctionnalités de l'archiveur original ARJ, tel que fourni par ARJ Software, Inc. 
+
+= Le dépôt @arj pour 0linux =
+
+Le dépôt contient le logiciel ARJ complet.
+
+= Installation sous 0linux =
+
+``# 0g @arj``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

@@ -1,0 +1,17 @@
+Description du dépôt @mkvtoolnix
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Juin 2013
+
+= Description de @mkvtoolnix =
+
+MKVToolNix est un ensemble d'outils destinnés à la création, la modification et la vérification de fichiers au format MKV (Matroska).
+
+= Le dépôt @mkvtoolnix pour 0linux =
+
+Le dépôt contient la suite de logiciel mkvtoolnix et leurs documentations.
+
+= Installation sous 0linux =
+
+``# 0g @mkvtoolnix``
+
+% Contenu maintenu par fatalerrors.

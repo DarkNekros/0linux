@@ -1,0 +1,19 @@
+Description du dépôt @mtr
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Aout 2013
+
+= Description de @mtr =
+
+MTR, signifiant My TraceRoute, est un outil de dignostique réseau qui combine les fonctionnalités des programmes « traceroute » et « ping » dans une interface NCurses ou GTK.
+
+Attention, mtr n'est utilisable qu'en tant que super-utilisateur à cause des fonctionnalités du noyau qu'il va utiliser.
+
+= Le dépôt @mtr pour 0linux =
+
+Le dépôt contient le programme en ligne de commande mtr et son interface GTK et leurs documentations.
+
+= Installation sous 0linux =
+
+``# 0g @mtr``
+
+% Contenu maintenu par fatalerrors.

@@ -1,0 +1,17 @@
+Description du dépôt @unrar
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @unrar =
+
+unrar est un outil pour manipuler les archives compressées en ``.rar``. Il est utilisé pour extraire, tester et visualiser le contenu d'archives créées avec l'archiveur RAR. 
+
+= Le dépôt @unrar pour 0linux =
+
+Le dépôt contient le logiciel unrar complet.
+
+= Installation sous 0linux =
+
+``# 0g @unrar``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-fpc}
+VERSION=${VERSION:-2.6.2}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-fpc}
+DESC="Compilateur croisé multi-plateforme pour le langage Pascal"
+########################################
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# Converti l'archi machine avec les conventions de Free Pascal (arm à tester)
+FPARCH=${PKGARCH}
+if [ ${PKGARCH} = "i686" ] ; then
+	FPARCH="i386"
+fi
+
+WGET=(ftp://ftp.freepascal.org/pub/fpc/dist/$VERSION/source/$NAMESRC-$VERSION.source.$EXT
+	  ftp://ftp.freepascal.org/pub/fpc/dist/$VERSION/$FPARCH-linux/$NAMESRC-$VERSION.$FPARCH-linux.tar
+	  ftp://ftp.freepascal.org/pub/fpc/dist/htmls.$EXT)
+
+telecharger_sources
+preparer_sources $NAMESRC-$VERSION.source.$EXT # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On installe les sources avant de toucher à quoi que ce soit (requis par Lazarus)
+mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/fpc/src
+cp -a ./* $PKG/usr/lib${LIBDIRSUFFIX}/fpc/src
+
+# On efface le répertoire précompilé s'il existe déjà
+if [ -r $TMP/$NAMESRC-$VERSION.$FPARCH-linux ] ; then
+	rm -rf $TMP/$NAMESRC-$VERSION.$FPARCH-linux
+fi
+
+# On extrait l'arborescence du compilateur précompilé
+tar xf ${PKGSOURCES}/$NAMETGZ/$NAMESRC-$VERSION.$FPARCH-linux.tar -C $TMP
+tar xf $TMP/$NAMESRC-$VERSION.$FPARCH-linux/binary.$FPARCH-linux.tar -C  $TMP/$NAMESRC-$VERSION.$FPARCH-linux/
+rm $TMP/$NAMESRC-$VERSION.$FPARCH-linux/binary.$FPARCH-linux.tar
+for f in $(find $TMP/$NAMESRC-$VERSION.$FPARCH-linux -type f -name "*.tar.gz" 2>/dev/null) ; do
+	tar xf $f -C $TMP/$NAMESRC-$VERSION.$FPARCH-linux/
+	rm $f
+done
+
+# On règle un PATH temporaire pour l'accès au compilateur précompilé
+PATH=$TMP/$NAMESRC-$VERSION.$FPARCH-linux/bin:${PATH}
+
+# On crée le lien pour le compilateur correspondant à notre archi
+if [ "$FPARCH" = "x86_64" ] ; then
+	ln -s ../lib/fpc/$VERSION/ppcx64 $TMP/$NAMESRC-$VERSION.$FPARCH-linux/bin/ppcx64
+elif [ "$FPARCH" = "i386" ] ; then
+	ln -s ../lib/fpc/$VERSION/ppc386 $TMP/$NAMESRC-$VERSION.$FPARCH-linux/bin/ppc386
+elif [ "$FPARCH" = "arm" ] ; then
+	ln -s ../lib/fpc/$VERSION/ppcarm $TMP/$NAMESRC-$VERSION.$FPARCH-linux/bin/ppcarm
+fi
+
+# On corrige le dossier lib de destination
+sed -i "s@/usr/lib/@/usr/lib${LIBDIRSUFFIX}/@g" Makefile
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make all -j${JOBS} || make all
+fakeroot make install PREFIX=${PKG}/usr
+
+# On déplace de lib vers lib${LIBDIRSUFFIX}
+mkdir -p $PKG/usr/lib$LIBDIRSUFFIX
+cp -a $PKG/usr/lib{/*,${LIBDIRSUFFIX}}
+rm -rf $PKG/usr/lib
+
+# On se lie à la version du compilateur correspondante à notre archi
+if [ "$FPARCH" = "x86_64" ] ; then
+	ln -s ../lib$LIBDIRSUFFIX/fpc/$VERSION/ppcx64 $PKG/usr/bin/ppcx64
+elif [ "$FPARCH" = "i386" ] ; then
+	ln -s ../lib$LIBDIRSUFFIX/fpc/$VERSION/ppc386 $PKG/usr/bin/ppc386
+elif [ "$FPARCH" = "arm" ] ; then
+	# A tester
+	ln -s ../lib$LIBDIRSUFFIX/fpc/$VERSION/ppcarm $PKG/usr/bin/ppcarm
+fi
+
+# On crée les fichiers de configuration du compilateur
+mkdir -p $PKG/etc $PKG/usr/lib$LIBDIRSUFFIX/fpc/$VERSION/ide/text
+$PKG/usr/lib$LIBDIRSUFFIX/fpc/$VERSION/samplecfg \
+	$PKG/usr/lib$LIBDIRSUFFIX/fpc/$VERSION \
+	$PKG/etc
+ 
+# On enlève notre répertoire de destination des fichiers de configuration
+sed -i -e "s:$PKG::g" $PKG/etc/fpc.cfg
+sed -i -e "s:$PKG::g" $PKG/usr/lib$LIBDIRSUFFIX/fpc/$VERSION/ide/text/fp.cfg
+
+# On utilise l'équivalent FPC de -fPIC sur x86_64 (-Cg)
+echo -e "#ifdef cpux86_64\n# for x86_64 use -fPIC by default\n-Cg\n#endif" >> "$PKG/etc/fpc.cfg"
+
+# On renome les fichiers de configuration
+mv $PKG/etc/fpc.cfg{,.0nouveau}
+mv $PKG/etc/fppkg.cfg{,.0nouveau}
+mv $PKG/etc/fppkg/default{,.0nouveau}
+
+# On installe la doc
+cp -a $TMP/$NAMESRC-$VERSION.$FPARCH-linux/doc/* $PKG/usr/doc/$NAMETGZ-$VERSION
+mkdir -p $PKG/usr/doc/$NAMETGZ-$VERSION/{compiler,ide,rtl,tests,utils}
+cp -a compiler/{COPYING,README}.txt $PKG/usr/doc/$NAMETGZ-$VERSION/compiler
+cp -a ide/{README,TODO}.txt $PKG/usr/doc/$NAMETGZ-$VERSION/ide
+cp -a rtl/{COPYING.{FPC,txt},README.txt} $PKG/usr/doc/$NAMETGZ-$VERSION/rtl
+cp -a tests/readme.txt $PKG/usr/doc/$NAMETGZ-$VERSION/tests
+cp -a utils/README.txt $PKG/usr/doc/$NAMETGZ-$VERSION/utils
+
+# On installe la doc htmls
+mkdir -p $PKG/usr/doc/$NAMETGZ-$VERSION/htmls
+tar xf ${PKGSOURCES}/${NAMETGZ}/htmls.tar.gz -C $PKG/usr/doc/$NAMETGZ-$VERSION/htmls
+
+# Nettoyage : On efface l'arborescence précompilé
+rm -rf $TMP/$NAMESRC-$VERSION.$FPARCH-linux
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

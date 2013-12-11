@@ -1,0 +1,19 @@
+Description du dépôt @widelands
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Juillet 2013
+
+= Description de @widelands =
+
+Widelands est à la fois un jeu de stratégie et un jeu de rôle en temps réel, reprenant les principes de fonctionnement du célèbre Settlers II.
+
+Vous pourrez incarner trois civilisations, les Barbares, l'Empire Romain ou les Atlantes, chacune ayant ses caractéristiques. Batissez des villes gérez les ressources naturelles et manufacturés, recrutez des armées, construisez des routes, envahissez vos voisins...
+
+= Le dépôt @widelands pour 0linux =
+
+Le dépôt contient le jeu Widelands complet acxcompagné de son éditeur de cartes et de sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @widelands``
+
+% Contenu maintenu par fatalerrors.

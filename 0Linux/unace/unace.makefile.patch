@@ -1,0 +1,46 @@
+#!/bin/sh /usr/share/dpatch/dpatch-run
+## 01-unace-only.dpatch by Fabian Greffrath <fabian@debian-unofficial.org>
+##
+## DP: Do not try to include Makefiles for ace or unace.dll
+## DP: and force remove in clean rule.
+
+@DPATCH@
+diff -urNad unace-nonfree-2.5~/base.mk unace-nonfree-2.5/base.mk
+--- unace-nonfree-2.5~/base.mk	2007-11-22 00:59:54.000000000 +0100
++++ unace-nonfree-2.5/base.mk	2007-11-22 01:00:15.961423292 +0100
+@@ -427,9 +427,7 @@
+ ##############################################################################
+ 
+ ifndef ISWMAKE
+-include $(MAKE_DIR)baseace.mk
+ include $(MAKE_DIR)baseuace.mk
+ else
+-!include $(MAKE_DIR)baseace.mk
+ !include $(MAKE_DIR)baseuace.mk
+ endif
+diff -urNad unace-nonfree-2.5~/makefile unace-nonfree-2.5/makefile
+--- unace-nonfree-2.5~/makefile	2007-11-22 00:59:54.000000000 +0100
++++ unace-nonfree-2.5/makefile	2007-11-22 01:01:00.331410500 +0100
+@@ -29,8 +29,8 @@
+ all: unace
+ 
+ clean:
+-	rm unace
+-	rm linunace25.tgz
++	rm -f unace
++	rm -f linunace25.tgz
+ 	
+ include $(MAKE_DIR)base.mk
+ include $(MAKE_DIR)apps.mk
+diff -urNad unace-nonfree-2.5~/unace.mk unace-nonfree-2.5/unace.mk
+--- unace-nonfree-2.5~/unace.mk	2007-11-22 00:59:54.000000000 +0100
++++ unace-nonfree-2.5/unace.mk	2007-11-22 01:00:15.964749045 +0100
+@@ -27,8 +27,6 @@
+ 
+ ifndef ISWMAKE
+ include $(MAKE_DIR)unaceexe.mk
+-include $(MAKE_DIR)unacedll.mk
+ else
+ !include $(MAKE_DIR)unaceexe.mk
+-!include $(MAKE_DIR)unacedll.mk
+ endif

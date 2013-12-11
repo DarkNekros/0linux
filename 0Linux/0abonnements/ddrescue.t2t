@@ -1,0 +1,17 @@
+Description du dépôt @ddrescue
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Mai 2013
+
+= Description de @ddrecue =
+
+DDRescue est un programme simple issu du projet GNU qui permet de créer des images de supports magnétiques endommagés (disquettes ou disques dur). Il s'utilise en ligne de commande. 
+
+= Le dépôt @ddrescue pour 0linux =
+
+Le dépôt contient le programme ddrescue avec sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @ddrescue``
+
+% Contenu maintenu par fatalerrors

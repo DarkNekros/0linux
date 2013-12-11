@@ -1,0 +1,28 @@
+Description du dépôt @razor-qt
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @razor-qt =
+
+Razor-qt est un environnement de bureau léger et complet, écrit en Qt. Il est rapide et léger et s'oriente vers un public d'utilisateurs recherchant la simplicitéet la rapidité alliée à un environnement intuitif. Razor-qt contionne sur des machines modestes, contrairement à certains environnement de bureau.
+
+Razor-qt contient un ensemble d'outils pour le bureau :
+
+  - barre des tâches
+  - bureau
+  - lanceur d'applications
+  - centre de configuration
+  - prise en charge des sessions
+
+
+Razor-qt fontionne avec des gestionnaires de fenêtres variés. Les développeurs l'utilisent habituellement avec Openbox, mais n'importe quel gestionnaire devrait faire l'affaire, comme fwwm2 ou kwin.
+
+= Le dépôt @razor-qt pour 0linux =
+
+Le dépôt contient le logiciel Razor-qt complet.
+
+= Installation sous 0linux =
+
+``# 0g @razor-qt``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

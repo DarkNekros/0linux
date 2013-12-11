@@ -1,0 +1,17 @@
+Description du dépôt @httpd
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @httpd =
+
+httpd est le serveur HTTP de la fondation Apache. L'objectif de l'Apache Software Foundation est de construire un serveur HTTP sécurisé, performant et extensible en tant que logiciel open source respectant les standards. Le résultat a longtemps été le serveur web numéro un sur Internet. 
+
+= Le dépôt @httpd pour 0linux =
+
+Le dépôt contient le logiciel httpd complet ainsi qu'un fichier de configuration ``httpd.conf`` intégralement traduit en français.
+
+= Installation sous 0linux =
+
+``# 0g @httpd``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

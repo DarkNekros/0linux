@@ -1,0 +1,17 @@
+Description du dépôt @warmux
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Juillet 2013
+
+= Description de @warmux =
+
+Warmux est un jeu d'artillerie dans le style de Worms. Vous devrez tuer vos adversaires en les bombardant à l'aide de différents types d'armes.
+
+= Le dépôt @warmux pour 0linux =
+
+Le dépôt contient le jeu Warmux complet.
+
+= Installation sous 0linux =
+
+``# 0g @warmux``
+
+% Contenu maintenu par fatalerrors.

@@ -1,0 +1,17 @@
+Description du dépôt @slim
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @slim =
+
+SLiM est un gestionnaire de connexion graphique léger et indépendant pour X. SLiM se veut simple et léger, tout en restant configurable via de sthèmes et un fichier de configuration.
+
+= Le dépôt @slim pour 0linux =
+
+Le dépôt contient le logiciel SLiM complet.
+
+= Installation sous 0linux =
+
+``# 0g @slim``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

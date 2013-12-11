@@ -1,0 +1,28 @@
+Description du dépôt @dovecot
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Mai 2013
+
+= Description de @dovecot =
+
+Dovecot est un système complet de serveur de messagerie. Ce serveur gère le stockage des données aux formats mbox ou Maildir et les protocoles POP3 et IMAP.
+Dovecot possède des fonctionnalités avancées :
+
+ - prise en charge d'IMAP4 revision 1 ;
+ - système d'identification avancé (LDAP, NTLM, GSSAPI, CRAM, DIGEST, APOP, RPA, Login, OTP et SKEY) ;
+ - gestion de la messagerie anonyme ;
+ - système de migration avec de nombreux autres serveurs ;
+ - système de modules à la Apache ;
+ - gestion de l'IPv6 et de la cryptographie.
+
+
+Après installation, le serveur ne sera pas démarré par défaut au lancement de 0linux.
+
+= Le dépôt @dovecot pour 0linux =
+
+Le dépôt contient le système de serveur dovecot, ses outils de gestion en ligne de commande et sa documentation. 
+
+= Installation sous 0linux =
+
+``# 0g @dovecot``
+
+% Contenu maintenu par fatalerrors ; inspiré par Wikipedia.

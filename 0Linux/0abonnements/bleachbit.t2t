@@ -1,0 +1,21 @@
+Description du dépôt @bleachbit
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Octobre 2013
+
+= Description de @bleachbit =
+
+BleachBit est un programme simple permettant le nettoyage du disque dur de vos fichiers inutiles.
+
+Il permet également d'amméliorer la protection de votre vie privée en effaçant des données de navigations de vos navigateurs.
+
+ATTENTION : certains modules, qui requierent un accès en superutilisateurs, suppriment des fichiers installés avec le système, faites attention si vous les utilisez.
+
+= Le dépôt @bleachbit pour 0linux =
+
+Le dépôt contient le programme BleachBit avec sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @bleachbit``
+
+% Contenu maintenu par fatalerrors

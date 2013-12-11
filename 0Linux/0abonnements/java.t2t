@@ -1,0 +1,17 @@
+Description du dépôt @java
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @java =
+
+Ce dépôt est un environnement de développement et d'exécution pour le langage Java, contenant notamment  le kit de développement JDK d'Oracle. Il permet de construire et d'exécuter des applications, des applets et des composants en utilisant le langage de programmation Java.
+
+= Le dépôt @java pour 0linux =
+
+Le dépôt contient le kit de développement (JDK) d'Oracle, contenant également l'environnement d'exécution Java Runtime Environment (JRE).
+
+= Installation sous 0linux =
+
+``# 0g @java``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

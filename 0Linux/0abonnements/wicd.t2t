@@ -1,0 +1,26 @@
+Description du dépôt @wicd
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @wicd =
+
+wicd est un gestionnaire de réseau filaire et sans-fil. C'est un serveur de configuration du réseau. Son objectif est de fournir une interface simple et flexible pour se connecter aux réseaux. 
+
+Parmi ses caractéristiques :
+
+  - capacité de se connecter (et de mémoriser les profils) à la fois aux réseaux filaires et sans-fil
+  - gestion de nombreuses méthodes de chiffrement, incluant WEP, WPA, WPA2 et méthodes personnalisées
+  - compatible avec wireless-tools
+  - icône dans la zone de notification montrant l'activité du réseau et la force du signal
+  - utilisation possible dans plusieurs environnements de bureau
+
+
+= Le dépôt @wicd pour 0linux =
+
+Le dépôt contient le logiciel wicd complet.
+
+= Installation sous 0linux =
+
+``# 0g @wicd``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

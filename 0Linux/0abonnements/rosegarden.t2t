@@ -1,0 +1,17 @@
+Description du dépôt @rosegarden
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @rosegarden =
+
+Rosegarden est un éditeur audio et un séquenceur compatible MIDI. Écrit en Qt, Rosegarden permet la lecture et l'enregistrement audio et propose un séquenceur audio/MIDI, un éditeur multipiste, l'édition via un clavier de piano ainsi que sur portées, la prise en charge des entrées-sorties MIDI, l'export au format Csound, etc. 
+
+= Le dépôt @rosegarden pour 0linux =
+
+Le dépôt contient le logiciel Rosegarden complet.
+
+= Installation sous 0linux =
+
+``# 0g @rosegarden``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

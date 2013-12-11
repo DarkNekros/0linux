@@ -1,0 +1,19 @@
+Description du dépôt @thunderbird
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @thunderbird =
+
+Thunderbird est le client de courriel de la fondation Mozilla. C'est également un lecteur de nouvelles (« newsgroup ») avec RSS et gestion intégrée du spam.
+
+Thunderbird gère plusieurs comptes de courrier électronique (POP, IMAP, Gmail), comporte une détection intégrée des pourriels (ou « spam ») avec apprentissage et permet une organisation simple des courriers électroniques par étiquetage ou avec des dossiers virtuels. De nombreuses fonctionnalités supplémentaires sont disponibles sous forme d'extensions.
+
+= Le dépôt @thunderbird pour 0linux =
+
+Le dépôt contient le logiciel Thunderbird complet et son interface en français.
+
+= Installation sous 0linux =
+
+``# 0g @thunderbird``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

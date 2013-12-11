@@ -1,0 +1,17 @@
+Description du dépôt @firefox
+appzer0 - appzer0@free.fr
+Mai 2013
+
+= Description de @firefox =
+
+Firefox est le navigateur à succès de la fondation Mozilla, basé sur une une partie de la suite Mozilla. Il est similaire à Galeon, K-Meleon et Camino, mais est écrit en utilisant le langage d'interface utilisateur XUL, et pensé pour être léger et multiplate-forme. Il prend en charge de nombreux formats modernes, la navigation par onglet, la navigation privée, le chiffrement via SSL, la gestion des signets / marques-pages et comprend un service de synchronisation distante des données personnelles nommé « Sync ».
+
+= Le dépôt @firefox pour 0linux =
+
+Le dépôt contient le logiciel Firefox complet avec l'habillage officiel de la fondation Mozilla.
+
+= Installation sous 0linux =
+
+``# 0g @firefox``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

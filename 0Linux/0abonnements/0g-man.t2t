@@ -1,0 +1,155 @@
+0G
+0outils
+Septembre 2012
+
+%!postproc(man): "^(\.TH.*) 1 "  "\1 8 "
+%!encoding: UTF-8
+
+
+= NOM =[nom]
+
+0g -  Gestion et mise à niveau distante des paquets de 0Linux
+
+
+= SYNOPSIS =[synopsis]
+
+**0g** [//options//] [//paquet(s)|@dépôt(s)//...]
+
+
+= DESCRIPTION =[description]
+
+Appelé seul, **0g** met à jour et à niveau depuis un serveur distant  tous les paquets et dépôts installés sur le système. 
+Appelé avec des paramètres, **0g** télécharge et installe tous les paquets et dépôt spécifiés en paramètres.
+Voir les exemples en fin de manuel.
+
+
+= OPTIONS =[options]
+
+: **-f, --force, --forcer**
+Ajoute les dépôts non-déclarés dans la liste des dépôts ``/etc/0outils/0g/apps``. Comportement par défaut sous 0linux, modifiable dans le fichier de configuration générale ``/etc/0outils/0g/config``.
+
+: **-i, --info**
+Affiche une description détaillée du ou des dépôts spécifiés sur la ligne de commande. Seuls des dépôts, commençant par un « @ », seront traités.
+
+: **-h, --help, --aide**
+Affiche l'aide et quitte.
+
+: **-k, --keep --garder --conserver**
+Conserve les paquets téléchargés après installation.
+
+: **-l, --list, --liste, --lister**
+Affiche une liste de tous les dépôts disponibles dans 'apps' et quitte.
+
+: **-n, --dry-run**
+Affiche uniquement les noms des paquets qui seront téléchargés mais n'effectue aucune action.
+
+: **-U//nom//**
+Interroge le dépôt dont l'URL est associé à la variable ``url.nom`` dans le fichier de configuration ``/etc/0outils/0g/config``.
+
+
+= FICHIERS DE CONFIGURATION =[fichiersdeconfiguration]
+
+**0g** dispose de 3 fichiers de configuration : 
+- Sa configuration générale se trouvant dans ``/etc/0outils/0g/config``,
+- La liste des dépôts à prendre en compte pour les mises à jour ``/etc/0outils/0g/apps``,
+- Une liste noire des paquets à ignorer, pour certains cas particuliers (utilisation serveur, etc.) : ``/etc/0outils/0g/liste_noire``.
+
+
+= CONFIGURATION GÉNÉRALE =[configurationgenerale]
+
+**0g** se configure via le fichier ``/etc/0outils/0g/config``. Il est composé d'une suite de paires variables-valeurs. Une variable est simplement le premier mot de la ligne. Sa valeur la suit, séparée par un espace au moins :
+
+Exemple :
+``url.default  http://server.fr/pub``
+
+Les variables reconnues sont :
+
+: **force     0|1**
+Si ``force`` vaut 1 (comportement par défaut sous 0linux), elle rend l'option ``--force`` permanente : chaque dépôt demandé à l'installation s'ajoute à la liste des dépôts gérés et sera mis à jour lors des prochains appels à **0g**.
+Si ``force`` vaut 0, l'utilisateur doit d'occuper lui-même de remplir correctement son fichier ``etc/0outils/0g/apps``.
+
+: **keep      0|1**
+Si ``keep`` vaut 0, elle rend l'option ``--keep`` permanente : chaque paquet téléchargé sera conservé après installation.
+
+: **tmpdir    //répertoire//**
+``tmpdir`` définit l'emplacement par défaut des paquets téléchargés TMPDIR. Vaut ``/tmp`` par défaut.
+
+: **url.xxx   //URL//**
+URL correspondant  à l'adresse URL du serveur distant contenant l'arborescence des paquets et dépôts de 0linux.
+``url.default`` est prédéfinie dans **0g** au serveur officiel de 0linux par défaut.
+
+
+= CONFIGURATION DES DÉPÔTS =[configurationdesdepots]
+
+Le fichier ``/etc/0outils/0g/apps`` contient la liste des dépôts que **0g** doit gérer pour leur mise à jour. Il contient un nom de dépôt par ligne uniquement, précédé par un arobase « **@** » :
+
+``@nom``
+
+Par défaut sous 0linux, cette liste est alimentée automatiquement lors des ajouts de dépôts avec ``0g @dépôt``, mais on peut tout à fait l'éditer manuellement sans aucun problème. Des commentaires peuvent être ajoutés au fichier, ils seront ignorés. Il suffit de faire commencer chaque ligne de commentaire par un symbole dièze « **#** » :
+
+
+```
+# Le dépôt audacious :
+@audacious
+# Et les dépôts de KDE et Firefox :
+@kde
+@firefox
+```
+
+
+= CONFIGURATION DE LA LISTE NOIRE =[configurationdelalistenoire]
+
+Le fichier ``/etc/0outils/0g/liste_noire`` contient la liste des paquets à ignorer lors des mises à jour. 
+Pour certains cas particuliers, comme l'utilisation de l'ordinateur en tant que serveur, on peut ne pas vouloir d'une mise à jour du noyau Linux (qui demande un redémarrage de la machine) ou de certains paquets critiques.
+
+La liste noire est composée elle aussi d'une suite de paires variables-valeurs. Une variable est simplement le premier mot de la ligne. Sa valeur la suit, séparée par un espace au moins :
+
+``paquet  0|1``
+
+Si la valeur associée à un paquet est omise ou est « 0 », le paquet est téléchargé mais pas mis à niveau (il reste dans le dossier de téléchargement, indépendamment de la valeur de "keep") et un avertissement le signalant est émis. Si la valeur est « 1 » , le paquet est ignoré, il n'est pas téléchargé et aucun avertissement n'est émis (typiquement, ça ne concerne que les paquets que les utilisateurs gèrent eux-mêmes).
+
+Exemple, pour ignorer les mises à jour du noyau Linux (les paquets ne sont même pas téléchargés) :
+
+```
+linux 1
+```
+
+= ENVIRONNEMENT =[environnement]
+
+Côté variables d'environnement, sont reconnues :
+
+: **TMPDIR**
+Force le répertoire de téléchargement temporaire des paquets.
+
+: **ROOT**
+Force la racine à prendre en compte pour certains cas particuliers, lorsque le système visé ne se trouve pas monté sous ``/``.
+
+
+= EXEMPLES =[exemples]
+
+Exemples :
+: ``0g``
+Met à jour automatiquement tous les paquets et dépôts installés sur le système.
+
+: ``0g -l``
+Liste tous les dépôts disponibles sur les serveurs.
+
+: ``0g audacious``
+Télécharge et installe l'unique paquet 'audacious'.
+
+: ``0g @audacious``
+Télécharge et installe l'ensemble du dépôt 'audacious', lequel contient les paquets 'audacious', audacious-plugins', 'libmcs' et 'libmowgli'.
+
+: ``0g -i @audacious``
+Affiche une description du dépôt 'audacious'.
+
+
+= AUTEUR =[auteur]
+
+Sébastien Boillod - sbb at tuxfamily point org - [http://requiescant.tuxfamily.org] - Merci à lui.
+Modifié par appzer0 - appzer0 at free point fr
+
+
+= COPYRIGHT =[copyright]
+
+© 2012 Sébastien Boillod, licence MIT/X11

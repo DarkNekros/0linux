@@ -1,0 +1,17 @@
+Description du dépôt @htop
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Juin 2013
+
+= Description de @htop =
+
+HTop est une alternative colorée (utilisant NCurses) à la commande Top, permettant d'afficher la liste de tous les processus du système ainsi que leur consommation en mémoire et leurs usages du processeur.
+
+= Le dépôt @htop pour 0linux =
+
+Le dépôt contient le programme htop et sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @htop``
+
+% Contenu maintenu par fatalerrors.

@@ -1,0 +1,19 @@
+Description du dépôt @mplayer
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @mplayer =
+
+MPlayer est un lecteur vidéo et multimédia pour les systèmes de type Unix. Il lit la plupart des fichiers MPEG, VOB, AVI, Ogg/OGM, VIVO, ASF/WMA/WMV, QT/MOV/MP4, FLI, RM, NuppelVideo, yuv4mpeg, FILM, RoQ, PVA gérés par des codecs natifs, XAnim, RealPlayer et Win32 DLL. Il peut aussi lire des films VideoCD, SVCD, DVD, 3ivx, RealMedia et DivX.
+
+MPlayer dispose d'une large variété de pilotes de sortie supportés. Il fonctionne avec X11, Xv, DGA, OpenGL, SVGAlib, fbdev, DirectFB, mais aussi SDL (plus tous ses pilotes) et certains pilotes de bas niveau spécifiques à une carte (Matrox, 3Dfx, Radeon, Mach64 et Permedia3). La plupart d'entre eux gèrent le redimensionnement logiciel ou matériel, permettant par conséquent l'affichage plein écran. MPlayer est également capable d'utiliser quelques cartes de décodage MPEG matériel, tels que les DVB et DXR3/Hollywood+.
+
+= Le dépôt @mplayer pour 0linux =
+
+Le dépôt contient le logiciel MPlayer complet ainsi qu'un ensemble de codecs supplémentaires et un jeu d'habillages visuels pour l'interface graphique.
+
+= Installation sous 0linux =
+
+``# 0g @mplayer``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

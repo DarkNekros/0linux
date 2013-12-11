@@ -1,0 +1,23 @@
+Description du dépôt @mc
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Juin 2013
+
+= Description de @mc =
+
+MC, pour Midnight Commander, est un puissant gestionnaire de fichiers en mode texte et à double vue. Il s'inspire fortement de l'interface de Norton Commander.
+
+Midnight Commander possède des fonctionnalités avancés de gestion des fichiers et la capacité de naviguer dans des archives ou des images disque.
+
+Midnight Commander est également capable de se connecter à différents types de serveurs, notamment FTP et SSH/SFTP.
+
+Midnight Commander propose son propre éditeur de texte appelé mcedit.
+
+= Le dépôt @mc pour 0linux =
+
+Le dépôt contient le programme Mignight Commander complet avec son éditeur de texte et sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @mc``
+
+% Contenu maintenu par fatalerrors.

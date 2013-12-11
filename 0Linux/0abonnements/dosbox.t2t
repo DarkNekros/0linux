@@ -1,0 +1,17 @@
+Description du dépôt @dosbox
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Octobre 2013
+
+= Description de @dosbox =
+
+DosBox est un émulateur de système d'exploitation qui vous permettra de faire fonctionner vos anciens programmes pour DOS. 
+
+= Le dépôt @dosbox pour 0linux =
+
+Le dépôt contient l'émulateur DosBox avec sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @dosbox``
+
+% Contenu maintenu par fatalerrors

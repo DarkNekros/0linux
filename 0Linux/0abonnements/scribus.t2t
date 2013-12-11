@@ -1,0 +1,23 @@
+Description du dépôt @scribus
+appzer0 - appzer0@free.fr
+Juin 2013
+
+= Description de @scribus =
+
+Scribus est un programme de Publication Assistée par Ordinateur (PAO) permettant la réalisation de documents de qualité professionnelle pour la production PDF et PostScript.
+
+Scribus peut être utilisé pour de nombreux formats de documents, de la brochure au journal, du magazine à la newsletter et du poster à la documentation technique. Il permet la mise en place et le placement prpécis de calques et d'éléments graphiques, la rotation de textes et d'images, les courbes de Bézier en mode RVB et CMJNYK et le calibrage des couleurs pour l'impression haute qualité. Son format est basé sur un simple balisage XML. Ainsi, les fichiers créés, même endommagés, restent facilement exploitables.
+
+Scribus permet l'import/export de fichiers PDF et PostScript ainsi que l'import EPS/PS et SVG et prend en charge Unicode, y compris le sens de lecture droite-gauche. L'insertion d'images prend en charge PDF, EPS, TIFF, JPEG, PNG et XPixMap (xpm), ainsi que n'importe quel format matriciel géré par Qt.
+
+L'impression et la création de fichiers PDF et SVG se font via des greffons donnant à Scribus des fonctionnalités additionnelles comme les effets de présentation dans les produits PDF, les formulaires PDF interactifs et scriptables ou la production SVG vectorielle. Les pilotes internes pour l'impression prennent en charge PostScript Level 2 et Level 3/PDF 1.4, incluant la transparence ainsi que l'insertion de polices de caractères. Exécuté dans un environnement de bureau KDE, il gère également le glisser-déposer.
+
+= Le dépôt @scribus pour 0linux =
+
+Le dépôt contient le logiciel Scribus complet.
+
+= Installation sous 0linux =
+
+``# 0g @scribus``
+
+% Contenu en partie issu du projet Debian, merci aux auteurs originaux. Cf. http://www.debian.org/license

@@ -1,0 +1,17 @@
+Description du dépôt @gnuchess
+fatalerrors - geoffray-levasseurbrandin@numericable.fr
+Juin 2013
+
+= Description de @gnuchess =
+
+GNUChess est un jeu d'échec en ligne de commande dont l'intelligence artificielle est largement reconnue. Ce jeu est plutôt destiné à être une dépendance à l'exécution d'un certains nombre de jeux d'échec graphique, comme Knights du projet KDE, par exemple.
+
+= Le dépôt @gnuchess pour 0linux =
+
+Le dépôt contient le jeu GNUChess et sa documentation.
+
+= Installation sous 0linux =
+
+``# 0g @gnuchess``
+
+% Contenu maintenu par fatalerrors.

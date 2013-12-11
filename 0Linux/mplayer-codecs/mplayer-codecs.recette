@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-mplayer-codecs}
+VERSION=${VERSION:-20071007}
+NAMETGZ=${NAMETGZ:-mplayer-codecs}
+. /usr/share/0outils/fonctions_paquets.sh
+cflags
+if [ "${PKGARCH}" = "i686" ]; then
+	WGET=(http://www.mplayerhq.hu/MPlayer/releases/codecs/essential-$VERSION.tar.bz2
+	      http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-20061022-1.i386.rpm
+	      http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-extra-20061022-1.i386.rpm
+	     )
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	WGET=(http://www.mplayerhq.hu/MPlayer/releases/codecs/essential-amd64-$VERSION.tar.bz2
+	      http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-20061022-1.${PKGARCH}.rpm
+	      http://www.mplayerhq.hu/MPlayer/releases/codecs/$NAMESRC-extra-20061022-1.${PKGARCH}.rpm
+	     )
+fi
+DESC="Ensemble de codecs pour MPlayer"
+
+telecharger_sources
+
+# On crée le répertoire d'accueil :
+rm -rf ${PKG} && mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/codecs
+
+# Oncréer et on se place dans les sources, car 'preparer_sources()' n'a pas été appelé :
+mkdir -p $TMP
+cd $TMP
+
+# On extrait tous les codecs :
+if [ ! "${PKGARCH}" = "x86_64" ]; then
+	tar xf ${PKGSOURCES}/${NAMETGZ}/essential-${VERSION}.tar.bz2
+	cp -ar essential-${VERSION}/* ${PKG}/usr/lib${LIBDIRSUFFIX}/codecs 
+else
+	tar xf ${PKGSOURCES}/${NAMETGZ}/essential-amd64-${VERSION}.tar.bz2
+	cp -ar essential-amd64-${VERSION}/* ${PKG}/usr/lib${LIBDIRSUFFIX}/codecs 
+fi
+
+# On extrait ensuite les RPM et on en copie le contenu dans $PKG :
+if [ "${PKGARCH}" = "i686" ]; then
+	rpmunpack ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-20061022-1.i386.rpm
+	rpmunpack ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-extra-20061022-1.i386.rpm
+	cp -ar ${NAMESRC}-20061022-1.i386/* ${PKG}
+	cp -ar ${NAMESRC}-extra-20061022-1.i386/* ${PKG}
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	rpmunpack ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-20061022-1.${PKGARCH}.rpm
+	rpmunpack ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-extra-20061022-1.${PKGARCH}.rpm
+	cp -ar ${NAMESRC}-20061022-1.${PKGARCH}/* ${PKG}
+	cp -ar ${NAMESRC}-extra-20061022-1.${PKGARCH}/* ${PKG}
+fi
+
+# Ce répertoire est inutile :
+rm -rf ${PKG}/usr/share
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
