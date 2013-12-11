@@ -491,6 +491,7 @@ empaqueter() {
 	fi
 	
 	# On extrait les dépendances dynamiques (fichiers) :
+	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux
 	for executable in $(find ${PKG} -type f -executable); do
 		ldd ${executable} 2>/dev/null | grep '=>' | cut -d' ' -f3 | while read resultat; do
 			
