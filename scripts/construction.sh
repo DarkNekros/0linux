@@ -39,7 +39,13 @@ compiler_installer() {
 		# On construit et on installe le paquet, avec ou sans 'sudo' :
 		SUDOBINAIRE=""
 		[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
-		bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd $(find /usr/local/paquets/$(uname -m)/ -type d -name "$(basename ${1} .recette)")/*.spack
+		
+		# On n'installe pas nvidia, il écrase des fichiers de Mesa :
+		if [ "$(basename ${1} .recette)" = "nvidia" ]; then
+			bash -ex $(basename ${1})
+		else
+			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd $(find /usr/local/paquets/$(uname -m)/ -type d -name "$(basename ${1} .recette)")/*.spack
+		fi
 	)
 }
 
