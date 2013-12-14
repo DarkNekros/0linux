@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-subversion}
-VERSION=${VERSION:-1.8.1}
+VERSION=${VERSION:-1.8.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-subversion}
 WGET=${WGET:-http://apache.crihan.fr/dist/$NAMESRC/$NAMESRC-$VERSION.$EXT}

@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xf86-video-mga}
-VERSION=${VERSION:-1.6.2}
+VERSION=${VERSION:-1.6.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xf86-video-mga}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT}

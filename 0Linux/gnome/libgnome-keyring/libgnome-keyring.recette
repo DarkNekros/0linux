@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libgnome-keyring}
-VERSION=${VERSION:-3.8.0}
+VERSION=${VERSION:-3.10.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-libgnome-keyring}
-WGET=${WGET:-http://ftp.gnome.org/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques de gestion d'informations utilisateur"
 
 . /usr/share/0outils/fonctions_paquets.sh

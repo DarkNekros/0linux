@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xf86-video-modesetting}
-VERSION=${VERSION:-0.8.0}
+VERSION=${VERSION:-0.8.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xf86-video-modesetting}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT}

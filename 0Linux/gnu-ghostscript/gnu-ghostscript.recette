@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-ghostscript}
-VERSION=${VERSION:-9.07}
+VERSION=${VERSION:-9.10}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-gnu-ghostscript}
 WGET=(http://downloads.ghostscript.com/public/$NAMESRC-$VERSION.$EXT

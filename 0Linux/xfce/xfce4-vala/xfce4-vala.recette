@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-vala}
-VERSION=${VERSION:-0.22.1}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-vala}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DESC="Langage de programmation orienté GNOME"
+NAMESRC=${NAMESRC:-xfce4-vala}
+VERSION=${VERSION:-4.10.3}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-xfce4-vala}
+WGET=${WGET:-http://archive.xfce.org/src/bindings/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+DESC="Interfaçage Vala pour Xfce"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -15,6 +15,8 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
+VALA_LIBS=/usr/lib${LIBDIRSUFFIX} \
+VALA_CFLAGS=$(find /usr/include/ -type d -name "vala-0.*") \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -24,7 +26,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-vapigen \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

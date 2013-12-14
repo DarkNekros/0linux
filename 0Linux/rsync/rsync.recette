@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-rsync}
-VERSION=${VERSION:-3.0.9}
+VERSION=${VERSION:-3.1.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-rsync}
 WGET=${WGET:-http://samba.anu.edu.au/ftp/$NAMESRC/src/$NAMESRC-$VERSION.$EXT}

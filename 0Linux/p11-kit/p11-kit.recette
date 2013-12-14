@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-p11-kit}
-VERSION=${VERSION:-0.13}
+VERSION=${VERSION:-0.20.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-p11-kit}
 WGET=${WGET:-http://p11-glue.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT}

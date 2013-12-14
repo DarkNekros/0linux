@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gst-plugins-good}
-VERSION=${VERSION:-1.1.1}
+VERSION=${VERSION:-1.2.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gst-plugins-good}
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.31.$EXT
@@ -15,7 +15,7 @@ DESC="Ensemble de greffons de qualité pour GStreamer"
 telecharger_sources
 cflags
 
-# On compile la version 0.10.31 :
+# On compile la version 0.10.x :
 preparer_sources $NAMESRC-0.10.31.$EXT
 
 # On corrige un problème avec les en-têtes des noyaux Linux récents :

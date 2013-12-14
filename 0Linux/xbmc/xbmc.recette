@@ -17,6 +17,9 @@ cflags
 # On corrige des références non-existantes :
 sed -i -e 's@/usr/bin/lsb_release -d@cat /etc/os-release@' xbmc/utils/SystemInfo.cpp
 
+# On corrige l'inclusion des entêtes Samba :
+sed -i -e 's@#include <libsmbclient.h>@#include <samba-4.0/libsmbclient.h>@' xbmc/filesystem/{SmbFile,SMBDirectory}.cpp
+
 # On lance le script 'bootstrap' permettant de générer le nécessaire à la compilation :
 chmod +x bootstrap
 ./bootstrap 
@@ -52,6 +55,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-optical-drive \
 	--enable-optimizations \
 	--enable-samba \
+	--enable-texturepacker \
 	--enable-udev \
 	--enable-vaapi \
 	--enable-vdpau \
@@ -59,7 +63,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-xrandr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-make -j1
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On place des outils oubliés :

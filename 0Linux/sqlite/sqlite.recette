@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-sqlite}
-VERSION=${VERSION:-3.8.0.2}
+VERSION=${VERSION:-3.8.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sqlite}
 WGET=${WGET:-http://www.sqlite.org/2013/$NAMESRC-autoconf-3080002.$EXT} # Numéro de version différente !

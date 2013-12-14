@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-pixman}
-VERSION=${VERSION:-0.32.2}
+VERSION=${VERSION:-0.32.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-pixman}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}

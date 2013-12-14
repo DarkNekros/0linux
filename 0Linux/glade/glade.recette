@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-glade3}
-VERSION=${VERSION:-3.8.3}
+NAMESRC=${NAMESRC:-glade}
+VERSION=${VERSION:-3.16.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-glade}
 WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}

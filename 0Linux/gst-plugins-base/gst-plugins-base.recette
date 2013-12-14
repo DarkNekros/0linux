@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gst-plugins-base}
-VERSION=${VERSION:-1.1.1}
+VERSION=${VERSION:-1.2.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gst-plugins-base}
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.36.$EXT
@@ -15,7 +15,7 @@ DESC="Ensemble de greffons pour GStreamer"
 telecharger_sources
 cflags
 
-# On compile la version 0.10.36 :
+# On compile la version 0.10.x :
 preparer_sources $NAMESRC-0.10.36.$EXT
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :

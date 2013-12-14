@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-qemu}
-VERSION=${VERSION:-1.6.1}
+VERSION=${VERSION:-1.7.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-qemu}
 WGET=${WGET:-http://wiki.qemu-project.org/download/$NAMESRC-$VERSION.$EXT}
@@ -24,7 +24,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--audio-drv-list=alsa,oss,sdl \
-	--enable-mixemu \
 	--enable-system
 
 make -j${JOBS} || make

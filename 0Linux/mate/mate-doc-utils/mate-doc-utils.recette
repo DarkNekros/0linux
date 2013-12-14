@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-libmatekbd}
-VERSION=${VERSION:-1.6.0}
+NAMESRC=${NAMESRC:-mate-doc-utils}
+VERSION=${VERSION:-1.6.2}
 EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-libmatekbd}
+NAMETGZ=${NAMETGZ:-mate-doc-utils}
 WGET=${WGET:-http://pub.mate-desktop.org/releases/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DESC="Bibliothèques de gestion du clavier sous MATE"
+DESC="Fichiers communs pour MATE"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -16,12 +16,11 @@ cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./autogen.sh \
+./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/libmatekbd \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \

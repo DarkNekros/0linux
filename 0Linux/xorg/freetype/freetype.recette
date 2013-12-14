@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-freetype}
-VERSION=${VERSION:-2.5.0.1}
+VERSION=${VERSION:-2.5.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-freetype}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -23,7 +23,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On s'assure d'activer le rendu par sous-pixellisation et le rendu pour l'affichage LCD :
 	sed -i 's@# AUX_MODULES += gxvalid@AUX_MODULES += gxvalid@' modules.cfg
 	sed -i 's@# AUX_MODULES += otvalid@AUX_MODULES += otvalid@' modules.cfg
-	sed -i 's@/* #define FT_CONFIG_OPTION_SUBPIXEL_RENDERING */@#define FT_CONFIG_OPTION_SUBPIXEL_RENDERING@' include/freetype/config/ftoption.h
+	sed -i 's@/* #define FT_CONFIG_OPTION_SUBPIXEL_RENDERING */@#define FT_CONFIG_OPTION_SUBPIXEL_RENDERING@' include/config/ftoption.h
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -49,7 +49,7 @@ cflags
 # On s'assure d'activer le rendu par sous-pixellisation et le rendu pour l'affichage LCD :
 sed -i 's@# AUX_MODULES += gxvalid@AUX_MODULES += gxvalid@' modules.cfg
 sed -i 's@# AUX_MODULES += otvalid@AUX_MODULES += otvalid@' modules.cfg
-sed -i 's@/* #define FT_CONFIG_OPTION_SUBPIXEL_RENDERING */@#define FT_CONFIG_OPTION_SUBPIXEL_RENDERING@' include/freetype/config/ftoption.h
+sed -i 's@/* #define FT_CONFIG_OPTION_SUBPIXEL_RENDERING */@#define FT_CONFIG_OPTION_SUBPIXEL_RENDERING@' include/config/ftoption.h
  
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

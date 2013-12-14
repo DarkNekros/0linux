@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gtkmm}
-VERSION=${VERSION:-3.8.0}
+VERSION=${VERSION:-3.10.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gtkmm}
-WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.24/$NAMESRC-2.24.2.$EXT
+WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.24/$NAMESRC-2.24.4.$EXT
       http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
      )
 DESC="Interfaçage C++ pour GTK+"
@@ -16,7 +16,7 @@ telecharger_sources
 cflags
 
 # Compilation de gtkmm 2 :
-preparer_sources $NAMESRC-2.24.2.$EXT
+preparer_sources $NAMESRC-2.24.4.$EXT
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \

@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-lftp}
-VERSION=${VERSION:-4.4.8}
+VERSION=${VERSION:-4.4.14}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-lftp}
-WGET=${WGET:-ftp://ftp.st.ryukoku.ac.jp/pub/network/ftp/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://lftp.yar.ru/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Client HTTP et FTP en ligne de commande"
 
 . /usr/share/0outils/fonctions_paquets.sh

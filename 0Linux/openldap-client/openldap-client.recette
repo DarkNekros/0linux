@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-openldap}
-VERSION=${VERSION:-2.4.36}
+VERSION=${VERSION:-2.4.38}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-openldap-client}
 WGET=${WGET:-ftp://ftp.openldap.org/pub/OpenLDAP/$NAMESRC-release/$NAMESRC-$VERSION.$EXT}

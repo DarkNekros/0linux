@@ -73,12 +73,10 @@ evalpkg () {
                  while ((getline p) > 0) {
                     if (p == "--end--") break
                     n = p; sub(/-[^-]+-[^-]+-[^-]+$/,"",n)
-                    LOG[n] = p
-              '$sel'if (n in GET)
-                        GET[n]
+                    GET[n] = p
                   }
                }
-               (($1 in SKIP)||($2 == LOG[$1])) {delete GET[$1]; SKIP[$1]; next}
+               (($1 in SKIP)||($2 == GET[$1])) {delete GET[$1]; SKIP[$1]; next}
                ($1 in GET) { print (($1 in SPECIAL) ? 1 : 0)"\n"$3 $2
                              delete GET[$1]
                 '$exp'       for (i=4; i <= NF; i++)
@@ -118,18 +116,18 @@ request () {
     $CURL "$db" || growl 1 "$db inaccessible!"
 }
 
-spackadd () {
-    # Simule une mise à niveau avec de faux paquets. Essentiellement
-    # utile pour les debugs, À CONSERVER EN COMMENTAIRES.
-    # $f PAQUET
-    local pkg="$(basename "$1" | sed 's/-[^-]*-[^-]*-[^-]*$//')"
-    mkdir -p "$LOGDIR"
-    echo $pkg
-    rm -f $(find "$LOGDIR/" | sed "/\/$pkg-[^-]*-[^-]*-[^-]*$/p" -n)
-    pkg=$(basename "$1" .spack)
-    echo  "  >  $pkg"
-    touch "$LOGDIR/$pkg"
-}
+#spackadd () {
+#    # Simule une mise à niveau avec de faux paquets. Essentiellement
+#    # utile pour les debugs, À CONSERVER EN COMMENTAIRES.
+#    # $f PAQUET
+#    local pkg="$(basename "$1" | sed 's/-[^-]*-[^-]*-[^-]*$//')"
+#    mkdir -p "$LOGDIR"
+#    echo $pkg
+#    rm -f $(find "$LOGDIR/" | sed "/\/$pkg-[^-]*-[^-]*-[^-]*$/p" -n)
+#    pkg=$(basename "$1" .spack)
+#    echo  "  >  $pkg"
+#    touch "$LOGDIR/$pkg"
+#}
 
 upgrade () {
     # Télécharge et met à niveau les paquets.
@@ -166,11 +164,11 @@ usage () {
     cat >&1 << EOF
        0g - gestion et mise à niveau distante des paquets de 0Linux
 
-  Sans argument, 0g télécharge et mettra à jour les paquets installés pour
-  lesquels une nouvelle version est disponible dans le dépôt de  0linux.
-  Avec un ou plusieurs arguments, celui-ci cherchera dans le dépôt le(s)
-  paquet(s) correspondant et les installera ou mettra à jour dans le
-  système.
+  0g télécharge et met à jour les paquets installés pour lesquels une
+  nouvelle version est disponible dans le dépôt de 0Linux. Lorsque des
+  arguments supplémentaires lui sont fournis, en sus de cette opération,
+  0g cherche et installe les nouveaux paquets correspondant avec leurs
+  éventuelles dépendances.
 
   Utilisation: 0g [option] [paquet(s)]
 
@@ -191,7 +189,7 @@ usage () {
                           sans rien modifier au système.
       -h             ---  imprime cette aide sur la sortie standard et sort.
 
-  Pour plus d'informations, consulter "man 8 0g" et le fichier de configurarion
+  Pour plus d'informations, consultez "man 8 0g" et le fichier de configuration
   "$CONFIG".
 
 EOF
