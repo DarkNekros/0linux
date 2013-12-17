@@ -7,6 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-audacious}
 WGET=${WGET:-http://distfiles.audacious-media-player.org/$NAMESRC-$VERSION.$EXT}
 DESC="Lecteur multimédia basé sur Beep/XMMS"
+EXTRADEPS="libmcs"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
