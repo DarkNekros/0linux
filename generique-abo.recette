@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMETGZ=${NAMETGZ:-truc-abo} # Le « -abo » est absolument OBLIGATOIRE pour se différencier des paquets normaux
+VERSION=${VERSION:-1} # La version sert pour les ajouts/suppressions de paquets, modif' de description, etc.
+DESC="Le gestionnaire de machins TRUC3, ses plugins et son SDK complet"
+EXTRADEPS="libtruc libmachin gconf xproto truc-tools truc-plugins truc-sdk"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Mai 2013
+
+= TRUC3, une plateforme truquée =
+
+TRUC3 est une plateforme permettant à tout un chacun de faire des trucs, des bidules voire des machins, grâce à un SDK complet et une doc complète pleine de choses autres joyeusetés.
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient le moteur de TRUC, tous ses plugins, un kit de développement ainsi que plusieurs bibliothèques bien utiles pour faire des trucs (graphismes, sons, etc.).
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.

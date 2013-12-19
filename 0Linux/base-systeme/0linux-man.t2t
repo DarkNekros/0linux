@@ -1,6 +1,6 @@
 0LINUX
 base-systeme
-Avril 2013
+Décembre 2013
 
 %!postproc(man): "^(\.TH.*) 1 "  "\1 7 "
 %!encoding: UTF-8
@@ -50,7 +50,7 @@ Le fuseau horaire se définit avec l'outil dédié **__0horloge__**. Ces command
 
 = GESTION DES PAQUETS =[gestiondespaquets]
 
-Les paquets sont gérés par **Spack** (en particulier les programmes 'spackadd' et 'spackrm') et l'outil de gestion des dépôts et mises à jour,  **0g**. Voyez leur manuel respectif pour en savoir plus.
+Les paquets sont gérés par **Spack** (en particulier les programmes 'spackadd' et 'spackrm') et l'outil de gestion des dépôts et mises à jour, **0g**. Voyez leur manuel respectif pour en savoir plus.
 
 = AMORÇAGE DU SYSTÈME =[amorcagedusysteme]
 

@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-base-systeme}
-VERSION=${VERSION:-4.2.3}
+VERSION=${VERSION:-5.0}
 NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 
@@ -128,24 +128,24 @@ chmod 664 ${PKG}/var/run/utmp.0nouveau
 chmod 640 ${PKG}/etc/{,g}shadow.0nouveau
 
 # On compile et on place le manuel de 0linux :
-txt2tags -t html -o ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux.html $CWD/0linux-man.t2t || true
-txt2tags -t man  -o ${PKG}/usr/man/man7/0linux.7                     $CWD/0linux-man.t2t || true
+txt2tags -t html -o ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux.html $CWD/0linux-man.t2t
+txt2tags -t man  -o ${PKG}/usr/man/man7/0linux.7                     $CWD/0linux-man.t2t
 
 # On crée ce fichier pour identifier le système :
 cat > ${PKG}/etc/os-release << "EOF"
 # Identification du système et de sa version :
 NAME=0Linux
-VERSION="zeta"
+VERSION="eta"
 ID=0linux
-VERSION_ID=zeta
+VERSION_ID=eta
 PRETTY_NAME="0Linux"
 ANSI_COLOR="1;32"
 HOME_URL="http://0linux.org/"
 
 # Compatibilité avec la syntaxe de 'lsb-release' :
 DISTRIB_ID=0linux
-DISTRIB_RELEASE=zeta
-DISTRIB_DESCRIPTION="0Linux zeta"
+DISTRIB_RELEASE=eta
+DISTRIB_DESCRIPTION="0Linux eta"
 
 EOF
 

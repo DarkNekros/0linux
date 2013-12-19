@@ -1,0 +1,94 @@
+0G
+0outils
+Septembre 2012
+
+%!postproc(man): "^(\.TH.*) 1 "  "\1 8 "
+%!encoding: UTF-8
+
+
+= NOM =[nom]
+
+0g -  Gestion et mise à niveau distante des paquets de 0Linux
+
+
+= SYNOPSIS =[synopsis]
+
+**0g** [//options//] [//paquet(s)]
+
+
+= DESCRIPTION =[description]
+
+0g télécharge et met à jour les paquets installés pour lesquels une nouvelle version est disponible dans le dépôt de 0Linux.
+Lorsque des arguments supplémentaires lui sont fournis, en sus de cette opération, 0g cherche et installe les nouveaux paquets correspondant avec leurs éventuelles dépendances.
+
+
+= OPTIONS =[options]
+
+: **-A <item(s)>**
+Ajoute les items, séparées par des espaces, à la liste des paquets ne devant pas être automatiquement mis à jour.
+
+: **-E <chaine>**
+Active/désactive le mode expert, qui annule la gestion des dépendances.
+
+: **-G <chaine>**
+Active/désactive la sauvegarde des paquets après intégration au système.
+
+: **-L <item(s)>**
+Ajoute les items, séparées par des espaces, à la liste des paquets ne devant pas être téléchargés.
+
+: **-S <chaine>**
+Redéfinit l'adresse du dépôt distant.
+
+: **-T <chaine>**
+Redéfinit la racine du répertoire sécurisé où transiteront les paquets.
+
+: **-d**
+Passe en mode « démo » montrant ce qui sera fait, sans rien modifier au système.
+
+: **-h**
+Imprime cette aide sur la sortie standard et sort.
+
+
+= FICHIER DE CONFIGURATION =[fichierdeconfiguration]
+
+**0g** dispose d'un fichier de configuration facultatif : ``/etc/0outils/0g.conf``. Il est commenté, sa lecture vaut plus qu'un long discours.
+
+
+= FONCTIONNEMENT =[fonctionnement]
+
+**0g** va analyser la base de données des paquets ``paquets.db`` se trouvant dans le répertoire contenant l'arborescence des paquets selon un chemin du type  ``ftp://chemin/<version_de_0linux>/<architecture>/paquets.db``, la version de 0Linux étant déduite selon la variable VERSION dans le fichier ``/etc/os-release`` (epsilon, zeta...) et l'architecture selon la sortie de ``uname -m`` (i686, x86_64, arm...) pour télécharger et installer le ou les paquets demandés ainsi que leur éventuelles dépendances (comportement par défaut).
+
+Deux types de paquets sont à distinguer : les paquets normaux (gimp, firefox, libpng) et les paquets-abonnements (base-abo, lamp-abo) contenant le suffixe « -abo » et rangés dans le répertoire ``0abonnements/``, qui sont des méta-paquets quasiment vides mais contenant un ensemble de paquets à installer en dépendances obligatoires correspondant soit à un ensemble cohérent de logiciels (GIMP et ses greffons avec un ensemble de brosses supplémentaires, KDE avec un ensemble d'applications, etc.), soit à un type d'utilisation spécifique (serveur Linux Apache PHP MySQL, studio numérique, système minimal de base, etc.). 
+
+À l'usage, les paquets ne sont distingués que par la présence ou non du suffixe « -abo ».
+
+```
+# Installer uniquement le paquet 'kde-workspace' et ses dépendances (environ 25 paquets):
+0g kde-workspace
+
+# Installer tout KDE tel qu'il est livré dans 0Linux (plus d'une centaine de paquets) :
+0g kde-abo
+```
+
+= EXEMPLES =[exemples]
+
+Exemples :
+: ``0g``
+Met à jour automatiquement tous les paquets installés sur le système, y compris les paquets-abonnements.
+
+: ``0g audacious``
+Télécharge et installe le paquet ``audacious`` ainsi que ses dépendances.
+
+: ``0g audacious-abo``
+Télécharge et installe l'ensemble de paquets spécifiés dans le paquet-abonnement, ici Audacious, des greffons et des bibliothèques supplémentaires ainsi que leurs dépendances.
+
+
+= AUTEUR =[auteur]
+
+Sébastien Boillod - sbb at tuxfamily point org - [http://requiescant.tuxfamily.org] - Merci à lui.
+Modifié par appzer0 - appzer0 at free point fr
+
+
+= COPYRIGHT =[copyright]
+
+© 2013 Sébastien Boillod, licence MIT/X11

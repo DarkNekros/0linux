@@ -1,10 +1,8 @@
 #!/bin/sh
 #
-# 0G (III) gestionnaire distant pour 0linux.
-#
+# 0G - gestionnaire distant pour 0linux.
 
-# Copyright (c) 2012 Sébastien Boillod <sbb at tuxfamily dot org>.
-# Modifié par appzer0 <appzer0 at free dot fr>.
+# Copyright (c) 2012, 2013 Sébastien Boillod <sbb at tuxfamily dot org>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -18,32 +16,82 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-# === Library ==================================================================
+# === Configuration ============================================================
+# Les informations sur le système et la configuration de 0g sont chargées en
+# tant que script shell. On le fait ici afin que ceux-ci ne puissent redéfinir
+# le corps du script; ils ne doivent comporter aucune erreur.
+set -e
+CONFIG="/etc/os-release"
+if [ -f "$CONFIG" ]; then
+    . "$CONFIG"
+fi
 
-appinfo () {
-    # Affiche une description des dépôts demandés.
-    local url="$1" depot="$2" tmpdesc="$3"
-    cd $tmpdesc
-    for dep in ${depot}; do
-        $CURL -O "${url}/apps/${dep}/${dep}.txt" || echo "@${dep} est introuvable ou n'a pas de description (ignoré)."
-    done
+unset Attention Expert Local Sauvegarde Source Tampon
+CONFIG="/etc/0outils/0g.conf"
+if [ -f "$CONFIG" ]; then
+    . "$CONFIG"
+fi
+set +e
+
+# === Bibliothèque =============================================================
+
+getopt () {
+    # Sépare les options des arguments sur la ligne de commande.
+    # $f OPTIONS AVEC ARGUMENT
+    local opt=$1; shift 1
+    awk 'BEGIN{ for (i=x=1; i < ARGC; i++) {
+                    s = ARGV[i]
+                    if (X || ! (sub(/^-/,"",s) && (""s))) {
+                        OP[j++] = i-x; x=i
+                        continue
+                    }
+                    (s == "-") && (X=1) && s=""
+                    while (o=substr(s,1,1)) {
+                        if (o ~ /^['$opt']/) {
+                            print (s == o) ? (o""++i) : (o i"#-*" o)
+                            if (i < ARGC)
+                                break
+                            print "!"o # will be the last argument.
+                        }
+                        sub(/./,"",s); print o
+                    }
+                }
+                exit (E = (j>0) ? 0 : 1)
+              }
+         END{ print "--"; for (i=0; i < j; i++) print OP[i]; exit E }' "$@"
 }
 
-blacklist () {
-    # Retire de la liste des mises à niveau les paquets en liste noire.
-    # $f MISES À NIVEAU À FAIRE
-    awk 'BEGIN{while((getline <"'"$BLKCF"'") > 0){($1 ~ /^[^#]/) && NO[$1]}close("'"$BLKCF"'");}
-         {p=$0;sub(/-[^-]+-[^-]+-[^-]+$/,"",p)}
-         (p in NO){print "(A) "$0" est en liste noire et ne sera pas intégré !" >"/dev/stderr";
-                   print " ">"'"$1"'"; next} # évitera la destruction des paquets en liste noire.
-         {print;print >"'"$1"'"}END{close("'"$1"'")}'
-}
-
-getconf () {
-    # Renvoie la valeur du paramètre de configuration donné.
-    # $f NOM, VALEUR PAR DÉFAUT
-    awk -v C=1 '($1 == "'"$1"'"){gsub(/^[\t ]*[^\t ]+[\t ]+|[\t ]*$/,"");print;exit C=0}
-                END{exit C}' "$CONFIG" 2>/dev/null || echo "$2" && return 1
+evalpkg () {
+    # Liste les paquets qui doivent être mis à jour
+    # $f MODE EXPERT, PAQUETS
+    local exp="#"
+    [ "$1" = "oui" ] || exp=""; shift 1
+    awk 'BEGIN { for (i=1;i<ARGC;i++) GET[ARGV[i]]; ARGC=split("",ARGV)
+                 getline; for (i=1; i <= NF; i++) SKIP[$i]
+                 getline; for (i=1; i <= NF; i++) SPECIAL[$i]
+                 while ((getline p) > 0) {
+                    if (p == "--end--") break
+                    n = p; sub(/-[^-]+-[^-]+-[^-]+$/,"",n)
+                    GET[n] = p
+                  }
+               }
+               (($1 in SKIP)||($2 == GET[$1])) {delete GET[$1]; SKIP[$1]; next}
+               ($1 in GET) { print (($1 in SPECIAL) ? 1 : 0)"\n"$3 $2
+                '$exp'       for (i=4; i <= NF; i++)
+                '$exp'           if ($i in DB) {
+                '$exp'               print ($i in SPECIAL) ? 1 : 0
+                '$exp'               print DB[$i]
+                '$exp'               delete DB[$i]; SKIP[$i]
+                '$exp'           } else if (!($i in SKIP)) {
+                '$exp'               GET[$i] = "--"
+                '$exp'           }
+                '$exp'       next
+                             delete GET[$1]
+                           }
+                '$exp'     { DB[$1] = $3 $2 }
+               END{for (p in GET)
+                     if (!(""GET[p]))
+                       print "(!) "p": paquet introuvable !">"/dev/stderr"}' $@
 }
 
 growl () {
@@ -54,123 +102,59 @@ growl () {
         echo "(E) $*" >&2
         exit $code
     fi
-    echo "(A) $*" >&2
-}
-
-lister_db () {
-    # Affiche et trie une liste de tous les dépôts disponibles dans $1, sans distinction.
-    # $f FICHIER DB
-    $CURL "$1"  | awk '{print substr($1, 2)}' | sed 's/^/@/' | sort
-}
-
-lspkg () {
-    # Liste les paquets qui doivent être mis à jour
-    # $f PAQUETS, PAQUETS ISSUS DE JEUX
-    local sel="#"
-    [ "$1" ] && sel=""
-    awk 'BEGIN { for (i=1;i<ARGC;i++){GET[ARGV[i]]};ARGC=split("",ARGV)
-                while ((getline p) > 0) {
-                    if (p == "--end--") break
-                        n = p; sub(/-[^-]+-[^-]+-[^-]+$/,"",n)
-              '$sel'if (n in GET)
-                        GET[n] = p
-                }
-                while ((getline <"'"$BLKCF"'") > 0) {
-                    if (($1 !~ /^#/) && ($2 > 0)) delete GET[$1]
-                }
-                close("'"$BLKCF"'");
-               }
-               ($1 in GET){if ($2 != GET[$1]) print $3 $2; '$sel'delete GET[$1]
-                          }
-               '$sel'END{for (p in GET) print "(A) "p": paquet introuvable !">"/dev/stderr"}' $1 $2
+    echo "(!) $*" >&2
 }
 
 request () {
     # Réunit les informations pour évaluer les mises à jour.
-    # $f DB des paquets
-    local db="$1"
+    # $f DB, PAQUETS À IGNORER, PAQUETS GÉRÉS MANUELLEMENT
+    local db="$1"; shift 1
+    echo $1 # pas de guillemets car on veut tout sur une seule ligne.
+    echo $2 #  "                     "                       "
     ls -1 "$LOGDIR" 2>/dev/null
     echo "--end--"
-    $CURL "$db"
+    $CURL "$db" || growl 1 "$db inaccessible!"
 }
 
-resolvdir () {
-    # Évalue quels paquets sont requis pour les jeux demandés.
-    # $f DB, FORCE, JEUX DE PAQUETS
-    local db="$1" frc="$2" w="#" get="GET"; shift 2
-    [ $frc -ne 0 ] || w=""
-    [ "$1" ] || get="ALLOW" # mise à jour générale.
-    $CURL "$db" | awk 'BEGIN { while ((getline <"'"$APPSCF"'")> 0) {
-                                    if ($1 ~ /^@/) ALLOW[$1]
-                                }
-                                close("'"$APPSCF"'"); delete ARGV[0]
-                                for (x in ARGV){
-                                    x = ARGV[x]
-                                    if (!(x in ALLOW)) {
-                                    '$w'print "(W) "x": dépôt non-déclaré!">"/dev/stderr";continue
-                                    FORCE[x]
-                                    }
-                                   GET[x]
-                                }
-                                ARGC=split("",ARGV)
-                            }
-                            ($1 in '$get'){delete '$get'[$1];$1="";print}
-                            END{ for (x in '$get') {
-                                print "(W) "x": dépôt introuvable.">"/dev/stderr"
-                                delete FORCE[x]
-                                }
-                                for (x in FORCE)
-                                    print x >>"'"$APPSCF"'"
-                                if (x in FORCE)
-                                    close("'"$APPSCF"'")
-                            }' $1
-}
-supprimer_obsoletes () {
-    # Supprime les paquets obsolètes listés dans 'obsoletes.db'
-    # $f SUPPRIMER (0/1), URL
-    local rmoldpkg="$1" url="$2"
-    if [ "${rmoldpkg}" -eq 1 ]; then
-        $CURL "${url}/obsoletes.db" | while read oldpkg; do
-            spackrm ${oldpkg} 1>/dev/null 2>/dev/null || true
-        done
-    else
-        $CURL "${url}/obsoletes.db" | while read oldpkg; do
-            echo "Paquet obsolète : ${oldpkg}"
-        done
-    fi
-}
+#spackadd () {
+#    # Simule une mise à niveau avec de faux paquets. Essentiellement
+#    # utile pour les debugs, À CONSERVER EN COMMENTAIRES.
+#    # $f PAQUET
+#    local pkg="$(basename "$1" | sed 's/-[^-]*-[^-]*-[^-]*$//')"
+#    mkdir -p "$LOGDIR"
+#    echo $pkg
+#    rm -f $(find "$LOGDIR/" | sed "/\/$pkg-[^-]*-[^-]*-[^-]*$/p" -n)
+#    pkg=$(basename "$1" .spack)
+#    echo  "  >  $pkg"
+#    touch "$LOGDIR/$pkg"
+#}
 
 upgrade () {
     # Télécharge et met à niveau les paquets.
-    # $f GARDER LES PAQUETS, URL
-    local keep="$1" url="$2" pkg="" tmp="" strip="./delete"
-    read pkg || return 0
-    tmp="$(mktemp -q -d ${TMPDIR:-"$(getconf tmpdir /tmp)"}/0g-XXXXXX)" && cd "$tmp" 2>/dev/null
+    # $f GARDER LES PAQUETS, DOSSIER TAMPON, MODE DÉMO, URL DU DÉPÔT
+    local save="$1" tmp="${2:-"/tmp"}" demo="$3" url="$4" dwl="" code="" p=""
+    read code || return 0
+    tmp="$(mktemp -qd "$tmp/0g-XXXXXX")"
     [ "$tmp" ] || growl 1 "Impossible d'établir un dossier temporaire sécurisé !"
-    while [ "$pkg" ]; do
-        echo "  Rapatriement de $pkg.spack..."
-        $CURL -O "$url/$pkg.spack"
-        read pkg
+    [ "$demo" ] && demo="[démo]"
+    while [ "$code" ]; do
+        read dwl
+        p=$(basename "$dwl.spack")
+        echo "$demo Téléchargement de $p..."
+        [ "$demo" ] || $CURL -o "$tmp/$p" "$url/$dwl.spack"
+        if [ $code -ne 0 ]; then
+            growl 0 "$p est marqué comme spécial et ne sera pas intégré."
+        elif [ ! "$demo" ]; then
+            spackadd "$tmp/$p"
+            [ "$save" = "oui" ] || rm -f "$tmp/$p"
+        fi
+        read code
     done
-    ls -1 *.spack 2>/dev/null | blacklist "$strip" | spackadd -s
-    if [ $keep -eq 0 ]; then
-        rm -f $(cat "$strip") "$strip"
-        cd / && rmdir "$tmp" 2>/dev/null || growl 0 "$tmp n'est pas vide et ne sera donc pas détruit."
-    else
-        echo "Les paquets téléchargés ont été conservés dans $tmp"
+    if [ "$save" = "oui" ]; then
+        echo "$demo Les paquets téléchargés ont été conservés dans $tmp"
+    elif ! rmdir "$tmp" 2>/dev/null; then
+        growl 0 "$tmp n'est pas vide et ne sera donc pas détruit."
     fi
-}
-
-si_pas_installe () {
-	# teste si le paquet est installé. Dans le cas contraire, l'affiche pour installation d'office :
-	read paquet || return 0
-	while [ "$paquet" ]; do
-		nom=$(basename $paquet .spack)
-		if [ ! -e $LOGDIR/$nom ]; then
-			echo ${paquet} | sed 's/\.spack//'
-		fi
-		read paquet
-	done
 }
 
 usage () {
@@ -178,135 +162,70 @@ usage () {
     # $f CODE
     [ $1 -eq 0 ] || exec 1>&2
     cat >&1 << EOF
-0g - Gestion et mise à niveau distante des paquets de 0Linux
+       0g - gestion et mise à niveau distante des paquets de 0Linux
 
-Utilisation : 0g [option] [paquet(s)|@dépôt(s)]
+  0g télécharge et met à jour les paquets installés pour lesquels une
+  nouvelle version est disponible dans le dépôt de 0Linux. Lorsque des
+  arguments supplémentaires lui sont fournis, en sus de cette opération,
+  0g cherche et installe les nouveaux paquets correspondant avec leurs
+  éventuelles dépendances.
 
-'0g' télécharge et installe les paquets ou dépôts spécifiés sur la ligne.
-Appelé seul, '0g' met à jour et à niveau tous les paquets et dépôts installés
-sur le système en le comparant avec les dépôts sur les serveurs officiels.
+  Utilisation: 0g [option] [paquet(s)]
 
-Options disponibles :
+  Options:
+      -A <item(s)>   ---  ajoute les items, séparées par des espaces, à la
+                          liste des paquets ne devant pas être
+                          automatiquement mis à jour.
+      -E <chaine>    ---  active/désactive le mode expert, qui annule la
+                          gestion des dépendances.
+      -G <chaine>    ---  active/désactive la sauvegarde des paquets après
+                          intégration au système.
+      -L <item(s)>   ---  ajoute les items, séparées par des espaces, à la
+                          liste des paquets ne devant pas être téléchargés.
+      -S <chaine>    ---  redéfinit l'adresse du dépôt distant.
+      -T <chaine>    ---  redéfinit la racine du répertoire sécurisé où
+                          transiteront les paquets.
+      -d             ---  passe en mode "démo", montrant ce qui sera fait,
+                          sans rien modifier au système.
+      -h             ---  imprime cette aide sur la sortie standard et sort.
 
-	-f, --force, --forcer :
-		Ajoute les dépôts non déclarés dans le fichier de configuration 
-		'/etc/0outils/0g/apps' (c'est le comportement par défaut sous 0linux).
-	-h, --help, --aide :
-		Affiche cette aide et quitte.
-	-i, --info :
-		Affiche une description du ou des dépôts spécifiés sur la ligne
-		de commande.
-	-k, --keep, --garder, --conserver :
-		Conserve les paquets téléchargés après leur installation.
-	-l, --list, --liste, --lister :
-		Affiche la liste de tous les dépôts disponibles dans 'apps'
-	-n, --dry-run :
-		Affiche les noms des paquets qui seront téléchargés, sans
-		télécharger ni installer quoi que ce soit.
-	-U<nom>
-		Interroge le dépôt dont l'URL est associée à la variable
-		"url.<nom>" dans le fichier "/etc/0outils/0g/config'.
-
-Exemples :
-	0g               # met à jour tous les paquets et dépôts installés.
-	0g -l            # liste tous les dépôts disponibles sur les serveurs.
-	0g audacious     # télécharge et installe l'unique paquet 'audacious'.
-	0g @audacious    # télécharge et installe l'ensemble du dépôt 'audacious'.
-	0g -i @audacious # affiche une description du dépôt 'audacious'.
-	
-Plus d'infos dans le manuel : man 8 0g
-Ou dans la documentation, dans '/usr/doc/0outils'
-	
-# Copyright (c) 2012 Sébastien Boillod <sbb at tuxfamily dot org>.
+  Pour plus d'informations, consultez "man 8 0g" et le fichier de configuration
+  "$CONFIG".
 
 EOF
-    exit 1
+    exit $1
 }
 
-#spackadd () {
-#   # Simule une mise à niveau avec de faux paquets. Essentiellement
-#   # utile pour les debugs, À CONSERVER EN COMMENTAIRES.
-#   # $f
-#    mkdir -p "$LOGDIR"
-#    cd "$LOGDIR"
-#    awk -F/ '{sub(/.[^.]+$/,"");print $NF;sub(/-[^-]+-[^-]+-[^-]+$/,"");print $NF}' | while read pkg; do
-#        read rm
-#        rm -f $(ls -1 | sed "/^$rm-[^-]*-[^-]*-[^-]*$/p" -n)
-#        echo  "  >  $pkg"
-#        touch "$LOGDIR/$pkg"
-#    done
-#}
-
-# === Main =====================================================================
-unset pkg pkgset source
-source /etc/os-release # Pour extraire la version actuelle de l'OS
-MASTER="http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets/${VERSION}/$(uname -m)"
-CONFIG="/etc/0outils/0g/config"
-BLKCF="/etc/0outils/0g/liste_noire"
-APPSCF="/etc/0outils/0g/apps"
+# === Programme principal ======================================================
+export LC_ALL=C
+umask 022
+unset demo f lister paquets
+MASTER="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
 LOGDIR="${ROOT:-"/"}var/log/packages"
-CURL="/usr/bin/curl -R -s"
+CURL="/usr/bin/curl -LRs"
 
-f_force="$(getconf force 0)"
-f_keep="$(getconf keep 0)"
-f_list=0
-infodepot=0
-liste_apps=0
-
-# Liste des dépôts uniquement :
-for arg in "$@"; do
-    case "$arg" in
-        -f|--force|--forcer) f_force=1;;
-        -h|--help|--aide) usage 0;;
-        -i|--info) infodepot=1;;
-        -k|--keep|--garder|--conserver) f_keep=1;;
-        -l|--list|--liste|--lister) liste_apps=1;;
-        -n|--dry-run) f_list=1;;
-        -U*) arg="$(echo "$arg" | sed 's/^../url./')"
-             source="$(getconf "$arg")" || growl 1 "$arg : entrée inconnue.";;
-        -*) usage 1;;
-        @*) pkgset="$pkgset $arg";;
-        *) pkg="$pkg $arg"
+for i in $(getopt AEGLST "$@"); do
+    case "$f$i" in
+        A*) eval Attention=\${${i#A}}" $Attention";;
+        E*) eval Expert=\${${i#E}};;
+        G*) eval Sauvegarde=\${${i#G}};;
+        L*) eval Local=\${${i#L}}" $Local";;
+        S*) eval Source=\${${i#S}};;
+        T*) eval Tampon=\${${i#T}};;
+        d) demo=Y;;
+        h) usage 0;;
+        ?) growl 1 "$i: option inconnue.";;
+        !?*) growl 1 "${i#!}: requiert un argument.";;
+        --) f='/';;
+        *) shift $i; paquets="$paquets $1"
     esac
 done
 
-[ "$source" ] || source="$(getconf url.default "$MASTER")"
-
-if [ $liste_apps -eq 1 ]; then
-    lister_db "$source/applications.db"
-elif [ $infodepot -eq 1 ]; then
-    desctmp="$(mktemp -q -d /tmp/0g-XXXXXX)" && cd "$desctmp" 2>/dev/null
-    lister_db "$source/applications.db" | appinfo "$(echo "$source" | sed 's/^http/ftp/')" "$(echo "$pkgset" | sed 's/@//g')" "$desctmp"
-else
-    if [ ! "$pkg$pkgset" ]; then
-        pkgset="$(resolvdir "$source/applications.db" 0)"
-    elif [ "$pkgset" ]; then
-        pkgset="$(resolvdir "$source/applications.db" $f_force "$pkgset")"
-    fi
-    if [ $f_list -eq 0 ]; then
-        supprimer_obsoletes 1 "$source"
-        request "$source/paquets.db" | lspkg "$pkg" "$pkgset" | upgrade $f_keep "$source"
-        
-        # Installe d'office les nouveaux paquets (merci à myou) :
-        $CURL "${MASTER}/paquets.db" | grep " base/" | sed -e "s@.* \(.*\) .*@base/\1.spack@" | si_pas_installe | upgrade $f_keep "$source"
-        $CURL "${MASTER}/paquets.db" | grep " opt/"  | sed -e "s@.* \(.*\) .*@opt/\1.spack@"  | si_pas_installe | upgrade $f_keep "$source"
-        $CURL "${MASTER}/paquets.db" | grep " xorg/" | sed -e "s@.* \(.*\) .*@xorg/\1.spack@" | si_pas_installe | upgrade $f_keep "$source"
-    else
-        supprimer_obsoletes 0 "$source"
-        request "$source/paquets.db" | lspkg "$pkg" "$pkgset"
-    fi
-fi
-
-# On affiche les descriptions des dépôts avec 'less' si on en trouve :
-if [ -n "$desctmp" ]; then
-	txts=$(find $desctmp -type f -name "*.txt" | sort)
-	if [ ! "$txts" = "" ]; then
-		for f in "$txts"; do
-			cat $f     >> $desctmp/depots.txt
-		done
-		less $desctmp/depots.txt
-		cd / && rm -rf "$desctmp" 2>/dev/null || growl 0 "Impossible de supprimer $desctmp."
-	fi
-fi
+[ "$Source" ] || Source="$MASTER"
+Source="$Source/$VERSION/$(uname -m)" # VERSION vient de /etc/os-release.
+db="$Source/paquets.db"
+request "$db" "$Local" "$Attention" \
+    | evalpkg "$Expert" $paquets \
+    | upgrade "$Sauvegarde" "$Tampon" "$demo" "$Source"
 
 # FdF
