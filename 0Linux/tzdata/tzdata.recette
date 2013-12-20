@@ -41,10 +41,7 @@ pacificnew \
 etcetera \
 backward \
 systemv \
-factory \
-solar87  \
-solar88 \
-solar89; do
+factory; do
 	./zic -y ./yearistype -d ${PKG}/usr/share/zoneinfo ${timezone}
 	./zic -y ./yearistype -d ${PKG}/usr/share/zoneinfo/posix ${timezone}
 	./zic -y ./yearistype -d ${PKG}/usr/share/zoneinfo/right -L leapseconds ${timezone}
