@@ -26,7 +26,7 @@ if [ -f "$CONFIG" ]; then
     . "$CONFIG"
 fi
 
-unset Attention Expert Local Sauvegarde Source Tampon
+unset Attention Expert Journal Local Sauvegarde Source Tampon
 CONFIG="/etc/0outils/0g.conf"
 if [ -f "$CONFIG" ]; then
     . "$CONFIG"
@@ -50,16 +50,17 @@ evalpkg () {
                   }
                }
                ($1 in SKIP) {delete GET[$1]; next}
-               (($1 in GET) && ($2 != GET[$1])) {
-                     print (($1 in SPECIAL) ? 1 : 0)"\n"$3 $2
-        '$exp'       for (i=4; i <= NF; i++)
+               ($1 in GET) {
+                     if ($2 != GET[$1]) {
+                       print (($1 in SPECIAL) ? 1 : 0)"\n"$3 $2
+        '$exp'         for (i=4; i <= NF; i++)
         '$exp'           if ($i in DB) {
-        '$exp'               print ($i in SPECIAL) ? 1 : 0
-        '$exp'               print DB[$i]
-        '$exp'               delete DB[$i]; SKIP[$i]
+        '$exp'             print (($i in SPECIAL) ? 1 : 0)"\n"DB[$i]
+        '$exp'             delete DB[$i]
         '$exp'           } else if (!($i in SKIP)) {
-        '$exp'               GET[$i]
+        '$exp'             GET[$i]
         '$exp'           }
+                     }
                      delete GET[$1]
         '$exp'       next
                }
@@ -103,7 +104,7 @@ growl () {
         echo "(E) $*" >&2
         exit $code
     fi
-    echo "(!) $*" >&2
+    echo "(A) $*" >&2
 }
 
 request () {
@@ -133,7 +134,10 @@ upgrade () {
     # Télécharge et met à niveau les paquets.
     # $f GARDER LES PAQUETS, DOSSIER TAMPON, MODE DÉMO, URL DU DÉPÔT
     local save="$1" tmp="${2:-"/tmp"}" demo="$3" url="$4" dwl="" code="" p=""
-    read code || return 0
+    if ! read code; then
+        echo "Le système est à jour."
+        return 0
+    fi
     tmp="$(mktemp -qd "$tmp/0g-XXXXXX")"
     [ "$tmp" ] || growl 1 "Impossible d'établir un dossier temporaire sécurisé !"
     [ "$demo" ] && demo="[démo]"
@@ -180,6 +184,7 @@ usage () {
                           gestion des dépendances.
       -G <chaine>    ---  active/désactive la sauvegarde des paquets après
                           intégration au système.
+      -J <fichier>   ---  donne le fichier à utiliser pour la journalisation.
       -L <item(s)>   ---  ajoute les items, séparées par des espaces, à la
                           liste des paquets ne devant pas être téléchargés.
       -S <chaine>    ---  redéfinit l'adresse du dépôt distant.
@@ -195,7 +200,6 @@ usage () {
 EOF
     exit $1
 }
-
 
 # === Programme principal ======================================================
 export LC_ALL=C
