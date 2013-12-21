@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-cups}
-VERSION=${VERSION:-1.6.3}
+VERSION=${VERSION:-1.7.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-cups}
 WGET=${WGET:-http://www.cups.org/software/$VERSION/$NAMESRC-$VERSION-source.$EXT}
@@ -20,12 +20,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On corrige une condition concernant 'libusb' :
-	sed -i 's@if test x$enable_libusb = xyes -o $uname@if test x$enable_libusb = xyes -a $uname@' config-scripts/cups-common.m4
-	
-	# On régénère les scripts de construction :
-	aclocal -I config-scripts
-	autoconf -I config-scripts
+	# On corrige un chmein codé en dur :
+	sed -i 's@$exec_prefix/lib/cups@$libdir/cups@g' configure
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -49,17 +45,16 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	fakeroot make install BUILDROOT=${PKG}
 fi
 
+# On supprime ce répertoire, qu'on liera en 64 bits :
+rm -rf  ${PKG}/usr/lib${LIBDIRSUFFIX}/cups
+
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige une condition concernant 'libusb' :
-sed -i 's@if test x$enable_libusb = xyes -o $uname != Darwin; then@if test x$enable_libusb = xyes -a $uname != Darwin; then@' config-scripts/cups-common.m4
-
-# On régénère les scripts de construction :
-aclocal -I config-scripts
-autoconf -I config-scripts
+# On corrige un chmein codé en dur :
+sed -i 's@$exec_prefix/lib/cups@$libdir/cups@g' configure
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -112,6 +107,11 @@ EOF
 for fichierconfig in $(find ${PKG}/etc/cups/ -type f); do
 	mv ${fichierconfig}{,.0nouveau}
 done
+
+# On crée un lien générique en multilib pour contenter tout le monde :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	ln -sf ../lib${LIBDIRSUFFIX}/cups ${PKG}/usr/lib/
+fi
 
 installer_doc
 creer_post_installation
