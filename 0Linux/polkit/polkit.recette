@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-polkit}
-VERSION=${VERSION:-0.105}
+VERSION=${VERSION:-0.112}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-polkit}
 WGET=${WGET:-http://www.freedesktop.org/software/${NAMESRC}/releases/${NAMESRC}-${VERSION}.$EXT}
@@ -13,14 +13,6 @@ DESC="Ensemble de supervision système"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige cette légende qui veut que 'wheel' soit admin tout puissant :
-sed -i -e 's@<literal>staff</literal>@<literal>desktop_admin_r</literal>@' \
-	-e 's@AdminIdentities=unix-group:staff@AdminIdentities=unix-group:desktop_admin_r@' \
-	docs/man/pklocalauthority.xml
-
-sed -i 's@AdminIdentities=unix-group:wheel@AdminIdentities=unix-user:0@' \
-	src/polkitbackend/50-localauthority.conf
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -33,7 +25,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-introspection \
 	--enable-man-pages \
 	--with-authfw=shadow \
 	--with-os-type=0linux \
@@ -42,6 +33,20 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On déplace ça le cas échéant :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	cp -ar ${PKG}/usr/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	rm -rf ${PKG}/usr/lib
+fi
+
+# Un lien standard de compatibilité ne peut pas faire de mal :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+		mkdir -p ${PKG}/usr/lib
+		ln -sf ../lib${LIBDIRSUFFIX}/polkit-1 ${PKG}/usr/lib/
+	fi
+fi
+
 installer_doc
 creer_post_installation
 
@@ -49,10 +54,10 @@ creer_post_installation
 cat >> ${PKG}/post-install.sh << "EOF"
 
 # On corrige une permission :
-chown -R polkitd var/lib/polkit-1
+chown polkitd etc/polkit-1/rules.d
+chown polkitd usr/share/polkit-1/rules.d
 
 EOF
-
 
 stripper
 empaqueter

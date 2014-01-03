@@ -385,6 +385,12 @@ EOF
 		echo "chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor >/dev/null 2>&1" >> ${PKG}/post-install.sh
 		EXTRADEPS="${EXTRADEPS} gtk+"
 	fi
+	
+	# On met à jour les ressources des icônes pour le thème 'hicolor' parfois fourni par plusieurs paquets et on ajoute la dépendance le cas échéant :
+	if [ -d ${PKG}/usr/share/icons ]; then
+		echo "chroot . /usr/bin/xdg-icon-resource forceupdate --theme hicolor >/dev/null 2>&1" >> ${PKG}/post-install.sh
+		EXTRADEPS="${EXTRADEPS} xdg-utils"
+	fi
 }
 
 stripper() {

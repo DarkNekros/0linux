@@ -59,16 +59,15 @@ if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 	rm -rf ${PKG}/usr/lib
 fi
 
-# On place les fichiers pour 'polkit' permettant aux utilisateurs du groupe
-# 'plugdev' de monter/éjecter les volumes amovibles :
-mkdir -p ${PKG}/etc/polkit-1/localauthority/50-local.d
-cat > ${PKG}/etc/polkit-1/localauthority/50-local.d/20-udisks2.pkla << "EOF"
-[udisks2 plugdev mount]
-Identity=unix-group:plugdev
-Action=org.freedesktop.udisks2.*;org.freedesktop.UDisks2.*
-ResultAny=yes
-ResultInactive=yes
-ResultActive=yes
+# On place les règles pour 'polkit' permettant aux utilisateurs du groupe
+# 'plugdev' de monter/éjecter des volumes et de manipuler 'udisks2' :
+mkdir -p ${PKG}/etc/polkit-1/rules.d
+cat > ${PKG}/etc/polkit-1/rules.d/10-udisks2.rules << "EOF"
+polkit.addRule(function(action, subject) {
+	if (action.id == 'org.freedesktop.udisks2.' && subject.isInGroup('plugdev')) {
+		return polkit.Result.YES;
+	}
+});
 
 EOF
 
