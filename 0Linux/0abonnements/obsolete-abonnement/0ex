@@ -1,0 +1,168 @@
+#!/bin/sh
+#
+# 0EX - extirpe les paquets obsolètes du système.
+#
+
+# Copyright (c) 2013 Sébastien Boillod <sbb at tuxfamily dot org>.
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+# === Bibliothèque =============================================================
+
+extract () {
+    # Extrait du journal la liste des paquets obsolètes.
+    # $f JOURNAL
+    awk '(sub(/:$/,"", $1)){print $1}' "$1" | sort
+    # NOTE: pour lever toute ambiguïté, on devrait utiliser "mot:" pour les
+    # entrées de chaque paquet, mais "mot :" (espace insécable) dans les
+    # commentaires.
+    exit 0
+}
+
+findpkg () {
+    # Trouve les paquets obsolètes à désinstaller.
+    # $f PAQUETS
+    ls -1 "$LOGDIR" | awk 'BEGIN{ for (i=1; i<=ARGC; i++)
+                                    RM[ARGV[i]]
+                                  split("-",ARGV)
+                           }
+                           { sub(/-[^-]+-[^-]+-[^-]+$/, "")}
+                           ($0 in RM){print}' "$@"
+}
+
+getopt () {
+    # Sépare arguments et options donnés sur la ligne de commande.
+    # $f
+    awk 'BEGIN{ for (i=x=1; i < ARGC; i++) {
+                    s = ARGV[i]
+                    if (X || ! (sub(/^-/,"",s) && (""s))) 
+                        (SHIFT = SHIFT"\n"(i-x)) && x=i
+                    else if (!((s == "-") && (X=1)))
+                        while ((o=substr(s,1,1)) && sub(/./,"",s))
+                            print o
+                }
+                exit
+              }
+              END {print "--\n"SHIFT}' "$@"
+}
+
+growl () {
+    # Print error message on stderr and exit if a non-null code is given.
+    # $f CODE, MESSAGE
+    local code=$1; shift 1
+    if [ $code -ne 0 ]; then
+        echo "(E) $*" >&2
+        exit $code
+    fi
+    echo "(W) $*" >&2
+}
+
+howto () {
+    # Explique la procédure de nettoyage.
+    # $f
+    cat >&2 << EOF
++---------------------------------------------------------------+
+ Des paquets actuellement installés sur votre système ont été
+ déclarés obsolètes au sein de 0linux. Pour chacun, il va à
+ présent vous être demandé quoi faire; vous gardez cependant
+ la possibilité de différer cette procédure en exécutant
+ ultérieurement la commande '0ex', sans argument.
++---------------------------------------------------------------+
+
+EOF
+}
+
+state () {
+    # Traite les paquets obsolètes de manière interactive.
+    # $f
+    local txt=Y pkg="" all="" x=""
+    while read pkg; do
+        if [ "$txt" ]; then
+            txt=""; howto
+            [ "$ALT0EX" = "passe" ] && return 0
+            [ "$ALT0EX" = "fonce" ] && all=Y
+        fi
+        if [ "$all" ]; then
+            awk 'BEGIN{print "'"$pkg"'"}{print}'; return 0
+        fi
+        echo "Que faire du paquet installé mais déclaré obsolète '$pkg' ?" >&2
+        while [ 1 ]; do
+            printf '\r[S]upprimer, [C]onserver, [T]out supprimer, [Q]uitter: ' >&2
+            read x <&3
+            case "$x" in
+                c|C) break;;
+                q|Q) return 0;; 
+                s|S) echo "$pkg"; break;;
+                t|T) echo "$pkg"; all=Y; break;;
+                *) printf "Erreur ! SVP, entrez 'c', 'q', 's' ou 't'..." >&2; sleep 1
+            esac
+        done
+    done
+}
+
+usage () {
+    # Print the help digest & exit.
+    # $f CODE
+    [ $1 -eq 0 ] || exec 1>&2
+    cat >&1 << EOF
+            0ex - extirpe les paquets obsolètes du système.
+
+  0ex vérifie que les paquets spécifiés sont installés sur le système
+  avant de proposer à l'utilisateur de les désinstaller. Lorsqu'aucun
+  paquet n'est donné, il se contente de réexécuter le post-install.sh
+  du paquet 'obsolete-abonnement', auquel il est lié.
+
+  Utilisation: 0ex [option] [paquet(s)]
+
+  Options:
+      -h  ---  imprime cet écran sur la sortie standard, puis sort.
+      -j  ---  affiche le journal des paquets obsolètes, puis sort.
+      -x  ---  extrait du journal les noms des paquets obsolète, puis
+               sort.
+
+  Environnement:
+      ALT0EX    ---  altère le comportement initialement interactif de
+                     0ex. Quand cette variable contient "passe", aucun 
+                     paquet n'est traité, lorsqu'elle contient "fonce",
+                     tous les paquets sont automatiquement supprimés.
+                     Elle peut être exportée au sein du fichier de
+                     configuration de 0g.
+
+EOF
+    exit $1
+}
+
+# === Programme principal ======================================================
+export LC_ALL="C"
+unset t pkg
+LOGDIR="/var/log/packages"
+SCRIPT="/var/log/scripts/@PAQUET@"
+JOURNAL="/local/tmp/JOURNAL" # "/var/log/0abonnements/obsolete"
+
+for i in $(getopt "$@"); do
+    case "$t$i" in
+        h) usage 0;;
+        j) exec /usr/bin/less "$JOURNAL" ;;
+        x) extract "$JOURNAL" ;;
+        --) t="/";;
+        ?) usage 1;;
+        *) shift $i; pkg="$pkg $1" 
+    esac
+done
+[ "$pkg" ] || exec /bin/sh "$SCRIPT"
+
+exec 3<&0 # on a besoin d'un descripteur lié à l'entrée du script (clavier).
+findpkg $pkg | state | spackrm -s
+exec 3<&-
+
+# EoF

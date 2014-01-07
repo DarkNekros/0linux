@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMETGZ=${NAMETGZ:-base-abonnement}
+VERSION=${VERSION:-1}
+DESC="La base minimale du système 0Linux"
+EXTRADEPS="0outils acl attr b43-firmware base-systeme bash berkeley-db cryptsetup binutils busybox bzip2 cloog coreutils cpio curl cyrus-sasl dhcpcd diffutils e2fsprogs eudev file findutils gawk gcc glibc gmp gnutls grep gzip icu4c initialisation-systeme isl iwlwifi-ucode kbd kerberos kmod less libcap libcap-ng libffi libgcrypt libgpg-error libidn libssh linux lvm2 mpc mpfr ncurses nettle net-tools openldap-client openssl p11-kit pcre popt readline rsync rtmpdump sed shadow spack sysklogd syslinux sysvinit tar tcp_wrappers tzdata util-linux wget wireless-tools xz zlib"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Décembre 2013
+
+= Le système 0Linux minimal =
+
+Ensemble minimal de paquets permettant de démarrer le système en mode texte.
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient le strict nécessaire pour démarrer un système 0Linux en mode texte et utiliser les outils de la distribution ainsi que les gestionnaire de paquets Spack et 0g. 
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.

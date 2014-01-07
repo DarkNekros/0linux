@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMETGZ=${NAMETGZ:-truc-abo} # Le « -abo » est absolument OBLIGATOIRE pour se différencier des paquets normaux
+NAMETGZ=${NAMETGZ:-truc-abonnement} # Le « -abonnement » est absolument OBLIGATOIRE pour se différencier des paquets normaux
 VERSION=${VERSION:-1} # La version sert pour les ajouts/suppressions de paquets dans EXTRADEPS, modif' de description, etc.
 DESC="Le gestionnaire de machins TRUC3, ses plugins et son SDK complet"
 EXTRADEPS="libtruc libmachin gconf xproto truc-tools truc-plugins truc-sdk"
