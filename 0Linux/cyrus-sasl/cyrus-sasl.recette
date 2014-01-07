@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-cyrus-sasl}
-VERSION=${VERSION:-2.1.25}
+VERSION=${VERSION:-2.1.26}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-cyrus-sasl}
-WGET=${WGET:-http://ftp.andrew.cmu.edu/pub/cyrus-mail/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.cyrusimap.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Système d'authentification chiffrée pour la messagerie électronique"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -17,9 +17,11 @@ cflags
 # On crée un répertoire manquant :
 mkdir -p ${PKG}/var/state/saslauthd
 
-# On adapte la version à détecter de 'berkeley-db' :
-sed -i 's@if DB_VERSION_MAJOR == 4.*@if DB_VERSION_MAJOR == 6@g' sasldb/db_berkeley.c
-sed -i 's@if DB_VERSION_MAJOR == 4.*@if DB_VERSION_MAJOR == 6@g' utils/dbconverter-2.c
+# On corrige le comportement de crypt() depuis la glibc 2.17 :
+cat $CWD/cyrus-sasl.CVE-2013-4122.patch | patch -p1
+
+# On ajoute une inclusion manquante :
+cat $CWD/cyrus-sasl.types.patch | patch -p1
 
 # On force notre répertoire standard pour les bibliothèques :
 sed -i "/sasldir/s/lib/&${LIBDIRSUFFIX}/" plugins/Makefile.in
@@ -37,17 +39,27 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-anon \
+	--enable-alwaystrue \
+	--enable-anon \
+	--enable-auth-sasldb \
+	--enable-checkapop \
 	--enable-compat185 \
+	--enable-cram \
 	--enable-cxx \
+	--enable-digest \
+	--enable-gssapi \
+	--enable-ldapdb \
 	--enable-login \
+	--enable-ntlm \
+	--enable-plain \
 	--enable-sql \
+	--enable-shared \
 	--enable-tcl \
 	--with-configdir=/etc/sasl2 \
 	--with-gdbm \
+	--with-ldap \
 	--with-saslauthd \
 	--with-tcl=/usr/lib${LIBDIRSUFFIX} \
-	--without-ldap \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

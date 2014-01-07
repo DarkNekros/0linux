@@ -24,6 +24,12 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	EXTRAARCH="-64bit"
 fi
 
+# Le compilation en statique permet à VLC d'utiliser cette bibliothèque marginale :
+sed -i \
+	-e 's/\(LIBRARY_LINK =\).*/\1 $(LD) -o/g' \
+	-e 's/\(LIBRARY_LINK_OPTS =\).*/\1 $(LINK_OPTS) -r -Bstatic/g' \
+	config.linux
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./genMakefiles linux${EXTRAARCH}

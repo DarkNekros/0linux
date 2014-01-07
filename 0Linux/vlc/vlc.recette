@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-vlc}
-VERSION=${VERSION:-2.1.1}
+VERSION=${VERSION:-2.1.2}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-vlc}
 WGET=${WGET:-http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
@@ -17,8 +17,11 @@ cflags
 # On corrige le répertoire standard des bibliothèques :
 sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
 
-# Compilation avec FFMPEG 0.x, FFMPEG 2 est trop récent:
-PKG_CONFIG_PATH+="/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig" \
+# On corrige la police par défaut :
+cat $CWD/vlc.polices.patch | patch -p1
+  
+# Compilation en forçant les chemins de Samba :
+LDFLAGS+="-I/usr/include/samba-4.0" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
