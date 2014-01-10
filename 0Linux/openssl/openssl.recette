@@ -2,11 +2,11 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-openssl}
-VERSION=${VERSION:-1.0.1e}
+VERSION=${VERSION:-1.0.1f}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssl}
 WGET=${WGET:-http://www.openssl.org/source/$NAMESRC-$VERSION.$EXT}
-DESC="Protocoles et algorithmes OpenSSL"
+DESC="Bibliothèques OpenSSL"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -14,44 +14,16 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
-if [ "${PKGARCH}" = "x86_64" ]; then
-	
-	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
-	cflags i686
-	
-	# On corrige la syntaxe de la doc avec les plus récents 'perl' :
-	cat $CWD/openssl.pod-syntax.patch | patch -p1
-	
-	# On corrige les drapeaux de compilation... :
-	sed -i  's@"linux-elf",	"gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",@"linux-elf",	"gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m32 -march=i686 -pipe -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des}@' Configure
-
-	# Compilation pour i686 :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./Configure \
-		--prefix=/usr \
-		--libdir=lib${LIBDIRSUFFIX} \
-		--openssldir=/etc/ssl \
-		linux-elf \
-		shared \
-		zlib
-	
-	make MAKEDEPPROG="${CC}" depend
-	make
-	fakeroot make install PERL=/usr/bin/perl MANDIR=/usr/man INSTALL_PREFIX=${PKG}
-fi
-
-# On refait la préparation des sources, il peut rester des déchets de la
-# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
-cflags
 
 # On corrige la syntaxe de la doc avec les plus récents 'perl' :
 cat $CWD/openssl.pod-syntax.patch | patch -p1
 
+# On corrige la parallélisation :
+cat $CWD/openssl.parallel-build.patch | patch -p1
+
 # La code généré change selon l'architecture visée :
 if [ "${PKGARCH}" = "x86_64" ]; then
-	TARGETOPT="linux-x86_64 enable-ec_nistp_64_gcc_128"
+	TARGETOPT="linux-x86_64"
 else
 	TARGETOPT="linux-elf"
 fi
@@ -59,16 +31,39 @@ fi
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./Configure \
+	${TARGETOPT} \
 	--prefix=/usr \
 	--libdir=lib${LIBDIRSUFFIX} \
 	--openssldir=/etc/ssl \
-	${TARGETOPT} \
+	enable-camellia \
+	enable-idea \
+	enable-mdc2 \
+	enable-tlsext \
 	shared \
-	zlib
+	threads \
+	zlib-dynamic
+
+# On nettoie tous les drapeaux spécifiés en dur :
+	OPENSSLCFLAG=$(grep ^CFLAG= Makefile | LC_ALL=C sed \
+	-e 's:^CFLAG=::' \
+	-e 's:-fomit-frame-pointer ::g' \
+	-e 's:-O[0-9] ::g' \
+	-e 's:-march=[-a-z0-9]* ::g' \
+	-e 's:-mcpu=[-a-z0-9]* ::g' \
+	-e 's:-m[a-z0-9]* ::g' \
+	)
+
+
+sed -i -e "/^CFLAG/s|=.*|=${OPENSSLCFLAG} ${FLAGS}|" \
+	-e "/^SHARED_LDFLAGS=/s|$| ${LDFLAGS}|" \
+	Makefile
+
+# On force à montrer les actions des scripts pour notre journal :
+sed -i '/^SET_X/s:=.*:=set -ex:' Makefile.shared
 
 make depend
-make
-fakeroot make install PERL=/usr/bin/perl MANDIR=/usr/man INSTALL_PREFIX=${PKG}
+make -j${JOBS} || make
+fakeroot make install MANDIR=/usr/man INSTALL_PREFIX=${PKG}
 
 # On veille à ne pas écraser la configuration en place :
 mv ${PKG}/etc/ssl/openssl.cnf ${PKG}/etc/ssl/openssl.cnf.0nouveau
