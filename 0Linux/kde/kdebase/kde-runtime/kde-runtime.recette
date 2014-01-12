@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-kde-runtime}
-VERSION=${VERSION:-4.11.3}
+VERSION=${VERSION:-4.12.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kde-runtime}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
@@ -32,13 +32,21 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	-D RUN_KAPPFINDER=ON \
+	-D WITH_PulseAudio=OFF \
 	./ ../
 
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
 
-# On déplace les fichiers DBus au bon endroit
+# Certains programmes cherchent KDESu dans le PATH :
+cp ${PKG}/usr/lib${LIBDIRSUFFIX}/kde4/libexec/kdesu ${PKG}/usr/bin/kdesu
+ 
+# Conflit avec le thème HiColor du système :
+rm -rf ${PKG}/usr/share/icons/hicolor/index.theme
+rm -rf ${PKG}/usr/share/icons/default.kde4
+
+# On déplace les fichiers DBus au bon endroit :
 mv ${PKG}/etc/{kde/,}dbus-1
 
 installer_doc
