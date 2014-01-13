@@ -5,7 +5,7 @@ NAMESRC=${NAMESRC:-kannasaver}
 VERSION=${VERSION:-1.2.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-kannasaver}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://kde-apps.org/CONTENT/content-files/16792-$NAMESRC-$VERSION.$EXT}
 DESC="Économiseur d'écran pour KDE affichant des kanna japonais"
 ########################################
 
