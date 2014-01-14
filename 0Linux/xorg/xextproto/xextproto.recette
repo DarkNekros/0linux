@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xextproto}
-VERSION=${VERSION:-7.2.1}
+VERSION=${VERSION:-7.3.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xextproto}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT}

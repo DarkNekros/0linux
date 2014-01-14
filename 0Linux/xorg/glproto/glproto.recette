@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-glproto}
-VERSION=${VERSION:-1.4.16}
+VERSION=${VERSION:-1.4.17}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-glproto}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT}

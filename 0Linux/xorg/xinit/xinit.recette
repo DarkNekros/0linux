@@ -14,6 +14,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige un comportement créant des lignes vides en début de script :
+sed -i 's;\$(AM_V_GEN)\$(RAWCPP) \$(RAWCPPFLAGS) \$(CPP_FILES_FLAGS) < \$< | \$(CPP_SED_MAGIC) > \$@;\$(AM_V_GEN)$(RAWCPP) \$(RAWCPPFLAGS) \$(CPP_FILES_FLAGS) \$< | \$(CPP_SED_MAGIC) > \$@;' cpprules.in
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
