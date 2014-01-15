@@ -36,14 +36,14 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D WITH_Googlegadgets=OFF \
 	-D BUNDLE_XDG=OFF \
 	-D KDE_DISTRIBUTION_TEXT="0Linux" \
-	-D SITE="http://0.tuxfamily.org/" \
+	-D SITE="http://0linux.org/" \
 	./ ../
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
 
-# On renome un fichier de configuration
+# On renomme un fichier de configuration :
 mv ${PKG}/etc/kde/ksysguarddrc{,.0nouveau}
 
 # On déplace les fichiers DBus au bon endroit
@@ -53,45 +53,39 @@ mv ${PKG}/etc/{kde/,}dbus-1
 mkdir -p ${PKG}/etc/X11/xinit
 echo > ${PKG}/etc/X11/xinit/xinitrc.kde << "EOF"
 #!/bin/sh
-# $XConsortium: xinitrc.cpp,v 1.4 91/08/22 11:41:34 rws Exp $
 
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
 
-# merge in defaults and keymaps
-
 if [ -f $sysresources ]; then
-    xrdb -merge $sysresources
+	/usr/bin/xrdb -merge $sysresources
 fi
 
 if [ -f $sysmodmap ]; then
-    xmodmap $sysmodmap
+	/usr/bin/xmodmap $sysmodmap
 fi
 
 if [ -f $userresources ]; then
-    xrdb -merge $userresources
+	/usr/bin/xrdb -merge $userresources
 fi
 
 if [ -f $usermodmap ]; then
-    xmodmap $usermodmap
+	/usr/bin/xmodmap $usermodmap
 fi
 
-# Start the window manager:
 if [ -z "$DESKTOP_SESSION" -a -x /usr/bin/ck-launch-session ]; then
-    ck-launch-session startkde
+	ck-launch-session startkde
 else
-    startkde
+	startkde
 fi
 
 EOF
-
 chmod +x ${PKG}/etc/X11/xinit/xinitrc.kde
 
 # On crée des dossiers vide nécessaire à KDM et Plasma
 mkdir -p ${PKG}/etc/kde/{shutdown,env} ${PKG}/var/lib/kdm ${PKG}/usr/share/apps/kdm/faces
-chown kdm:kdm ${PKG}/var/lib/kdm
 chmod 700 ${PKG}/var/lib/kdm
 
 # On copie les fichiers de session pour X11 s'ils existent :
@@ -122,6 +116,13 @@ EOF
 
 installer_doc
 creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+chown kdm:kdm var/lib/kdm
+
+EOF
+
 stripper
 empaqueter
 
