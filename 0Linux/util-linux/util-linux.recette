@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-util-linux}
-VERSION=${VERSION:-2.23.2}
+VERSION=${VERSION:-2.24}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-util-linux}
 WGET=${WGET:-http://www.kernel.org/pub/linux/utils/$NAMESRC/v$(echo ${VERSION} | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
