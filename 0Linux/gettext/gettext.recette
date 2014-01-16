@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gettext}
-VERSION=${VERSION:-0.18.3.1}
+VERSION=${VERSION:-0.18.3.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-gettext}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.igh.cnrs.fr/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Suite d'outils pour l'internationalisation"
 
 . /usr/share/0outils/fonctions_paquets.sh
