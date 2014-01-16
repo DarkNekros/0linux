@@ -16,6 +16,7 @@ cflags
 
 # On corrige la compilation avec une API qui a changé :
 cat $CWD/xf86-video-intel.damageunregister-api.patch | patch -p1
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
