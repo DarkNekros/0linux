@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-cmake}
-VERSION=${VERSION:-2.8.11.2}
+VERSION=${VERSION:-2.8.12.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-cmake}
 WGET=${WGET:-http://www.cmake.org/files/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
