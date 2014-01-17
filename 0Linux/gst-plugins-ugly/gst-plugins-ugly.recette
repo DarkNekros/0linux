@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gst-plugins-ugly}
-VERSION=${VERSION:-1.2.1}
+VERSION=${VERSION:-1.2.2}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gst-plugins-ugly}
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.19.$EXT
