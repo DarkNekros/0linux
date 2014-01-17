@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-e2fsprogs}
-VERSION=${VERSION:-1.42.8}
+VERSION=${VERSION:-1.42.9}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-e2fsprogs}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
