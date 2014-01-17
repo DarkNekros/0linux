@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-busybox}
-VERSION=${VERSION:-1.21.1}
+VERSION=${VERSION:-1.22.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-busybox}
 WGET=${WGET:-http://busybox.net/downloads/$NAMESRC-$VERSION.$EXT}

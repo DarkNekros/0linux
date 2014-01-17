@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-mate-desktop}
-VERSION=${VERSION:-1.6.1}
+VERSION=${VERSION:-1.6.2}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-mate-desktop}
 WGET=${WGET:-http://pub.mate-desktop.org/releases/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
