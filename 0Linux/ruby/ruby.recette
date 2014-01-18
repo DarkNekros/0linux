@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-ruby}
-VERSION=${VERSION:-2.0.0p353}
+VERSION=${VERSION:-2.1.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ruby}
-WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$(echo $VERSION | sed -e 's/p.*$/-&/').$EXT}
+WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DESC="Langage de programmation orienté objet « élégant »"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -13,6 +13,9 @@ DESC="Langage de programmation orienté objet « élégant »"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# Pour le version nommées « 2.00p365 », spécifier l'archive dans $WGET ainsi  : 
+# $NAMESRC-$(echo $VERSION | sed -e 's/p.*$/-&/')
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

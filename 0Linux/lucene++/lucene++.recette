@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-rel}
+VERSION=${VERSION:-3.0.4}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-lucene++}
+WGET=${WGET:-https://github.com/luceneplusplus/LucenePlusPlus/archive/${NAMESRC}_${VERSION}.$EXT}
+DESC="Port C++ des bibliothèques Java Lucene"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige quelques problèmes connus :
+cat $CWD/lucene++.c11.patch | patch -p1
+cat $CWD/lucene++.custom-allocator.patch | patch -p1
+cat $CWD/lucene++.typo.patch | patch -p1
+
+# On doit compiler dans un répertoire dédié :
+mkdir -p build && cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_DESTINATION=/usr/lib${LIBDIRSUFFIX} \
+	-DBoost_LIBRARY_DIR=/usr/lib${LIBDIRSUFFIX} \
+	-DENABLE_CUSTOM_ALLOCATOR='FALSE' \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-poedit}
-VERSION=${VERSION:-1.5.5}
+NAMESRC=${NAMESRC:-id3lib}
+VERSION=${VERSION:-3.8.3}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-poedit}
+NAMETGZ=${NAMETGZ:-id3lib}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DESC="Éditeur de catalogues Gettext (fichiers '.po')"
+DESC="Bibliothèques d'accès aux informations des tags ID3"
+EXTRADEPS="cdparanoia lame"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -14,10 +15,13 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige la compilation avec 'wxwidgets' :
-cat $CWD/poedit.wx28.patch | patch -p1
+# On corrige cette vieillerie (sécurité, GCC 4.3+ et UTF16) :
+cat $CWD/id3lib.CVE-2007-4460.patch | patch -p0
+cat $CWD/id3lib.gcc-4.3.patch | patch -p1
+cat $CWD/id3lib.UTF16.patch | patch -p1
 
-# Compilation :
+# Compilation en complétant les LDFLAGS :
+LDFLAGS+="-lz" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -26,7 +30,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
