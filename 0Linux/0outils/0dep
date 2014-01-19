@@ -2,7 +2,7 @@
 #
 # 0DEP - cherche les paquets requis par les exécutables trouvés.
 
-# Copyright (c) 2013 Sébastien Boillod <sbb at tuxfamily dot org>.
+# Copyright (c) 2013, 2014 Sébastien Boillod <sbb at tuxfamily dot org>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -21,8 +21,13 @@
 findelves () {
     # Print the dynamic library list the given stuff is linked to.
     # $f FILE OR DIRECTORY
-    find "$@" -type f | awk -v sh="/bin/sh -s" '{'"$LDDAWK"' | sh }
-                                                END{close(sh);print "#"}'
+    find "$@" -type f | awk 'BEGIN{sh="/bin/sh -s"}
+                                  {gsub(/[ "(){}\[\]$`\047]/,"\\\\&")
+                                   '"$LDDAWK"' | sh }
+                             END{close(sh);print "#"}'
+    # NOTE: certains chemins peuvent contenir des caractères réservés par le
+    #       shell et tout planter, c'est pourquoi on les littéralise avant de
+    #       les lui passer (\047 = "'").
 }
 
 getopt () {
@@ -116,7 +121,7 @@ EOF
 export LC_ALL="C"
 LOGDIR="/var/log/packages"
 SCRIPTDIR="/var/log/scripts"
-XPKG="$XPKG glibc" # la liste des paquets qu'on veut ignorer.
+XPKG="$XPKG glibc glibc-solibs" # la liste des paquets qu'on veut ignorer.
 getopt "$@" || usage $(($? -1))
 
 LDDAWK="$(makeldd)" || exit 1

@@ -124,7 +124,7 @@ fakeroot make install VIMRTDIR= DESTDIR=${PKG}
 
 # On crée un lien pour 'gview' :
 ln -sf gvim ${PKG}/usr/bin/gview
-exit 0
+
 # On ajoute le dictionnaire pour le français en encodage UTF-8 :
 cp -a ${PKGSOURCES}/${NAMETGZ}/*.utf-8.* ${PKG}/usr/share/vim/spell/
 

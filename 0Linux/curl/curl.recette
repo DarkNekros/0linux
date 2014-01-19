@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-curl}
-VERSION=${VERSION:-7.32.0}
+VERSION=${VERSION:-7.34.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-curl}
 WGET=${WGET:-http://curl.haxx.se/download/$NAMESRC-$VERSION.$EXT}
