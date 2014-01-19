@@ -23,7 +23,7 @@ cflags
 # On télécharge chaque correctif :
 mkdir -p ${PKGSOURCES}/${NAMETGZ}/patches
 
-for correctif in {001..045}; do # Indiquer ici le nombre de correctifs à appliquer.
+for correctif in {001..155}; do # Indiquer ici le nombre de correctifs à appliquer.
 	if [ ! -r ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} ]; then
 		wget -vc "ftp://ftp.vim.org/pub/vim/patches/${VERSION}/${VERSION}.${correctif}" \
 			-O ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif}.part
@@ -124,7 +124,7 @@ fakeroot make install VIMRTDIR= DESTDIR=${PKG}
 
 # On crée un lien pour 'gview' :
 ln -sf gvim ${PKG}/usr/bin/gview
-
+exit 0
 # On ajoute le dictionnaire pour le français en encodage UTF-8 :
 cp -a ${PKGSOURCES}/${NAMETGZ}/*.utf-8.* ${PKG}/usr/share/vim/spell/
 
@@ -141,8 +141,6 @@ echo "
 \" Options pour 0 :
 \" ----------------
 
-filetype plugin on
-filetype indent on
 set backupskip+=/var/spool/cron/*
 set spelllang=fr,en
 set spell
