@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-ffmpeg}
-VERSION=${VERSION:-2.0.2}
+VERSION=${VERSION:-2.1.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ffmpeg}
 WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.10.$EXT
