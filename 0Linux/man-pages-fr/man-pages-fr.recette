@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-man-pages-fr}
-VERSION=${VERSION:-3.54.1}
+VERSION=${VERSION:-3.55}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-man-pages-fr}
-WGET=(http://alioth.debian.org/frs/download.php/file/3955/$NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').$EXT # Version différente !
+WGET=(http://alioth.debian.org/frs/download.php/file/3976/$NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').$EXT # Version différente !
       http://www.delafond.org/traducmanfr/mansupfr.tar.bz2
       http://manpagesfr.free.fr/download/man-pages-extras-fr-0.8.1.tar.bz2
      )
@@ -49,12 +49,14 @@ installer_doc
 creer_post_installation
 
 # On complète la post-installation :
-echo "# On met à jour la base de données des manuels :" >> ${PKG}/post-install.sh
-echo "if [ -x /usr/bin/mandb ]; then" >> ${PKG}/post-install.sh
-echo "	mandb -c --quiet 1>/dev/null 2>/dev/null &" >> ${PKG}/post-install.sh
-echo "fi" >> ${PKG}/post-install.sh
+cat >> ${PKG}/post-install.sh << "EOF"
+# On met à jour la base de données des manuels :
+if [ -x /usr/bin/mandb ]; then
+	mandb -c --quiet 1>/dev/null 2>/dev/null &
+fi
 
-stripper
+EOF
+
 empaqueter
 
 # C'est fini.

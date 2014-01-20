@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-doxygen}
-VERSION=${VERSION:-1.8.4}
+VERSION=${VERSION:-1.8.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-doxygen}
 WGET=${WGET:-ftp://ftp.stack.nl/pub/users/dimitri/$NAMESRC-${VERSION}.src.$EXT}
