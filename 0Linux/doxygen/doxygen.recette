@@ -14,6 +14,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On force nos drapeaux de compilation :
+sed -i "s@TMAKE_CFLAGS_RELEASE	= -O2@& ${FLAGS}@g" $(find * -type f -name "tmake.conf")
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
