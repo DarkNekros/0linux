@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-cups}
-VERSION=${VERSION:-1.7.0}
+VERSION=${VERSION:-1.7.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-cups}
 WGET=${WGET:-http://www.cups.org/software/$VERSION/$NAMESRC-$VERSION-source.$EXT}
