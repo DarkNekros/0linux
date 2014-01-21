@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-obsolete-abonnement}
-VERSION=${VERSION:-1}
+VERSION=${VERSION:-2}
 DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -24,6 +24,7 @@ cat >> ${PKG}/post-install.sh << "EOF"
 	e_dbus \
 	edje \
 	eet \
+	efreet \
 	eeze \
 	eigen2 \
 	eina \
