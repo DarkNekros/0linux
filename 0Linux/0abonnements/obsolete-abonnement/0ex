@@ -3,7 +3,7 @@
 # 0EX - extirpe les paquets obsolètes du système.
 #
 
-# Copyright (c) 2013 Sébastien Boillod <sbb at tuxfamily dot org>.
+# Copyright (c) 2013, 2014 Sébastien Boillod <sbb at tuxfamily dot org>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -67,34 +67,23 @@ growl () {
     echo "(W) $*" >&2
 }
 
-howto () {
-    # Explique la procédure de nettoyage.
-    # $f
-    cat >&2 << EOF
-+---------------------------------------------------------------+
- Des paquets actuellement installés sur votre système ont été
- déclarés obsolètes au sein de 0linux. Pour chacun, il va à
- présent vous être demandé quoi faire; vous gardez cependant
- la possibilité de différer cette procédure en exécutant
- ultérieurement la commande '0ex', sans argument.
-+---------------------------------------------------------------+
-
-EOF
-}
+#spackrm () {
+#    # Simule spackrm lors des debugs. À CONSERVER EN COMMENTAIRES
+#    # $f
+#    if [ "$1" = "-s" ]; then
+#        sed "s/^/DONE: /"
+#    else
+#        echo "DONE: $1"
+#    fi
+#}
 
 state () {
     # Traite les paquets obsolètes de manière interactive.
     # $f
-    local txt=Y pkg="" all="" x=""
+    local pkg="" x=""
+    [ "$ALT0EX" = "passe" ] && return 0
+    [ "$ALT0EX" = "fonce" ] && spackrm -s
     while read pkg; do
-        if [ "$txt" ]; then
-            txt=""; howto
-            [ "$ALT0EX" = "passe" ] && return 0
-            [ "$ALT0EX" = "fonce" ] && all=Y
-        fi
-        if [ "$all" ]; then
-            awk 'BEGIN{print "'"$pkg"'"}{print}'; return 0
-        fi
         echo "Que faire du paquet installé mais déclaré obsolète '$pkg' ?" >&2
         while [ 1 ]; do
             printf '\r[S]upprimer, [C]onserver, [T]out supprimer, [Q]uitter: ' >&2
@@ -102,12 +91,28 @@ state () {
             case "$x" in
                 c|C) break;;
                 q|Q) return 0;; 
-                s|S) echo "$pkg"; break;;
-                t|T) echo "$pkg"; all=Y; break;;
+                s|S) spackrm "$pkg"; break;;
+                t|T) spackrm "$pkg"; spackrm -s; return 0;;
                 *) printf "Erreur ! SVP, entrez 'c', 'q', 's' ou 't'..." >&2; sleep 1
             esac
         done
     done
+}
+
+trigger () {
+    # Explique la procédure de nettoyage.
+    # $f
+    awk 'BEGIN{ if ((getline) <= 0) exit;
+                 printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n", \
+ "+---------------------------------------------------------------+", \
+ " Des paquets actuellement installés sur votre système ont été", \
+ " déclarés obsolètes au sein de 0linux. Pour chacun, il va à", \
+ " présent vous être demandé quoi faire; vous gardez cependant", \
+ " la possibilité de différer cette procédure en exécutant", \
+ " ultérieurement la commande \0470ex\047, sans argument.", \
+ "+---------------------------------------------------------------+" ) \
+  > "/dev/stderr"; print}
+                  {print}'
 }
 
 usage () {
@@ -162,7 +167,7 @@ done
 [ "$pkg" ] || exec /bin/sh "$SCRIPT"
 
 exec 3<&0 # on a besoin d'un descripteur lié à l'entrée du script (clavier).
-findpkg $pkg | state | spackrm -s
+findpkg $pkg | trigger | state 
 exec 3<&-
 
 # EoF
