@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMETGZ=${NAMETGZ:-obsolete-abonnement}
+VERSION=${VERSION:-1}
+DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On place l'outil interactif '0ex' pour les paquets obsolètes :
+mkdir -p ${PKG}/usr/sbin
+cp -a $CWD/0ex ${PKG}/usr/sbin/
+chmod 0755 ${PKG}/usr/sbin/*
+
+# On complète la post-installation en demandant à désinstaller tous les paquets
+# obsolètes trouvés :
+cat >> ${PKG}/post-install.sh << "EOF"
+# On demande à désinstaller les paquets obsolètes trouvés :
+0ex \
+	clearlooks \
+	ecore \
+	e_dbus \
+	edje \
+	eet \
+	eeze \
+	eigen2 \
+	eina \
+	eio \
+	embryo \
+	emotion \
+	ethumb \
+	evas \
+	glib2 \
+	gtk2 \
+	gtk3 \
+	gtk2mm \
+	gtk3mm \
+	kdeadmin \
+	kdenetwork \
+	kdesdk \
+	kdetoys \
+	lcms2 \
+	libssh2 \
+	ndiswrapper \
+	python3 \
+	raptor2 \
+	syslog-ng \
+	systemd \
+	terminal \
+	udisks2
+
+EOF
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Janvier 2014
+
+= Les paquets marqués obsolètes dans 0Linux =
+
+Ce paquet contient la liste des paquets marqués obsolètes dans 0Linux.
+
+= L'abonnement $NAMETGZ pour 0Linux =
+
+L'abonnement contient un outil interactif appelé en post-installaton et demandant si les paquets marqués obsolètes trouvés dans le système doivent être désinstallés. Les paquets obsolètes peuvent être de type variable : paquets doublons, bibliothèques moribondes, paquets orphelins, etc. Il est conseillé de supprimer tout paquet obsolète trouvé (sauf si vous savez exactement ce que vous faites, bien entendu). Cet abonnement n'installe évidemment aucun paquet en dépendance.
+
+= Installation sous 0Linux =
+
+``# 0g ${NAMETGZ}``
+
+EOF
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.
