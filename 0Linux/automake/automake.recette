@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-automake}
-VERSION=${VERSION:-1.14}
+VERSION=${VERSION:-1.14.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-automake}
 WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}

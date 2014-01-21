@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-enlightenment}
-VERSION=${VERSION:-0.17.5}
+VERSION=${VERSION:-0.18.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-enlightenment}
-WGET=${WGET:-http://download.enlightenment.org/releases/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://download.enlightenment.org/rel/apps/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="L'environnement graphique Enlightenment ou « E »"
 
 . /usr/share/0outils/fonctions_paquets.sh

@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-evas_generic_loaders}
-VERSION=${VERSION:-1.7.9}
+VERSION=${VERSION:-1.7.10}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-evas_generic_loaders}
 WGET=${WGET:-http://download.enlightenment.org/releases/$NAMESRC-$VERSION.$EXT}
