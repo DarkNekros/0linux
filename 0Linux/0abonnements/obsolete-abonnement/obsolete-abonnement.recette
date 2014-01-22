@@ -14,6 +14,9 @@ mkdir -p ${PKG}/usr/sbin
 cp -a $CWD/0ex ${PKG}/usr/sbin/
 chmod 0755 ${PKG}/usr/sbin/*
 
+# On corrige la variable $SCRIPT de '0ex' pour correspondre au paquet actuel :
+sed -i "s/@PAQUET@/$NAMETGZ-$VERSION-$PKGARCH-$BUILD/" ${PKG}/usr/sbin/0ex
+
 # On complète la post-installation en demandant à désinstaller tous les paquets
 # obsolètes trouvés :
 cat >> ${PKG}/post-install.sh << "EOF"
@@ -71,6 +74,41 @@ L'abonnement contient un outil interactif appelé en post-installaton et demanda
 = Installation sous 0Linux =
 
 ``# 0g ${NAMETGZ}``
+
+= Liste des paquets obsolètes =
+
+clearlooks: remplacé par 'gtk-engines'
+ecore: fusionné dans 'efl'
+e_dbus: fusionné dans 'efl'
+edje: fusionné dans 'efl'
+eet: fusionné dans 'efl'
+efreet: fusionné dans 'efl'
+eeze: fusionné dans 'efl'
+eigen2: fusionné dans 'eigen'
+eina: fusionné dans 'efl'
+eio: fusionné dans 'efl'
+embryo: fusionné dans 'efl'
+emotion: fusionné dans 'efl'
+ethumb: fusionné dans 'efl'
+evas: fusionné dans 'efl'
+glib2: fusionné dans 'glib'
+gtk2: fusionné dans 'gtk'
+gtk3: fusionné dans 'gtk'
+gtk2mm: fusionné dans 'gtkmm'
+gtk3mm: fusionné dans 'gtkmm'
+kdeadmin: supprimé dans la distribution de KDE
+kdenetwork: supprimé dans la distribution de KDE
+kdesdk: supprimé dans la distribution de KDE
+kdetoys: supprimé dans la distribution de KDE
+lcms2: fusionné dans 'lcms'
+libssh2: fusionné dans 'libssh'
+ndiswrapper: supprimé, inutile
+python3: fusionné dans 'python'
+raptor2: fusionné dans  'raptor'
+syslog-ng: remplacé par 'syslog'
+systemd: banni de 0Linux :)
+terminal: remplacé apr 'xfce4-terminal'
+udisks2: fusionné dans 'udisks'
 
 EOF
 

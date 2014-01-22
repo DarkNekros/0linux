@@ -152,7 +152,7 @@ export LC_ALL="C"
 unset t pkg
 LOGDIR="/var/log/packages"
 SCRIPT="/var/log/scripts/@PAQUET@"
-JOURNAL="/local/tmp/JOURNAL" # "/var/log/0abonnements/obsolete"
+JOURNAL="/var/log/0abonnements/obsolete-abonnement.txt"
 
 for i in $(getopt "$@"); do
     case "$t$i" in
