@@ -21,10 +21,11 @@
 findelves () {
     # Print the dynamic library list the given stuff is linked to.
     # $f FILE OR DIRECTORY
-    find "$@" -type f | awk 'BEGIN{sh="/bin/sh -s"}
-                                  {gsub(/[ "(){}\[\]$`\047]/,"\\\\&")
-                                   '"$LDDAWK"' | sh }
-                             END{close(sh);print "#"}'
+    local x="( -perm -100 -o -perm -010 -o -perm -001 )" # POSIX -perm /111
+    find "$@" -type f $x | awk 'BEGIN{sh="/bin/sh -s"}
+                                     {gsub(/[ "(){}\[\]$`\047]/,"\\\\&")
+                                      '"$LDDAWK"' | sh }
+                                END{close(sh);print "#"}'
     # NOTE: certains chemins peuvent contenir des caractères réservés par le
     #       shell et tout planter, c'est pourquoi on les littéralise avant de
     #       les lui passer (\047 = "'").
