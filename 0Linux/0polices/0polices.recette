@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-0polices}
+VERSION=${VERSION:-0.1}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-0polices}
+WGET=${WGET:-http://0linux.geoffray-levasseur.org/$NAMESRC-$VERSION.$EXT}
+DESC="De nombreuses polices TTF et OTF fantaisistes"
+EXTRADEPS="freetype fontconfig"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On copie les fichiers dans /usr/share/fonts/{TTF,OTF}
+mkdir -p ${PKG}/usr/share/fonts/{TTF,OTF}
+cp -a *.ttf ${PKG}/usr/share/fonts/TTF
+cp -a *.otf ${PKG}/usr/share/fonts/OTF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
