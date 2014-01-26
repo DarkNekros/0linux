@@ -24,6 +24,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-udevdir=/usr/lib${LIBDIRSUFFIX}/udev \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

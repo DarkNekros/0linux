@@ -43,11 +43,15 @@ fakeroot make install DESTDIR=${PKG}
 cp -a $CWD/pam-foreground-compat.ck ${PKG}/usr/lib/ConsoleKit/run-session.d/
 chmod 0755 ${PKG}/usr/lib/ConsoleKit/run-session.d/pam-foreground-compat.ck
 
-# On replace ces scripts où il faut et on crée un lien générique :
+# On replace ces scripts où il faut :
 if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 	mv ${PKG}/usr/lib/ConsoleKit ${PKG}/usr/lib${LIBDIRSUFFIX}/
-	ln -sf ../lib${LIBDIRSUFFIX}/ConsoleKit ${PKG}/usr/lib/
 fi
+
+# On crée un lien générique pour le multilib, ça ne fait pas de mal :
+if [ "${PKGARCH}" = "x86_64" ]; then
+		ln -sf ../lib${LIBDIRSUFFIX}/ConsoleKit ${PKG}/usr/lib/
+	fi
 
 # On crée le fichier service :
 mkdir -p ${PKG}/etc/rc.d

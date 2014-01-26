@@ -23,6 +23,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--with-udev-rules-dir=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

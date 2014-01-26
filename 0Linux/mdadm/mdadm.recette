@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-mdadm}
-VERSION=${VERSION:-3.2.6}
+VERSION=${VERSION:-3.3}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-mdadm}
 WGET=${WGET:-https://www.kernel.org/pub/linux/utils/raid/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -17,7 +17,7 @@ cflags
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
-fakeroot make install MANDIR=/usr/man DESTDIR=${PKG}
+fakeroot make install MANDIR=/usr/man BINDIR=/usr/sbin DESTDIR=${PKG}
 
 # On prend garde à ne rien écraser :
 if [ -e ${PKG}/etc/mdadm.conf ]; then

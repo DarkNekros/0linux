@@ -52,7 +52,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
-fakeroot make install rulesdir=/lib/udev/rules.d DESTDIR=${PKG}
+fakeroot make install rulesdir=/usr/lib${LIBDIRSUFFIX}/udev/rules.d DESTDIR=${PKG}
 
 # On empêche le démarrage automatique en barre des tâches :
 rm -rf ${PKG}/etc/xdg

@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-wine}
-VERSION=${VERSION:-1.7.4}
+VERSION=${VERSION:-1.7.11}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-wine}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -14,37 +14,22 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On force à lier sur la libncursesw :
-sed -i 's@libncurses@&w@g' configure
-sed -i 's@lncurses@&w@g' configure
+# On corrige plusieurs problèmes, notamment dans un environnement multilib :
+cat $CWD/wine.winegcc-multilib.patch | patch -p1
+cat $CWD/wine.flags-multilib.patch | patch -p1
+cat $CWD/wine.osmesa.patch | patch -p1
 
-# Le multilib requiert une compilation en 2 temps :
+# On régénère le système de construction :
+autoreconf -vif
+
+# On force à lier sur la libncursesw :
+sed -i -e 's@libncurses@&w@g' -e 's@lncurses@&w@g' configure
+
+# On blouse le système de construction en évitant l'appel à 'ldconfig' :
+export LDCONFIG=/usr/bin/true
+
+# Le multilib requiert la compilation en 32 bits uniwquement :
 if [ "${PKGARCH}" = "x86_64" ]; then
-	
-	# On construit dans un répertoire dédié :
-	mkdir $TMP/${NAME}/build-64
-	cd $TMP/${NAME}/build-64
-	
-	# Compilation 64 bits :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	$TMP/${NAME}/configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--enable-win64 \
-		--with-x \
-		--without-gstreamer \
-		--build=${PKGARCH}-0linux-linux-gnu
-	
-	make -j${JOBS} || make
-	
-	# On construit dans un répertoire dédié :
-	mkdir $TMP/${NAME}/build-32
-	cd $TMP/${NAME}/build-32
 	
 	# On passe en 32 bits :
 	cflags i686
@@ -52,7 +37,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# Compilation 32 bits :
 	CFLAGS+="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
 	CXXFLAGS+="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
-	$TMP/${NAME}/configure \
+	LD="ld -A i686" \
+	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
 		--localstatedir=/var \
@@ -60,24 +46,24 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--with-wine64=$TMP/${NAME}/build-64 \
 		--with-x \
 		--without-gstreamer \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
-	fakeroot make install prefix=${PKG}/usr libdir=/usr/lib${LIBDIRSUFFIX} dlldir=/usr/lib${LIBDIRSUFFIX}/wine
 	
-	# On installe maintenant le 64 bits :
-	cd $TMP/${NAME}/build-64
-	cflags
-	fakeroot make install prefix=${PKG}/usr libdir=/usr/lib${LIBDIRSUFFIX} dlldir=/usr/lib${LIBDIRSUFFIX}/wine
+	fakeroot make install prefix=${PKG}/usr \
+		libdir=${PKG}/usr/lib${LIBDIRSUFFIX} \
+		dlldir=${PKG}/usr/lib${LIBDIRSUFFIX}/wine \
+		mandir=${PKG}/usr/man
 else
+	# On passe en 64 bits :
+	cflags
 	
 	# Compilation 32 bits native pour les autres architectures :
 	CFLAGS+="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
 	CXXFLAGS+="${FLAGS} -mstackrealign -mincoming-stack-boundary=2" \
-	$TMP/${NAME}/configure \
+	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
 		--localstatedir=/var \
@@ -90,8 +76,42 @@ else
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
-	fakeroot make install prefix=${PKG}/usr libdir=/usr/lib${LIBDIRSUFFIX} dlldir=/usr/lib${LIBDIRSUFFIX}/wine
+	
+	fakeroot make install prefix=${PKG}/usr \
+		libdir=${PKG}/usr/lib${LIBDIRSUFFIX} \
+		dlldir=${PKG}/usr/lib${LIBDIRSUFFIX}/wine \
+		mandir=${PKG}/usr/man
 fi
+
+# On repasse dans l'archi native pour placer le paquet où il faut :
+cflags
+
+# On place un fichier d'alias pour les polices des applications Win32 :
+mkdir -p ${PKG}/etc/fonts/conf.{avail,d}
+cat > ${PKG}/etc/fonts/conf.d/30-win32-aliases.conf << "EOF"
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <alias binding="same">
+    <family>MS Shell Dlg</family>
+    <accept><family>Microsoft Sans Serif</family></accept>
+    <default><family>sans-serif</family></default>
+  </alias>
+  <alias binding="same">
+    <family>MS Shell Dlg 2</family>
+    <accept><family>Tahoma</family></accept>
+    <default><family>sans-serif</family></default>
+  </alias>
+
+  <alias binding="same">
+    <family>MS Sans Serif</family>
+    <prefer><family>Microsoft Sans Serif</family></prefer>
+    <default><family>sans-serif</family></default>
+  </alias>
+</fontconfig>
+
+EOF
+ln -sf ../conf.avail/30-win32-aliases.conf ${PKG}/etc/fonts/conf.d/
 
 installer_doc
 creer_post_installation

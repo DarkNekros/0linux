@@ -18,6 +18,9 @@ cflags
 # On compile la version 1.0.4 :
 preparer_sources $NAMESRC-1.0.4.tar.gz
 
+# Ces chemins sont codés en dur... :
+sed -i -e "s@slashlibdir=/lib@slashlibdir=/usr/lib${LIBDIRSUFFIX}@" -e "s@slashsbindir=/sbin@slashsbindir=/usr/sbin@" configure
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -50,14 +53,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
+# L'auteur a un vrai problème avec les chemins codés en dur :
+sed -i "s@lib/udisks2@lib${LIBDIRSUFFIX}/udisks2@g" $(find . -type f -name "Makefile*")
+
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-# On déplace ça le cas échéant :
-if [ ! "${LIBDIRSUFFIX}" = "" ]; then
-	cp -ar ${PKG}/usr/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
-	rm -rf ${PKG}/usr/lib
-fi
 
 # On place les règles pour 'polkit' permettant aux utilisateurs du groupe
 # 'plugdev' de monter/éjecter des volumes et de manipuler 'udisks2' :
