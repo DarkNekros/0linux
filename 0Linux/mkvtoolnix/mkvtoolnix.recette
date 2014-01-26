@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-mkvtoolnix}
-VERSION=${VERSION:-6.5.0}
+VERSION=${VERSION:-6.7.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-mkvtoolnix}
 WGET=${WGET:-http://www.bunkus.org/videotools/$NAMESRC/sources/$NAMESRC-$VERSION.$EXT}
