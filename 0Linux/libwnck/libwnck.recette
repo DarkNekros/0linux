@@ -2,16 +2,42 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libwnck}
-VERSION=${VERSION:-2.31.0}
+VERSION=${VERSION:-3.4.7}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-libwnck}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.31.0/$NAMESRC-2.31.0.$EXT
+      http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+     )
 DESC="Outils de construction de fenêtres"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile libwnck 2.x :
+preparer_sources $NAMESRC-2.31.0.$EXT
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.31.0
+
+# On compile libwnck :
+preparer_sources
 cflags
 
 # Compilation :
