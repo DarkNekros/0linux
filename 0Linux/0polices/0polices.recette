@@ -7,7 +7,6 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-0polices}
 WGET=${WGET:-http://0linux.geoffray-levasseur.org/$NAMESRC-$VERSION.$EXT}
 DESC="De nombreuses polices TTF et OTF fantaisistes"
-EXTRADEPS="freetype fontconfig"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
