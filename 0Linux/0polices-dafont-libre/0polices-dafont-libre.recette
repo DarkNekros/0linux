@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-0polices}
+NAMESRC=${NAMESRC:-0polices-dafont-libre}
 VERSION=${VERSION:-0.1}
 EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-0polices}
+NAMETGZ=${NAMETGZ:-0polices-dafont-libre}
 WGET=${WGET:-http://0linux.geoffray-levasseur.org/$NAMESRC-$VERSION.$EXT}
 DESC="De nombreuses polices TTF et OTF fantaisistes"
 
