@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-qrencode}
-VERSION=${VERSION:-3.4.1}
+VERSION=${VERSION:-3.4.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-qrencode}
 WGET=${WGET:-http://fukuchi.org/works/$NAMESRC/$NAMESRC-$VERSION.$EXT}
