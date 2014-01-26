@@ -18,9 +18,6 @@ cflags
 # Utilise la libgl2ps du système :
 cat $CWD/avogadro.libgl2ps.patch | patch -p1
 
-# On utilise la détection de Python fournie par cmake, meilleure que celle fournie par avogadro :
-rm -f cmake/modules/FindPythonLibs.cmake
-
 # Compilation :
 mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
