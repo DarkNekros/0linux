@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gcompris}
-VERSION=${VERSION:-12.11}
+VERSION=${VERSION:-13.11}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gcompris}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
