@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-VirtualBox}
-VERSION=${VERSION:-4.3.2}
+VERSION=${VERSION:-4.3.6}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-virtualbox}
 WGET=(http://download.virtualbox.org/virtualbox/$VERSION/$NAMESRC-$VERSION.$EXT
@@ -45,9 +45,6 @@ elif [ "${PKGARCH}" = "i686" ]; then
 	BUILDDIR="x86"
 fi
 
-# On supprime 'check_makeself' (qui sert à construire un installateur) :
-sed -i '/[ $OSE -ge 1 ] && check_makeself/d' configure
-
 # On empêche la suppression de modules sur la racine (!!!) :
 cat $CWD/virtualbox.modules.patch | patch -p1
 
@@ -62,17 +59,21 @@ VBOX_PATH_APP_PRIVATE_ARCH   := /usr/libARCH/virtualbox
 VBOX_PATH_SHARED_LIBS        := $(VBOX_PATH_APP_PRIVATE_ARCH)
 VBOX_WITH_RUNPATH            := $(VBOX_PATH_APP_PRIVATE_ARCH)
 VBOX_PATH_APP_PRIVATE        := /usr/share/virtualbox
-VBOX_PATH_APP_DOCS           := $(VBOX_PATH_APP_PRIVATE)
+VBOX_PATH_APP_DOCS           := /usr/doc/NAMETGZ-VERSION
 
 # Pas de tests :
 VBOX_WITH_TESTCASES          :=
 VBOX_WITH_TESTSUITE          :=
 
 # Pas de fenêtre de demande d'enregistrement :
-VBOX_WITH_REGISTRATION        =
+VBOX_WITH_REGISTRATION_REQUEST =
+
+# Ni de mise à jour automatique :
+VBOX_WITH_UPDATE_REQUEST =
 
 # Pour GCC >= 4.5 :
-VBOX_WITH_WARNINGS_AS_ERRORS :=
+VBOX_GCC_WERR =
+VBOX_GCC_WARN =
 
 # Pas de PAM :
 VBOX_WITH_PAM                :=
@@ -88,30 +89,29 @@ EOF
 # On modifie 'LocalConfig.kmk' pour LIBDIRSUFFIX :
 sed -i "s@libARCH@lib${LIBDIRSUFFIX}@g" LocalConfig.kmk
 
+# Ainsi que pour nos variables :
+sed -i -e "s@NAMETGZ@${NAMETGZ}@g" -e "s@VERSION@${VERSION}@g" LocalConfig.kmk
+
 # On force à chercher dans le répertoire courant avant tout :
 export PATH="${CWD}:${PATH}"
 
-# Configuration :
+# Configuration avec un faux 'makeself' (sert à construire un installateur) :
 fakeroot ./configure \
 	--disable-docs \
 	--disable-kmods \
 	--disable-pulse \
-	--enable-hardening \
 	--enable-vde \
 	--enable-vnc \
 	--enable-webservice \
-	--nofatal
+	--with-makeself=/usr/bin/echo
 
-. ./env.sh
+source ./env.sh
 
 # Compilation :
-kmk -j ${JOBS} LOCALCFG=./LocalConfig.kmk || kmk LOCALCFG=./LocalConfig.kmk
+kmk -j ${JOBS} || kmk
 
 # On compile maintenant 'rdesktop-vrdp' :
 cd src/VBox/RDP/client
-
-# On y copie notre configuration :
-cp -a $TMP/${NAME}/LocalConfig.kmk .
 
 # On corrige un chemin erroné :
 sed -i "s@/opt/VirtualBox@/usr/share/virtualbox@" Makefile.kmk
@@ -141,14 +141,11 @@ find . -type f -name "*.ko" -delete
 cd -
 
 # On crée un fichier de configuration qui n'écrasera rien :
-cat > ${PKG}/etc/vbox/vbox.cfg.0nouveau << "EOF"
-INSTALL_DIR="/usr/libARCH/virtualbox"
+cat > ${PKG}/etc/vbox/vbox.cfg.0nouveau << EOF
+INSTALL_DIR="/usr/lib${LIBDIRSUFFIX}/virtualbox"
 MODULE_SRC="/usr/src"
 
 EOF
-
-# On corrige notre config' pour notre LIBDIRSUFFIX :
-sed -i "s@libARCH@lib${LIBDIRSUFFIX}@g" ${PKG}/etc/vbox/vbox.cfg.0nouveau
 
 # On crée un fichier de paramètres par défaut :
 cat > ${PKG}/etc/default/virtualbox.0nouveau << "EOF"
@@ -216,11 +213,6 @@ mv * ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/
 
 cd $TMP/${NAME}
 
-# On s'assure que ces binaires sont bien setuid :
-for f in VBoxSDL VirtualBox VBoxHeadless VBoxNetDHCP VBoxNetAdpCtl VBoxNetNAT; do
-	chmod 4755 ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/${f}
-done
-
 # On place et on modifie les services :
 mkdir -p ${PKG}/var/{lib,log}/vboxweb
 mkdir -p ${PKG}/etc/rc.d
@@ -285,7 +277,15 @@ cat >> ${PKG}/post-install.sh << "EOF"
 chgrp vboxusers usr/share/virtualbox/{VBoxCreateUSBNode.sh,VBoxSysInfo.sh}
 chown vboxweb:vboxusers var/{lib,log}/vboxweb
 
+# On s'assure que ces binaires sont bien setuid :
+for f in VBoxSDL VirtualBox VBoxHeadless VBoxNetDHCP VBoxNetAdpCtl VBoxNetNAT; do
+	chmod 4711 usr/libLIBDIRSUFFIX/virtualbox/${f}
+done
+
 EOF
+
+# On corrige la post-installation pour notre suffixe :
+sed -i "s@LIBDIRSUFFIX@${LIBDIRSUFFIX}@" ${PKG}/post-install.sh
 
 stripper
 empaqueter
