@@ -32,6 +32,9 @@ sed -i 's/localedata timezone rt/localedata rt/' Makeconfig
 # On active la parallélisation :
 sed -i "s@# PARALLELMFLAGS = -j 4@PARALLELMFLAGS = -j${JOBS}@" Makefile.in
 
+# On adapte à 'make' 4.0+ :
+sed -i 's@3\.79\* \| 3\.[89]\*@& \| 4\.\* @' $TMP/${NAME}/configure
+
 # On compile pour la prise en charge du multilib en i686 pour x86_64 uniquement :
 if [ "${PKGARCH}" = "x86_64" ]; then
 	
@@ -181,7 +184,7 @@ sed -i "s@ARCH@${LIBDIRSUFFIX}@g" ${PKG}/post-install.sh
 sed -i "s@VERSION@${VERSION}@g"   ${PKG}/post-install.sh
 
 installer_doc
-stripper
+# stripper # On conserve les symboles de débogage pour faire taire 'gdb'.
 empaqueter
 
 # On nettoie derrière nous :
