@@ -4,27 +4,29 @@
 #
 # ./construction.sh @kde libpng ../base/0outils
 #
-# Un arobase « @ » désigne un dépôt entier, représenté par une liste d'ordre de
-# compilation nommée 'construction-nom_du_dépôt' (contenant un paquet par ligne), devant
-# se trouver  dans le même répertoire que ce script. Les paquets individuels sont
-# spécifiés par leur simple nom. 
+# Un arobase « @ » désigne une liste de paquets à compiler/installer dans 
+# l'ordre, présente dans le même répertoire que ce script et nommée 
+# 'construction-nom' (contenant un paquet par ligne). Les paquets individuels 
+# sont spécifiés par leur simple nom. 
 #
 # 	$ ls scripts
 # 	construction.sh
 # 	construction-gimp
 # 	construction-xorg
 #
-# Exemple : construire et installer les dépôts @kde et @gimp, le paquet 'libpng' ainsi
-# que tous les paquets commençant par « alsa » :
+# Exemple : construire et installer les listes construction-kde et 
+# construction-gimp, le paquet 'libpng' ainsi que tous les paquets commençant 
+# par « alsa » :
 # 	./construction.sh @kde @gimp libpng alsa*
 #
 # Deux options spéciales existent :
 #
-# 0g tout              : compile/installe toutes les recettes.
-# 0g tout-completer    : compile/installe toutes les recettes mais ignore les paquets
-#                        déjà compilés dans '/usr/local/paquets' (permet de s'assurer
-#                        que le dépôt est complet)
-
+# ./construction.sh tout            : compile/installe TOUTES les recettes.
+# ./construction.sh tout-completer  : compile/installe TOUTES les recettes mais
+#                                     ignore les paquets déjà compilés et 
+#                                     installés dans '/usr/local/paquets' 
+#                                     (permet de s'assurer que le système est 
+#                                     complet).
 
 # La fonction de construction/installation de chaque paquet :
 # $f RECETTE
