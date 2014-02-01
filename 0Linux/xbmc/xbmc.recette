@@ -30,8 +30,7 @@ chmod +x bootstrap
 # On utilise notre Python 2 système :
 export PYTHON_VERSION=2
 
-# Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+# Compilation sans drapeaux d'optimisation :
 ./configure \
 	--prefix=/usr \
 	--exec-prefix=/usr \

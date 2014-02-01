@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-LibreOffice}
-VERSION=${VERSION:-4.1.4}
+VERSION=${VERSION:-4.2.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libreoffice}
 . /usr/share/0outils/fonctions_paquets.sh
@@ -77,12 +77,9 @@ done
 installer_doc
 
 # On complète la documentation :
-cp -a ${PKG}/usr/lib${LIBDIRSUFFIX}/libreoffice$(echo $VERSION | cut -d'.' -f1-2)/{*.{html,odt},LICENSE} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
-
-# Ce fut pénible !
+cp -a ${PKG}/usr/lib${LIBDIRSUFFIX}/libreoffice$(echo $VERSION | cut -d'.' -f1-2)/{*.{html,odt},LICENSE} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/ || true
 
 creer_post_installation
-stripper
 empaqueter
 
 # C'est fini.

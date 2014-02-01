@@ -2,16 +2,20 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-SDL_mixer}
-VERSION=${VERSION:-1.2.12}
+VERSION=${VERSION:-2.0.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sdl-mixer}
-WGET=${WGET:-http://www.libsdl.org/projects/$NAMESRC/release/$NAMESRC-$VERSION.$EXT}
+WGET=(http://www.libsdl.org/projects/$NAMESRC/release/$(echo $NAMESRC | sed 's@SDL@SDL2@')-$VERSION.$EXT
+      http://www.libsdl.org/projects/$NAMESRC/release/$NAMESRC-1.2.12.$EXT
+     )
 DESC="Bibliothèques audio « Simple DirectMedia Layer »"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile SDL_mixer 1.x :
+preparer_sources $NAMESRC-1.2.12.$EXT
 cflags
 
 # On force LIBDIRSUFFIX :
@@ -32,6 +36,24 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On compile SDL2_mixer :
+preparer_sources $(echo $NAMESRC | sed 's@SDL@SDL2@')-$VERSION.$EXT
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 installer_doc
 creer_post_installation
 stripper

@@ -107,6 +107,7 @@ glew
 glu
 mesa-demos
 libtxc_dxtn
+glamor-egl
 appres
 bitmap
 xbitmaps

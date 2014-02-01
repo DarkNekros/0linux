@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-elementary}
-VERSION=${VERSION:-1.7.10}
+VERSION=${VERSION:-1.8.4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-elementary}
-WGET=${WGET:-http://download.enlightenment.org/releases/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques et outils graphiques pour E"
 
 . /usr/share/0outils/fonctions_paquets.sh

@@ -2,16 +2,20 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-SDL_ttf}
-VERSION=${VERSION:-2.0.11}
+VERSION=${VERSION:-2.0.12}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sdl-ttf}
-WGET=${WGET:-http://www.libsdl.org/projects/$NAMESRC/release/$NAMESRC-$VERSION.$EXT}
+WGET=(http://www.libsdl.org/projects/$NAMESRC/release/$(echo $NAMESRC | sed 's@SDL@SDL2@')-$VERSION.$EXT
+      http://www.libsdl.org/projects/$NAMESRC/release/$NAMESRC-2.0.11.$EXT
+     )
 DESC="Bibliothèques de gestion de polices « Simple DirectMedia Layer »"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile SDL_ttf 1.x :
+preparer_sources $NAMESRC-2.0.11.$EXT
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -38,7 +42,26 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources
+preparer_sources $NAMESRC-2.0.11.$EXT
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On compile SDL2_ttf :
+preparer_sources $(echo $NAMESRC | sed 's@SDL@SDL2@')-$VERSION.$EXT
 cflags
 
 # Compilation :

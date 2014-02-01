@@ -2,16 +2,21 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-SDL}
-VERSION=${VERSION:-1.2.15}
+VERSION=${VERSION:-2.0.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sdl}
-WGET=${WGET:-http://www.libsdl.org/release/$NAMESRC-$VERSION.$EXT}
+WGET=(http://www.libsdl.org/release/${NAMESRC}2-$VERSION.$EXT
+      http://www.libsdl.org/release/$NAMESRC-1.2.15.$EXT
+     )
+
 DESC="Outils et bibliothèques « Simple DirectMedia Layer »"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile SDL 1.x :
+preparer_sources $NAMESRC-1.2.15.$EXT
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -19,6 +24,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
+	
+	# On corrige un problème avec le redimensisonnement des fenêtres :
+	cat $CWD/sdl.resizing.patch | patch -p1
 	
 	# On corrige l'emplacement de X11 et des bibliothèques :
 	sed -i "s@/usr/X11R6@$/usr@g" $(grep -lr /usr/X11R6 *)
@@ -36,7 +44,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
-		--with-alsa-prefix=/usr/lib${LIBDIRSUFFIX} \
+		--enable-alsa \
+		--with-x \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -48,8 +57,11 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources
+preparer_sources $NAMESRC-1.2.15.$EXT
 cflags
+
+# On corrige un problème avec le redimensisonnement des fenêtres :
+cat $CWD/sdl.resizing.patch | patch -p1
 
 # On corrige l'emplacement de X11 et des bibliothèques :
 sed -i "s@/usr/X11R6@$/usr@g" $(grep -lr /usr/X11R6 *)
@@ -67,7 +79,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--with-alsa-prefix=/usr/lib${LIBDIRSUFFIX} \
+	--enable-alsa \
+	--with-x \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
@@ -80,6 +93,69 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On lie un binaire générique au programme enveloppe :
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/sdl-config
+fi
+
+# On place la doc dans un sous-répertoire :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-1.2.15
+
+# On compile SDL 2.x :
+preparer_sources ${NAMESRC}2-$VERSION.$EXT
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--enable-alsa \
+		--enable-sdl-dlopen \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On renomme ce binaire spécifique à l'archi pour l'envelopper :
+	mv ${PKG}/usr/bin/sdl2-config{,-32}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources ${NAMESRC}2-$VERSION.$EXT
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--enable-alsa \
+	--enable-sdl-dlopen \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On renomme ce binaire spécifique à l'archi pour l'envelopper :
+	mv ${PKG}/usr/bin/sdl2-config{,-64}
+	
+	# On lie un binaire générique au programme enveloppe :
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/sdl2-config
 fi
 
 installer_doc

@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xtrans}
-VERSION=${VERSION:-1.3.2}
+VERSION=${VERSION:-1.3.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xtrans}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}

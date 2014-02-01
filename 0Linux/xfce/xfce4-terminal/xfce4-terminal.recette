@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xfce4-terminal}
-VERSION=${VERSION:-0.6.2}
+VERSION=${VERSION:-0.6.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-terminal}
 WGET=${WGET:-http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}

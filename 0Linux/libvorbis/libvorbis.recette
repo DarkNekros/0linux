@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libvorbis}
-VERSION=${VERSION:-1.3.3}
+VERSION=${VERSION:-1.3.4}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-libvorbis}
 WGET=${WGET:-http://downloads.xiph.org/releases/vorbis/$NAMESRC-$VERSION.$EXT}

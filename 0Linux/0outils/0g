@@ -132,8 +132,9 @@ request () {
 
 upgrade () {
     # Télécharge et met à niveau les paquets.
-    # $f GARDER LES PAQUETS, DOSSIER TAMPON, MODE DÉMO, URL DU DÉPÔT
-    local save="$1" tmp="${2:-"/tmp"}" demo="$3" url="$4" dwl="" code="" p=""
+    # $f GARDER LES PAQUETS, DOSSIER TAMPON, MODE DÉMO, URL DU DÉPÔT, JOURNAL
+    local save="$1" tmp="${2:-"/tmp"}" demo="$3" url="$4" \
+          date=$(date +%d/%m/%Y) dwl="" code="" p=""; shift 4
     if ! read code; then
         echo "Le système est à jour."
         return 0
@@ -141,6 +142,7 @@ upgrade () {
     tmp="$(mktemp -qd "$tmp/0g-XXXXXX")"
     [ "$tmp" ] || growl 1 "Impossible d'établir un dossier temporaire sécurisé !"
     [ "$demo" ] && demo="[démo]"
+    exec 3>>"$1"
     while [ "$code" ]; do
         read dwl
         p=$(basename "$dwl.spack")
@@ -148,12 +150,14 @@ upgrade () {
         [ "$demo" ] || $CURL -o "$tmp/$p" "$url/$dwl.spack"
         if [ $code -ne 0 ]; then
             growl 0 "$p est marqué comme spécial et ne sera pas intégré."
+            echo "$date ! ${p%.spack}" >&3
         elif [ ! "$demo" ]; then
-            spackadd "$tmp/$p"
+            spackadd "$tmp/$p" && echo "$date + ${p%.spack}" >&3
             [ "$save" = "oui" ] || rm -f "$tmp/$p"
         fi
         read code
     done
+    exec 3>&-
     if [ "$save" = "oui" ]; then
         echo "$demo Les paquets téléchargés ont été conservés dans $tmp"
     elif ! rmdir "$tmp" 2>/dev/null; then
@@ -209,11 +213,12 @@ MASTER="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
 LOGDIR="${ROOT:-"/"}var/log/packages"
 CURL="/usr/bin/curl -LRs"
 
-for i in $(getopt AEGLST "$@"); do
+for i in $(getopt AEGJLST "$@"); do
     case "$f$i" in
         A*) eval Attention=\${${i#A}}" $Attention";;
         E*) eval Expert=\${${i#E}};;
         G*) eval Sauvegarde=\${${i#G}};;
+        J*) eval Journal=\${${i#J}};;
         L*) eval Local=\${${i#L}}" $Local";;
         S*) eval Source=\${${i#S}};;
         T*) eval Tampon=\${${i#T}};;
@@ -226,11 +231,12 @@ for i in $(getopt AEGLST "$@"); do
     esac
 done
 
+[ -f "$Journal" ] || Journal="/dev/null"
 [ "$Source" ] || Source="$MASTER"
 Source="$Source/$VERSION/$(uname -m)" # VERSION vient de /etc/os-release.
 db="$Source/paquets.db"
 request "$db" "$Local" "$Attention" \
     | evalpkg "$Expert" $paquets \
-    | upgrade "$Sauvegarde" "$Tampon" "$demo" "$Source"
+    | upgrade "$Sauvegarde" "$Tampon" "$demo" "$Source" "$Journal"
 
 # FdF

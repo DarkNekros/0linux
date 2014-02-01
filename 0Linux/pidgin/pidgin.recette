@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-pidgin}
-VERSION=${VERSION:-2.10.7}
+VERSION=${VERSION:-2.10.8}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-pidgin}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}

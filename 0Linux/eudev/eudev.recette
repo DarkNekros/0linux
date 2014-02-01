@@ -106,6 +106,7 @@ fi
 mv ${PKG}/etc/udev/udev.conf{,.0nouveau}
 
 # On crée le fichier de règles de 0linux :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/udev/rules.d/
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/udev/rules.d/65-0linux-permissions.rules << "EOF"
 # Règles des permissions du système et du matériel pris en charge par Udev.
 

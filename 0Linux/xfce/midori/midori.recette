@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-midori}
-VERSION=${VERSION:-0.5.6}
+VERSION=${VERSION:-0.5.7}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-midori}
 WGET=${WGET:-http://www.midori-browser.org/downloads/${NAMESRC}_${VERSION}_all_.$EXT}

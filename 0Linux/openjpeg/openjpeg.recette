@@ -2,16 +2,20 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-openjpeg}
-VERSION=${VERSION:-1.5.1}
+VERSION=${VERSION:-2.0.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openjpeg}
-WGET=${WGET:-http://openjpeg.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+WGET=(http://openjpeg.googlecode.com/files/$NAMESRC-1.5.1.$EXT
+      http://openjpeg.googlecode.com/files/$NAMESRC-$VERSION.$EXT
+     )
 DESC="Codec JPEG 2000"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile OpenJPEG 1.x :
+preparer_sources $NAMESRC-1.5.1.$EXT
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -29,9 +33,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
-		--enable-shared \
-		--enable-static \
-		--with-jpeg8 \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -40,9 +41,8 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-1.5.1.$EXT
 cflags
-
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -55,6 +55,57 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la doc dans un sous-répertoire :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-1.5.1
+
+# On compile maintenant la version régulière de la recette :
+preparer_sources
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# La compilation se fait dans un répertoire dédié :
+	mkdir -p build
+	cd build
+
+	# Compilation :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	cmake -D CMAKE_BUILD_TYPE=Release \
+		-D CMAKE_INSTALL_PREFIX=/usr \
+		-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+		-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+		-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+		..
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	..
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}

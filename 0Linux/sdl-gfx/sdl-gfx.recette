@@ -2,16 +2,20 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-SDL_gfx}
-VERSION=${VERSION:-2.0.24}
+VERSION=${VERSION:-1.0.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sdl-gfx}
-WGET=${WGET:-http://www.ferzkopp.net/Software/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+WGET=(http://www.ferzkopp.net/Software/$NAMESRC-2.0/$NAMESRC-2.0.24.$EXT
+      http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-$VERSION.$EXT
+     )
 DESC="Bibliothèques graphiques « Simple DirectMedia Layer »"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile SDL_gfx :
+preparer_sources $NAMESRC-2.0.24.$EXT
 cflags
 
 # On régénère les autotools, problématiques avec nos outils :
@@ -35,6 +39,31 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	${MMXOPTION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la doc dans un sous-réperoire :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMESRC}-2.0.24
+
+# On compile SDL2_gfx  :
+preparer_sources SDL2_gfx-$VERSION.tar.gz
+cflags
+
+# On régénère les autotools, problématiques avec nos outils :
+./autogen.sh
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
