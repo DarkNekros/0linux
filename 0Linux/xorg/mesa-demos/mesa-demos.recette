@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-mesa-demos}
-VERSION=${VERSION:-8.0.1}
+VERSION=${VERSION:-8.1.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mesa-demos}
 WGET=${WGET:-ftp://ftp.freedesktop.org/pub/mesa/demos/$VERSION/$NAMESRC-$VERSION.$EXT}
@@ -29,14 +29,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On renomme ces 2 binaires aux noms beaucoup trop génériques :
-if [ -r ${PKG}/usr/bin/clear ]; then
-	mv ${PKG}/usr/bin/{,glx}clear
-fi
-
-if [ -r ${PKG}/usr/bin/line ]; then
-	mv ${PKG}/usr/bin/{,glx}line
-fi
+# On renomme ces binaires aux noms trop génériques :
+for f in bitmap clear line; do
+	if [ -r ${PKG}/usr/bin/${f} ]; then
+		mv ${PKG}/usr/bin/{,glx}${f}
+	fi
+done
 
 installer_doc
 creer_post_installation

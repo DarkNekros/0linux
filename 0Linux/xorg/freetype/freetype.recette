@@ -66,11 +66,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On crée ces liens de rétrocompatibilité car les entêtes ont récemment changé d'emplacement :
-mkdir -p ${PKG}/usr/include/freetype2/freetype
-for lien in $(find ${PKG}/usr/include/freetype2 -type f -name "*.h"); do
-	ln -sf ../$(basename ${lien}) ${PKG}/usr/include/freetype2/freetype/$(basename ${lien})
-done
+# On crée un lien de rétrocompatibilité car les entêtes ont récemment changé d'emplacement :
+ln -sf freetype2 ${PKG}/usr/include/freetype
 
 installer_doc
 creer_post_installation

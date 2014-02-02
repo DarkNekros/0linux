@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xsane}
-VERSION=${VERSION:-0.998}
+VERSION=${VERSION:-0.999}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-xsane}
 WGET=${WGET:-http://www.xsane.org/download/$NAMESRC-$VERSION.$EXT}
@@ -17,11 +17,11 @@ cflags
 # On supprime une antiquité pour quelque chose de plus standard :
 sed -i 's@define DEFAULT_BROWSER "netscape"@define DEFAULT_BROWSER "xdg-open"@' src/xsane.h
 
-# On corrige un appel :
+# On corrige pour les 'libpng' le splus récentes :
 sed -i 's@png_ptr->jmpbuf@png_jmpbuf(png_ptr)@' src/xsane-save.c
 
 # Compilation :
-LDFLAGS="-lpng15" CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \

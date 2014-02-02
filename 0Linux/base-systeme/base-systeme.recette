@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-base-systeme}
-VERSION=${VERSION:-5.0}
+VERSION=${VERSION:-5.0.1}
 NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 
@@ -97,7 +97,6 @@ nsswitch.conf \
 printcap \
 profile \
 securetty \
-services \
 shells \
 termcap-BSD \
 termcap-Linux; do

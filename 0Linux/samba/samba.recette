@@ -100,6 +100,9 @@ chmod 1777 ${PKG}/var/spool/samba
 # Ce répertoire doit être sécurisé :
 chmod 700 $PKG/etc/samba/private
   
+# Ces binaires sont en conflit avec 'tdb', on les supprime :
+rm -f ${PKG}/usr/bin/tdb{backup,dump,restore,tool}
+
 installer_doc
 creer_post_installation
 stripper

@@ -14,6 +14,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige l'installation des fichiers '.po' :
+sed -i 's/mkdir_p = @mkdir_p@/mkdir_p = \$(MKDIR_P)/g' po/Makefile*
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
