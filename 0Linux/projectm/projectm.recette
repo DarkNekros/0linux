@@ -21,16 +21,17 @@ cd build
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_C_FLAGS:STRING="${FLAGS}" \
 	-DCMAKE_CXX_FLAGS:STRING="${FLAGS}" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DFREETYPE2_INCLUDE_DIR="/usr/include/freetype2" \
+	-DINCLUDE-PROJECTM-JACK=ON \
 	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
 	-DMAN_INSTALL_DIR=/usr/man \
-	-DCMAKE_BUILD_TYPE=Release \
 	..
 
 fakeroot make install DESTDIR=${PKG}
-cd ..
 
 # On corrige ce fichier pour inclure LIBDIRSUFFIX :
 sed -i -e "s@^libdir=@libdir=\${exec_prefix}/lib${LIBDIRSUFFIX}@" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libprojectM.pc

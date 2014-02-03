@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-slim}
-VERSION=${VERSION:-1.3.5}
+VERSION=${VERSION:-1.3.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-slim}
 WGET=${WGET:-http://download.berlios.de/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -14,8 +14,13 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige un chemin pour le fichier service :
-sed -i "s@usr/lib/systemd@/usr/lib${LIBDIRSUFFIX}/systemd@" CMakeLists.txt
+# On corrige des problèmes connus :
+cat $CWD/slim.libslim.patch | patch -p1
+cat $CWD/slim.session.patch | patch -p1
+
+# On compile dans un répertoire dédié :
+mkdir build
+cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -23,8 +28,7 @@ cmake \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DLIB_DIR=/usr/lib${LIBDIRSUFFIX} \
-	-DUSE_CONSOLEKIT=no \
-	-DUSE_PAM=no
+	..
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}

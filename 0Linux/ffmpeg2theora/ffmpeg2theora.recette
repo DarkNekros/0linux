@@ -18,7 +18,8 @@ cflags
 cat $CWD/ffmpeg2theora.ffmpeg2.patch | patch -p1
 
 # Compilation :
-export CFLAGS="${FLAGS} -lm" CXXFLAGS="${FLAGS} -lm"
+export LDFLAGS="${LDFLAGS} -lm"
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 scons
 fakeroot scons install prefix=/usr mandir="PREFIX/man" destdir=${PKG}
 
