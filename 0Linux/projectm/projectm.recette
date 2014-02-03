@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-projectM}
-VERSION=${VERSION:-2.0.1}
+NAMESRC=${NAMESRC:-projectM-complete}
+VERSION=${VERSION:-2.1.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-projectm}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION-Source.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/projectm/$NAMESRC-$VERSION-Source.$EXT}
 DESC="Greffon de visualisation d'effets sur flux audio"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -14,27 +14,33 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On cré&e un répertoire isolé pour la compilation :
+# On crée un répertoire isolé pour la compilation :
 mkdir -p build
 cd build
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" LDFLAGS+="-lGL" \
 cmake \
 	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_C_FLAGS:STRING="${FLAGS}" \
-	-DCMAKE_CXX_FLAGS:STRING="${FLAGS}" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DFREETYPE2_INCLUDE_DIR="/usr/include/freetype2" \
+	-DFREETYPE2_INCLUDE_DIR=/usr/include/freetype2 \
 	-DINCLUDE-PROJECTM-JACK=ON \
+	-DLIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX} \
 	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
 	-DMAN_INSTALL_DIR=/usr/man \
 	..
 
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On corrige ce fichier pour inclure LIBDIRSUFFIX :
-sed -i -e "s@^libdir=@libdir=\${exec_prefix}/lib${LIBDIRSUFFIX}@" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libprojectM.pc
+# C'est codé en dur de partout, on a plus vite fait de déplacer et corriger les fichiers .pc :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	cp -ar ${PKG}/usr/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	rm -rf ${PKG}/usr/lib
+fi
+
+# On corrige ces fichiers '.pc' :
+sed -i "s@^libdir=.*@libdir=\${exec_prefix}/lib${LIBDIRSUFFIX}@" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/*.pc
 
 installer_doc
 creer_post_installation
