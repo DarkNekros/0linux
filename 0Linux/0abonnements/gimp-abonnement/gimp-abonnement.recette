@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMETGZ=${NAMETGZ:-gimp-abonnement}
+VERSION=${VERSION:-1}
+DESC="Le programme de manipulation d'images GIMP et ses programmes additionnels"
+EXTRADEPS="gmic"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Janvier 2014
+
+= GIMP, le programme de manipulation et de retouche d'images et ses programmes additionnels =
+
+GIMP est un programme de retouche et de manipulation d'images, littéralement le « GNU Image Manipulation Program ». GIMP est utilisable pour une grande variété de tâches de manipulations d'images comme la retouche photo, la composition ou la création d'images. Il offre de nombreuses fonctionnalités. Il peut être utilisé comme un simple programme de dessin, comme un programme de retouche photo, comme un système en ligne de traitement par lot, comme un générateur d'image pour la production en masse, pour convertir un format d'image en un autre.
+
+GIMP est extensible. On peut lui ajouter de nombreux « Greffons » (plug-ins). Une interface de scripts bien développée permet de créer des procédures, les scripts, regroupant plusieurs opérations.
+Voici un condensé des fonctionnalités de GIMP:
+
+  - Suite complète d'outils de dessin comprenant un crayon, un pinceau, un aérographe, un outil de clonage, etc...
+  - Gestion partitionnée de la mémoire de telle façon que la taille de l'image ne soit limitée que par l'espace disque disponible,
+  - Échantillonnage des sous-pixels pour tous les outils de dessin pour un anticrénelage de qualité,
+  - Support de la transparence via un canal Alpha,
+  - Calques et canaux
+  - Une suite de procédures pour appeler les fonctions internes de GIMP à partir de programmes extérieurs tels que les Script-Fu,
+  - Capacités avancées de script (Perl, Python, Ruby, C#)
+  - Historique illimité d'annulation,
+  - Outils de transformations tels que rotation, mise à l'échelle, cisaillement et miroir,
+  - Nombreux format de fichiers acceptés : GIF, JPEG, PNG, XPM, TIFF, TGA, MPEG, PS, PDF, PCX, BMP et plein d'autres,
+  - Outils de sélection tels que rectangle, ellipse, main levée, par couleur, contiguë, courbes de Bézier et ciseaux intelligents,
+  - Greffons qui autorisent l'extension du programme de base par des réalisations extérieures téléchargeables.
+
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient le logiciel GIMP complet ainsi que la suite d'outils graphiques G'MIC offrant des fonctionnalités additionnelles.
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.

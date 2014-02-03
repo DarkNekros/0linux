@@ -23,8 +23,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" python waf build
 fakeroot python waf install --destdir=${PKG}
 
 # On veille à ne rien écraser :
-for i in $(find ${PKG}/etc/ardour$(echo $VERSION | cut -d'.' -f1) -type f); do
-	mv ${PKG}/etc/ardour$(echo $VERSION | cut -d'.' -f1)/$(basename $i){,.0nouveau}
+for i in ${PKG}/etc/ardour$(echo $VERSION | cut -d'.' -f1)/*; do
+	mv ${i}{,.0nouveau}
 done
 
 # On crée le raccourci bureau :
