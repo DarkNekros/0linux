@@ -15,21 +15,18 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige un lien pour le greffon 'zynaddsubfx' :
-cat $CWD/lmms.unlink.patch | patch -p1
+# On corige des chemins erronés pour le greffon 'zynaddsubfx' :
+cp $CWD/zynaddsubfx-CMakeLists.txt plugins/zynaddsubfx/CMakeLists.txt
 
-# On définit la bibliothèque installée de STK :
-STKLIB=$(find /usr/lib${LIBDIRSUFFIX} -type f -name "libstk.so.?.?.?" 2>/dev/null || true)
+# On compile dans un répertoire dédié :
+mkdir -p build && cd build
 
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=OFF \
 	-D CMAKE_INSTALL_LIBDIR=/usr/lib${LIBDIRSUFFIX} \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D STK_INCLUDE_DIR=/usr/include/stk \
-	-D STK_LIBRARY=${STKLIB} \
 	-USE=vst \
 	../
 

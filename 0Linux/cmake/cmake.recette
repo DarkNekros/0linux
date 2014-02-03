@@ -15,9 +15,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On adapte le module aux dernières versions de 'freetype' concernant les entêtes:
-sed -i -e 's@PATH_SUFFIXES include/freetype2 include@PATH_SUFFIXES include/freetype2 include/freetype include@g' \
-	-e 's@find_path(FREETYPE_INCLUDE_DIR_freetype2 freetype/config/ftheader.h@find_path(FREETYPE_INCLUDE_DIR_freetype2 config/ftheader.h@' \
-	Modules/FindFreetype.cmake
+cat $CWD/cmake.FindFreetype.patch | patch -p0
 
 # Un répertoire dédié à la compilation est conseillé :
 mkdir build && cd build
@@ -34,6 +32,9 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 cd -
+
+# La bonne blague avec ce renommage récent du répertoire partagé :
+ln -sf cmake-$(echo ${VERSION} | cut -d'.' -f1-2) ${PKG}/usr/share/cmake
 
 # On place les fichiers syntaxe pour 'vim' et 'emacs' :
 mkdir -p ${PKG}/usr/share/{emacs/site-lisp,vim/{indent,syntax}}
