@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-bluefish}
-VERSION=${VERSION:-2.2.4}
+VERSION=${VERSION:-2.2.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-bluefish}
 WGET=${WGET:-http://www.bennewitz.com/$NAMESRC/stable/source/$NAMESRC-$VERSION.$EXT}
