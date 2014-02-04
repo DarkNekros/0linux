@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-MesaLib}
-VERSION=${VERSION:-10.0.2}
+VERSION=${VERSION:-10.0.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mesa}
 WGET=${WGET:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT}

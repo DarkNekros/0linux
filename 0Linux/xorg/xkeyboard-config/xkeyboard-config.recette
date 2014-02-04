@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xkeyboard-config}
-VERSION=${VERSION:-2.10.1}
+VERSION=${VERSION:-2.11}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xkeyboard-config}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/data/$NAMESRC/$NAMESRC-$VERSION.$EXT}

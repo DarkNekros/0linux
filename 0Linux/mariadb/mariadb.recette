@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-mysql}
-VERSION=${VERSION:-5.5.36}
+NAMESRC=${NAMESRC:-mariadb}
+VERSION=${VERSION:-5.5.35}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-mysql}
-WGET=${WGET:-http://ftp.gwdg.de/pub/misc/mysql/Downloads/MySQL-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DESC="Le serveur de bases de données MySQL"
+NAMETGZ=${NAMETGZ:-mariadb}
+WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/$NAMESRC/$NAMESRC-$VERSION/kvm-tarbake-jaunty-x86/$NAMESRC-$VERSION.$EXT}
+DESC="Le serveur de bases de données MariaDB, remplaçant libre de MySQL"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -15,7 +15,6 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On crée les répertoires d'accueil :
-mkdir -p ${PKG}/etc/mysql
 mkdir -p ${PKG}/usr/include/mysql/private/atomic
 mkdir -p ${PKG}/var/{log,{lib,run}/mysql}
 
@@ -24,10 +23,14 @@ mkdir build
 cd build
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS} -felide-constructors -fno-exceptions -fno-rtti" \
-cmake \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake .. \
 	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_C_FLAGS="-fPIC ${CFLAGS} -fno-strict-aliasing -DBIG_JOINS=1 -fomit-frame-pointer" \
+	-DCMAKE_CXX_FLAGS="-fPIC ${CXXFLAGS} -fno-strict-aliasing -DBIG_JOINS=1 -felide-constructors -fno-rtti" \
 	-DBUILD_CONFIG=mysql_release \
+	-DDEFAULT_CHARSET=utf8 \
+	-DDEFAULT_COLLATION=utf8_general_ci \
 	-DENABLED_LOCAL_INFILE=ON \
 	-DFEATURE_SET="community" \
 	-DINSTALL_DOCDIR=doc/${NAMETGZ}-${VERSION}/docs \
@@ -44,6 +47,7 @@ cmake \
 	-DINSTALL_SCRIPTDIR=bin \
 	-DINSTALL_SQLBENCHDIR= \
 	-DINSTALL_SUPPORTFILESDIR=share/mysql \
+	-DMANUFACTURER="0Linux" \
 	-DMYSQL_DATADIR="/var/lib/mysql" \
 	-DMYSQL_UNIX_ADDR="/var/run/mysql/mysql.sock" \
 	-DWITH_ARCHIVE_STORAGE_ENGINE=1 \
@@ -51,13 +55,13 @@ cmake \
 	-DWITH_EMBEDDED_SERVER=ON \
 	-DWITH_EXTRA_CHARSETS=complex \
 	-DWITH_INNOBASE_STORAGE_ENGINE=1 \
+	-DWITH_MYSQLD_LDFLAGS="${LDFLAGS}" \
 	-DWITH_PARTITION_STORAGE_ENGINE=1 \
 	-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
 	-DWITHOUT_FEDERATED_STORAGE_ENGINE=1 \
 	-DWITH_READLINE=ON \
 	-DWITH_SSL=system \
-	-DWITH_ZLIB=system \
-	..
+	-DWITH_ZLIB=system
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
@@ -85,10 +89,14 @@ rm -rf ${PKG}/usr/{mysql-test,sql-bench}
 
 # On place une configuration par défaut pour serveur de taille « moyenne » 
 # en prenant garde à ne rien écraser de plus ancien :
-cp ${PKG}/usr/share/mysql/my-medium.cnf ${PKG}/etc/mysql/my.cnf.0nouveau
+cp ${PKG}/usr/share/mysql/my-medium.cnf ${PKG}/etc/my.cnf.0nouveau
 
-# On déplace ce fichier '.conf' en veillant à ne rien écraser : :
-mv ${PKG}/usr/bin/mysqlaccess.conf ${PKG}/etc/mysqlaccess.conf.0nouveau
+for i in client mysql-clients server tokudb; do
+	mv ${PKG}/etc/my.cnf.d/${i}.cnf{,.0nouveau}
+done
+
+# On place 'mysqlaccess.conf' en prenant garde à ne rien écraser :
+cp scripts/mysqlaccess.conf ${PKG}/etc/mysqlaccess.conf.0nouveau
 
 # On crée le fichier service, désactivé par défaut :
 mkdir -p ${PKG}/etc/rc.d
@@ -137,6 +145,9 @@ case "$1" in
 esac
 
 EOF
+
+# Et on supprime celui-ci :
+rm -rf ${PKG}/etc/init.d
 
 installer_doc
 creer_post_installation

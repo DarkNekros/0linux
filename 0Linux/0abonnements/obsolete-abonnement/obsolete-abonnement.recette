@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-obsolete-abonnement}
-VERSION=${VERSION:-2}
+VERSION=${VERSION:-3}
 DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -47,6 +47,7 @@ cat >> ${PKG}/post-install.sh << "EOF"
 	kdetoys \
 	lcms2 \
 	libssh2 \
+	mysql \
 	ndiswrapper \
 	python3 \
 	raptor2 \
@@ -102,6 +103,7 @@ kdesdk: supprimé dans la distribution de KDE
 kdetoys: supprimé dans la distribution de KDE
 lcms2: fusionné dans 'lcms'
 libssh2: fusionné dans 'libssh'
+mysql : remplacé par 'mariadb'
 ndiswrapper: supprimé, inutile
 python3: fusionné dans 'python'
 raptor2: fusionné dans  'raptor'
