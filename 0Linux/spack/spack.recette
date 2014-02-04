@@ -3,7 +3,7 @@
 # Merci à Seb pour sa constance !
 
 NAMESRC=${NAMESRC:-spack}
-VERSION=${VERSION:-3.10}
+VERSION=${VERSION:-3.11}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-spack}
 WGET=${WGET:-http://requiescant.tuxfamily.org/files/$NAMESRC-$VERSION.$EXT}
