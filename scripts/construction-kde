@@ -75,7 +75,6 @@ kdeartwork
 oxygen-gtk2
 oxygen-gtk3
 kde-gtk-config
-kdeadmin
 libmygpo-qt
 libkcompactdisc
 libkcddb
@@ -87,11 +86,9 @@ juk
 kscd
 k3b
 telepathy-qt
-kdenetwork
 wicd-kde
 knemo
 smb4k
-kdetoys
 kde-l10n-fr
 libkgapi
 kdepim-runtime
@@ -183,7 +180,6 @@ krecipes
 kdenlive
 kvirc
 kdevplatform
-kdesdk
 massif-visualizer
 kdewebdev
 kdevelop
