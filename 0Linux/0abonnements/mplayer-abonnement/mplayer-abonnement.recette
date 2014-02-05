@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMETGZ=${NAMETGZ:-mplayer-abonnement}
+VERSION=${VERSION:-1}
+DESC="Le lecteur multimédia MPlayer, ses codecs et habillages"
+EXTRADEPS="mplayer mplayer-codecs mplayer-skins"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Février 2014
+
+= Le lecteur multimédia MPlayer, ses codecs et habillages =
+
+MPlayer est un lecteur vidéo et multimédia pour les systèmes de type Unix. Il lit la plupart des fichiers MPEG, VOB, AVI, Ogg/OGM, VIVO, ASF/WMA/WMV, QT/MOV/MP4, FLI, RM, NuppelVideo, yuv4mpeg, FILM, RoQ, PVA gérés par des codecs natifs, XAnim, RealPlayer et Win32 DLL. Il peut aussi lire des films VideoCD, SVCD, DVD, 3ivx, RealMedia et DivX.
+
+MPlayer dispose d'une large variété de pilotes de sortie supportés. Il fonctionne avec X11, Xv, DGA, OpenGL, SVGAlib, fbdev, DirectFB, mais aussi SDL (plus tous ses pilotes) et certains pilotes de bas niveau spécifiques à une carte (Matrox, 3Dfx, Radeon, Mach64 et Permedia3). La plupart d'entre eux gèrent le redimensionnement logiciel ou matériel, permettant par conséquent l'affichage plein écran. MPlayer est également capable d'utiliser quelques cartes de décodage MPEG matériel, tels que les DVB et DXR3/Hollywood+.
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient le logiciel MPlayer complet ainsi qu'un ensemble de codecs supplémentaires et un jeu d'habillages visuels pour l'interface graphique.
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.

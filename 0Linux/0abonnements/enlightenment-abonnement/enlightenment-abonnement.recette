@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMETGZ=${NAMETGZ:-enlightenment-abonnement}
+VERSION=${VERSION:-1}
+DESC="L'environnement graphique Enlightenment"
+EXTRADEPS="enlightenment efl evas_generic_loaders emotion_generic_players elementary expedite exquisite"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Janvier 2014
+
+= L'environnement graphique Enlightenment et ses bibliothèques EFL =
+
+Enlightenment DR17 (ou « E17 ») est un gestionnaire de fenêtres ainsi qu'un environnement graphique original et avancé prenant en charge les arrière-plans animés, l'animation et l'ombrage des fenêtres, le tout basé sur un ensemble cohérent et optimisé de bibliothèques , les « EFL ».
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient l'environnement Enlightenment complet ainsi que quelques logiciels complémentaires intégrés au fur et à mesure de leur publication.
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.

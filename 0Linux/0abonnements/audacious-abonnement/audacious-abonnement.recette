@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMETGZ=${NAMETGZ:-audacious-abonnement}
+VERSION=${VERSION:-1}
+DESC="Lecteur multimédia basé sur Beep/XMMS et ses greffons"
+EXTRADEPS="audacious audacious-plugins libmcs libmowgli"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Janvier 2014
+
+= Audacious, lecteur audio léger et rapide qui prend en charge de nombreux formats =
+
+Audacious est un lecteur audio léger et rapide en GTK+ basé sur Beep/XMMS qui prend en charge de nombreux formats. Audacious est un dérivé de beep-media-player qui supporte les habillages (ou « skins ») de Winamp et de nombreux codecs (codeurs-décodeurs).
+
+Les codecs suivants sont supportés par défaut :
+
+  - MP3
+  - Ogg Vorbis / Theora
+  - AAC / AAC+
+  - FLAC
+  - ALAC
+  - Windows Media (WMA)
+  - WAV
+
+
+De plus, Audacious est extensible par des greffons, et fournit d'autres fonctionnalités utiles ainsi que la prise en charge de nombreux codecs supplémentaires.
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient le logiciel Audacious complet, ses greffons ainsi que des bibliothèques dédiées.
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.
