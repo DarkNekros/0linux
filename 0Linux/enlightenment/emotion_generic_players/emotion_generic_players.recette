@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-evas_generic_loaders}
+NAMESRC=${NAMESRC:-emotion_generic_players}
 VERSION=${VERSION:-1.8.1}
 EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-evas_generic_loaders}
+NAMETGZ=${NAMETGZ:-emotion_generic_players}
 WGET=${WGET:-http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DESC="Bibliothèques supplémentaires de rendu graphique pour E"
+DESC="Codecs vidéo supplémentaires pour E"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

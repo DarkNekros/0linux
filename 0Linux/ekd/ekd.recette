@@ -7,6 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ekd}
 WGET=${WGET:-http://download.tuxfamily.org/ekdforum/ekd/appli/linux/sources/ekd_linux_source_$(echo ${VERSION} | tr '.' '_')_20120814.$EXT} # Version différente !
 DESC="Logiciel de post-production vidéo"
+EXTRADEPS="gmic"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
