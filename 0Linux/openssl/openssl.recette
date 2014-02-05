@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-openssl}
-VERSION=${VERSION:-1.0.1e}
+VERSION=${VERSION:-1.0.1f}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssl}
 WGET=${WGET:-http://www.openssl.org/source/$NAMESRC-$VERSION.$EXT}
@@ -23,9 +23,12 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On corrige la syntaxe de la doc avec les plus récents 'perl' :
 	cat $CWD/openssl.pod-syntax.patch | patch -p1
 	
-	# On corrige les drapeaux de compilation... :
-	sed -i  's@"linux-elf",	"gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",@"linux-elf",	"gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m32 -march=i686 -pipe -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des}@' Configure
-
+	# On corrige l'appel au compilateur :
+	sed -i 's@CC=\$\${CC:-\$(CC)}@CC="\$\${CC:-\$(CC)}"@' Makefile.org
+	
+	# On corrige l'emplacement des certificats :
+	sed -i 's@\./demoCA@/etc/ssl@g' apps/{CA.pl.in,CA.sh,openssl.cnf}
+	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./Configure \
@@ -34,10 +37,11 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--openssldir=/etc/ssl \
 		linux-elf \
 		shared \
-		zlib
+		zlib \
+		-Wa,--noexecstack "${FLAGS}" "${LDFLAGS}"
 	
 	make MAKEDEPPROG="${CC}" depend
-	make
+	make ${JOBS} || make
 	fakeroot make install PERL=/usr/bin/perl MANDIR=/usr/man INSTALL_PREFIX=${PKG}
 fi
 
@@ -56,6 +60,12 @@ else
 	TARGETOPT="linux-elf"
 fi
 
+# On corrige l'appel au compilateur :
+sed -i 's@CC=\$\${CC:-\$(CC)}@CC="\$\${CC:-\$(CC)}"@' Makefile.org
+
+# On corrige l'emplacement des certificats :
+sed -i 's@\./demoCA@/etc/ssl@g' apps/{CA.pl.in,CA.sh,openssl.cnf}
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./Configure \
@@ -64,10 +74,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--openssldir=/etc/ssl \
 	${TARGETOPT} \
 	shared \
-	zlib
+	zlib \
+	-Wa,--noexecstack "${FLAGS}" "${LDFLAGS}"
 
 make depend
-make
+make ${JOBS} || make
 fakeroot make install PERL=/usr/bin/perl MANDIR=/usr/man INSTALL_PREFIX=${PKG}
 
 # On veille à ne pas écraser la configuration en place :
