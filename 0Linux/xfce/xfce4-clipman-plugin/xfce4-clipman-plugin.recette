@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xfce4-clipman-plugin}
-VERSION=${VERSION:-1.2.4}
+VERSION=${VERSION:-1.2.5}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-clipman-plugin}
 WGET=${WGET:-http://archive.xfce.org/src/panel-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}

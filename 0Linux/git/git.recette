@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-git}
-VERSION=${VERSION:-1.8.5.3}
+VERSION=${VERSION:-1.8.5.4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-git}
 WGET=(http://git-core.googlecode.com/files/$NAMESRC-$VERSION.$EXT

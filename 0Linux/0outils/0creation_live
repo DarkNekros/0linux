@@ -29,8 +29,8 @@ if [ "$1" != "--mini" -a "$1" != "--base" -a "$1" != "--maxi" -o ! -d "$2" -o  "
 	echo "amovible (DVD, clé USB, etc.), contenant le noyau, un système minimal,"
 	echo "l'installateur et éventuellement les paquets du système 0linux."
 	echo "'$0' doit être suivie de l'option --mini, --base ou --maxi,"
-	echo "puis de l'emplacement des paquets (contenant les répertoires 'base/',"
-	echo "'opt/', 'xorg/' et éventuellement 'apps/')"
+	echo "puis de l'emplacement des paquets, contenant le répertoire de "
+	echo "l'architecture visée ('x86_64/', 'i686/', etc.)."
 	echo ""
 	echo "Créer une image du système autonome nu, dépourvue de paquets :"
 	echo "	$0 --mini /quelque/part/paquets/"
@@ -69,9 +69,6 @@ NOYAU=${NOYAU:-$TMP/noyau}
 if [ ! -d "${PAQUETS}" ]; then
 	echo "Erreur : ${PAQUETS} n'est pas un répertoire existant !"
 	exit 1
-elif [ ! -d "${PAQUETS}/base" -o ! -d "${PAQUETS}/opt" -o ! -d "${PAQUETS}/xorg" ]; then
-	echo "Erreur : ${PAQUETS} ne contient pas les sous-répertoires requis (base, opt et xorg) !"
-	exit 1
 fi
 
 mkdir -p $TMP
@@ -86,57 +83,103 @@ mkdir -p ${MEDIAROOT}/{boot/isolinux,0/paquets}
 echo "Installation du système temporaire dans ${LIVEOS} : "
 
 # base :
-echo "Installation du dépôt base... "
+echo "Installation du système de base... "
 
-spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "busybox*")
-spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "base-systeme*")
-spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "glibc*")
-spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "readline*")
-spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "ncurses*")
-spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "bash*")
-spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "sgml-*")
-
-for paq in $(find ${PAQUETS}/base -type f \
-	\! -name "base-systeme*" \
-	\! -name "bash*" \
-	\! -name "busybox*" \
-	\! -name "linux*" \
-	\! -name "ncurses*" \
-	\! -name "ndiswrapper*" \
-	\! -name "readline*" \
-	\! -name "sgml-*" \
-	-name "*.spack" | sort); do
-	spackadd --quiet --root=${LIVEOS} ${paq}
+# On installe un système minimal, merci à myou pour le tri :
+for paq in \
+busybox \
+base-systeme \
+tzdata \
+glibc \
+readline \
+ncurses \
+bash \
+sgml-common \
+zlib \
+file \
+gmp \
+mpfr \
+gcc \
+sed \
+bzip2 \
+pkg-config \
+shadow \
+util-linux \
+psmisc \
+procps \
+e2fsprogs \
+coreutils \
+iana-etc \
+m4 \
+flex \
+bison \
+grep \
+bc \
+libtool \
+gdbm \
+inetutils \
+perl \
+diffutils \
+gawk \
+findutils \
+xz \
+less \
+gzip \
+iproute2 \
+kbd \
+kmod \
+libpipeline \
+make \
+patch \
+sysklogd \
+sysvinit \
+tar \
+texinfo \
+eudev \
+vim \
+spack \
+0outils \
+curl \
+dhcpcd \
+initialisation-systeme \
+libcap \
+acl \
+attr \
+pcre \
+glib \
+net-tools \
+rsync \
+libidn \
+openldap \
+popt \
+rtmpdump \
+libssh \
+cyrus-sasl \
+cpio \
+dbus \
+openssl \
+expat \
+libffi \
+openssh \
+libelf \
+berkeley-db \
+iptables \
+dosfstools \
+jfsutils \
+lvm2 \
+fuse \
+ntfs-3g_ntfsprogs \
+squashfs \
+sqlite \
+parted \
+reiserfsprogs \
+xfsprogs \
+linux; do
+	spackadd --quiet --root=${LIVEOS} ${PAQUETS}/${paq}/*.spack
 done
 
 # On réinstalle 'base-systeme' par sécurité (utilisateurs/groupes possiblement manquants) :
-spackadd -f --quiet --root=${LIVEOS} $(find ${PAQUETS}/base -type f -name "base-systeme*")
-
-# Le noyau en dernier (appels à 'make' en post-installation) :
-spackadd --quiet --root=${LIVEOS} ${PAQUETS}/base/linux-*.spack
-spackadd --quiet --root=${LIVEOS} ${PAQUETS}/base/ndiswrapper-*.spack
-
-# xorg :
-echo "Installation du dépôt xorg... "
-spackadd --quiet --root=${LIVEOS} ${PAQUETS}/xorg/{fontconfig*,freetype*,lib*}.spack
-
-# opt :
-echo "Installation du dépôt opt... "
-for paq in \
-bc-* \
-cyrus-sasl-* \
-lesstif* \
-libidn-* \
-libpng-* \
-libssh-* \
-libpcap-* \
-lzo-* \
-openldap-* \
-popt-* \
-rtmpdump-* \
-sqlite-*; do
-	spackadd --quiet --root=${LIVEOS} ${PAQUETS}/opt/${paq}.spack
-done
+spackadd -f --quiet --root=${LIVEOS} ${PAQUETS}/base-systeme/*.spack 2>&1 &>/dev/null
 
 # On nettoie tous les fichiers '*.0nouveau' :
 for f in $(find ${LIVEOS}/etc -type f -name "*.0nouveau"); do
@@ -148,16 +191,14 @@ echo "Nettoyage en cours... "
 mkdir -p ${LIVEOS}/conserver/usr/lib${LIBDIRSUFFIX}
 
 for libbb in \
-libICE.so* \
-libSM.so* \
-libX*.so* \
+libattr.so* \
+libacl.so* \
 libbz2.so* \
+libcap.so* \
 lib*curse*.so* \
 libdb-*.so* \
 libdbus-*.so* \
 libexpat.so* \
-libfontconfig*.so* \
-libfreetype.so* \
 libgcc_s.so* \
 libgcj.so* \
 libgcrypt.so* \
@@ -172,11 +213,11 @@ libgthread-*.so* \
 libidn.so* \
 liblber*.so* \
 libldap*.so* \
-liblzo*.so* \
 libpcap*.so* \
 libpcre.so* \
 libperl.so* \
 libpopt.so* \
+libpcre.so* \
 libpython*.so* \
 libqrencode.so* \
 libmpc.so* \
@@ -185,14 +226,14 @@ librtmp-*.so* \
 libnettle*.so* \
 libsasl*.so* \
 libsqlite*.so* \
-libssh2.so* \
+libssh*.so* \
 libstdc++.so* \
 libtasn1.so* \
 libxcb.so* \
 libxml2.so* \
 libxtables.so* \
 libz.so*; do
-	find ${LIVEOS}/usr/lib${LIBDIRSUFFIX} -type f -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/usr/lib${LIBDIRSUFFIX} \;
+	find ${LIVEOS}/usr/lib${LIBDIRSUFFIX} -type f -name "${libbb}" -exec cp -a {} ${LIVEOS}/conserver/usr/lib${LIBDIRSUFFIX}/ \;
 done
 
 # On se garde également 'minivim' :
@@ -208,27 +249,24 @@ cp ${LIVEOS}/usr/man/man8/0g.8.xz ${LIVEOS}/conserver/
 
 # On désinstalle les gros paquets superflus, maintenant qu'on a les bibliothèques en lieu sûr :
 for paq in \
-autoconf-* \
-automake-* \
-berkeley-db-* \
-binutils-* \
-cyrus-sasl-* \
-dialog-* \
-freetype-* \
-gcc-* \
-gettext-* \
-lesstif-* \
-libssh2-* \
-lzo-* \
-openldap-client-* \
-perl-* \
-popt-* \
-python-* \
-qrencode-* \
-rtmtpdump* \
-sgml-common-* \
-sqlite-* \
-vim-*; do
+berkeley-db \
+binutils \
+cyrus-sasl \
+dialog \
+gcc \
+gettext \
+glib \
+libssh \
+openldap-client \
+pcre
+perl \
+popt \
+python \
+qrencode \
+rtmtpdump \
+sgml-common \
+sqlite \
+vim; do
 	chroot ${LIVEOS} /usr/sbin/spackrm /var/log/paquets/${paq}
 done
 
