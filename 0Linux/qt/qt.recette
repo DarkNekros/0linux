@@ -30,7 +30,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	cat $CWD/qt.bug-31579.patch | patch -p1
 	
 	# On corrige un problème identifié par les développeurs :
-	cat $CWD/qt.bugs-32534.patch | patch -p1
+	cat $CWD/qt.bug-32534.patch | patch -p1
 	
 	# On corrige les chemins de X11 codés en dur :
 	for fichier in $(grep -lr "X11R6" *); do
@@ -132,7 +132,7 @@ cat $CWD/qt.cups.patch | patch -p1
 cat $CWD/qt.bug-31579.patch | patch -p1
 
 # On corrige un problème identifié par les développeurs :
-cat $CWD/qt.bugs-32534.patch | patch -p1
+cat $CWD/qt.bug-32534.patch | patch -p1
 
 # On corrige les chemins de X11 codés en dur :
 for fichier in $(grep -lr "X11R6" *); do

@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-exaile}
-VERSION=${VERSION:-3.3.0}
+VERSION=${VERSION:-3.3.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-exaile}
 WGET=${WGET:-http://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2).x/$VERSION/+download/$NAMESRC-$VERSION.$EXT}
