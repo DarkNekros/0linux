@@ -436,11 +436,11 @@ echo "Terminé."
 rm -rf ${MEDIAROOT}/0/paquets/*
 
 # On copie les paquets selon l'option choisie :
-if [ "${1}" = "--base" ]; then
-	rsync -a --delete-after ${PAQUETS}/{base,opt,xorg} ${MEDIAROOT}/0/paquets
-elif [ "${1}" = "--maxi" ]; then
-	rsync -a --delete-after ${PAQUETS}/{base,opt,xorg,apps} ${MEDIAROOT}/0/paquets
-fi
+#if [ "${1}" = "--base" ]; then
+#	rsync -a --delete-after ${PAQUETS}/{base,opt,xorg} ${MEDIAROOT}/0/paquets
+#elif [ "${1}" = "--maxi" ]; then
+#	rsync -a --delete-after ${PAQUETS}/{base,opt,xorg,apps} ${MEDIAROOT}/0/paquets
+#fi
 
 # On s'assure des permissions :
 chown -R root:root ${MEDIAROOT}/* 2> /dev/null || true

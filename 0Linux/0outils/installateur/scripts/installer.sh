@@ -5,9 +5,8 @@ unset BLURB DIR0
 
 # Quelques vérif' avant l'installation des paquets :
 MEDIACHOISI="$(cat $TMP/choix_media)"
-if [ ! -d ${MEDIACHOISI}/base ]; then
-	echo "Erreur fatale : le média choisi ne contient pas le dépôt 'base' !"
-	echo "Le répertoire '${MEDIACHOISI}/base' n'existe pas."
+if [ ! -d ${MEDIACHOISI} ]; then
+	echo "Erreur fatale : le média choisi ${MEDIACHOISI} n'est pas un répertoire !"
 	echo "Retour au menu principal..."
 	sleep 3
 elif [ "${SETUPROOT}" = "" ]; then

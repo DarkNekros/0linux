@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-3.11.1}
+VERSION=${VERSION:-3.13.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-linux}
 # Le nommage des versions « .0 » est incohérent :
@@ -12,6 +12,7 @@ else
 	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$VERSION.$EXT}
 fi
 DESC="Le noyau Linux avec ses modules, ses firmwares, ses entêtes et son code source complet"
+EXTRADEPS="make"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
