@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-kde-dev-scripts}
-VERSION=${VERSION:-4.12.0}
+VERSION=${VERSION:-4.12.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kde-dev-scripts}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}

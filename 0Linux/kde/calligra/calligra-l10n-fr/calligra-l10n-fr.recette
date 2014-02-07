@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-calligra-l10n-fr}
-VERSION=${VERSION:-2.7.4}
+VERSION=${VERSION:-2.7.5}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-calligra-l10n-fr}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/calligra-$VERSION/calligra-l10n/$NAMESRC-$VERSION.$EXT}

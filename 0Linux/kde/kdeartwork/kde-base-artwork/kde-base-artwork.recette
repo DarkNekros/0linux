@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-kubrick}
+NAMESRC=${NAMESRC:-kde-base-artwork}
 VERSION=${VERSION:-4.12.1}
 EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kubrick}
+NAMETGZ=${NAMETGZ:-kde-base-artwork}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
-DESC="Le fameux « Rubik's Cube » pour KDE"
-########################################
+DESC="Ressources de bases pour une installation minimale de KDE"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -28,6 +27,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
+	-D BUILD_KTEXTEDITOR=ON \
 	./ ../
 
 make -j${JOBS} || make

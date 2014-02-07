@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-oxygen-gtk2}
-VERSION=${VERSION:-1.3.4}
+VERSION=${VERSION:-1.4.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-oxygen-gtk2}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
