@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-harfbuzz}
-VERSION=${VERSION:-0.9.15}
+VERSION=${VERSION:-0.9.26}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-harfbuzz}
 WGET=${WGET:-http://www.freedesktop.org/software/$NAMESRC/release/$NAMESRC-$VERSION.$EXT}

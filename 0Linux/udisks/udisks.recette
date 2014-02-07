@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-udisks}
-VERSION=${VERSION:-2.1.1}
+VERSION=${VERSION:-2.1.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-udisks}
 WGET=(http://hal.freedesktop.org/releases/$NAMESRC-1.0.4.tar.gz

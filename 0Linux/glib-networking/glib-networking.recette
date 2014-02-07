@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-glib-networking}
-VERSION=${VERSION:-2.36.1}
+VERSION=${VERSION:-2.38.2}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-glib-networking}
 WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
