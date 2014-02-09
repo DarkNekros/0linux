@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-flashplayer}
-VERSION=${VERSION:-11.2.202.327}
+VERSION=${VERSION:-11.2.202.336}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-flashplayer}
 WGET=(http://fpdownload.macromedia.com/get/flashplayer/pdc/${VERSION}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.i386.${EXT}

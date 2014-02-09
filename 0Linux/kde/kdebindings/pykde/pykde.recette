@@ -7,7 +7,6 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-pykde}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Interface Python pour les bibliothèques de KDE"
-########################################
 
 . /usr/share/0outils/fonctions_paquets.sh
 
