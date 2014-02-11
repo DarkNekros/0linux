@@ -38,7 +38,7 @@ chmod 755 /
 chmod 1777 /tmp /var/lock /var/tmp
 
 # Lancement de SSH :
-if [ -x /etc/rc.d/rc.ntp ]; then
+if [ -x /etc/rc.d/rc.sshd ]; then
 	/etc/rc.d/rc.sshd start
 fi
 
