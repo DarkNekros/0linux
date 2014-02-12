@@ -2,7 +2,7 @@
 #
 # 0G - gestionnaire distant pour 0linux.
 
-# Copyright (c) 2012, 2013 Sébastien Boillod <sbb at tuxfamily dot org>.
+# Copyright (c) 2012, 2013, 2014 Sébastien Boillod <sbb at tuxfamily dot org>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -26,7 +26,7 @@ if [ -f "$CONFIG" ]; then
     . "$CONFIG"
 fi
 
-unset Attention Expert Journal Local Sauvegarde Source Tampon
+unset Attention Cache Expert Journal Local Sauvegarde Source Tampon
 CONFIG="/etc/0outils/0g.conf"
 if [ -f "$CONFIG" ]; then
     . "$CONFIG"
@@ -132,9 +132,9 @@ request () {
 
 upgrade () {
     # Télécharge et met à niveau les paquets.
-    # $f GARDER LES PAQUETS, DOSSIER TAMPON, MODE DÉMO, URL DU DÉPÔT, JOURNAL
-    local save="$1" tmp="${2:-"/tmp"}" demo="$3" url="$4" \
-          date=$(date +%d/%m/%Y) dwl="" code="" p=""; shift 4
+    # $f GARDER LES PAQUETS, CACHE, DOSS. TAMPON, MODE DÉMO, URL DÉPÔT, JOURNAL
+    local save="$1" cch="$2" tmp="${3:-"/tmp"}" demo="$4" url="$5" \
+          date=$(date +%d/%m/%Y) dwl="" code="" p=""; shift 5
     if ! read code; then
         echo "Le système est à jour."
         return 0
@@ -147,21 +147,28 @@ upgrade () {
         read dwl
         p=$(basename "$dwl.spack")
         echo "$demo Téléchargement de $p..."
-        [ "$demo" ] || $CURL -o "$tmp/$p" "$url/$dwl.spack"
+        if [ "$cch" ] && [ -f "$cch/$dwl.spack" ]; then
+            echo " En cache : utilisation de la copie locale..."
+            [ "$demo" ] || ln -sf "$cch/$dwl.spack" "$tmp"
+        elif [ ! "$demo" ]; then
+            $CURL -o "$tmp/$p" "$url/$dwl.spack"
+        fi
         if [ $code -ne 0 ]; then
             growl 0 "$p est marqué comme spécial et ne sera pas intégré."
             echo "$date ! ${p%.spack}" >&3
         elif [ ! "$demo" ]; then
             spackadd "$tmp/$p" && echo "$date + ${p%.spack}" >&3
-            [ "$save" = "oui" ] || rm -f "$tmp/$p"
-        fi
+            [ "$save" = "oui" ] && [ ! -h "$tmp/$p" ] || rm -f "$tmp/$p"
+        fi  # on ne garde pas les   ^^^   liens symboliques vers le cache.
         read code
     done
     exec 3>&-
-    if [ "$save" = "oui" ]; then
-        echo "$demo Les paquets téléchargés ont été conservés dans $tmp"
-    elif ! rmdir "$tmp" 2>/dev/null; then
-        growl 0 "$tmp n'est pas vide et ne sera donc pas détruit."
+    if ! rmdir "$tmp" 2>/dev/null; then
+        if [ "$save" = "oui" ]; then
+            echo "$demo Les paquets téléchargés ont été conservés dans $tmp"
+        else
+            growl 0 "$tmp n'est pas vide et ne sera donc pas détruit."
+        fi
     fi
 }
 
@@ -181,15 +188,17 @@ usage () {
   Utilisation: 0g [option] [paquet(s)]
 
   Options:
-      -A <item(s)>   ---  ajoute les items, séparées par des espaces, à la
-                          liste des paquets ne devant pas être
-                          automatiquement mis à jour.
+      -A <item(s)>   ---  ajoute les items, séparés par des espaces, à la
+                          liste des paquets ne devant pas être mis à jour
+                          automatiquement.
+      -C <dossier>   ---  le chemin vers le cache, contenant une copie locale
+                          du dépôt distant.
       -E <chaine>    ---  active/désactive le mode expert, qui annule la
                           gestion des dépendances.
       -G <chaine>    ---  active/désactive la sauvegarde des paquets après
                           intégration au système.
       -J <fichier>   ---  donne le fichier à utiliser pour la journalisation.
-      -L <item(s)>   ---  ajoute les items, séparées par des espaces, à la
+      -L <item(s)>   ---  ajoute les items, séparés par des espaces, à la
                           liste des paquets ne devant pas être téléchargés.
       -S <chaine>    ---  redéfinit l'adresse du dépôt distant.
       -T <chaine>    ---  redéfinit la racine du répertoire sécurisé où
@@ -213,9 +222,10 @@ MASTER="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
 LOGDIR="${ROOT:-"/"}var/log/packages"
 CURL="/usr/bin/curl -LRs"
 
-for i in $(getopt AEGJLST "$@"); do
+for i in $(getopt ACEGJLST "$@"); do
     case "$f$i" in
         A*) eval Attention=\${${i#A}}" $Attention";;
+        C*) eval Cache=\${${i#C}};;
         E*) eval Expert=\${${i#E}};;
         G*) eval Sauvegarde=\${${i#G}};;
         J*) eval Journal=\${${i#J}};;
@@ -237,6 +247,6 @@ Source="$Source/$VERSION/$(uname -m)" # VERSION vient de /etc/os-release.
 db="$Source/paquets.db"
 request "$db" "$Local" "$Attention" \
     | evalpkg "$Expert" $paquets \
-    | upgrade "$Sauvegarde" "$Tampon" "$demo" "$Source" "$Journal"
+    | upgrade "$Sauvegarde" "$Cache" "$Tampon" "$demo" "$Source" "$Journal"
 
 # FdF

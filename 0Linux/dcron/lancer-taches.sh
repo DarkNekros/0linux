@@ -15,7 +15,7 @@ if [ ! -d $1 ]; then
 fi
 
 # On ignore certains sufixes de fichiers :
-IGNORE_SUFFIXES="~ ^ , .bak .new .swp"
+IGNORE_SUFFIXES="~ ^ , .bak .0nouveau .swp"
 
 for SCRIPT in $1/* ; do
 	
