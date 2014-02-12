@@ -32,7 +32,7 @@ sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD MD5@' \
 # Les manuels chinois et coréen cassent l'affichage de Man-DB :
 sed -i -e 's/ ko//' -e 's/ zh_CN zh_TW//' man/Makefile.in
 
-# Compilation :
+# Compilation avec 32 caractères max pour les noms des groupes, merci à myou :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -42,6 +42,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-group-name-max-length=32 \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
