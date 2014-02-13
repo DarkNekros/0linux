@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-flex}
-VERSION=${VERSION:-2.5.37}
+VERSION=${VERSION:-2.5.38}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-flex}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -28,8 +28,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On crée le prédécesseur 'lex' via un script mimant son
-# fonctionnement :
+# On crée le prédécesseur 'lex' via un script mimant son fonctionnement :
 cat > ${PKG}/usr/bin/lex << "EOF"
 #!/usr/bin/env bash
 exec /usr/bin/flex -l "$@"
@@ -40,6 +39,7 @@ chmod -v 755 $PKG/usr/bin/lex
 
 # Puis on crée la vieillissante bibliothèque 'lex' via un lien :
 ln -sf libfl.a $PKG/usr/lib${LIBDIRSUFFIX}/libl.a
+
 installer_doc
 creer_post_installation
 stripper

@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gstreamer}
-VERSION=${VERSION:-1.2.2}
+VERSION=${VERSION:-1.2.3}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gstreamer}
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.36.$EXT
