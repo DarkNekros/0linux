@@ -28,6 +28,9 @@
 #                                     (permet de s'assurer que le système est 
 #                                     complet).
 
+# Emplacement du dépôt des paquets résultant de la construction :
+PKGREPO=${PKGREPO:-/usr/local/paquets}
+
 # La fonction de construction/installation de chaque paquet :
 # $f RECETTE
 compiler_installer() {
@@ -46,7 +49,7 @@ compiler_installer() {
 		if [ "$(basename ${1} .recette)" = "nvidia" ]; then
 			bash -ex $(basename ${1})
 		else
-			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd $(find /usr/local/paquets/$(uname -m)/ -type d -name "$(basename ${1} .recette)")/*.spack
+			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd $(find ${PKGREPO}/$(uname -m)/ -type d -name "$(basename ${1} .recette)")/*.spack
 		fi
 	)
 }
@@ -64,7 +67,7 @@ for param in $@; do
 			
 			# Si on doit tout compiler mais qu'on doit ignorer tout paquet déjà compilé :
 			for recette in $(find ../0Linux -type f -name "*.recette" | sort); do
-				CHECKPKGDIR="$(find /usr/local/paquets/$(uname -m)/ -type d -name "$(echo $(basename ${recette} .recette))")"
+				CHECKPKGDIR="$(find ${PKGREPO}/$(uname -m)/ -type d -name "$(echo $(basename ${recette} .recette))")"
 				if [ "$(find ${CHECKPKGDIR} -type f -name *.spack)" = "" ]; then
 					compiler_installer ${recette}
 				fi
