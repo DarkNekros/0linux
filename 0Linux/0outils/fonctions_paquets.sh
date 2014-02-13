@@ -16,6 +16,9 @@ MARMITELOGS=${MARMITELOGS:-${MARMITE}/logs}
 # Emplacement où on stocke les archives sources :
 PKGSOURCES=${PKGSOURCES:-${CWD}}
 
+# Emplacement du dépôt des paquets résultant de la construction :
+PKGREPO=${PKGREPO:-/usr/local/paquets}
+
 # On crée la marmite :
 mkdir -p ${MARMITE}
 mkdir -p ${MARMITELOGS}
@@ -484,7 +487,7 @@ empaqueter() {
 	PKGBASEDIR="$(echo ${CWD} | sed 's/^.*0Linux\/\(.*$\)/\1/p' -n)"
 	
 	# On déduit le répertoire cible du paquet  :
-	OUT="/usr/local/paquets/${PKGARCH}/${PKGBASEDIR}"
+	OUT="${PKGREPO}/${PKGARCH}/${PKGBASEDIR}"
 	mkdir -p ${OUT}
 	
 	# On nettoie tout paquet similaire présent dans le dépôt sur l'hôte :
