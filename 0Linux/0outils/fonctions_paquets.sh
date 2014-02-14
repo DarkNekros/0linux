@@ -499,16 +499,9 @@ empaqueter() {
 		fi
 	done
 	
-	# On extrait les dépendances dynamiques (fichiers) :
+	# On extrait les dépendances dynamiques (fichiers) grâce ) '0ldd_clean', basé sur '0dep' :
 	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux
-	for executable in $(find ${PKG} -type f -executable); do
-		ldd ${executable} 2>/dev/null | grep '=>' | cut -d' ' -f3 | while read resultat; do
-			
-			# On supprime les « not found » pour s'éviter les paquets qui ont leur propres
-			# LDFLAGS internes ainsi que les adresses :
-			echo ${resultat} | grep -v -E '^\(0x.*$\)' | grep -v -E '^.*not found.*$'
-		done
-	done | sort -u -t ' ' | sed -e '/^$/d' -e '/^not$/d' > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log
+	0ldd_clean ${PKG} > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log
 	
 	# On extrait les dépendances (paquets) grâce à '0dep' (merci Seb) :
 	rm -f ${OUT}/*.dep{,s}

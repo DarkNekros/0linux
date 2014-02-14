@@ -1,0 +1,133 @@
+#!/bin/sh
+#
+# 0MIR - gère le serveur maître de 0linux.
+#
+
+# Copyright (c) 2012, 2013 Sébastien Boillod <sbb at tuxfamily dot org>.
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+# === Library ==================================================================
+
+checknewpkg () {
+    # Vérifie que les nouveaux paquets/dbs ont été correctement poussés.
+    # $f TIMESTAMP, DBs
+    local newer="" stamp="$1"; shift 1
+    [ -f "$stamp" ] && newer="-newer $stamp"
+    find $@ -type f $newer \! -name "*.dep" \! -name "*~" | while read pkg; do
+            echo "   Contrôle  $pkg..."
+            sum="$(curl -s "$URL/$pkg" | md5sum | awk '{print $1}')"
+            check="$(md5sum "$pkg" | awk '{print $1}')"
+            [ "$check" = "$sum" ] || growl 0 "$URL/$pkg est CORROMPU!"
+    done
+    date -u '+TZ=UTC0 touch -m -t %Y%m%d%H%M.%S "$0"' >"$stamp"
+}
+
+growl () {
+    # Imprime le message d'erreur et sort si un code non-nul est donné.
+    # $f CODE, MESSAGE
+    local code=$1; shift 1
+    if [ $code -ne 0 ]; then
+        echo "(E) $*" >&2
+        exit $code
+    fi
+    echo "(!) $*" >&2
+}
+
+mk0db () {
+    # Régénère la DB des paquets.
+    # $f JOURNAL DES ERREURS
+    awk '{ PKG = ($0 ~ /k$/); p = $3 = $1; gsub(/^.*\/|\.[^.]+$/,"",$1)
+           $2 = $1; sub(/-[^-]+-[^-]+-[^-]+$/,"", $1); sub(/[^\/]+$/,"", $3)
+           if (($1 in PATH) && (PATH[$1] != $3)) exit E=3; PATH[$1] = $3
+         }
+         (PKG){ if ($1 in GOTPKG) exit E=1; delete NOPKG[$1]; GOTPKG[$1]=p
+                ($1 in GOTDEP) || NODEP[$1] = p; delete DB[$1]; next
+              }
+         { if ($1 in GOTDEP) exit E=2; GOTDEP[$1] = p; delete NODEP[$1]
+           ($1 in GOTPKG) || NOPKG[$1] = p; printf("%s %s %s", $1, $2, $3)
+           while ((getline <p) > 0) {
+                    printf(" %s", $0)
+                    ($0 in GOTPKG) || DB[$0] = DB[$0]" "p
+                }
+                print ""; close(p)
+         }
+         END{ if (E == 3) {
+                 print "(E) "$1": chemins dep/paquet contradictoires!\n" \
+                       "    => "$3"\n    => "PATH[$1] >"'"$1"'"; exit
+              } else if (E) {
+                f = (E > 1) ? GOTDEP[$1] : GOTPKG[$1]
+                print "(E) "$1": duplication détectée!\n",
+                      "    => "p"\n    => "f >"'"$1"'"; exit
+              }
+              for (p in NOPKG)
+                  print "(E) Aucun paquet attaché à "NOPKG[p] >"'"$1"'"
+              for (p in DB) 
+                  print "(E) "p": entrée sans paquet (dans"DB[p]")" >"'"$1"'"
+              for (p in NODEP) print NODEP[p]
+            }'
+}
+
+mirror () {
+    # Mets à jour le dépôt sur le serveur.
+    # $f TIMESTAMP
+    local user="${FTPUSER:+"-u $FTPUSER"}"
+    # 'set net:limit-total-rate' : limitation de la bande passante
+    # 'lftp mirror -R' : mode inversé (duplication du local vers le distant)
+    # On ignore les 'include' et les sauvegardes vim en *~
+    
+    # Ne prend en compte que les paquets manquants :
+    #lftp -v 1 -c "set net:limit-total-rate 800000,90000 && open $FTP $user && mirror -R -e --only-missing -X *~ -X include . ." || exit 1
+    
+    # Ne gère que les timestamps :
+    #[ -f "$1" ] || TZ=UTC0 touch -t 197001010000.01 "$1"
+    #lftp -c "open $FTP $user && mirror -ReN"$1" -X*~ -X*.dep . ." || exit 1
+    
+    ## Méthode rsync :
+    RSYNC_PASSWORD="${CREDRSYNC}" rsync -avzP --progress --delete-during --exclude "*.dep" --exclude "*~" * rsync://${LOGINRSYNC}@ftp.igh.cnrs.fr/0linuxadmin/
+}
+
+# === Main =====================================================================
+export LC_ALL="C"
+umask 022
+FTP="ftp://ftp.igh.cnrs.fr"
+URL="http://ftp.igh.cnrs.fr/pub/os/linux/0linux"
+FTPUSER="appzer0"
+ROOT="pub"
+log="/tmp/0mir-error.log"
+
+# On source nos données d'accès pour le login rsync :
+source $(pwd)/login-0mir.sh
+
+cd "$(dirname "$0")/$ROOT" || exit 1
+pkgroot="paquets/eta"
+rm -f "$log" # sa présence signifie qu'il y a eu erreur.
+for arch in x86_64; do # On ne fait que x86_64 pour le moment...
+    echo "   Génère    $pkgroot/$arch/paquets.db..."
+    ( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$PKGROOT/$arch\"."
+      find * -type f \( -name "*.spack" -o -name "*.dep" \) \
+          | mk0db "$log" >"./paquets.db"
+    )
+    if [ -f "$log" ]; then
+        echo "Le dépôt $arch contient des erreurs!" >&2
+        cat "$log" >&2
+        echo "Ce journal des erreurs est enregistré dans $log" >&2
+        exit 1
+    fi
+done
+
+# mirror ../.timestamp             # Méthode lftp avec timestamps uniquement
+mirror                             # Méthode rsync
+checknewpkg ../.timestamp $pkgroot # ajouter ici les autres dossiers à vérifier.
+
+# EoF

@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-0outils}
-VERSION=${VERSION:-8.8}
+VERSION=${VERSION:-8.9}
 DESC="Outils « maison » pour la configuration du système"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -32,6 +32,7 @@ chmod 700 ${PKG}/usr/sbin/*
 # On place les script utilisateurs :
 cp -a $CWD/0bureau ${PKG}/usr/bin/
 cp -a $CWD/0dep ${PKG}/usr/bin/
+cp -a $CWD/0ldd_clean ${PKG}/usr/bin/
 chmod 755 ${PKG}/usr/bin/*
 
 # On place les fonctions pour l'empaquetage :
