@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xscreensaver}
-VERSION=${VERSION:-5.21}
+VERSION=${VERSION:-5.26}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-xscreensaver}
 WGET=${WGET:-http://www.jwz.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
