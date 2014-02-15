@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-ppp}
-VERSION=${VERSION:-2.4.5}
+VERSION=${VERSION:-2.4.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-ppp}
 WGET=${WGET:-http://samba.org/ftp/$NAMESRC/$NAMESRC-$VERSION.$EXT}
