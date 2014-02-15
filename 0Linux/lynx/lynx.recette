@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-lynx}
-VERSION=${VERSION:-2.8.7}
+VERSION=${VERSION:-2.8.8}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-lynx}
 WGET=${WGET:-http://lynx.isc.org/$NAMESRC$VERSION/$NAMESRC$VERSION.$EXT}
