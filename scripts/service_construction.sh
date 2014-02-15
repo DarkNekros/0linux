@@ -35,7 +35,7 @@ while [ 0 ]; do
 	# On traite la file d'attente (qu'on peut remplir aussi manuellement au besoin) :
 	cat ${FILEDATTENTE} | while read recette_demandee; do
 		if [ ! "${recette_demandee}" = "" ]; then
-		
+			
 			# On compile/installe (nvidia est ignoré automatiquement à l'installation) :
 			./construction.sh ${recette_demandee}
 			
@@ -44,11 +44,8 @@ while [ 0 ]; do
 		fi
 	done
 	
-	# On a nos paquets, on les check et on envoie sur le FTP avec 0mir :
-	./0mir
-	
-	# On se repose 10 secondes avant de recommencer :
-	sleep 10
+	# On se repose 20 secondes avant de recommencer :
+	sleep 20
 done
 
 # C'est fini.
