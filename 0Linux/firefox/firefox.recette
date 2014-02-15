@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-27.0}
+VERSION=${VERSION:-27.0.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-firefox}
 . /usr/share/0outils/fonctions_paquets.sh
