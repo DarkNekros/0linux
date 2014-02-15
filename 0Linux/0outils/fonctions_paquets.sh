@@ -501,7 +501,7 @@ empaqueter() {
 	
 	# On extrait les dépendances dynamiques (fichiers) grâce ) '0ldd_clean', basé sur '0dep' :
 	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux
-	0ldd_clean ${PKG} > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log
+	0ldd_clean ${PKG}/* > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log
 	
 	# On extrait les dépendances (paquets) grâce à '0dep' (merci Seb) :
 	rm -f ${OUT}/*.dep{,s}
