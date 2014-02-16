@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-0outils}
-VERSION=${VERSION:-9.0}
+VERSION=${VERSION:-9.1}
 DESC="Outils « maison » pour la configuration du système"
 
 . /usr/share/0outils/fonctions_paquets.sh

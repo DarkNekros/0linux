@@ -441,7 +441,7 @@ empaqueter() {
 		rm -rf ${PKG}/usr/share/pkgconfig
 	fi
 	
-	# On corrige les chemins contenant '/lib' codés en dur (et ils sont nombreux) :
+	# On corrige les chemins contenant '/lib' codés en dur dans les fichiers pour 'pkg-config' (et ils sont nombreux) :
 	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 		grep -E -r -l '/lib$' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/*.pc 2>/dev/null | while read fichier ; do
 			sed -i "s@/lib@/lib${LIBDIRSUFFIX}@g" $fichier
@@ -449,7 +449,7 @@ empaqueter() {
 	fi
 	
 	# On affecte des permissions correctes aux bibliothèques partagées :
-	find ${PKG}/lib* ${PKG}/usr/lib* -type f \! -perm 755 -iname "*.so*" 2>/dev/null | xargs file 2>/dev/null | grep "shared object" | cut -f 1 -d : | xargs chmod 755  2>/dev/null || true
+	find ${PKG}/lib* ${PKG}/usr/lib* -type f \! -perm 755 -iname "*.so*" 2>/dev/null | xargs file 2>/dev/null | grep "shared object" | cut -f 1 -d : | xargs chmod 755 2>/dev/null || true
 	
 	# On affecte des permissions correctes aux bibliothèques statiques :
 	find ${PKG}/lib* ${PKG}/usr/lib* -type f \! -perm 644 -iname "*.a" -exec chmod 644 {} \; 2>/dev/null || true
@@ -482,6 +482,11 @@ empaqueter() {
 		cp -a ${fichiergdb} ${PKG}/usr/share/gdb/auto-load/$($(echo dirname ${fichiergdb}) | sed "s@${PKG}@@")/
 		rm -f ${fichiergdb}
 	done
+	
+	# On nettoie ce fichier indésirables des modules Perl :
+	if [ ! "${NAMETGZ}" = "perl" ]; then
+		find ${PKG} -type f -name "perllocal.pod" -delete 2>/dev/null || true
+	fi
 	
 	# On déduit l'emplacement du paquet selon l'emplacement de la recette elle-même :
 	PKGBASEDIR="$(echo ${CWD} | sed 's/^.*0Linux\/\(.*$\)/\1/p' -n)"
