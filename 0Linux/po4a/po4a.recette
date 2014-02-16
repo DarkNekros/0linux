@@ -19,7 +19,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 perl Build.PL installdirs=vendor
 
 perl Build
-fakeroot perl Build destdir=${PKG}
+fakeroot perl Build install destdir=${PKG}
 
 installer_doc
 creer_post_installation
