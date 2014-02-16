@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-realpath}
+VERSION=${VERSION:-1.19}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-realpath}
+WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/r/$NAMESRC/${NAMESRC}_${VERSION}.$EXT}
+DESC="Outil de détermination de chemins absolus canoniques"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige un chemin codé en dur pour les manuels :
+sed -i 's@/share/man@/man@' common.mk
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
