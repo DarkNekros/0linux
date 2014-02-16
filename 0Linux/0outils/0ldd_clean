@@ -24,4 +24,4 @@ makeldd () {
 # === Main =====================================================================
 export LC_ALL="C"
 LDDAWK="$(makeldd)" || exit 1
-findelves "$@" 2>/dev/null | grep '=>' | cut -d' ' -f3 | sed -e 's@/lib/\.\./lib/@/lib/@' -e 's@/lib64/\.\./lib64/@/lib64/@' -e '/^\(0x.*$\)/d' -e '/^\(0x.*$\)/d' -e 's@/\.\./@/@' | sort -u -t ' '
+findelves "$@" 2>/dev/null | grep '=>' | cut -d' ' -f3 | sed  -e '/^\(0x.*$\)/d' | xargs realpath -s | sort -u -t ' '
