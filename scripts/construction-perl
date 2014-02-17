@@ -4,6 +4,10 @@ perl-xml-parser
 perl-xml-simple
 perl-libsgmls
 perl-gettext
+perl-termreadkey
+perl-text-charwidth
+perl-text-wrapi18n
+po4a
 perlqt
 perlkde
 libproxy
