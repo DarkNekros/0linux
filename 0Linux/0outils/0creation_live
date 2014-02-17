@@ -28,20 +28,15 @@ if [ "$1" != "--mini" -a "$1" != "--base" -a "$1" != "--maxi" -o ! -d "$2" -o  "
 	echo "Crée un système autonome (ou système « live ») pour média"
 	echo "amovible (DVD, clé USB, etc.), contenant le noyau, un système minimal,"
 	echo "l'installateur et éventuellement les paquets du système 0linux."
-	echo "'$0' doit être suivie de l'option --mini, --base ou --maxi,"
+	echo "'$0' doit être suivie de l'option --mini, ou --complet,"
 	echo "puis de l'emplacement des paquets, contenant le répertoire de "
 	echo "l'architecture visée ('x86_64/', 'i686/', etc.)."
 	echo ""
 	echo "Créer une image du système autonome nu, dépourvue de paquets :"
 	echo "	$0 --mini /quelque/part/paquets/"
 	echo ""
-	echo "Créer une image complète du système autonome (base, opt et xorg inclus) :"
-	echo "	$0 --base /quelque/part/paquets/"
-	echo ""
-	echo "Créer une image maximale du système autonome (base, opt, xorg ET dépôts"
-	echo "'apps/' inclus intégralement - attention à la taille finale, c'est lourd) :"
-	echo "	$0 --maxi /quelque/part/paquets/contenant/aussi/le/depot/apps"
-	echo ""
+	echo "Créer une image complète du système autonome (pèse très lourd) :"
+	echo "	$0 --complet /quelque/part/paquets/"
 	echo ""
 	exit 1
 fi
@@ -436,11 +431,9 @@ echo "Terminé."
 rm -rf ${MEDIAROOT}/0/paquets/*
 
 # On copie les paquets selon l'option choisie :
-#if [ "${1}" = "--base" ]; then
-#	rsync -a --delete-after ${PAQUETS}/{base,opt,xorg} ${MEDIAROOT}/0/paquets
-#elif [ "${1}" = "--maxi" ]; then
-#	rsync -a --delete-after ${PAQUETS}/{base,opt,xorg,apps} ${MEDIAROOT}/0/paquets
-#fi
+if [ "${1}" = "--avec-paquets" ]; then
+	rsync -a --delete-after ${PAQUETS}/* ${MEDIAROOT}/var/cache/0g/
+fi
 
 # On s'assure des permissions :
 chown -R root:root ${MEDIAROOT}/* 2> /dev/null || true
