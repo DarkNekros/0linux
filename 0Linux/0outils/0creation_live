@@ -253,7 +253,7 @@ gettext \
 glib \
 libssh \
 openldap-client \
-pcre
+pcre \
 perl \
 popt \
 python \
