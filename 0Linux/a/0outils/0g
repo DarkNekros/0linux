@@ -217,13 +217,13 @@ EOF
 # === Programme principal ======================================================
 export LC_ALL=C
 umask 022
-unset demo f lister paquets
+unset demo root paquets
 MASTER="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
 LOGDIR="${ROOT:-"/"}var/log/packages"
 CURL="/usr/bin/curl -LRs"
 
 for i in $(getopt ACEGJLST "$@"); do
-    case "$f$i" in
+    case "$root$i" in
         A*) eval Attention=\${${i#A}}" $Attention";;
         C*) eval Cache=\${${i#C}};;
         E*) eval Expert=\${${i#E}};;
@@ -236,14 +236,16 @@ for i in $(getopt ACEGJLST "$@"); do
         h) usage 0;;
         ?) growl 1 "$i: option inconnue.";;
         !?*) growl 1 "${i#!}: requiert un argument.";;
-        --) f='/';;
+        --) root='/';;
         *) shift $i; paquets="$paquets $1"
     esac
 done
 
+root="$VERSION/$(uname -m)" # VERSION vient de /etc/os-release.
 [ -f "$Journal" ] || Journal="/dev/null"
+[ -z "$Cache" ] || Cache="$Cache/$root"
 [ "$Source" ] || Source="$MASTER"
-Source="$Source/$VERSION/$(uname -m)" # VERSION vient de /etc/os-release.
+Source="$Source/$root"
 db="$Source/paquets.db"
 request "$db" "$Local" "$Attention" \
     | evalpkg "$Expert" $paquets \
