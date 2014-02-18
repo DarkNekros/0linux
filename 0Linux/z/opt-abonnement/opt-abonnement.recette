@@ -1,0 +1,239 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMETGZ=${NAMETGZ:-opt-abonnement}
+VERSION=${VERSION:-1}
+DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
+EXTRADEPS="0-art        0outils                  acl \
+acpid                   alsa-lib                 alsa-plugins \
+alsa-utils              apr                      apr-util \
+asciidoc                aspell                   aspell-en \
+aspell-fr               atk                      atkmm \
+at-spi2-atk             at-spi2-core             attr \
+aubio                   audiofile                avahi \
+b43-firmware            babl                     base-systeme \
+bash                    bash-completion          bc \
+berkeley-db             binutils                 boost \
+busybox                 bzip2                    cabextract \
+ca-certificates         cairo                    cairomm \
+cantarell-fonts         chmlib                   chrpath \
+cifs-utils              cln                      cloog \
+consolekit              coreutils                cpio \
+cppunit                 cpufrequtils             cracklib \
+cryptsetup              cups                     curl \
+cyrus-sasl              dbus                     dbus-glib \
+dbus-python             dconf                    dcron \
+desktop-file-utils      dhcpcd                   dialog \
+djvulibre               dmidecode                docbook-dsssl \
+docbook-dtd             docbook-utils            docbook-xml \
+docutils                dosfstools               doxygen \
+dssi                    duma                     dvd+rw-tools \
+e2fsprogs               eawpats                  ebook-tools \
+ed                      eggdbus                  eigen \
+enca                    enchant                  enet \
+enveloppe_multiarch     eudev                    eventlog \
+exiv2                   expat                    expect \
+faac                    faad2                    fakeroot \
+farstream               ffmpeg                   ffmpegthumbnailer \
+fftw                    file                     findutils \
+flac                    flex                     foomatic \
+freeglut                frei0r-plugins           fribidi \
+ftgl                    fuse                     gamin \
+gavl                    gc                       gcc \
+gconf                   gcr                      gdbm \
+gdk-pixbuf              gegl                     geoclue \
+gettext                 giflib                   git \
+glade                   glib                     glibc \
+glibmm                  glib-networking          gmp \
+gnu-ghostscript         gnupg                    gnutls \
+gobject-introspection   goocanvas                goocanvasmm \
+goom                    gperf                    gpgme \
+gpm                     grep                     groff \
+gsm                     gst-libav                gst-plugins-bad \
+gst-plugins-base        gst-plugins-good         gst-plugins-ugly \
+gst-python              gstreamer                gtk+ \
+gtk-doc                 gtk-engines              gtk-icones \
+gtkmm                   gtksourceview            gtksourceviewmm \
+gtkspell                gucharmap                gutenprint \
+gvfs                    gzip                     harfbuzz \
+hdparm                  hicolor-icon-theme       hplip \
+hunspell                iana-etc                 icon-naming-utils \
+icu4c                   id3lib                   iftop \
+ilmbase                 imagemagick              imlib2 \
+inetutils               infozip-unzip            infozip-zip \
+initialisation-systeme  intltool                 iproute2 \
+iptables                isl                      iso-codes \
+itstool                 iwlwifi-ucode            jack \
+jasper                  jdk                      jfsutils \
+js185                   json-c                   json-glib \
+kbd                     kerberos                 kmod \
+ktsuss                  ladspa                   lame \
+lash                    lcms                     ldb \
+lensfun                 less                     lesstif \
+lftp                    lha                      liba52 \
+libaio                  libao                    libarchive \
+libart_lgpl             libass                   libassuan \
+libatasmart             libavc1394               libbluray \
+libbsd                  libburn                  libcaca \
+libcanberra             libcap                   libcap-ng \
+libcddb                 libcdio                  libcroco \
+libcue                  libcuefile               libdaemon \
+libdbusmenu-qt          libdc1394                libdca \
+libdiscid               libdmapsharing           libdmtx \
+libdv                   libdvbpsi                libdvdcss \
+libdvdnav               libdvdread               libebml \
+libelf                  libetpan                 libevent \
+libexif                 libfacile                libffi \
+libgadu                 libgcrypt                libggi \
+libgii                  libglade                 libgpg-error \
+libgphoto2              libgpod                  libgssapi \
+libgtop                 libical                  libid3tag \
+libidl                  libidn                   libiec61883 \
+libieee1284             libiodbc                 libisofs \
+libjpeg                 libkate                  libksba \
+liblastfm               liblo                    liblqr-1 \
+liblrdf                 libmad                   libmatroska \
+libmcs                  libmikmod                libmkv \
+libmms                  libmng                   libmodplug \
+libmowgli               libmp4v2                 libmpeg2 \
+libmsn                  libmspack                libmtp \
+libmusicbrainz          libmygpo-qt              libnfs \
+libnfsidmap             libnice                  libnl \
+libnotify               liboauth                 libofa \
+libofx                  libogg                   liboil \
+libpcap                 libpipeline              libplist \
+libpng                  libproxy                 libpwquality \
+libqalculate            libraw                   libraw1394 \
+libreplaygain           librsvg                  libsamplerate \
+libsecret               libsexy                  libshout \
+libshp                  libsigc++                libsmbios \
+libsndfile              libsoup                  libspectre \
+libssh                  libstatgrab              libtasn1 \
+libtheora               libtiff                  libtirpc \
+libtxc_dxtn             libunique                libunwind \
+libupnp                 libusb                   libusb-compat \
+libva                   libva-intel-driver       libva-vdpau-driver \
+libvdpau                libvisual                libvncserver \
+libvorbis               libvpx                   libwacom \
+libwebp                 libwmf                   libwnck \
+libwpd                  libwpg                   libwps \
+libxklavier             libxml2                  libxslt \
+libzeitgeist            libzip                   lilv \
+linux                   linuxdoc-tools           live555 \
+lm_sensors              log4cxx                  logrotate \
+loudmouth               lsof                     lucene++ \
+lv2                     lvm2                     lynx \
+lzip                    lzo                      man-db \
+man-pages               man-pages-fr             mariadb \
+mdadm                   media-player-info        mediastreamer \
+mjpegtools              mkvtoolnix               mlt \
+mpc                     mpfr                     mplayer \
+mplayer-codecs          mplayer-skins            mtdev \
+mtr                     murrine                  murrine-themes \
+musepack                mutagen                  nano \
+ncurses                 neon                     net-snmp \
+nettle                  net-tools                nfs-utils \
+nss-mdns                ntfs-3g_ntfsprogs        numpy \
+ogmtools                openal                   openbabel \
+opencollada             opencolorio              opencore-amr \
+opencv                  openexr                  opengtl \
+openimageio             openjade                 openjpeg \
+openldap-client         openslp                  opensp \
+openssh                 openssl                  opus \
+orbit2                  orc                      ortp \
+p11-kit                 pango                    pangomm \
+parted                  partio                   pciutils \
+pcre                    perl                     perl-gettext \
+perl-libsgmls           perl-termreadkey         perl-text-charwidth \
+perl-text-wrapi18n      perl-uri                 perl-xml-parser \
+perl-xml-simple         phonon                   phonon-gstreamer \
+phonon-vlc              pil                      pinentry \
+pkg-config              pm-utils                 podofo \
+polkit                  polkit-gnome             polkit-qt \
+poppler                 popt                     portaudio \
+portmidi                procps                   projectm \
+psmisc                  pstoedit                 psutils \
+pth                     pulseaudio               pycairo \
+pycups                  pycurl                   pygobject \
+pygoocanvas             pygtk                    pygtksourceview \
+pyopenssl               pyqt                     python \
+python-babel            python-isodate           python-lxml \
+python-rdflib           pyxdg                    qca2 \
+qimageblitz             qjson                    qrencode \
+qt                      qt-gstreamer             raptor \
+rarian                  rasqal                   readline \
+realpath                redland                  reiserfsprogs \
+rpcbind                 rsync                    rtmpdump \
+samba                   sane-backends            schroedinger \
+sdl                     sdl-gfx                  sdl-image \
+sdl-mixer               sdl-net                  sdl-ttf \
+sed                     serd                     serf \
+set_rlimits             sg3utils                 sgml-common \
+shadow                  shared-mime-info         sharutils \
+sip                     slang                    slv2 \
+sord                    sound-theme-freedesktop  soundtouch \
+sox                     spack                    speechd \
+speex                   sqlite                   squashfs \
+sratom                  startup-notification     stk \
+subversion              sudo                     suil \
+swfdec                  swig                     sysklogd \
+syslinux                system-config-printer    sysvinit \
+taglib                  taglib-extras            talloc \
+tango-icon-theme        tango-icon-theme-extras  tar \
+tbb                     tcl                      tcp_wrappers \
+tdb                     telepathy-farstream      telepathy-glib \
+tevent                  texinfo                  timidity++ \
+tk                      transcode                tree \
+tslib                   twolame                  tzdata \
+udisks                  upower                   usbutils \
+util-linux              v4l-utils                vcdimager \
+vde                     vim                      vte \
+wavpack                 webcore-fonts            webkit-gtk+ \
+wget                    which                    wicd \
+wireless-tools          wpa_supplicant           wxwidgets \
+x264                    xdg-user-dirs            xdg-utils \
+xfsprogs                xmlto                    xscreensaver \
+xvidcore                xz                       zlib"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Février 2014
+
+= Une sélection très large de paquets par défaut =
+
+Un ensemble cohérent de paquets constituant un système complet et utilisable.
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient de nombreux paquets et fait office de « fourre-tout » pour faire la jonction entre les récentes évolutions de 0Linux, en attendant d'avoir des dépendances clairement définies pour chaque paquet. Cet abonnement contient toutes les bibliothèques système et multimédia et les nombreux outils d'un système Linux standard prêt pour exploiter un bureau graphique. Il remplace l'ancien dépôt nommé 'opt', d'où son nom.
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.
