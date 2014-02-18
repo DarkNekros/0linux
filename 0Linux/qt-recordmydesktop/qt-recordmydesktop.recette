@@ -6,7 +6,8 @@ VERSION=${VERSION:-0.3.8}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qt-recordmydesktop}
 WGET=${WGET:-http://prdownloads.sourceforge.net/recordmydesktop/$NAMESRC-$VERSION.$EXT}
-DESC="Interface QT pour 'RecordMyDesktop"
+DESC="Interface QT pour RecordMyDesktop"
+EXTRADEPS="recordmydesktop"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

@@ -145,7 +145,7 @@ glib \
 net-tools \
 rsync \
 libidn \
-openldap \
+openldap-client \
 popt \
 rtmpdump \
 libssh \
