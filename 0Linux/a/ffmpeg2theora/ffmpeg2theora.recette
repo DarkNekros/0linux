@@ -17,15 +17,11 @@ cflags
 # On corrige la compilation avec les 'ffmpeg' les plus récents :
 cat $CWD/ffmpeg2theora.ffmpeg2.patch | patch -p1
 
-# On ajoute un drapeau manquant :
-sed -i "/elif env\['static.*/d" SConstruct
-
-
-#sed -i "/'-D_FILE_OFFSET_BITS=64'/a \	,'-lm'" SConstruct
+# On force des drapeaux dans ce truc qui sent :
+sed -i "/env\.Append(LIBS=\['m', 'dl'\])/a \
+env\.Append(LIBS=\['m', 'dl'\])" SConstruct
 
 # Compilation :
-APPEND_LINKFLAGS="-ldl -lm" \
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 scons
 fakeroot scons install prefix=/usr mandir="PREFIX/man" destdir=${PKG}
 
