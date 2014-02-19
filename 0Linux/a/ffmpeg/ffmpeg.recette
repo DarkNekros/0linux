@@ -54,6 +54,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-postproc \
 	--enable-pthreads \
 	--enable-shared \
+	--enable-vdpau \
 	--enable-version3 \
 	--enable-x11grab
 
@@ -110,6 +111,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-postproc \
 	--enable-pthreads \
 	--enable-shared \
+	--enable-vdpau \
 	--enable-version3 \
 	--enable-x11grab
 
