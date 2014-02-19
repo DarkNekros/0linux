@@ -2,9 +2,9 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-base-abonnement}
-VERSION=${VERSION:-1}
+VERSION=${VERSION:-2}
 DESC="La base minimale du système 0Linux"
-EXTRADEPS="0outils acl attr b43-firmware base-systeme bash berkeley-db cryptsetup binutils busybox bzip2 cloog coreutils cpio curl cyrus-sasl dhcpcd diffutils e2fsprogs eudev file findutils gawk gcc glibc gmp gnutls grep gzip icu4c initialisation-systeme isl iwlwifi-ucode kbd kerberos kmod less libcap libcap-ng libffi libgcrypt libgpg-error libidn libssh linux lvm2 mpc mpfr ncurses nettle net-tools openldap-client openssl p11-kit pcre popt readline rsync rtmpdump sed shadow spack sysklogd syslinux sysvinit tar tcp_wrappers tzdata util-linux wget wireless-tools xz zlib"
+EXTRADEPS="0outils acl attr b43-firmware base-systeme bash berkeley-db cryptsetup binutils busybox bzip2 cloog coreutils cpio curl cyrus-sasl dhcpcd diffutils e2fsprogs eudev file findutils gawk gcc glibc gmp gnutls grep gzip icu4c initialisation-systeme isl iwlwifi-ucode kbd kerberos kmod less libcap libcap-ng libffi libgcrypt libgpg-error libidn libssh lvm2 mpc mpfr ncurses nettle net-tools openldap-client openssl p11-kit pcre popt readline rsync rtmpdump sed shadow spack sysklogd syslinux sysvinit tar tcp_wrappers tzdata util-linux wget wireless-tools xz zlib linux"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

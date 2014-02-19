@@ -27,19 +27,16 @@ else
 	echo "Les paquets du système 0Linux vont maintenant être installés sur votre"
 	echo "partition '$(cat $TMP/partition_racine)'."
 	echo ""
-	echo -n "Appuyez sur ENTRÉE pour continuer."
+	echo -n "Appuyez sur ENTRÉE pour continuer ou CTRL+C pour quitter."
 	read BLURB;
 	
-	# On installe d'abord les paquets vitaux de 'base/':
-	for paq in busybox-* \
-	base-systeme-* \
-	glibc-* \
-	readline-* \
-	ncurses-* \
-	bash-* \
-	sgml-*; do
-		spackadd --root=${SETUPROOT} ${MEDIACHOISI}/base/${paq}.spack 2>/dev/null
-	done
+	# On installe d'abord manuellement (aucune dépendance) les paquets vitaux :
+	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/a/base-systeme/*.spack 2>/dev/null
+	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/b/glibc/*.spack 2>/dev/null
+	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/b/readline/*.spack 2>/dev/null
+	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/b/ncurses/*.spack 2>/dev/null
+	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/d/bash/*.spack 2>/dev/null
+	spackadd --root=${SETUPROOT} ${MEDIACHOISI}/a/sgml-common/*.spack 2>/dev/null
 	
 	# On installe tout le reste de 'base/' sauf Linux qu'on installera en dernier :
 	for paquet in $(find ${MEDIACHOISI}/base -type f \( \
