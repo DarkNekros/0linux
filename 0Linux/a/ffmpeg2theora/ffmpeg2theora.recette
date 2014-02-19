@@ -24,7 +24,7 @@ sed -i "/elif env\['static.*/d" SConstruct
 #sed -i "/'-D_FILE_OFFSET_BITS=64'/a \	,'-lm'" SConstruct
 
 # Compilation :
-export APPEND_LINKFLAGS="-ldl -lm"
+APPEND_LINKFLAGS="-ldl -lm" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 scons
 fakeroot scons install prefix=/usr mandir="PREFIX/man" destdir=${PKG}
