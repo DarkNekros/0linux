@@ -30,6 +30,9 @@ chmod +x bootstrap
 # On utilise notre Python 2 système :
 export PYTHON_VERSION=2
 
+# On compile avec FFMPEG 0.x en priorité :
+export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig:${PKG_CONFIG_PATH}
+
 # Compilation sans drapeaux d'optimisation :
 ./configure \
 	--prefix=/usr \
@@ -45,7 +48,6 @@ export PYTHON_VERSION=2
 	--enable-alsa \
 	--enable-avahi \
 	--enable-dvdcss \
-	--enable-external-ffmpeg \
 	--enable-external-libraries \
 	--enable-ffmpeg-libvorbis \
 	--enable-gl \
