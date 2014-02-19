@@ -30,6 +30,9 @@ chmod +x bootstrap
 # On utilise notre Python 2 système :
 export PYTHON_VERSION=2
 
+# On corrige la syntaxe pour les autotools :
+sed -i 's/INCLUDES/AM_CPPFLAGS/g' configure
+
 # Compilation sans drapeaux d'optimisation :
 ./configure \
 	--prefix=/usr \
