@@ -157,7 +157,10 @@ upgrade () {
             growl 0 "$p est marqué comme spécial et ne sera pas intégré."
             echo "$date ! ${p%.spack}" >&3
         elif [ ! "$demo" ]; then
-            spackadd "$tmp/$p" && echo "$date + ${p%.spack}" >&3
+            if [ ! "$ROOT" = "/" ]; then
+                rootoption="--root=$ROOT"
+            fi
+            spackadd "$rootoption" "$tmp/$p" && echo "$date + ${p%.spack}" >&3
             [ "$save" = "oui" ] && [ ! -h "$tmp/$p" ] || rm -f "$tmp/$p"
         fi  # on ne garde pas les   ^^^   liens symboliques vers le cache.
         read code
