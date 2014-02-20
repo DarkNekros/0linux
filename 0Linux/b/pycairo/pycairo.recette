@@ -11,10 +11,10 @@ DESC="Interfaçage Python pour Cairo"
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-cflags
 preparer_sources
+cflags
 
-# Compilation :
+# Compilation avec Python 2 :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 python ./waf configure \
 	--prefix=/usr \
@@ -25,8 +25,26 @@ python ./waf configure \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
 
-python ./waf build -j${JOBS} || ./waf build
+python ./waf build -j${JOBS} || python ./waf build
 fakeroot python ./waf install --destdir=${PKG}
+
+# On re-prépare les sources pour compiler à nouveau :
+preparer_sources
+cflags
+
+# Compilation avec Python 3 :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python3 ./waf configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
+
+python3 ./waf build -j${JOBS} || python3 ./waf build
+fakeroot python3 ./waf install --destdir=${PKG}
 
 installer_doc
 creer_post_installation
