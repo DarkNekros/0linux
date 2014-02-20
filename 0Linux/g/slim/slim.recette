@@ -14,9 +14,10 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On complète l'édition des liens et les drapeaux :
+# On complète l'édition des liens et les drapeaux et on vire systemd :
 cat $CWD/slim.libslim.patch | patch -p1
-cat $CWD/slim.cflags.patch | patch -p1
+cat $CWD/slim.cflags.patch | patch -p0
+cat $CWD/slim.systemd-unit.patch | patch -p0
 cat $CWD/slim.slimlock.patch | patch -p1
 
 # On force nos drapeaux et suffixe et on vire l'unité systemd :
