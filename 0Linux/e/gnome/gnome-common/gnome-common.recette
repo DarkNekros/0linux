@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-gnome-shell}
-VERSION=${VERSION:-3.10.4}
+NAMESRC=${NAMESRC:-gnome-common}
+VERSION=${VERSION:-3.10.0}
 EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-shell}
+NAMETGZ=${NAMETGZ:-gnome-common}
 WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DESC="Interpréteur (« shell ») graphique pour le bureau GNOME"
+DESC="Ensemble de macros de développement pour GNOME"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -14,29 +14,20 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On rend NetworkManager optionnel, merci Gentoo :
-cat $CWD/gnome-shell.nm-optionnel.patch | patch -p1
-
 # Compilation :
-autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-schemas-compile \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-# Ce répertoire doit exister... :
-mkdir -p ${PKG}/usr/share/gnome-shell/modes
 
 installer_doc
 creer_post_installation

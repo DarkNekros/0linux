@@ -12,6 +12,7 @@ clutter
 clutter-gst
 clutter-gtk
 mutter
+gnome-common
 gnome-menus
 gnome-online-accounts
 geocode-glib
@@ -22,4 +23,6 @@ brasero
 libgnomekbd
 gnome-terminal
 epiphany
+caribou
+gnome-shell
 
