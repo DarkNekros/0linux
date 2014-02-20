@@ -5,13 +5,40 @@ NAMESRC=${NAMESRC:-js185}
 VERSION=${VERSION:-1.0.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-js185}
-WGET=${WGET:-http://ftp.mozilla.org/pub/mozilla.org/js/$NAMESRC-$VERSION.$EXT}
+WGET=(http://ftp.mozilla.org/pub/mozilla.org/js/$NAMESRC-$VERSION.$EXT
+      http://ftp.mozilla.org/pub/mozilla.org/js/mozjs17.0.0.$EXT
+     )
 DESC="Bibliothèques et interpréteur Javascript de Mozilla"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile d'abord mozjs 17 :
+preparer_sources mozjs17.0.0.$EXT
+cflags
+
+cd js/src
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--enable-threadsafe \
+	--with-system-ffi \
+	--with-system-nspr \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On compile la version de la recette :
+preparer_sources
 cflags
 
 cd js/src
