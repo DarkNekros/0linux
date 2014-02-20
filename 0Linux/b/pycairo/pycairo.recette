@@ -5,16 +5,21 @@ NAMESRC=${NAMESRC:-pycairo}
 VERSION=${VERSION:-1.10.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-pycairo}
-WGET=${WGET:-http://cairographics.org/releases/py2cairo-$VERSION.$EXT}
+WGET=(http://cairographics.org/releases/py2cairo-$VERSION.$EXT
+      http://cairographics.org/releases/$NAMESRC-$VERSION.$EXT
+     )
 DESC="Interfaçage Python pour Cairo"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources
+
+# On compile py2cairo :
+preparer_sources py2cairo-$VERSION.$EXT
 cflags
 
-# Compilation avec Python 2 :
+# Compilation :
+PYTHON=/usr/bin/python2 \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 python ./waf configure \
 	--prefix=/usr \
@@ -28,11 +33,12 @@ python ./waf configure \
 python ./waf build -j${JOBS} || python ./waf build
 fakeroot python ./waf install --destdir=${PKG}
 
-# On re-prépare les sources pour compiler à nouveau :
+# On compile pycairo :
 preparer_sources
 cflags
 
-# Compilation avec Python 3 :
+# Compilation :
+PYTHON=/usr/bin/python3 \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 python3 ./waf configure \
 	--prefix=/usr \

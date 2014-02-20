@@ -14,11 +14,6 @@ telecharger_sources
 preparer_sources
 cflags
 
-# On corrige les sources avec les correctifs des développeurs :
-for correctif in $CWD/*.patch; do
-	cat ${correctif} | patch -p1
-done
-
 # Compilation avec Python 2:
 autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -38,11 +33,6 @@ fakeroot make install DESTDIR=${PKG}
 # On re-prépare les sources pour compiler à nouveau :
 preparer_sources
 cflags
-
-# On corrige les sources avec les correctifs des développeurs :
-for correctif in $CWD/*.patch; do
-	cat ${correctif} | patch -p1
-done
 
 # Compilation avec Python 3 :
 autoreconf -vif
