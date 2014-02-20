@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-slim}
-VERSION=${VERSION:-1.3.5}
+VERSION=${VERSION:-1.3.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-slim}
 WGET=${WGET:-http://download.berlios.de/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -14,7 +14,10 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On force nos drapeaux et suffixe :
+# On complète l'édition des liens :
+cat $CWD/slim.libslim.patch | patch -p1
+
+# On force nos drapeaux et suffixe et on vire l'unité systemd :
 sed -i -e '/set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -g -O2" )/d' \
 	-e '/set(CMAKE_CPP_FLAGS "${CMAKE_CPP_FLAGS} -Wall -g -O2" )/d' \
 	-e "s@DESTINATION lib@&${LIBDIRSUFFIX}@g" \
@@ -26,8 +29,8 @@ CFLAGS="${FLAGS} -I/usr/include/freetype2" CXXFLAGS="${FLAGS} -I/usr/include/fre
 cmake \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_BUILD_TYPE=Release \
-	-DLIB_DIR=/usr/lib${LIBDIRSUFFIX}\
-	-DUSE_CONSOLEKIT=yes\
+	-DLIB_DIR=/usr/lib${LIBDIRSUFFIX} \
+	-DUSE_CONSOLEKIT=yes \
 	-DUSE_PAM=no
 
 make -j${JOBS} || make
@@ -50,9 +53,6 @@ cat > ${PKG}/etc/logrotate.d/slim << "EOF"
 }
 
 EOF
-
-# On éradique toute trace de cette horreur :
-rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd
 
 installer_doc
 creer_post_installation
