@@ -15,7 +15,6 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
-autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
