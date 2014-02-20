@@ -16,6 +16,7 @@ cflags
 
 # On complète l'édition des liens :
 cat $CWD/slim.libslim.patch | patch -p1
+cat $CWD/slim.slimlock.patch | patch -p1
 
 # On force nos drapeaux et suffixe et on vire l'unité systemd :
 sed -i -e '/set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -g -O2" )/d' \
