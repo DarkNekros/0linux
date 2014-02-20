@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xcb-util-wm}
-VERSION=${VERSION:-0.4.0}
+VERSION=${VERSION:-0.4.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xcb-util-wm}
 WGET=${WGET:-http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT}
