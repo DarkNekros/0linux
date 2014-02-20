@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gparted}
-VERSION=${VERSION:-0.17.0}
+VERSION=${VERSION:-0.18.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-gparted}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
