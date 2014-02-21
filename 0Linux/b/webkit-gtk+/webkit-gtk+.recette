@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-webkitgtk}
-VERSION=${VERSION:-2.2.2}
+VERSION=${VERSION:-2.2.5}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-webkit-gtk+}
 WGET=(
@@ -56,6 +56,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-introspection \
 	--enable-webkit2 \
 	--with-gtk=3.0 \
 	--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION}/html \
