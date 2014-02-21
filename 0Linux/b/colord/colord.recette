@@ -26,7 +26,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-schemas-compile \
-	--enable-systemd-login=no \
+	--disable-systemd \
+	--disable-systemd-logind \
 	--enable-polkit \
 	--enable-sane \
 	--enable-vala \
