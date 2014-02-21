@@ -39,15 +39,6 @@ fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
-
-# On complète la post-installation :
-cat >> ${PKG}/post-install.sh << "EOF"
-
-# On s'assure de cette permission :
-chown colord:colord var/lib/colord{,/icc} 2>/dev/null
-
-EOF
-
 stripper
 empaqueter
 
