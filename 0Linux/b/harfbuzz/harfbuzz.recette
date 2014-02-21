@@ -51,6 +51,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-cairo \
+	--with-freetype \
+	--with-glib \
+	--with-gobject \
+	--with-graphite2 \
+	--with-icu \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
