@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-opt-abonnement}
-VERSION=${VERSION:-2}
+VERSION=${VERSION:-3}
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-lib                 alsa-plugins \
@@ -18,7 +18,7 @@ busybox                 bzip2                    cabextract \
 ca-certificates         cairo                    cairomm \
 cantarell-fonts         chmlib                   chrpath \
 cifs-utils              cln                      cloog \
-colord \
+colord                  colord-gtk \
 consolekit              coreutils                cpio \
 cppunit                 cpufrequtils             cracklib \
 cryptsetup              cups                     curl \
@@ -49,6 +49,7 @@ glibmm                  glib-networking          gmp \
 gnu-ghostscript         gnupg                    gnutls \
 gobject-introspection   goocanvas                goocanvasmm \
 goom                    gperf                    gpgme \
+graphite \
 gpm                     grep                     groff \
 gsm                     gst-libav                gst-plugins-bad \
 gst-plugins-base        gst-plugins-good         gst-plugins-ugly \
