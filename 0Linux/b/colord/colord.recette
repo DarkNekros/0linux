@@ -32,6 +32,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-sane \
 	--enable-vala \
 	--enable-volume-search \
+	--with-daemon-user=colord \
 	--with-udevrulesdir=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
 	--build=${PKGARCH}-0linux-linux-gnu
 
@@ -40,6 +41,15 @@ fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+# On s'assure de ce spermissions :
+chown colord:colord /var/lib/colord
+chown colord:colord /var/lib/colord/icc
+
+EOF
+
 stripper
 empaqueter
 
