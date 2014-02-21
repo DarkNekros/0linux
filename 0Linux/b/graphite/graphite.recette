@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-graphite}
+NAMESRC=${NAMESRC:-graphite2}
 VERSION=${VERSION:-1.2.4}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-graphite}
-WGET=${WGET:-http://prdownloads.sourcefore.net/silgraphite//$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://downloads.sourceforge.net/project/silgraphite/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques d'analyse textuelle"
 
 . /usr/share/0outils/fonctions_paquets.sh
