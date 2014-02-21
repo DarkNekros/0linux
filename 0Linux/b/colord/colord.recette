@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-colord}
-VERSION=${VERSION:-1.0.6}
+VERSION=${VERSION:-1.0.3}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-colord}
 WGET=${WGET:-http://www.freedesktop.org/software/colord/releases/$NAMESRC-$VERSION.$EXT}
@@ -13,9 +13,6 @@ DESC="Démon commun de colorimétrie"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# Les règles pour 'udev' vont dans '/usr' :
-sed -i "/slashlibdir=/s@/lib@/usr/lib${LIBDIRSUFFIX}@" configure
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -28,6 +25,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-schemas-compile \
+	--disable-volume-search \
+	--enable-sane \
+	--enable-vala \
+	--with-udevrulesdir=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
