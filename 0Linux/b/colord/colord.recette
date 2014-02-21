@@ -39,6 +39,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On veille à ne rien écraser :
+mv ${PKG}/etc/colord.conf{,.0nouveau}
+
 installer_doc
 creer_post_installation
 
