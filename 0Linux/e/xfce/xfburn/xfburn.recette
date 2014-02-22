@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xfburn}
-VERSION=${VERSION:-0.4.3}
+VERSION=${VERSION:-0.5.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfburn}
 WGET=${WGET:-http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
