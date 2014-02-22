@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-vlc}
-VERSION=${VERSION:-2.1.3}
+VERSION=${VERSION:-2.1.4}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-vlc}
 WGET=${WGET:-http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
