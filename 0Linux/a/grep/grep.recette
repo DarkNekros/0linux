@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-grep}
-VERSION=${VERSION:-2.17}
+VERSION=${VERSION:-2.18}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-grep}
 WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
