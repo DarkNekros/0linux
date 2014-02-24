@@ -3,7 +3,7 @@
 
 NAMESRC=${NAMESRC:-ed}
 VERSION=${VERSION:-1.10}
-EXT=${EXT:-tar.gz}
+EXT=${EXT:-tar.lz}
 NAMETGZ=${NAMETGZ:-ed}
 WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Éditeur de texte en ligne de commande"
