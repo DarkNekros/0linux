@@ -14,6 +14,50 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# Compilation une première fois pour disposer de 'curl' lié statiquement pour
+# éviter de casser '0g' (lors de cassages d'API d'OpenSSL par exemple) :
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-crypto-auth \
+	--disable-ldap \
+	--disable-ldaps \
+	--disable-rtsp \
+	--disable-shared \
+	--disable-sspi \
+	--without-axtls \
+	--without-ca-bundle \
+	--without-ca-path \
+	--without-cyassl \
+	--without-gnutls \
+	--without-libidn \
+	--without-libmetalink \
+	--without-librtmp \
+	--without-libssh2 \
+	--without-nghttp2 \
+	--without-nss \
+	--without-polarssl \
+	--without-ssl \
+	--without-zlib \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+# on place le binaire statique :
+find . -type f -name 'curl' -exec cp -a {} ${PKG}/usr/bin/curl-statique \;
+
+# On s'assure qu'il est exécutable :
+chmod +x ${PKG}/usr/bin/curl-statique
+
+# On nettoie : 
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
