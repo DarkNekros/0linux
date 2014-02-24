@@ -49,7 +49,9 @@ cflags
 make -j${JOBS} || make
 
 # on place le binaire statique :
-find . -type f -name 'curl' -exec cp -a {} ${PKG}/usr/bin/curl-statique \;
+mkdir -p ${PKG}/usr/bin
+find . -type f -name 'curl' -exec cp -a {} ${PKG}/usr/bin/ \;
+mv ${PKG}/usr/bin/curl{,-statique}
 
 # On s'assure qu'il est exécutable :
 chmod +x ${PKG}/usr/bin/curl-statique
