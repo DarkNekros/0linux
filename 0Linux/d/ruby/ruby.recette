@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-ruby}
-VERSION=${VERSION:-2.1.0}
+VERSION=${VERSION:-2.1.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ruby}
 WGET=${WGET:-ftp://ftp.ruby-lang.org/pub/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
