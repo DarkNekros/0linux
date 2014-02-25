@@ -31,9 +31,6 @@ CONFIG="/etc/0outils/0g.conf"
 if [ -f "$CONFIG" ]; then
     . "$CONFIG"
 fi
-
-# La racine cible pour 'spackadd' :
-SPKROOT=${SPKROOT:-"/"}
 set +e
 
 # === Bibliothèque =============================================================
@@ -160,7 +157,7 @@ upgrade () {
             growl 0 "$p est marqué comme spécial et ne sera pas intégré."
             echo "$date ! ${p%.spack}" >&3
         elif [ ! "$demo" ]; then
-            spackadd --root="${SPKROOT}" "$tmp/$p" && echo "$date + ${p%.spack}" >&3
+            spackadd --root="$ROOT" "$tmp/$p" && echo "$date + ${p%.spack}" >&3
             [ "$save" = "oui" ] && [ ! -h "$tmp/$p" ] || rm -f "$tmp/$p"
         fi  # on ne garde pas les   ^^^   liens symboliques vers le cache.
         read code
@@ -222,7 +219,8 @@ export LC_ALL=C
 umask 022
 unset demo root paquets
 MASTER="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
-LOGDIR="${SPKROOT}var/log/packages"
+ROOT="$(echo "$ROOT" | sed 's#/*$#/#')"
+LOGDIR="${ROOT}var/log/packages"
 CURL="/usr/bin/curl-statique -LRs" # curl est compilé statiquement
 
 for i in $(getopt ACEGJLST "$@"); do
