@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-VirtualBox}
-VERSION=${VERSION:-4.3.6}
+VERSION=${VERSION:-4.3.8}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-virtualbox}
 WGET=(http://download.virtualbox.org/virtualbox/$VERSION/$NAMESRC-$VERSION.$EXT
