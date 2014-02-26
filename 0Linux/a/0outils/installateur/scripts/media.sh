@@ -15,7 +15,8 @@ while [ 0 ]; do
 	echo "dépôt des paquets de 0Linux, qui doit contenir le fichier 'paquets.db'"
 	echo "ainsi que des répertoires nommés 'a/', 'b/', 'd/', 'z/', etc."
 	echo "N.B. : si vous utilisez le média d'installation '0linux-mini', celui-ci"
-	echo "ne contient PAS de dépôt de paquets."
+	echo "ne contient PAS de dépôt de paquets, il vous faudra choisir l'installation"
+	echo "via le réseau."
 	echo ""
 	echo "1 : USB/DISQUE DUR - depuis un disque dur, une clé USB, une carte mémoire"
 	echo "2 : CD/DVD         - depuis un disque optique (CD ou DVD)"
@@ -46,9 +47,9 @@ while [ 0 ]; do
 		fi
 	;;
 	"3")
-		. synchro_rsync.sh
+		. reseau.sh
 		
-		# Si le script a crée un marqueur d'échec, on re-boucle :
+		# Si le script a créé un marqueur d'échec, on re-boucle :
 		if [ -r $TMP/depot_invalide ]; then
 			continue
 		else

@@ -58,35 +58,46 @@ Imprime cette aide sur la sortie standard et sort.
 
 **0g** va analyser la base de données des paquets ``paquets.db`` se trouvant dans le répertoire contenant l'arborescence des paquets selon un chemin du type  ``ftp://chemin/<version_de_0linux>/<architecture>/paquets.db``, la version de 0Linux étant déduite selon la variable VERSION dans le fichier ``/etc/os-release`` (epsilon, zeta...) et l'architecture selon la sortie de ``uname -m`` (i686, x86_64, arm...) pour télécharger et installer le ou les paquets demandés ainsi que leur éventuelles dépendances (comportement par défaut).
 
-Deux types de paquets sont à distinguer : les paquets normaux (gimp, firefox, libpng) et les paquets-abonnements (base-abo, lamp-abo) contenant le suffixe « -abo » et rangés dans le répertoire ``0abonnements/``, qui sont des méta-paquets quasiment vides mais contenant un ensemble de paquets à installer en dépendances obligatoires correspondant soit à un ensemble cohérent de logiciels (GIMP et ses greffons avec un ensemble de brosses supplémentaires, KDE avec un ensemble d'applications, etc.), soit à un type d'utilisation spécifique (serveur Linux Apache PHP MySQL, studio numérique, système minimal de base, etc.). 
+Deux types de paquets sont à distinguer : les paquets normaux (gimp, firefox, libpng) et les paquets-abonnements (base-abonnement, gimp-abo) contenant le suffixe « -abonnement » et rangés dans le répertoire ``z/``, qui sont des méta-paquets quasiment vides mais contenant un ensemble de paquets à installer en dépendances obligatoires correspondant soit à un ensemble cohérent de logiciels (GIMP et ses greffons avec un ensemble de brosses supplémentaires, KDE avec un ensemble d'applications, etc.), soit à un type d'utilisation spécifique (serveur Linux Apache PHP MySQL, studio numérique, système minimal de base, etc.). 
 
-À l'usage, les paquets ne sont distingués que par la présence ou non du suffixe « -abo ».
+À l'usage, les paquets ne sont distingués des abonnements que par la présence ou non du suffixe « -abonnement ».
 
 ```
 # Installer uniquement le paquet 'kde-workspace' et ses dépendances (environ 25 paquets):
 0g kde-workspace
 
 # Installer tout KDE tel qu'il est livré dans 0Linux (plus d'une centaine de paquets) :
-0g kde-abo
+0g kde-abonnement
 ```
+
+Les paquets sont rangés (depuis 0Linux eta) dans des répertoires standardisés. Vous n'avez pas à vous en soucier, **0g** les localisera automatiquement.
+
+ - ``a/`` - Applications : tout ce qui est exécutable en console, n'entrant dans aucune autre catégorie.
+ - ``b/`` - Bibliothèques : tout ce qui est bibliothèque non rattachée à un environnement particulier.
+ - ``d/`` - Développement : tout ce qui est compilateur, interpréteur, débogueur, etc.
+ - ``e/`` - Environnements : KDE, Xfce, GNOME, etc., chacun dans un sous-répertoire à son nom.
+ - ``g/`` - applications Graphiques : dès qu'un truc nécessite Xorg et n'est pas lié à un environnement de bureau, quelque soit sa fonctionnalité.
+ - ``r/`` - Réseau : les clients, serveurs, outils et bibliothèques qui gèrent ou utilisent le réseau en console.
+ - ``x/`` - Xorg : la distribution officielle de X.org.
+ - ``z/`` - 0linux : les paquets-abonnements.
+
 
 = EXEMPLES =[exemples]
 
-Exemples :
 : ``0g``
 Met à jour automatiquement tous les paquets installés sur le système, y compris les paquets-abonnements.
 
 : ``0g audacious``
 Télécharge et installe le paquet ``audacious`` ainsi que ses dépendances.
 
-: ``0g audacious-abo``
+: ``0g audacious-abonnement``
 Télécharge et installe l'ensemble de paquets spécifiés dans le paquet-abonnement, ici Audacious, des greffons et des bibliothèques supplémentaires ainsi que leurs dépendances.
 
 
 = AUTEUR =[auteur]
 
 Sébastien Boillod - sbb at tuxfamily point org - [http://requiescant.tuxfamily.org] - Merci à lui.
-Modifié par appzer0 - appzer0 at free point fr
+Modifié par appzer0 - appzer0 at 0linux point org
 
 
 = COPYRIGHT =[copyright]

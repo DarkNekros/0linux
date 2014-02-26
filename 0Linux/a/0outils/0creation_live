@@ -29,13 +29,14 @@ if [ "$1" != "--mini" -a "$1" != "--base" -a "$1" != "--maxi" -o ! -d "$2" -o  "
 	echo "amovible (DVD, clé USB, etc.), contenant le noyau, un système minimal,"
 	echo "l'installateur et éventuellement les paquets du système 0linux."
 	echo "'$0' doit être suivie de l'option --mini, ou --complet,"
-	echo "puis de l'emplacement des paquets, contenant le répertoire de "
-	echo "l'architecture visée ('x86_64/', 'i686/', etc.)."
+	echo "puis de l'emplacement des paquets, contenant à sa racine le"
+	echo "fichier 'paquets.db' ainsi que les sous-répertoires (a/, b/, d/, etc.)."
 	echo ""
 	echo "Créer une image du système autonome nu, dépourvue de paquets :"
 	echo "	$0 --mini /quelque/part/paquets/"
 	echo ""
-	echo "Créer une image complète du système autonome (pèse très lourd) :"
+	echo "Créer une image complète du système autonome (pèse très lourd, plus"
+	echo "de 4.3 Go pour la version « eta » de 0Linux) :"
 	echo "	$0 --complet /quelque/part/paquets/"
 	echo ""
 	exit 1
@@ -431,8 +432,12 @@ echo "Terminé."
 rm -rf ${MEDIAROOT}/0/paquets/*
 
 # On copie les paquets selon l'option choisie :
-if [ "${1}" = "--avec-paquets" ]; then
-	rsync -a --delete-after ${PAQUETS}/* ${MEDIAROOT}/var/cache/0g/
+if [ "${1}" = "--complet" ]; then
+	mkdir  ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}
+	rsync -a --delete-after ${PAQUETS}/* ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}/
+	
+	# On configure '0g' pour pointer sur le dépôt local :
+	sed -i 's@^Source=.*$@Source="file://$Cache"@' ${MEDIAROOT}/etc/0outils/0g.conf
 fi
 
 # On s'assure des permissions :

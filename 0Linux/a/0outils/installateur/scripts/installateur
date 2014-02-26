@@ -11,9 +11,6 @@ export SETUPROOT=${SETUPROOT:-/setuproot}
 # On extrait l'identification du système, version, etc. :
 source /etc/os-release
 
-# Les URL de synchronisation des paquets :
-RSYNC0LINUX=${RSYNC0LINUX:-rsync://ftp.igh.cnrs.fr/0linux/paquets/${VERSION}/$(uname -m)}
-
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
 	read STRING;
@@ -167,7 +164,7 @@ while [ 0 ]; do
 			unset CHOIXMENUPRINCIPAL
 			continue
 		else
-			. installer.sh
+			. paquets.sh
 			# Si le marqueur d'échec existe (créé par 'installer.sh'), on revient au menu :
 			if [ -f $TMP/paquets_non_installes ]; then
 				continue
