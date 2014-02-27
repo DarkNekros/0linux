@@ -171,7 +171,7 @@ parted \
 reiserfsprogs \
 xfsprogs \
 linux; do
-	spackadd --quiet --root=${LIVEOS} ${PAQUETS}/${paq}/*.spack
+	spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS} -type d -name "${paq}")/*.spack
 done
 
 # On réinstalle 'base-systeme' par sécurité (utilisateurs/groupes possiblement manquants) :
