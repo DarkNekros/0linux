@@ -165,28 +165,7 @@ while [ 0 ]; do
 			continue
 		else
 			. paquets.sh
-			# Si le marqueur d'échec existe (créé par 'installer.sh'), on revient au menu :
-			if [ -f $TMP/paquets_non_installes ]; then
-				continue
-			else
-				# On va avoir besoin de /proc, /sys et /dev :
-				if [ ! "${SETUPROOT}" = "/" ]; then
-					mkdir -p ${SETUPROOT}/{dev,proc,run,sys}
-					mount --bind /proc ${SETUPROOT}/proc 1>/dev/null 2>/dev/null
-					mount --bind /sys ${SETUPROOT}/sys   1>/dev/null 2>/dev/null
-					mount --bind /dev ${SETUPROOT}/dev   1>/dev/null 2>/dev/null
-					mount --bind /run ${SETUPROOT}/run   1>/dev/null 2>/dev/null
-				fi
-				
-				# On copie 'resolv.conf' dans $SETUPROOT pour profiter de la résolution
-				# des DNS du système autonome sans avoir à se reconnecter :
-				if [ -r ${SETUPROOT}/etc/resolv.conf ]; then
-					cat /etc/resolv.conf > ${SETUPROOT}/etc/resolv.conf
-				fi
-				
-				. apps.sh
-				. configurer.sh
-			fi
+			. configurer.sh
 		fi
 		unset CHOIXMENUPRINCIPAL
 		break
@@ -221,12 +200,6 @@ if [ ! "${HDDEVICE}" = "" ]; then
 	umount /mnt/hd 1>/dev/null 2>/dev/null || true
 fi
 
-# On démonte le systèmes de fichiers virtuels :
-umount -f ${SETUPROOT}/proc 1>/dev/null 2>/dev/null || true
-umount -f ${SETUPROOT}/sys  1>/dev/null 2>/dev/null || true
-umount -f ${SETUPROOT}/dev  1>/dev/null 2>/dev/null || true
-umount -f ${SETUPROOT}/run  1>/dev/null 2>/dev/null || true
-
 # Il est temps de redémarrer :
 if [ "${INSTALLDEBUG}" = "" ]; then
 	clear
@@ -241,11 +214,11 @@ echo -e "\033[1;0mEt ensuite ?\033[0;0m"
 echo ""
 echo "Pour installer des logiciels supplémentaires, vous utiliserez au choix :"
 echo ""
-echo "- L'installation de dépôts logiciels distants via '0g(8)' (voyez 'man 8 0g')"
-echo "- L'installation manuelle de paquets via 'spackadd(8)'"
+echo "- L'installation distante via '0g' (voyez 'man 0g')"
+echo "- L'installation manuelle de paquets via 'spackadd'"
 echo ""
-echo "Référez-vous au site http://0.tuxfamily.org ou http://0linux.org pour en savoir"
-echo "davantage sur le fonctionnement de votre système Linux."
+echo "Référez-vous au site http://0linux.org pour en savoirdavantage sur le"
+echo "fonctionnement de votre système Linux."
 echo ""
 echo "À bientôt !"
 echo ""
