@@ -31,6 +31,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On crée un lien générique pour le multilib, ça ne fait pas de mal :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mkdir -p ${PKG}/usr/lib/
+	ln -sf ../lib${LIBDIRSUFFIX}/upower ${PKG}/usr/lib/
+fi
+
 # On place les règles pour 'polkit' permettant aux utilisateurs du groupe
 # 'power' de manipuler 'upower' :
 mkdir -p ${PKG}/etc/polkit-1/rules.d
