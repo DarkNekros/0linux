@@ -134,11 +134,11 @@ cd -
 # On compile maintenant les modules noyau :
 cd out/linux.$BUILDDIR/release/bin/src
 fakeroot make KERN_DIR="/lib/modules/$(uname -r)/build"
+cd -
 
 # On place les modules noyau et on nettoie :
-find . -type f -name "*.ko" -exec cp -af {} ${PKG}/lib/modules/$(uname -r)/misc/ \;
+find . -type f -name "*.ko" -exec cp -a {} ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/misc/ \;
 find . -type f -name "*.ko" -delete
-cd -
 
 # On crée un fichier de configuration qui n'écrasera rien :
 cat > ${PKG}/etc/vbox/vbox.cfg.0nouveau << EOF
