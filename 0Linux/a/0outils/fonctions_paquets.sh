@@ -496,7 +496,7 @@ empaqueter() {
 	mkdir -p ${OUT}
 	
 	# On nettoie tout paquet similaire présent dans le dépôt sur l'hôte :
-	for paquetpresent in $(find ${OUT} -type f -name "${NAMETGZ}-*.spack" 2>/dev/null); do
+	for paquetpresent in $(find ${PKGREPO}/${PKGARCH} -type f -name "${NAMETGZ}-*.spack" 2>/dev/null); do
 		
 		# On compare bien le nom du paquet qui doit strictement être "$NAMETGZ" et pas "$NAMETGZ-doc" par exemple :
 		if [ "$(echo $(basename ${paquetpresent}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)\.spack$/\1/p' -n)" = "${NAMETGZ}" ]; then
@@ -504,7 +504,7 @@ empaqueter() {
 		fi
 	done
 	
-	# On extrait les dépendances dynamiques (fichiers) grâce ) '0ldd_clean', basé sur '0dep' :
+	# On extrait les dépendances dynamiques (fichiers) grâce à '0ldd_clean', basé sur '0dep' :
 	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux
 	0ldd_clean ${PKG}/* > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log
 	
@@ -523,7 +523,7 @@ empaqueter() {
 			echo "${extradep}" >> ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp
 		done
 		
-		# On trie, on supprime les lignes vides, on copie dans le fichiers original et on nettoie :
+		# On trie, on supprime les lignes vides, on copie dans le fichier original et on nettoie :
 		cat ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp | sed '/^$/d' | sort -u > ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep
 		rm -f cat ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp
 	fi
