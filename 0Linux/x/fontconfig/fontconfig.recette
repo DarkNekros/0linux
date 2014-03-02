@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-fontconfig}
-VERSION=${VERSION:-2.10.92}
+VERSION=${VERSION:-2.11.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-fontconfig}
 WGET=${WGET:-http://fontconfig.org/release/$NAMESRC-$VERSION.$EXT}
@@ -73,6 +73,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+# On s'assure de faire taire 'fontconfig' concernant une configuration obsolète :
+sed -i 's@deprecated="yes"@@g' ${PKG}/etc/fonts/conf.avail/50-user.conf
 
 installer_doc
 creer_post_installation
