@@ -20,9 +20,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On définit les polices DejaVu par défaut et on applique un correctif des développeurs :
+	# On définit les polices DejaVu par défaut :
 	cat $CWD/fontconfig.dejavu.patch | patch -p1
-	cat $CWD/fontconfig.bug62980.patch | patch -p1
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -50,9 +49,8 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On définit les polices DejaVu par défaut et on applique un correctif des développeurs :
+# On définit les polices DejaVu par défaut :
 cat $CWD/fontconfig.dejavu.patch | patch -p1
-cat $CWD/fontconfig.bug62980.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
