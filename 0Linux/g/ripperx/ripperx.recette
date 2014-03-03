@@ -3,7 +3,7 @@
 
 NAMESRC=${NAMESRC:-ripperX}
 VERSION=${VERSION:-2.8.0}
-EXT=${EXT:-tar.gz}
+EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ripperx}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Outil d'extraction de CD audio (ou « rip ») vers Ogg, MP3 ou FLAC"
