@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-ripperX}
+NAMESRC=${NAMESRC:-ripperx}
 VERSION=${VERSION:-2.8.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ripperx}
