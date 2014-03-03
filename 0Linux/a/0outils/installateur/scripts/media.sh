@@ -2,7 +2,7 @@
 
 # On nettoie avant tout :
 rm -f $TMP/choix_media
-unset MEDIA
+unset MEDIA REPONSEREZO
 
 # Boucle pour l'affichage du menu :
 while [ 0 ]; do
@@ -48,14 +48,15 @@ while [ 0 ]; do
 		fi
 	;;
 	"3")
-		. reseau.sh
-		
-		# Si le script a créé un marqueur d'échec, on re-boucle :
-		if [ -r $TMP/depot_invalide ]; then
-			continue
-		else
-			break
-		fi
+		echo "Une connexion filaire de type Ethernet avec une IP attribuée automatiquement"
+		echo "par DHCP a déjà été tentée au démarrage du système."
+		echo "Vous pouvez tenter de vous connecter manuellement via un autre"
+		echo "terminal à l'aide des commandes 'ifconfig', 'dhcpcd', 'iwconfig', etc. si"
+		echo "vous avez une connexion différente."
+		echo ""
+		echo "Appuyez sur ENTRÉE une fois votre réseau configuré (l'installateur ne testera"
+		echo "pas la connexion)."
+		read REPONSEREZO;
 	;;
 	"4")
 		. repertoire.sh
