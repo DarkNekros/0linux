@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-ripperx}
-VERSION=${VERSION:-2.8.0}
-EXT=${EXT:-tar.bz2}
+NAMESRC=${NAMESRC:-ripperX}
+VERSION=${VERSION:-2.7.3}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-ripperx}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Outil d'extraction de CD audio (ou « rip ») vers Ogg, MP3 ou FLAC"
@@ -17,6 +17,9 @@ cflags
 # On ajoute les entêtes au fichier pour 'pkg-config' :
 sed -i '/libdir=@libdir@/a \
 	includedir=@includedir@' ripperX.pc.in
+
+# On place la traduction (proposée upstream) :
+cp -a $CWD/fr.po $TMP/${NAME}/po/fr.po
 
 # Compilation :
 LDFLAGS+="-lm" \
@@ -35,6 +38,14 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 sed -i 's@Icon=.*@Icon=ripperX.xpm@g' ripperX.desktop
 echo "Categories=GTK;GNOME;AudioVideo;DiscBurning;" >> ripperX.desktop
 echo "Comment[fr]=Extraire des CD audio et convertir en MP3 ou WAV " >> ripperX.desktop
+
+# On ajoute la génération du catalogue pour la traduction française :
+sed -i -e 's@POFILES =  en_GB.po es.po it.po gl.po de.po@& fr.po@' \
+	-e 's@GMOFILES =  en_GB.gmo es.gmo it.gmo gl.gmo de.gmo@& fr.gmo@' \
+	-e 's@UPDATEPOFILES =  en_GB.po-update es.po-update it.po-update gl.po-update de.po-update@& fr.po-update@' \
+	-e 's@DUMMYPOFILES =  en_GB.nop es.nop it.nop gl.nop de.nop@& fr.nop@' \
+	-e 's@CATALOGS =  en_GB.gmo es.gmo it.gmo gl.gmo de.gmo@& fr.gmo@' \
+	po/Makefile
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
