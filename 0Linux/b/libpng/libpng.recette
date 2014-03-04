@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libpng}
-VERSION=${VERSION:-1.6.8}
+VERSION=${VERSION:-1.6.9}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-libpng}
 WGET=(http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
