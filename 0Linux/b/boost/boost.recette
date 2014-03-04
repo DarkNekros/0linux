@@ -18,9 +18,9 @@ cflags
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./bootstrap.sh \
 	--prefix=${PKG}/usr \
-	--libdir=${PKG}/usr/lib${LIBDIRSUFFIX} \
+	--libdir=${PKG}/usr/lib${LIBDIRSUFFIX}
 
-fakeroot ./bjam install -j${JOBS} --without-mpi || fakeroot ./bjam install -j${JOBS} --without-mpi
+fakeroot ./bjam install -j${JOBS} --without-mpi || fakeroot ./bjam install --without-mpi
 
 installer_doc
 creer_post_installation
