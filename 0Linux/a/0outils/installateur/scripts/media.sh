@@ -57,6 +57,7 @@ while [ 0 ]; do
 		echo "Appuyez sur ENTRÉE une fois votre réseau configuré (l'installateur ne testera"
 		echo "pas la connexion)."
 		read REPONSEREZO;
+		break
 	;;
 	"4")
 		. repertoire.sh
