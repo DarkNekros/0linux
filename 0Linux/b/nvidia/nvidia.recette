@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-NVIDIA}
-VERSION=${VERSION:-331.49}
+VERSION=${VERSION:-334.21}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-nvidia}
 . /usr/share/0outils/fonctions_paquets.sh
