@@ -17,6 +17,9 @@ cflags
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
 if [ "${PKGARCH}" = "x86_64" ]; then
 	
+	# On corrige un appel incompatible avec 'libpng' 1.6+ :
+	sed -i 's/png_\(sizeof\)/\1/g' examples/png2theora.c
+	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
@@ -39,6 +42,9 @@ fi
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
 preparer_sources
 cflags
+
+# On corrige un appel incompatible avec 'libpng' 1.6+ :
+sed -i 's/png_\(sizeof\)/\1/g' examples/png2theora.c
 
 # Compilation (-O3 par défaut si pas de CFLAGS) :
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
