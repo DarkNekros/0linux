@@ -106,8 +106,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/gtk-query-immodules-2.0
 fi
 
-# On affecte un thème par défaut sans écraser quoi que ce soit :
-echo 'gtk-theme-name="GTK+"' > ${PKG}/etc/gtk-2.0/gtkrc.0nouveau
+# On affecte un thème par défaut :
+echo 'gtk-theme-name="GTK+"' > ${PKG}/etc/gtk-2.0/gtkrc
 
 # On place la doc dans un sous-répertoire dédié :
 installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.24.22
@@ -133,12 +133,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On affecte un thème par défaut sans écraser quoi que ce soit :
-echo 'gtk-theme-name="GTK+"' > ${PKG}/etc/gtk-3.0/gtkrc.0nouveau
+# On affecte un thème par défaut :
+echo 'gtk-theme-name="Adwaita"' > ${PKG}/etc/gtk-3.0/gtkrc
 
 # On spécifie un thème d'icône par défaut :
-cat > ${PKG}/etc/gtk-3.0/settings.ini << "EOF"
+cat > ${PKG}/usr/share/gtk-3.0/settings.ini << "EOF"
 [Settings]
+gtk-icon-theme-name = gnome
 gtk-theme-name = Adwaita
 gtk-fallback-icon-theme = gnome
 

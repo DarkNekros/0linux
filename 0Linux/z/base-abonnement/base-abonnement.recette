@@ -2,9 +2,9 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-base-abonnement}
-VERSION=${VERSION:-2}
+VERSION=${VERSION:-4}
 DESC="La base minimale du système 0Linux"
-EXTRADEPS="0outils acl attr b43-firmware base-systeme bash berkeley-db cryptsetup binutils busybox bzip2 cloog coreutils cpio curl cyrus-sasl dhcpcd diffutils e2fsprogs eudev file findutils gawk gcc glibc gmp gnutls grep gzip icu4c initialisation-systeme isl iwlwifi-ucode kbd kerberos kmod less libcap libcap-ng libffi libgcrypt libgpg-error libidn libssh lvm2 mpc mpfr ncurses nettle net-tools openldap-client openssl p11-kit pcre popt readline rsync rtmpdump sed shadow spack sysklogd syslinux sysvinit tar tcp_wrappers tzdata util-linux wget wireless-tools xz zlib linux"
+EXTRADEPS="busybox base-systeme binutils tzdata glibc readline ncurses bash sgml-common zlib file gmp mpfr mpc cloog isl gcc libcap libcap-ng libffi libgcrypt libgpg-error libssh coreutils sed bzip2 shadow util-linux psmisc procps iana-etc grep bc libtool gdbm inetutils perl diffutils gawk findutils xz less gzip iproute2 kbd kmod libpipeline make patch sysklogd sysvinit tar texinfo eudev spack 0outils dhcpcd initialisation-systeme enveloppe_multiarch acl attr pcre gnutls net-tools rsync icu4c libidn openldap-client popt rtmpdump cyrus-sasl cpio openssl expat openssh libelf berkeley-db iptables curl wget e2fsprogs dosfstools jfsutils lvm2 b43-firmware iwlwifi-ucode fuse ntfs-3g_ntfsprogs squashfs sqlite parted reiserfsprogs xfsprogs linux kerberos nettle p11-kit ca-certificates tcp_wrappers wireless-tools syslinux"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -16,13 +16,13 @@ Description de l'abonnement $NAMETGZ
 appzer0 - appzer0@free.fr
 Décembre 2013
 
-= Le système 0Linux minimal =
+= Le système 0Linux de base =
 
-Ensemble minimal de paquets permettant de démarrer le système en mode texte.
+Ensemble « minimal » de paquets permettant de démarrer et exploiter le système en mode texte.
 
 = L'abonnement $NAMETGZ pour 0linux =
 
-L'abonnement contient le strict nécessaire pour démarrer un système 0Linux en mode texte et utiliser les outils de la distribution ainsi que les gestionnaire de paquets Spack et 0g. 
+L'abonnement contient un ensemble minimal d'outils pour démarrer et exploiter un système 0Linux en mode texte. 
 
 = Installation sous 0linux =
 
