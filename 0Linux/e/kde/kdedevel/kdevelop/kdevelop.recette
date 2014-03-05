@@ -3,7 +3,7 @@
 
 NAMESRC=${NAMESRC:-kdevelop}
 VERSION=${VERSION:-4.6.0}
-EXT=${EXT:-tar.bz2}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kdevelop}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Un Environement de Développement Intégré multilangage pour KDE"

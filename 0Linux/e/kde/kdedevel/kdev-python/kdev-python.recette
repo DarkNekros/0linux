@@ -3,7 +3,7 @@
 
 NAMESRC=${NAMESRC:-kdev-python}
 VERSION=${VERSION:-1.6.0}
-EXT=${EXT:-tar.bz2}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kdev-python}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.$EXT}
 DESC="Plugins pour la programmation Python avec KDevelop"
