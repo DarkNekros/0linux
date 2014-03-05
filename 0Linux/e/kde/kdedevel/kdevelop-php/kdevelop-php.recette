@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-kdevelop-php}
-VERSION=${VERSION:-1.5.1}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-1.6.0}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kdevelop-php}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.5.1/src/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.$EXT}
 DESC="Plugins pour la programmation PHP avec KDevelop"
 ########################################
 

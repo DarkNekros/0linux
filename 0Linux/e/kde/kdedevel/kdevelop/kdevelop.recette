@@ -2,8 +2,8 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-kdevelop}
-VERSION=${VERSION:-4.5.1}
-EXT=${EXT:-tar.bz2}
+VERSION=${VERSION:-4.6.0}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kdevelop}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Un Environement de Développement Intégré multilangage pour KDE"

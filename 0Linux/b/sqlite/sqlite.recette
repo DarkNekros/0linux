@@ -5,7 +5,7 @@ NAMESRC=${NAMESRC:-sqlite}
 VERSION=${VERSION:-3.8.3.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-sqlite}
-WGET=${WGET:-http://www.sqlite.org/2013/$NAMESRC-autoconf-$(echo ${VERSION} | tr '.' '0').$EXT}
+WGET=${WGET:-http://www.sqlite.org/2014/$NAMESRC-autoconf-$(echo ${VERSION} | tr '.' '0').$EXT}
 DESC="Moteur de bases de données SQL autonome"
 
 . /usr/share/0outils/fonctions_paquets.sh

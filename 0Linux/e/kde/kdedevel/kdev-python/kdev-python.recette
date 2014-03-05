@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-kwallet}
-VERSION=${VERSION:-4.12.1}
+NAMESRC=${NAMESRC:-kdev-python}
+VERSION=${VERSION:-1.6.0}
 EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kwallet}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
-DESC="KWallet : Le portefeuille (gestionnaire de mots de passe) de KDE"
+NAMETGZ=${NAMETGZ:-kdev-python}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.$EXT}
+DESC="Plugins pour la programmation Python avec KDevelop"
 ########################################
 
 . /usr/share/0outils/fonctions_paquets.sh

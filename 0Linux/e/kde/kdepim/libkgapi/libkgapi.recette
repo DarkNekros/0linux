@@ -2,8 +2,8 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libkgapi}
-VERSION=${VERSION:-2.0.2}
-EXT=${EXT:-tar.xz}
+VERSION=${VERSION:-2.1.0}
+EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-libkgapi}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèque permettant l'accès aux ressources Google"

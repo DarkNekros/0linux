@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-kblocks}
+NAMESRC=${NAMESRC:-kwalletmanager}
 VERSION=${VERSION:-4.12.3}
 EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kblocks}
+NAMETGZ=${NAMETGZ:-kwalletmanager}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
-DESC="Clone de « Tetris » pour KDE"
+DESC="Le portefeuille (gestionnaire de mots de passe) de KDE"
 ########################################
 
 . /usr/share/0outils/fonctions_paquets.sh
