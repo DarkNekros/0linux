@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-obsolete-abonnement}
-VERSION=${VERSION:-3}
+VERSION=${VERSION:-4}
 DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -45,6 +45,7 @@ cat >> ${PKG}/post-install.sh << "EOF"
 	kdenetwork \
 	kdesdk \
 	kdetoys \
+	kwallet \
 	lcms2 \
 	libssh2 \
 	mysql \
