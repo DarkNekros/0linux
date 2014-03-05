@@ -2,16 +2,20 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-qt-everywhere-opensource-src}
-VERSION=${VERSION:-4.8.5}
+VERSION=${VERSION:-5.2.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qt}
-WGET=${WGET:-http://download.qt-project.org/official_releases/qt/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/$NAMESRC-$VERSION.$EXT}
+WGET=(http://download.qt-project.org/official_releases/qt/4.8)/4.8.5/$NAMESRC-4.8.5.tar.gz
+      http://download.qt-project.org/official_releases/qt/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/$NAMESRC-$VERSION.$EXT
+     )
 DESC="Outils et bibliothèques de création d'applications graphiques"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile Qt4 :
+preparer_sources $NAMESRC-4.8.5.tar.gz
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -59,7 +63,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		-prefix /usr \
 		-confirm-license \
 		-datadir /usr/share/qt \
-		-docdir /usr/doc/${NAMETGZ}-${VERSION} \
+		-docdir /usr/doc/${NAMETGZ}-4.8.5 \
 		-fast \
 		-importdir /usr/lib${LIBDIRSUFFIX}/qt4/imports \
 		-L/usr/lib${LIBDIRSUFFIX} \
@@ -119,7 +123,7 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-4.8.5.tar.gz
 cflags
 
 # On corrige un problème identifié dans l'analyse des entêtes de 'boost' :
@@ -157,12 +161,12 @@ export LD_LIBRARY_PATH=${QT4DIR}/lib:${LD_LIBRARY_PATH}
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" OPENSOURCE_CXXFLAGS="${FLAGS}" \
 QMAKSPEC=linux-g++-${OPTMACHINE} \
 ./configure \
-	-prefix /usr \
+	-prefix                         /usr \
 	-confirm-license \
-	-datadir /usr/share/qt \
-	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
+	-datadir                        /usr/share/qt \
+	-docdir                         /usr/doc/${NAMETGZ}-4.8.5 \
 	-fast \
-	-importdir /usr/lib${LIBDIRSUFFIX}/qt4/imports \
+	-importdir                      /usr/lib${LIBDIRSUFFIX}/qt4/imports \
 	-L/usr/lib${LIBDIRSUFFIX} \
 	-libdir /usr/lib${LIBDIRSUFFIX} \
 	-no-phonon \
@@ -173,10 +177,10 @@ QMAKSPEC=linux-g++-${OPTMACHINE} \
 	-opensource \
 	-optimized-qmake \
 	-plugin-sql-sqlite \
-	-plugindir /usr/lib${LIBDIRSUFFIX}/qt4/plugins \
+	-plugindir                      /usr/lib${LIBDIRSUFFIX}/qt4/plugins \
 	-reduce-relocations \
 	-release \
-	-translationdir /usr/share/qt/translations
+	-translationdir                 /usr/share/qt/translations
 
 make -j${JOBS} || make
 fakeroot make install INSTALL_ROOT=${PKG}
@@ -231,9 +235,6 @@ else
 	ln -sf qmake ${PKG}/usr/bin/qmake-qt4
 fi
 
-# Ce paquet est sale... :
-rm -rf ${PKG}/usr/{demos,examples,tests}
-
 # On place et on redimensionne le logo de Qt :
 mkdir -p ${PKG}/usr/share/icons/hicolor/{16x16,32x32,48x48,64x64,128x128}/apps
 convert ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/src/images/qt-logo.png -resize 48x48 ${PKG}/usr/share/icons/hicolor/48x48/apps/qt-logo.png
@@ -247,6 +248,69 @@ for icone in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
 	taille=$(echo $(basename ${icone}) | cut -d- -f2)
 	cp -a ${icone} ${PKG}/usr/share/icons/hicolor/${taille}x${taille}/apps/linguist.png
 done
+
+# On place la doc dans un répertoire à part :
+installer_doc ${NAMETGZ}-4.8.5
+
+# On compile maintenant Qt5 :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On force les drapeaux d'optimisation :
+sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& ${FLAGS}@" mkspecs/common/g++.conf
+sed -i "s@-O2@& ${FLAGS}@" mkspecs/common/{g++,gcc}-base.conf
+
+# La machine doit être spécifiée selon l'architecture :
+if [ "${PKGARCH}" = "i686" ]; then
+	OPTMACHINE=32
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	OPTMACHINE=64
+fi
+
+# Compilation :
+export QT5LINK=/usr
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" OPENSOURCE_CXXFLAGS="${FLAGS}" \
+QMAKSPEC=linux-g++-${OPTMACHINE} \
+./configure \
+	-prefix                         /usr \
+	-archdatadir    /usr/lib${LIBDIRSUFFIX}/qt5 \
+	-bindir /usr/bin \
+	-confirm-license \
+	-datadir                        /usr/share/qt5 \
+	-docdir                         /usr/doc/${NAMETGZ}-${VERSION} \
+	-dbus-linked \
+	-headerdir                      /usr/include/qt5 \
+	-L/usr/lib${LIBDIRSUFFIX} \
+	-libdir /usr/lib${LIBDIRSUFFIX} \
+	-no-nis \
+	-no-separate-debug-info \
+	-nomake examples \
+	-opengl es2 \
+	-opensource \
+	-openssl-linked \
+	-optimized-qmake \
+	-plugin-sql-sqlite \
+	-release \
+	-sysconfidr                     /etc/xdg \ 
+	-system-harfbuzz \
+	-translationdir                 /usr/share/qt5/translations
+
+make -j${JOBS} || make
+fakeroot make install INSTALL_ROOT=${PKG}
+
+# Pour Noël, je voudrais des fichiers propres pour Qt :
+sed -i "s:$PWD/qtbase:/usr/lib/qt5:g" ${PKG}/usr/lib${LIBDIRSUFFIX}/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri || true
+find /usr/lib${LIBDIRSUFFIX}/lib{qgsttools_p,Qt5*}.prl -exec sed -i -r '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/\1/' {} \; || true
+     
+# Ce paquet est sale... :
+rm -rf ${PKG}/usr/{demos,examples,tests}
+
+# On place les icônes de Qt :
+cp -a qttools/src/assistant/assistant/images/assistant-128.png        ${PKG}/usr/share/pixmaps/qt5-assistant.png
+cp -a qttools/src/designer/src/designer/images/designer.png           ${PKG}/usr/share/pixmaps/qt5-designer.png
+cp -a qttools/src/linguist/linguist/images/icons/linguist-128-32.png  ${PKG}/usr/share/pixmaps/qt5-linguist.png
+cp -a qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png        ${PKG}/usr/share/pixmaps/qt5-qdbusviewer.png
 
 # On fait comme Slackware, c'est propre et complet :
 
@@ -329,24 +393,86 @@ Categories=Qt;Settings;
 
 EOF
 
-# On crée un fichier profil pour s'assurer des variables d'environnement :
+# On ajoute les raccourcis bureau pour Qt5 :
+cat > ${PKG}/usr/share/applications/qt5-designer.desktop << EOF
+[Desktop Entry]
+Name=Qt5 Designer
+GenericName=Interface Designer
+Comment=Design GUIs for Qt5 applications
+Exec=designer -qt=5
+Icon=qt5-designer
+MimeType=application/x-designer;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+
+EOF
+
+cat > ${PKG}/usr/share/applications/qt5-assistant.desktop << EOF
+[Desktop Entry]
+Name=Qt5 Assistant
+Comment=Exemples et documentation de Qt5
+Exec=assistant -qt=5
+Icon=qt5-assistant
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Documentation;
+
+EOF
+
+cat > ${PKG}/usr/share/applications/qt5-linguist.desktop << EOF
+[Desktop Entry]
+Name=Qt5 Linguist
+Comment=Localisation d'applications Qt5
+Exec=linguist -qt=5
+Icon=qt5-linguist
+MimeType=text/vnd.trolltech.linguist;application/x-linguist;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+
+EOF
+cat > /usr/share/applications/qt5-qdbusviewer.desktop << EOF
+[Desktop Entry]
+Name=Qt5 QDbusViewer 
+GenericName=D-Bus Debugger
+Comment=Debug D-Bus applications
+Exec=qdbusviewer
+Icon=qt5-qdbusviewer.png
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Debugger;
+
+EOF
+
+# On crée des fichiers profils pour s'assurer des variables d'environnement :
 mkdir -p ${PKG}/etc/profile.d
-cat > ${PKG}/etc/profile.d/qt4.sh << "EOF"
+cat > ${PKG}/etc/profile.d/qt4.sh << EOF
 #!/usr/bin/env bash
 # Fichier profil pour QT4.
-QT4DIR=/usr/libARCH/qt4
-QT_PLUGIN_PATH=/usr/libARCH/qt4/plugins
+QT4DIR=/usr/lib${LIBDIRSUFFIX}/qt4
+QT_PLUGIN_PATH=/usr/lib${LIBDIRSUFFIX}/qt4/plugins
 
 export QT4DIR QT_PLUGIN_PATH
 
 EOF
 
-# Et on remplace la marqueur ARCH par notre suffixe standard :
-sed -i "s@ARCH@${LIBDIRSUFFIX}@g" ${PKG}/etc/profile.d/qt4.sh
+cat > ${PKG}/etc/profile.d/qt5.sh << EOF
+#!/usr/bin/env bash
+# Fichier profil pour QT5.
+QT5DIR=/usr/lib${LIBDIRSUFFIX}/qt5
+
+export QT5DIR
+
+EOF
 
 installer_doc
 creer_post_installation
-# stripper # On ne « strippe » rien pour conserver les symboles de débogage.
+stripper
 empaqueter
 
 # C'est fini.
