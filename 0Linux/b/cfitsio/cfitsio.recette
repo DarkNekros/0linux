@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-cfitsio}
-VERSION=${VERSION:-3.350}
+VERSION=${VERSION:-3360}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-cfitsio}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/${NAMESRC}${VERSION}.$EXT}
 DESC="Bibliothèques permettant de lire des fichiers de données de la NASA"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -30,7 +30,7 @@ fakeroot make install DESTDIR=${PKG}
 installer_doc
 
 # On installe des docs supplémentaires :
-cp -a *.doc *.pdf ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a docs/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 
 creer_post_installation
 stripper

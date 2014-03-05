@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-quazip}
-VERSION=${VERSION:-0.6}
+VERSION=${VERSION:-0.6.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-quazip}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
