@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-obsolete-abonnement}
-VERSION=${VERSION:-4}
+VERSION=${VERSION:-5}
 DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -63,15 +63,15 @@ EOF
 cat > ${TMP}/${NAMETGZ}.t2t << EOF
 Description de l'abonnement $NAMETGZ
 appzer0 - appzer0@free.fr
-Janvier 2014
+Mars 2014
 
 = Les paquets marqués obsolètes dans 0Linux =
 
-Ce paquet contient la liste des paquets marqués obsolètes dans 0Linux.
+Ce paquet contient la liste des paquets marqués comme obsolètes dans 0Linux.
 
 = L'abonnement $NAMETGZ pour 0Linux =
 
-L'abonnement contient un outil interactif appelé en post-installaton et demandant si les paquets marqués obsolètes trouvés dans le système doivent être désinstallés. Les paquets obsolètes peuvent être de type variable : paquets doublons, bibliothèques moribondes, paquets orphelins, etc. Il est conseillé de supprimer tout paquet obsolète trouvé (sauf si vous savez exactement ce que vous faites, bien entendu). Cet abonnement n'installe évidemment aucun paquet en dépendance.
+L'abonnement contient un outil interactif appelé en post-installaton vous demandant si les paquets marqués obsolètes trouvés dans le système doivent être désinstallés. Les paquets obsolètes peuvent être de types variables : paquets doublons, bibliothèques moribondes, paquets orphelins, etc. Il est conseillé de supprimer tout paquet obsolète trouvé (sauf si vous savez exactement ce que vous faites, bien entendu). Cet abonnement n'installe évidemment aucun paquet en dépendance.
 
 = Installation sous 0Linux =
 
@@ -102,6 +102,7 @@ kdeadmin: supprimé dans la distribution de KDE
 kdenetwork: supprimé dans la distribution de KDE
 kdesdk: supprimé dans la distribution de KDE
 kdetoys: supprimé dans la distribution de KDE
+kwallet: remplacé par 'kwalletmanager'
 lcms2: fusionné dans 'lcms'
 libssh2: fusionné dans 'libssh'
 mysql : remplacé par 'mariadb'
