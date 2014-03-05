@@ -107,6 +107,7 @@ glew
 glu
 mesa-demos
 libtxc_dxtn
+libxshmfence
 glamor-egl
 appres
 bitmap
@@ -205,6 +206,7 @@ xf86-input-mouse
 xf86-input-synaptics
 xf86-input-vmmouse
 xf86-input-void
+xf86-input-wacom
 xf86-video-ark
 xf86-video-ast
 xf86-video-ati
