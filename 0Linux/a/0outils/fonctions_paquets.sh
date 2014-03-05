@@ -495,12 +495,21 @@ empaqueter() {
 	OUT="${PKGREPO}/${PKGARCH}/${PKGBASEDIR}"
 	mkdir -p ${OUT}
 	
-	# On nettoie tout paquet similaire présent dans le dépôt sur l'hôte :
+	# On nettoie tout paquet/fichier .dep similaire présent dans le dépôt sur l'hôte :
 	for paquetpresent in $(find ${PKGREPO}/${PKGARCH} -type f -name "${NAMETGZ}-*.spack" 2>/dev/null); do
 		
 		# On compare bien le nom du paquet qui doit strictement être "$NAMETGZ" et pas "$NAMETGZ-doc" par exemple :
 		if [ "$(echo $(basename ${paquetpresent}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)\.spack$/\1/p' -n)" = "${NAMETGZ}" ]; then
+			
+			# OK on nettoie le 's.pack' et le '.dep' :
 			rm -f ${paquetpresent}
+			rm -f $(echo ${paquetpresent} | sed 's@\.spack@\.dep@')
+			
+			# Si le paquet est dans un répertoire dédié (cas normal dans 0Linux eta), 
+			# alors on le supprime également :
+			if [ "$(basename $(dirname ${paquetpresent}))" = "${NAMETGZ}" ]; then
+				rm -rf $(dirname ${paquetpresent})
+			fi
 		fi
 	done
 	
