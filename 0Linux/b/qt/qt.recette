@@ -435,7 +435,7 @@ Type=Application
 Categories=Qt;Development;
 
 EOF
-cat > /usr/share/applications/qt5-qdbusviewer.desktop << EOF
+cat > ${PKG}/usr/share/applications/qt5-qdbusviewer.desktop << EOF
 [Desktop Entry]
 Name=Qt5 QDbusViewer 
 GenericName=D-Bus Debugger
