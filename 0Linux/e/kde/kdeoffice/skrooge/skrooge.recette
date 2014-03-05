@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-skrooge}
-VERSION=${VERSION:-1.7.1}
+VERSION=${VERSION:-1.8.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-skrooge}
 WGET=${WGET:-http://skrooge.org/files/$NAMESRC-$VERSION.$EXT}

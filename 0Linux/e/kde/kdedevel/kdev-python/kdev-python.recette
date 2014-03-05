@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-kblocks}
-VERSION=${VERSION:-4.12.3}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kblocks}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
-DESC="Clone de « Tetris » pour KDE"
+NAMESRC=${NAMESRC:-kdev-python}
+VERSION=${VERSION:-1.6.0}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-kdev-python}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.$EXT}
+DESC="Plugins pour la programmation Python avec KDevelop"
 ########################################
 
 . /usr/share/0outils/fonctions_paquets.sh
