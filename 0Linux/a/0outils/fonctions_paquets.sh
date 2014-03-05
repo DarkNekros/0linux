@@ -493,7 +493,6 @@ empaqueter() {
 	
 	# On déduit le répertoire cible du paquet  :
 	OUT="${PKGREPO}/${PKGARCH}/${PKGBASEDIR}"
-	mkdir -p ${OUT}
 	
 	# On nettoie tout paquet/fichier .dep similaire présent dans le dépôt sur l'hôte :
 	for paquetpresent in $(find ${PKGREPO}/${PKGARCH} -type f -name "${NAMETGZ}-*.spack" 2>/dev/null); do
@@ -501,12 +500,13 @@ empaqueter() {
 		# On compare bien le nom du paquet qui doit strictement être "$NAMETGZ" et pas "$NAMETGZ-doc" par exemple :
 		if [ "$(echo $(basename ${paquetpresent}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)\.spack$/\1/p' -n)" = "${NAMETGZ}" ]; then
 			
-			# OK on nettoie le 's.pack' et le '.dep' :
+			# OK on nettoie le '.spack' et le '.dep' :
 			rm -f ${paquetpresent}
 			rm -f $(echo ${paquetpresent} | sed 's@\.spack@\.dep@')
 			
 			# Si le paquet est dans un répertoire dédié (cas normal dans 0Linux eta), 
-			# alors on le supprime également :
+			# alors on le supprime également pour nettoyer les renommages et autres 
+			# déplacements de paquets :
 			if [ "$(basename $(dirname ${paquetpresent}))" = "${NAMETGZ}" ]; then
 				rm -rf $(dirname ${paquetpresent})
 			fi
@@ -518,7 +518,7 @@ empaqueter() {
 	0ldd_clean ${PKG}/* > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log
 	
 	# On extrait les dépendances (paquets) grâce à '0dep' (merci Seb) :
-	rm -f ${OUT}/*.dep{,s}
+	mkdir -p ${OUT}
 	0dep ${PKG} > ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep
 	
 	# On ajoute les dépendances spécifiées manuellement le cas échéant et on trie :
