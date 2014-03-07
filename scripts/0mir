@@ -144,9 +144,9 @@ for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 			
 			# On génère la liste générale de la catégorie :
 			for f in $(find $categorie -type f -name "*.spack" | sort); do
-				echo "$(basename $(dirname $f)) :" >> ${categorie}.txt
-				/usr/sbin/spackadd --about $f >> ${categorie}.txt
-				echo "" >> ${categorie}.txt
+				echo "$(basename $(dirname $f)) :" >> ${categorie}/${categorie}.txt
+				/usr/sbin/spackadd --about $f >> ${categorie}/${categorie}.txt
+				echo "" >> ${categorie}/${categorie}.txt
 			done
 		done
 	)
