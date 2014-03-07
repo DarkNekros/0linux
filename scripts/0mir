@@ -146,7 +146,7 @@ for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 done
 
 # On source nos données d'accès pour le login rsync :
-source $(pwd)/login-0mir.sh
+source $(pwd)/../../../../login-0mir.sh
 
 rm -f "$log" # sa présence signifie qu'il y a eu erreur.
 for arch in x86_64; do # On ne fait que x86_64 pour le moment...
