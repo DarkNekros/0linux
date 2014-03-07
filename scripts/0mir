@@ -141,18 +141,9 @@ for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 			[ "$categorie" = "x" ] && catdesc="x : X.org, l'implémentation libre et distribution officielle de X11"
 			[ "$categorie" = "z" ] && catdesc="z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
 			echo "$catdesc" > ${categorie}.txt
-			
-			# On génère la liste générale de la catégorie :
-			for f in $(find $categorie -type f -name "*.spack" | sort); do
-				echo "$(basename $(dirname $f)) :" >> ${categorie}/${categorie}.txt
-				/usr/sbin/spackadd --about $f >> ${categorie}/${categorie}.txt
-				echo "" >> ${categorie}/${categorie}.txt
-			done
 		done
 	)
 done
-
-exit 0
 
 # On source nos données d'accès pour le login rsync :
 source $(pwd)/login-0mir.sh
