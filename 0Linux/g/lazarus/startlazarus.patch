@@ -1,6 +1,6 @@
---- ide/lazarusmanager.pas	2012-07-05 17:22:18.000000000 +0200
-+++ ide/lazarusmanager.pas	2012-12-02 14:51:48.000000000 +0100
-@@ -141,23 +141,23 @@
+--- ide/lazarusmanager.pas      2013-06-02 21:03:48.000000000 +0000
++++ ide/lazarusmanager.pas.new  2014-03-07 19:03:04.984732503 +0000
+@@ -152,9 +152,9 @@
    BackupFilename: String;
    CurFilename: String;
  begin
@@ -13,32 +13,7 @@
    if FileExistsUTF8(NewFileName) then
    begin
      if FileExistsUTF8(CurFilename) then
-     begin
-       if FileExistsUTF8(BackupFileName) then
-         if not DeleteFileUTF8(BackupFileName) then begin
--          MessageDlg(format('Can''t delete "%s"'#13'%s',
-+          MessageDlg(format('Can''t delete "%s"'+LineEnding+'%s',
-             [BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
-             mtError, [mbOK], 0);
-           Result := mrAbort;
-           exit;
-         end;
-       if not FileProcs.RenameFileUTF8(CurFilename, BackupFileName) then begin
--        MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
-+        MessageDlg(format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
-           [CurFilename, BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
-           mtError, [mbOK], 0);
-         Result := mrAbort;
-@@ -166,7 +166,7 @@
-       InvalidateFileStateCache;
-     end;
-     if not FileProcs.RenameFileUTF8(NewFileName, CurFilename) then begin
--      MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
-+      MessageDlg(format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
-         [NewFileName, CurFilename, SysErrorMessageUTF8(GetLastOSError)]),
-         mtError, [mbOK], 0);
-       Result := mrAbort;
-@@ -293,8 +293,10 @@
+@@ -304,8 +304,10 @@
      if (RenameLazarusExecutable(DefaultDir)=mrOK)
        and (RenameLazarusExecutable(CustomDir)=mrOK) then
      begin
@@ -51,45 +26,9 @@
        if FileExistsUTF8(DefaultExe) then begin
          if FileExistsUTF8(CustomExe) then begin
            // both exist
-@@ -306,15 +308,15 @@
-             // the custom exe is older => let user choose
-             MsgResult:=QuestionDlg{NOTE: Do not use IDEQuestionDialog!!!}(
-               'Multiple lazarus found',
--              'Which Lazarus should be started?'#13
--              +#13
--              +'The system default executable'#13
--              +DefaultExe+#13
--              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(DefaultExe)))+')'#13
--              +#13
--              +'Or your custom executable'#13
--              +CustomExe+#13
--              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(CustomExe)))+')'#13
-+              'Which Lazarus should be started?'+LineEnding
-+              +LineEnding
-+              +'The system default executable'+LineEnding
-+              +DefaultExe+LineEnding
-+              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(DefaultExe)))+')'+LineEnding
-+              +LineEnding
-+              +'Or your custom executable'+LineEnding
-+              +CustomExe+LineEnding
-+              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(CustomExe)))+')'+LineEnding
-               ,mtConfirmation,
-               [mrYes,'Start system default',mrNo,'Start my custom',mrAbort],'');
-             case MsgResult of
-@@ -332,8 +334,8 @@
-           // only the custom exists => warn user
-           MessageDlg('System default is missing',
-             'The system default lazarus executable "'+DefaultExe+'" is missing, but your custom'
--            +'executable is still there:'#13
--            +CustomExe+#13
-+            +'executable is still there:'+LineEnding
-+            +CustomExe+LineEnding
-             +'This will be started ...'
-             ,mtInformation,[mbOk],0);
-           FLazarusPath:=CustomExe;
---- ide/lazconf.pp	2012-08-21 19:45:59.000000000 +0200
-+++ ide/lazconf.pp	2012-12-02 14:55:03.000000000 +0100
-@@ -135,6 +135,12 @@
+--- ide/lazconf.pp      2014-03-07 18:45:45.416608740 +0000
++++ ide/lazconf.pp.new  2014-03-07 18:47:21.349801356 +0000
+@@ -133,6 +133,12 @@
  procedure AddFilenameToList(List: TStrings; const Filename: string;
    SkipEmpty: boolean = true);
  
@@ -102,7 +41,7 @@
  const
    EmptyLine = LineEnding + LineEnding;
    EndOfLine: shortstring = LineEnding;
-@@ -159,6 +165,40 @@
+@@ -157,6 +163,40 @@
  
  {$I lazconf.inc}
  
@@ -143,7 +82,7 @@
  procedure AddFilenameToList(List: TStrings; const Filename: string;
    SkipEmpty: boolean);
  var
-@@ -172,7 +212,7 @@
+@@ -170,7 +210,7 @@
  
  function GetLazarusApplicationName: string;
  begin
@@ -152,11 +91,3 @@
  end;
  
  procedure LazConfSubstituteMacros(var s: string);
-@@ -350,6 +390,7 @@
-   SecondaryFilename:=AppendPathDelim(GetSecondaryConfigPath)+ShortFilename;
-   if (not FileExistsUTF8(PrimaryFilename))
-   and (FileExistsUTF8(SecondaryFilename)) then begin
-+    debugln(['CopySecondaryConfigFile ',SecondaryFilename,' -> ',PrimaryFilename]);
-     if not CreatePrimaryConfigPath then begin
-       debugln(['WARNING: unable to create primary config directory "',GetPrimaryConfigPath,'"']);
-       exit;
