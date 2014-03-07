@@ -6,7 +6,7 @@ VERSION=${VERSION:-5.2.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-qt}
 WGET=(http://download.qt-project.org/official_releases/qt/4.8/4.8.5/$NAMESRC-4.8.5.tar.gz
-      http://download.qt-project.org/official_releases/qt/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/$NAMESRC-$VERSION.$EXT
+      http://download.qt-project.org/official_releases/qt/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/single/$NAMESRC-$VERSION.$EXT
      )
 DESC="Outils et bibliothèques de création d'applications graphiques"
 
