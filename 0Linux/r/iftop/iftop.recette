@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-iftop}
-VERSION=${VERSION:-1.0pre2}
+VERSION=${VERSION:-1.0pre4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-iftop}
 WGET=${WGET:-http://www.ex-parrot.com/pdw/$NAMESRC/download/$NAMESRC-$VERSION.$EXT}
