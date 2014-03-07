@@ -433,7 +433,7 @@ rm -rf ${MEDIAROOT}/0/paquets/*
 
 # On copie les paquets selon l'option choisie :
 if [ "${1}" = "--complet" ]; then
-	mkdir  ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}
+	mkdir -p ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}
 	rsync -a --delete-after ${PAQUETS}/* ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}/
 	
 	# On configure '0g' pour pointer sur le dépôt local :
