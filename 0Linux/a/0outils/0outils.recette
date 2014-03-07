@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-0outils}
-VERSION=${VERSION:-9.7.6}
+VERSION=${VERSION:-9.7.7}
 DESC="Outils « maison » pour la configuration du système"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -55,6 +55,16 @@ installer_doc
 txt2tags -t html -o ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0g.html $CWD/0g-man.t2t
 
 creer_post_installation
+
+# On complète la post-installation en asurant la migration vers le nouveau '0g' :
+cat >> ${PKG}/post-install.sh <<"EOF"
+
+# On s'asure qu'il ne reste rien des anciens '0g' :
+rm -f etc/0outils/0g/*
+rmdir etc/0outils/0g/ 2>/dev/null || true
+
+EOF
+
 empaqueter
 
 # C'est fini.

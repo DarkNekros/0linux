@@ -12,7 +12,7 @@ les touches PG.PRÉC. et PG.SUIV. et quitter avec la touche Q. Consultez
 Les consoles virtuelles
 -----------------------
 
-Sachez que vous utilisez maintenant un système multi-tâches.
+Sachez que vous utilisez maintenant un système multitâche.
 Vous n'êtes donc pas confiné au programme d'installation. Vous pouvez 
 vous connecter sur d'autres consoles (ou « terminaux ») et voir ce qui 
 se passe à n'importe quel moment sans bloquer le processus d'installation. 
@@ -64,7 +64,7 @@ le programme 'cfdisk', ou bien avec sa version plus « vieille école »,
 disponible.
 
 Vous allez avoir besoin d'une partition de type 83 (type Linux par défaut) 
-et optionnnellement une de type 82 (la partition d'échange ou « swap »)
+et optionnellement une de type 82 (la partition d'échange ou « swap »)
 afin que l'installateur reconnaisse vos partitions comme exploitables.
 
 	a) Si vous choisissez 'cfdisk', les menus vous guideront.
@@ -98,6 +98,10 @@ corriger : la touche SUPPR. ne fonctionnera pas !
 
 Quand l'installation et la configuration sont terminées, quittez le 
 programme d'installation pour redémarrer sous votre nouveau système Linux.
-Pour toute remarque sur cet installateur, écrivez à appzer0@free.fr
+
+Pour toute remarque sur cet installateur, écrivez à appzer0@0linux.org ou 
+consultez le site officiel http://0linux.org, des forums y sont cobnsultables
+ainsi une liste de diffusion par e-mail, un wiki et d'autres canaux de 
+communication.
 
 Appuyez sur Q pour quitter cette aide et revenir à l'installateur.

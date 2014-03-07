@@ -164,7 +164,24 @@ while [ 0 ]; do
 			unset CHOIXMENUPRINCIPAL
 			continue
 		else
+			
+			# On va avoir besoin de /proc, /sys, /dev et /run pour le chroot :
+			if [ ! "${SETUPROOT}" = "/" ]; then
+				mkdir -p ${SETUPROOT}/{dev,proc,run,sys}
+				mount --bind /proc ${SETUPROOT}/proc 1>/dev/null 2>/dev/null
+				mount --bind /sys  ${SETUPROOT}/sys  1>/dev/null 2>/dev/null
+				mount --bind /dev  ${SETUPROOT}/dev  1>/dev/null 2>/dev/null
+				mount --bind /run  ${SETUPROOT}/run  1>/dev/null 2>/dev/null
+			fi
+			
 			. paquets.sh
+			
+			# On copie 'resolv.conf' dans $SETUPROOT pour profiter de la résolution
+			# des DNS du système autonome sans avoir à se reconnecter :
+			if [ -r ${SETUPROOT}/etc/resolv.conf ]; then
+				cat /etc/resolv.conf > ${SETUPROOT}/etc/resolv.conf
+			fi
+			
 			. configurer.sh
 		fi
 		unset CHOIXMENUPRINCIPAL

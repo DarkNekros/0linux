@@ -1,29 +1,19 @@
 #!/usr/bin/env bash
 
 # On nettoie :
-unset CHOIXMENUABO BUROABO
+unset BLURB BLURB2 BLURB3 BLURB4 BLURB5 CHOIXMENUABO BUROABO
 
 # Confirmation :
 if [ "${INSTALLDEBUG}" = "" ]; then
-		clear
-	fi
-	echo -e "\033[1;32mInstallation imminente des paquets.\033[0;0m"
-	echo ""
-	echo "Les paquets de base du système 0Linux vont maintenant être installés sur votre"
-	echo "partition '$(cat $TMP/partition_racine)'."
-	echo ""
-	echo -n "Appuyez sur ENTRÉE pour confirmer ou CTRL+C pour quitter."
-	read BLURB;
-
-# Quelques vérif' avant l'installation des paquets :
-MEDIACHOISI="$(cat $TMP/choix_media)"
-
-# On ajoute le protocole 'file://' si le dépôt est local :
-if [ "$(echo ${MEDIACHOISI} | grep -E '^ftp:')" = "" ]; then
-	PROTOCOLE="file://"
-else
-	PROTOCOLE=""
+	clear
 fi
+echo -e "\033[1;32mInstallation imminente des paquets.\033[0;0m"
+echo ""
+echo "Les paquets de base du système 0Linux vont maintenant être installés sur votre"
+echo "partition '$(cat $TMP/partition_racine)'."
+echo ""
+echo -n "Appuyez sur ENTRÉE pour confirmer ou CTRL+C pour quitter."
+read BLURB;
 
 if [ "${SETUPROOT}" = "" ]; then
 	echo "Erreur fatale : la racine système n'est pas positionnée !"
@@ -42,8 +32,10 @@ else
 	fi
 	echo -e "\033[1;32mInstallation des paquets critiques...\033[0;0m"
 	echo ""
+	echo "	0g busybox base-systeme glibc ncurses readline bash sgml-common 0outils"
+	sleep 1
 	
-	Source="${PROTOCOLE}${MEDIACHOISI}" ROOT="${SETUPROOT}" 0g \
+	0g \
 		busybox \
 		base-systeme \
 		glibc \
@@ -51,7 +43,27 @@ else
 		readline \
 		bash \
 		sgml-common \
+		0outils \
 		2>/dev/null
+	
+	# On ajoute le protocole 'file://' si le dépôt est local :
+	MEDIACHOISI="$(cat $TMP/choix_media)"
+	if [ "$(echo ${MEDIACHOISI} | grep -E '^ftp:|^http:')" = "" ]; then
+		PROTOCOLE="file://"
+	else
+		PROTOCOLE=""
+	fi
+
+	# On ajoute à la configuration de 0g la source des paquets ainsi que la racine cible :
+	echo "Source=\"${PROTOCOLE}${MEDIACHOISI}\"" >> /etc/0outils/0g.conf
+	echo "ROOT=\"${SETUPROOT}\""                 >> /etc/0outils/0g.conf
+
+	# La config' de 0g sur $SETUPROOT n'a pas besoin de "ROOT=" :
+	echo "Source=\"${PROTOCOLE}${MEDIACHOISI}\"" >> ${SETUPROOT}/etc/0outils/0g.conf
+
+	# $SETUPROOT a aussi besoin du cache de 0g :
+	mkdir -p ${SETUPROOT}/var/cache/0g
+	mount --bind /var/cache/0g ${SETUPROOT}/var/cache/0g 1>/dev/null 2>/dev/null
 	
 	# On installe la base :
 	if [ "${INSTALLDEBUG}" = "" ]; then
@@ -59,109 +71,115 @@ else
 	fi
 	echo -e "\033[1;32mInstallation de 'base-abonnement'...\033[0;0m"
 	echo ""
+	echo "	0g base-abonnement"
+	sleep 1
 	
-	Source="${PROTOCOLE}${MEDIACHOISI}" ROOT="${SETUPROOT}" 0g base-abonnement
+	0g base-abonnement
 	
 	# On réinstalle 'base-systeme' par sécurité (utilisateurs/groupes possiblement manquants) :
 	spackadd -f --root=${SETUPROOT} /var/cache/0g/${VERSION}/$(uname -m)/a/base-systeme/*.spack 2>/dev/null 1>/dev/null || true
 	
-	# On propose la suite :
-	while [ 0 ]; do
-		if [ "${INSTALLDEBUG}" = "" ]; then
-			clear
-		fi
-		echo -e "\033[1;32mChoix des abonnements logiciels supplémentaires.\033[0;0m"
-		echo ""
-		echo "Il est temps de faire votre choix parmi les abonnements proposés par 0Linux."
-		echo "Les abonnements sont des ensembles cohérents de logiciels qui simplifient leur"
-		echo "installation."
-		echo "Si vous désirez utiliser un environnement ou un bureau graphique, il est"
-		echo "recommandé d'installer les abonnements 'opt' et 'xorg' afin de disposer d'un"
-		echo "complet et exploitable. L'installateur vous proposera ensuite une liste"
-		echo "d'environnements graphiques."
-		echo ""
-		echo "Entrez ci-après le code de la rubrique souhaitée et appuyez sur ENTRÉE."
-		echo "En cas de doute, choisissez ASSISTANT."
-		echo ""
-		echo "1 : ASSISTANT - installer 'opt', 'xorg' puis un env. graphique (recommandé)"
-		echo "2 : MANUEL    - installer manuellement (pour utilisateurs avertis)"
-		echo ""
-		echo -n "Votre choix : "
-		read CHOIXMENUABO;
-		case "$CHOIXMENUABO" in
-			"1")
-				# On installe opt et xorg : :
-				if [ "${INSTALLDEBUG}" = "" ]; then
-					clear
-				fi
-				echo -e "\033[1;32mInstallation des abonnements...\033[0;0m"
-				echo ""
-				
-				Source="${PROTOCOLE}${MEDIACHOISI}" ROOT="${SETUPROOT}" 0g \
-					opt-abonnement \
-					xorg-abonnement
-				
-				# On passe aux environnements graphiques :
-				while [ 0 ]; do
-					if [ "${INSTALLDEBUG}" = "" ]; then
-						clear
-					fi
-					echo -e "\033[1;32mChoix de l'environnement graphique.\033[0;0m"
-					echo ""
-					echo "Il est temps de choisir un environnement graphique parmi les abonnements"
-					echo "proposés par 0Linux. Vous pouerrez en installer d'autres plus tard"
-					echo "en utilisant l'outil '0g'."
-					echo ""
-					echo "Entrez ci-après le code de la rubrique souhaitée et appuyez sur ENTRÉE."
-					echo ""
-					
-					echo "1 : E     - (Très) Épuré et élégant"
-					echo "2 : KDE   - Complet, moderne et facile d'utilisation"
-					echo "3 : XFCE  - Classique, léger et complet"
-					echo "4 : AUCUN - TWM sera le gestionnaire de fenêtres par défaut (rudimentaire)."
-					echo ""
-					echo -n "Votre choix : "
-					read BUROABO;
-					case BUROABO in
-					"1")
-						BUREAUCHOISI="enlightenment-abonnement"
-					;;
-					"2")
-						BUREAUCHOISI="kde-abonnement"
-					;;
-					"3")
-						BUREAUCHOISI="xfce-abonnement"
-					;;
-					"4")
-						BUREAUCHOISI=""
-					;;
-					*)
-						echo "Veuillez entrer un numéro valide (entre 1 et 4)."
-						sleep 2
-						continue
-					esac
-					
-					# On installe l'abonnement demandé :
-					if [ ! "${BUREAUCHOISI}" = "" ]; then
-						Source="${PROTOCOLE}${MEDIACHOISI}" ROOT="${SETUPROOT}" 0g ${BUREAUCHOISI}
-					fi
-					break
-				done
-			;;
-			"2")
-				break
-			;;
-			*)
-				echo "Veuillez entrer un numéro valide (entre 1 et 2)."
-				sleep 2
-				continue
-		esac
-	done
+	# On invite l'utilistaeur à se débrouiller avec '0g' :
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
+	echo -e "\033[1;Organisation des paquets dans 0Linux.\033[0;0m"
+	echo ""
+	echo "Les paquets de 0Linux sont rangés dans des répertoires faisant office de"
+	echo "catégories thématiques dont voici un aperçu :"
+	echo ""
+	echo "a : Applications exécutables en console n'entrant dans aucune autre catégorie."
+	echo "b : Bibliothèques non rattachées à un environnement particulier."
+	echo "d : Développement. Compilateurs, débogueurs, interpréteurs, etc."
+	echo "e : Environnements. KDE, Xfce, GNOME, Enlightenment et autres environnements."
+	echo "g : applications Graphiques nécessitant X, non rattachées à un environnement."
+	echo "r : Réseau. Clients, serveurs gérant ou utilisant le réseau en console."
+	echo "x : X.org, l'implémentation libre et distribution officielle de X11"
+	echo "z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
+	echo ""
+	echo "Passons aux abonnements."
+	echo ""
+	echo -n "Appuyez sur ENTRÉE pour continuer."
+	read BLURB2;
+	
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
+	echo -e "\033[1;32mChoix des abonnements logiciels supplémentaires.\033[0;0m"
+	echo ""
+	echo "Il est temps de faire votre choix parmi les abonnements de 0Linux."
+	echo "Vous allez pour cela utiliser l'outil '0g' dans la console n°2."
+	echo ""
+	echo "Les paquets-abonnements (dans 'z/') sont des ensembles cohérents de logiciels"
+	echo "qui simplifient leur installation."
+	echo ""
+	echo "'base-abonnement' a déjà été installé d'office et forme la base du système."
+	echo "Si vous désirez utiliser un environnement ou un bureau graphique, installez"
+	echo "'xorg-abonnement'."
+	echo "L'abonnement 'opt-abonnement', quant à lui, permet de disposer de la"
+	echo "plupart des bibliothèques et outils système dans une sélection très complète"
+	echo "de logiciels. Installez-le si vous débutez."
+	echo ""
+	echo "Ainsi, pour installer les abonnements recommandés, vous taperez :"
+	echo "	0g xorg-abonnement opt-abonnement"
+	echo ""
+	echo -n "Appuyez sur ENTRÉE quand vous avez terminé avec l'installation des abonnements."
+	read BLURB3;
+	
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
+	echo -e "\033[1;32mChoix des paquets logiciels supplémentaires.\033[0;0m"
+	echo ""
+	echo "Il est temps de faire votre choix parmi les paquets de 0Linux."
+	echo "Vous allez pour cela utiliser l'outil '0g' dans la console n°2."
+	echo ""
+	echo "'0g' ne permet pas encore de lister les paquets disponibles ou d'en avoir"
+	echo "une description ; consultez donc directement le dépôt de paquets pour en"
+	echo "savoir plus sur son contenu. Des fichiers '*.txt' contiennent une"
+	echo "description pour chaque paquet. Les paquets eux-mêmes portent"
+	echo "l'extension '.spack'. Utilisez les abonnements pour vous faciliter la"
+	echo "tâche ! Notamment pour installer un environnement graphique, par exemple :"
+	echo ""
+	echo "	0g kde-abonnement"
+	echo "	0g xfce-abonnement"
+	echo "	0g enlightenment-abonnement"
+	echo ""
+	echo "... etc."
+	echo "Nous faciliterons l'accès aux listings et aux descriptions très prochainement."
+	echo "Vous utiliserez souvent '0g', familiarisez-vous avec, il est très simple."
+	echo "Consultez '0g -h' ou 'man 0g' pour en savoir plus."
+	echo ""
+	echo -n "Appuyez sur ENTRÉE quand vous avez terminé avec l'installation des paquets."
+	read BLURB4;
+	
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
+	echo -e "\033[1;32mConfiguration de votre système Linux.\033[0;0m"
+	echo ""
+	echo "Si vous en avez terminé avec '0g', appuyez sur ENTRÉE pour passer à la"
+	echo "configuration du système. N'utilisez plus '0g' car il ne pointera plus"
+	echo "sur votre partition racine '$(cat $TMP/partition_racine)' dorénavant."
+	echo "Vous pourrez l'utiliser à nouveau après le redémarrage."
+	echo ""
+	echo -n "Appuyez sur ENTRÉE pour passer à la configuration de votre système."
+	read BLURB5;
 	
 	# On nettoie tous les fichiers '*.0nouveau' au cas où :
-	for f in $(find ${SETUPROOT}/etc -type f -name "*.0nouveau"); do
-		mv ${f} $(dirname ${f})/$(basename ${f} .0nouveau)
+	for f in $(find ${SETUPROOT}/etc -type f -name "*.0nouveau" 2>/dev/null); do
+		mv ${f} $(dirname ${f})/$(basename ${f} .0nouveau) 2>/dev/null || true
 	done
+	
+	# On supprime la configuration de 0g :
+	sed -i "/^Source=\"${PROTOCOLE}${MEDIACHOISI}\"/d" /etc/0outils/0g.conf
+	sed -i "/^ROOT=\"${SETUPROOT}\"/d"                 /etc/0outils/0g.conf
+
+	# On supprime la configuration de 0g sur $SETUPROOT :
+	sed -i "/^Source=\"${PROTOCOLE}${MEDIACHOISI}\"/d" ${SETUPROOT}/etc/0outils/0g.conf
+	
+	# On démonte le cache de 0g sur $SETUPROOT :
+	umount -f ${SETUPROOT}/var/cache/0g 1>/dev/null 2>/dev/null || true
 fi
 
 # C'est fini.

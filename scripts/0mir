@@ -104,17 +104,63 @@ FTP="ftp://ftp.igh.cnrs.fr"
 URL="http://ftp.igh.cnrs.fr/pub/os/linux/0linux"
 FTPUSER="appzer0"
 ROOT="pub"
+pkgroot="paquets/eta"
 log="/tmp/0mir-error.log"
+
+# On génère les descriptions de chaque paquet :
+cd "$(pwd)/../../../$ROOT" || exit 1
+for arch in x86_64; do # On ne fait que x86_64 pour le moment...
+	echo "   Génère les descriptions dans $pkgroot/$arch/..."
+
+	(
+		cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
+
+		# Pour chaque catégorie :
+		for categorie in $(find * -maxdepth 0 -type d | sort); do
+			
+			# Pour chaque paquet trouvé :
+			for paquet in $(find $categorie -type f -name "*.spack" | sort); do
+				
+				# Si la description du paquet est absente, on nettoie et on la crée :
+				if [ ! -r "$(echo $paquet | sed 's@\.spack@\.txt@')" ]; then
+					rm -f $(dirname $paquet)/*.txt # les restes d'une autre version
+					/usr/sbin/spackadd --about $paquet > $(echo $paquet | sed 's@\.spack@\.txt@')
+				fi
+			done
+			
+			# la description de chaque catégorie :
+			catdesc=""
+			
+			# Éviter de dépasser cette règle |-------------------------------------------------------------------------------|
+			[ "$categorie" = "a" ] && catdesc="a : Applications exécutables en console n'entrant dans aucune autre catégorie."
+			[ "$categorie" = "b" ] && catdesc="b : Bibliothèques non rattachées à un environnement particulier."
+			[ "$categorie" = "d" ] && catdesc="d : Développement. Compilateurs, débogueurs, interpréteurs, etc."
+			[ "$categorie" = "e" ] && catdesc="e : Environnements. KDE, Xfce, GNOME, Enlightenment et autres environnements."
+			[ "$categorie" = "g" ] && catdesc="g : applications Graphiques nécessitant X, non rattachées à un environnement."
+			[ "$categorie" = "r" ] && catdesc="r : Réseau. Clients, serveurs gérant ou utilisant le réseau en console."
+			[ "$categorie" = "x" ] && catdesc="x : X.org, l'implémentation libre et distribution officielle de X11"
+			[ "$categorie" = "z" ] && catdesc="z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
+			echo "$catdesc" > ${categorie}.txt
+			
+			# On génère la liste générale de la catégorie :
+			for f in $(find $categorie -type f -name "*.spack" | sort); do
+				echo "$(basename $(dirname $f)) :" >> ${categorie}.txt
+				/usr/sbin/spackadd --about $f >> ${categorie}.txt
+				echo "" >> ${categorie}.txt
+			done
+		done
+	)
+done
+
+exit 0
 
 # On source nos données d'accès pour le login rsync :
 source $(pwd)/login-0mir.sh
 
-cd "$(pwd)/../../../$ROOT" || exit 1
-pkgroot="paquets/eta"
 rm -f "$log" # sa présence signifie qu'il y a eu erreur.
 for arch in x86_64; do # On ne fait que x86_64 pour le moment...
     echo "   Génère    $pkgroot/$arch/paquets.db..."
-    ( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$PKGROOT/$arch\"."
+    ( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
       find * -type f \( -name "*.spack" -o -name "*.dep" \) \
           | mk0db "$log" >"./paquets.db"
     )
