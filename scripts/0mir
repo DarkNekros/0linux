@@ -122,7 +122,7 @@ for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 			for paquet in $(find $categorie -type f -name "*.spack" | sort); do
 				
 				# Si la description du paquet est absente, on nettoie et on la crée :
-				if [ ! -r "$(echo $paquet | sed 's@\.spack@\.txt@')" ]; then
+				if [ ! -r $(echo $paquet | sed 's@\.spack@\.txt@') ]; then
 					rm -f $(dirname $paquet)/*.txt # les restes d'une autre version
 					/usr/sbin/spackadd --about $paquet > $(echo $paquet | sed 's@\.spack@\.txt@')
 				fi
