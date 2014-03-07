@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-freeciv}
-VERSION=${VERSION:-2.4.1}
+VERSION=${VERSION:-2.4.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-freeciv}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
