@@ -143,7 +143,7 @@ for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 			[ "$categorie" = "r" ] && catdesc="r : Réseau. Clients, serveurs gérant ou utilisant le réseau en console."
 			[ "$categorie" = "x" ] && catdesc="x : X.org, l'implémentation libre et distribution officielle de X11"
 			[ "$categorie" = "z" ] && catdesc="z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
-			echo "$catdesc" > ${categorie}.txt
+			echo "$catdesc" > ${categorie}/${categorie}.txt
 		done
 	)
 done
