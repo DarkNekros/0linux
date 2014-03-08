@@ -108,7 +108,7 @@ pkgroot="paquets/eta"
 log="/tmp/0mir-error.log"
 
 # On source nos données d'accès pour le login rsync :
-source login-0mir.sh
+. ./login-0mir.sh
 
 # On génère les descriptions de chaque paquet :
 cd "$(pwd)/../../../$ROOT" || exit 1
