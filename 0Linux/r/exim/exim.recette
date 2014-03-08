@@ -2,12 +2,12 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-exim}
-VERSION=${VERSION:-4.80.1}
+VERSION=${VERSION:-4.82}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-exim}
 WGET=(http://dl.ambiweb.de/mirrors/ftp.exim.org/$NAMESRC/${NAMESRC}4/$NAMESRC-$VERSION.$EXT
 	http://dl.ambiweb.de/mirrors/ftp.exim.org/$NAMESRC/${NAMESRC}4/$NAMESRC-html-$VERSION.$EXT)
-DESC="Des bibliothèques et outils pour faire fonctionner quelque chose de précis..."
+DESC="Un MTA traditionnel compatible avec Senmail pour GNU/Linux"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -94,70 +94,47 @@ for i in mailq rmail rsmtp runq sendmail; do
 	ln -sf exim $PKG/usr/sbin/$i
 done
 
-# On crée les fichiers systemd :
-cat > $PKG/usr/lib$LIBDIRSUFFIX/systemd/system/exim-submission@.service << EOF
-[Unit]
-Description=Démon du serveur de messagerie Exim (envoi)
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.exim << "EOF"
+#!/usr/bin/env bash
 
-[Service]
-ExecStart=-/usr/sbin/exim -bs
-StandardInput=socket
-StandardError=syslog
+exim_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage d'Exim..."
+	/usr/sbin/exim -bdfs -q30m
+}
 
-EOF
+exim_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt d'Exim..."
+	killall exim
+}
 
-cat > $PKG/usr/lib$LIBDIRSUFFIX/systemd/system/exim.service << EOF
-[Unit]
-Description=Démon de la messagerie Exim
+case "$1" in
+	'start')
+		exim_start
+	;;
+	
+	'stop')
+		exim_stop
+	;;
+	
+	'restart')
+		exim_stop
+		sleep 1
+		exim_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
 
-[Service]
-PIDFile=/var/run/exim.pid
-ExecStart=/usr/sbin/exim -bdf -q30m
-ExecReload=/usr/bin/kill -HUP $MAINPID
-
-[Install]
-WantedBy=multi-user.target
-
-EOF
-
-cat > $PKG/usr/lib$LIBDIRSUFFIX/systemd/system/exim@.service << EOF
-[Unit]
-Description=Démon du serveur de messagerie Exim
-
-[Service]
-ExecStart=-/usr/sbin/exim -bs
-StandardInput=socket
-StandardError=syslog-ng
-
-EOF
-
-cat > $PKG/usr/lib$LIBDIRSUFFIX/systemd/system/exim.socket << EOF
-[Unit]
-Description=Agent de transfert de message Exim
-Conflicts=exim.service
-
-[Socket]
-ListenStream=25
-Accept=yes
-
-[Install]
-WantedBy=sockets.target
+esac
 
 EOF
 
-cat > $PKG/usr/lib$LIBDIRSUFFIX/systemd/system/exim-submission.socket << EOF
-[Unit]
-Description=Agent de transfert de message Exim (envoi)
-Conflicts=exim.service
-
-[Socket]
-ListenStream=587
-Accept=yes
-
-[Install]
-WantedBy=sockets.target
-
-EOF
+# Le service est activé par défaut :
+chmod +x ${PKG}/etc/rc.d/rc.exim
 
 # On crée le fichier de rotation des fichiers de log :
 cat > ${PKG}/etc/logrotate.d/exim << "EOF"
