@@ -401,6 +401,16 @@ ln -sf sbin/init ${LIVEOS}/init
 # On vide le mot de passe du compte 'root' (envoyer vos plaintes pour sacrilège) :
 chroot ${LIVEOS} passwd -d root
 
+# On nettoie tous les fichiers '*.0nouveau' au cas où :
+for f in $(find ${LIVEOS}/etc -type f -name "*.0nouveau" 2>/dev/null); do
+	mv ${f} $(dirname ${f})/$(basename ${f} .0nouveau) 2>/dev/null || true
+done
+
+# On configure '0g' pour pointer sur le dépôt local si l'ISO contient les paquets :
+if [ "${1}" = "--complet" ]; then
+	sed -i 's@^Source=.*$@Source="file://$Cache"@' ${LIVEOS}/etc/0outils/0g.conf
+fi
+
 # On crée l'initrd :
 echo -n "Création de l'initrd... "
 rm -f ${INITRDGZ}
@@ -435,9 +445,6 @@ rm -rf ${MEDIAROOT}/0/paquets/*
 if [ "${1}" = "--complet" ]; then
 	mkdir -p ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}
 	rsync -a --delete-after ${PAQUETS}/* ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}/
-	
-	# On configure '0g' pour pointer sur le dépôt local :
-	sed -i 's@^Source=.*$@Source="file://$Cache"@' ${MEDIAROOT}/etc/0outils/0g.conf
 fi
 
 # On s'assure des permissions :
