@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-widelands}
-VERSION=${VERSION:-17}
+VERSION=${VERSION:-18}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-widelands}
 WGET=${WGET:-https://launchpad.net/$NAMESRC/build$VERSION/build-$VERSION/+download/$NAMESRC-build$VERSION-src.$EXT}
@@ -14,9 +14,6 @@ DESC="Jeu mêlant stratégie et rôle dans un contexte médiéval"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# Correctif pour la compilation avec gcc 4.7
-cat $CWD/widelands.gcc47.patch | patch -p1
 
 # Ne pas utiliser les versions statiques des bibliothèques Boost
 sed -i "s|Boost_USE_STATIC_LIBS   ON|Boost_USE_STATIC_LIBS   OFF|" CMakeLists.txt
