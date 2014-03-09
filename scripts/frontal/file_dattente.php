@@ -13,10 +13,12 @@
 		<?php
 
 		// Le fichier de la file d'attente :
-		$filedattente = '/tmp/en_attente.tmp'
+		$filedattente = '/tmp/en_attente.tmp';
 
 		// Si le fichier n'existe pas (pas normal) :
-		if (!$filedattente) die("Erreur : La file d'attente est introuvable.");
+		if(!$filedattente) {
+			die("Erreur : La file d'attente est introuvable.");
+		}
 
 		// Traitement POST si le formulaire est validé :
 		if(isset($_POST['inputfiledattente']) {

@@ -257,8 +257,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On force les drapeaux d'optimisation :
-sed -i "s@QMAKE_CFLAGS_RELEASE	+= -O2@& ${FLAGS}@" mkspecs/common/g++.conf
-sed -i "s@-O2@& ${FLAGS}@" mkspecs/common/{g++,gcc}-base.conf
+sed -i "s@-O2@& ${FLAGS}@" qtbase/mkspecs/common/{g++,gcc}-base.conf
 
 # La machine doit être spécifiée selon l'architecture :
 if [ "${PKGARCH}" = "i686" ]; then
