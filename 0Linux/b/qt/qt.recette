@@ -235,9 +235,9 @@ else
 	ln -sf qmake ${PKG}/usr/bin/qmake-qt4
 fi
 
-# On place et on redimensionne le logo de Qt :
+# On place d'abord et on redimensionne le logo de Qt :
 mkdir -p ${PKG}/usr/share/icons/hicolor/{16x16,32x32,48x48,64x64,128x128}/apps
-convert ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/src/images/qt-logo.png -resize 48x48 ${PKG}/usr/share/icons/hicolor/48x48/apps/qt-logo.png
+convert ${PKG}/usr/doc/${NAMETGZ}-4.8.5/src/images/qt-logo.png -resize 48x48 ${PKG}/usr/share/icons/hicolor/48x48/apps/qt-logo.png || true
 
 # On place les autres icônes :
 cp -a tools/assistant/tools/assistant/images/assistant.png ${PKG}/usr/share/icons/hicolor/32x32/apps/assistant.png
