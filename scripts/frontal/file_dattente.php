@@ -35,11 +35,8 @@
 			
 			<p>
 				<?php
-				while (!feof($filedattente)) {
-					$contenu = $(nl2br(file_get_contents($filedattente)));
-				}
+				$contenu = nl2br(file_get_contents($filedattente));
 				echo $contenu;
-		
 				?>
 			</p>
 		</div>
