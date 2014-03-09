@@ -30,6 +30,8 @@ LDFLAGS+="-ltirpc" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-rpath \
+	--disable-rpath-install \
 	--enable-gnutls \
 	--with-acl-support \
 	--with-ads \
