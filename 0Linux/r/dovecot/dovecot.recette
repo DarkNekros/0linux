@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-dovecot}
-VERSION=${VERSION:-2.2.2}
+VERSION=${VERSION:-2.2.12}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-dovecot}
 WGET=${WGET:-http://www.dovecot.org/releases/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}

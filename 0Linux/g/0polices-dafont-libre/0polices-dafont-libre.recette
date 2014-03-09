@@ -5,7 +5,7 @@ NAMESRC=${NAMESRC:-0polices-dafont-libre}
 VERSION=${VERSION:-0.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-0polices-dafont-libre}
-WGET=${WGET:-http://0linux.geoffray-levasseur.org/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://0linux.geoffray-levasseur.org/src/$NAMESRC-$VERSION.$EXT}
 DESC="De nombreuses polices TTF et OTF fantaisistes"
 
 . /usr/share/0outils/fonctions_paquets.sh

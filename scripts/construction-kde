@@ -3,6 +3,7 @@ libmsn
 libgadu
 libiodbc
 virtuoso
+quazip
 oxygen-icons
 qca2
 qimageblitz
@@ -21,6 +22,7 @@ kdepimlibs
 nepomuk-core
 nepomuk-widgets
 kactivities
+libraw
 libkdcraw
 libkexiv2
 libkipi
@@ -65,7 +67,7 @@ kcharselect
 kdf
 kfloppy
 kgpg
-kwallet
+kwalletmanager
 print-manager
 sweeper
 krename
@@ -186,4 +188,5 @@ kdevelop
 kdevelop-pg-qt
 kdevelop-php
 kdevelop-php-docs
+kdev-python
 kdevelop-modeles
