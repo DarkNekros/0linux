@@ -3,13 +3,13 @@
 set -e
 
 # Le fichier du processus (on n'est pas root) :
-PIDFILE="/tmp/service-construction.pid"
+PIDFILE="/tmp/service_construction.pid"
 
 # La file d'attente :
 FILEDATTENTE="/tmp/en_attente.tmp"
 
 # On supprime un éventuel déchet '.pid' restant :
-if ! ps axc | grep 'service-construction' 1> /dev/null 2> /dev/null ; then
+if ! ps axc | grep 'service_construction' 1> /dev/null 2> /dev/null ; then
 	rm -f ${PIDFILE}
 fi
 
