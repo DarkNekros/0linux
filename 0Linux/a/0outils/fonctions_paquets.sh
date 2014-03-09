@@ -105,16 +105,22 @@ telecharger_sources() {
 	# On télécharge chaque archive source :
 	for wgeturl in ${WGET[*]}; do
 		
-		# On télécharge l'archive source et on retombe sur le FTP de 0linux si le téléchargement se passe mal (fichier
-		# inexistant, erreur du serveur, etc.) :
+		# On télécharge l'archive source en '.part 'et on retombe sur le FTP de 0linux
+		# si le téléchargement se passe mal (fichier inexistant, erreur du serveur, etc.) :
 		if [ ! -r ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) ]; then
-			wget -vc --tries=3 --dns-timeout=20 --no-check-certificate \
+			wget -vc \
+				--no-check-certificate \
+				--timeout=20 \
+				--tries=3 \
 				${wgeturl} \
 				-O ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}).part || \
-				wget -vc --tries=3 --dns-timeout=20 \
-					ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/${NAMETGZ}/$(basename ${wgeturl}) \
-					-O ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}).part
+			wget -vc \
+				--timeout=20 \
+				--tries=3 \
+				ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/${NAMETGZ}/$(basename ${wgeturl}) \
+				-O ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}).part
 			
+			# On renomme correctement le fichier téléchargé :
 			mv ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}){.part,}
 		fi
 		
