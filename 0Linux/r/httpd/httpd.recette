@@ -16,8 +16,7 @@ cflags
 
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/etc/logrotate.d
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd/system
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/tmpfiles.d
+mkdir -p ${PKG}/var/run/httpd
 
 # Les emplacements pour 0linux :
 cat >> config.layout << "EOF"
