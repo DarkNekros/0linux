@@ -184,7 +184,7 @@ preparer_sources() {
 			NAME=$(tar ft ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | head -n 1 | awk -F/ '{ print $1 }')
 		;;
 		*)
-			echo "Format d'archive source (.${EXT}) non géré pour l'instant, désolé !" && exit 1
+			echo "Format d'archive source (.${EXT}) non géré pour l'instant, désolé !"
 		;;
 	esac
 	
