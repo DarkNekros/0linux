@@ -7,6 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-virtualbox}
 WGET=(http://download.virtualbox.org/virtualbox/$VERSION/$NAMESRC-$VERSION.$EXT
       http://download.virtualbox.org/virtualbox/$VERSION/VBoxGuestAdditions_${VERSION}.iso
+      http://download.virtualbox.org/virtualbox/$VERSION/Oracle_VM_VirtualBox_Extension_Pack-${VERSION}.vbox-extpack
       http://download.virtualbox.org/virtualbox/$VERSION/UserManual.pdf
       http://download.virtualbox.org/virtualbox/$VERSION/SDKRef.pdf
      )
@@ -37,6 +38,11 @@ mkdir -p ${PKG}/usr/{bin,src} \
 	${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/misc \
 	${PKG}/usr/share/{applications,pixmaps,mime/packages} \
 	${PKG}/etc/{default,vbox}
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
+
+# On extrait l'archive au bon emplacement :
+tar xvf ${PKGSOURCES}/${NAMETGZ}/Oracle_VM_VirtualBox_Extension_Pack-${VERSION}.vbox-extpack \
+	-C ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
 
 # Un répertoire change selon l'architecture :
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -268,6 +274,10 @@ SUBSYSTEM=="usb", ACTION=="remove", ENV{DEVTYPE}=="usb_device", RUN+="/usr/share
 EOF
 
 installer_doc
+
+# On complète la documentation :
+cp -a ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/ExtPack-license.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/ || true
+
 creer_post_installation
 
 # On complète la post-installation en spécifiant les permissions :
