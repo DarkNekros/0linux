@@ -20,25 +20,28 @@
 
 		// Traitement POST si le formulaire est validé :
 		if(isset($_POST['inputfiledattente']) {
-			if($_POST['passe'] = 'motdepasseadefinirici') {
-				$texte = $_POST['area'];
-				$fichier=fopen("$filedattente","w+");
-				fwrite($fichier, $texte);
-			} else {
-				die("Erreur : mot de passe incorrect !");
-			}
+			$texte = $_POST['area'];
+			$fichier=fopen("$filedattente","w+");
+			fwrite($fichier, $texte);
 		}
 
 		// On liste le contenu de la file d'attente :
 
 		?>
 		<div>
-		<?php
-		while (!feof($filedattente)) {
-			$contenu = $(nl2br(file_get_contents($filedattente)));
-		}
-
-		?>
+			<h2>
+				Jobs en attente :
+			</h2>
+			
+			<p>
+				<?php
+				while (!feof($filedattente)) {
+					$contenu = $(nl2br(file_get_contents($filedattente)));
+				}
+				echo $contenu;
+		
+				?>
+			</p>
 		</div>
 		<?php
 
@@ -48,14 +51,11 @@
 			<form action="file_datente.php">
 				<ul>
 					<li>
-						<label for="passe">Mot de passe :</label>
-						<input type="password" id="passe" placeholder="Mot de passe ?" required>
+						<label for="area">Ajouter des jobs &agrave; la file d'attente, un ou plusieurs par ligne s&eacute;par&eacute;s par des espaces&nbsp;:</label>
+						<br />
+						<textarea id="area" cols="60" rows="10"></textarea>
 					</li>
-					<li>
-						<label for="area">Ajouter des jobs $agrave; la file d'attente, un ou plusieurs par ligne s&eacute;par&eacute;s par des espaces&nbsp;:</label>
-						<textarea id="area"></textarea>
-					</li>
-					<input id="inputfiledattente" type="submit" />
+					<input id="inputfiledattente" type="submit" value="Ajouter &agrave; la file d'attente"/>
 				</ul>
 			</form>
 		</p>
