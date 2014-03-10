@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-LibreCAD}
+VERSION=${VERSION:-2.0.2}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-librecad}
+WGET=${WGET:-https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.$EXT}
+DESC="Client Youtube natif : regardez vos vidéos sans FlashPlayer"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Le numéro de version est mal renseigné :
+sed -i "/^SCMREVISION/c SCMREVISION=\"${VERSION}\"" librecad/src/src.pro
+
+# Corrige un appel aux outils pour Qt5 :
+sed -i 's/qcollectiongenerator/qcollectiongenerator-qt5/g' scripts/postprocess-unix.sh
+
+# Compilation :
+CPPFLAGS="-std=c++0x" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+qmake PREFIX=/usr
+
+make -j${JOBS} || make
+
+# Installation manuelle :
+mkdir -p ${PKG}/usr/{bin,doc/${NAMETGZ}-${VERSION},share/{applications,man/man1}}
+cp -a unix/librecad "${PKG}/usr/bin/librecad"
+cp -a unix/ttf2lff "${PKG}/usr/bin/ttf2lff"
+cp -a desktop/librecad.desktop "${PKG}/usr/share/applications/librecad.desktop"
+cp -a desktop/librecad.1 tools/ttf2lff/ttf2lff.1 "${PKG}/usr/share/man/man1/"
+cp -a librecad/support/doc/* "${PKG}/usr/doc/${NAMETGZ}-${VERSION}"
+
+# Creation et installation des icônes :
+for SIZE in 16 24 32 48 64 96 128; do
+	mkdir -p ${PKG}/usr/share/icons/hicolor/${SIZE}x${SIZE}/apps
+	convert -scale ${SIZE} \
+		desktop/graphics_icons_and_splash/Icon\ LibreCAD/Icon_Librecad.svg \
+		${PKG}/usr/share/icons/hicolor/${SIZE}x${SIZE}/apps/librecad.png
+done
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
