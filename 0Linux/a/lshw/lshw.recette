@@ -16,8 +16,9 @@ cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-
 make -j${JOBS} || make
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} gui || make gui
 
 fakeroot make install DESTDIR=${PKG}
