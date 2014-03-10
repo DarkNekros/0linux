@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-tzdata}
-VERSION=${VERSION:-2013i}
+VERSION=${VERSION:-2014a}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-tzdata}
 WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${EXT}

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 # Le fichier du processus (on n'est pas root) :
 PIDFILE="/tmp/service_construction.pid"
 
