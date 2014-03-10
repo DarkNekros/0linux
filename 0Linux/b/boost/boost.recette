@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-boost}
-VERSION=${VERSION:-1.54.0}
+VERSION=${VERSION:-1.55.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-boost}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_$(echo $VERSION | sed 's/\./_/g').$EXT}
