@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-lshw}
+VERSION=${VERSION:-B.02.17}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-lshw}
+WGET=${WGET:-http://ezix.org/software/files/$NAMESRC-$VERSION.$EXT}
+DESC="Outil d'exploration des informations sur le matériel "
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+
+make -j${JOBS} || make
+make -j${JOBS} gui || make gui
+
+fakeroot make install DESTDIR=${PKG}
+fakeroot make install-gui DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
