@@ -6,7 +6,7 @@ VERSION=${VERSION:-2.0.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-librecad}
 WGET=${WGET:-https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.$EXT}
-DESC="Client Youtube natif : regardez vos vidéos sans FlashPlayer"
+DESC="Logiciel de CAO/DAO complet"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
