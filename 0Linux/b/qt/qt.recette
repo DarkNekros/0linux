@@ -291,7 +291,7 @@ QMAKSPEC=linux-g++-${OPTMACHINE} \
 	-optimized-qmake \
 	-plugin-sql-sqlite \
 	-release \
-	-sysconfidr                     /etc/xdg \ 
+	-sysconfdir                     /etc/xdg \ 
 	-system-harfbuzz \
 	-translationdir                 /usr/share/qt5/translations
 
