@@ -40,10 +40,6 @@ mkdir -p ${PKG}/usr/{bin,src} \
 	${PKG}/etc/{default,vbox}
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
 
-# On extrait l'archive au bon emplacement :
-tar xvf ${PKGSOURCES}/${NAMETGZ}/Oracle_VM_VirtualBox_Extension_Pack-${VERSION}.vbox-extpack \
-	-C ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
-
 # Un répertoire change selon l'architecture :
 if [ "${PKGARCH}" = "x86_64" ]; then
 	BUILDDIR="amd64"
@@ -215,7 +211,7 @@ for f in VBoxHeadless VBoxManage VBoxSDL VirtualBox vboxwebsrv VBoxBalloonCtrl; 
 done
 
 # On place le reste :
-mv * ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/
+cp -arf * ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/
 
 cd $TMP/${NAME}
 
@@ -246,6 +242,10 @@ rm -f ${PKG}/usr/include/virtualbox/Makefile.kmk
 # On place l'image ISO des additions pour les systèmes invités :
 cp -a ${PKGSOURCES}/${NAMETGZ}/VBoxGuestAdditions_${VERSION}.iso ${PKG}/usr/share/virtualbox/VBoxGuestAdditions.iso
 
+# On extrait l'archive des extensions au bon emplacement :
+tar xvf ${PKGSOURCES}/${NAMETGZ}/Oracle_VM_VirtualBox_Extension_Pack-${VERSION}.vbox-extpack \
+	-C ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
+	
 # On place le manuel et la référence :
 cp -a ${PKGSOURCES}/${NAMETGZ}/UserManual-${VERSION}.pdf ${PKG}/usr/share/virtualbox/
 cp -a ${PKGSOURCES}/${NAMETGZ}/SDKRef-${VERSION}.pdf     ${PKG}/usr/share/virtualbox/
