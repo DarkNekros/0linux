@@ -252,65 +252,6 @@ done
 # On place la doc dans un répertoire à part :
 installer_doc ${NAMETGZ}-4.8.5
 
-# On compile maintenant Qt5 :
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
-cflags
-
-# On force les drapeaux d'optimisation :
-sed -i "s@-O2@& ${FLAGS}@" qtbase/mkspecs/common/{g++,gcc}-base.conf
-
-# La machine doit être spécifiée selon l'architecture :
-if [ "${PKGARCH}" = "i686" ]; then
-	OPTMACHINE=32
-elif [ "${PKGARCH}" = "x86_64" ]; then
-	OPTMACHINE=64
-fi
-
-# Compilation :
-export QT5LINK=/usr
-
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" OPENSOURCE_CXXFLAGS="${FLAGS}" \
-QMAKSPEC=linux-g++-${OPTMACHINE} \
-./configure \
-	-prefix                         /usr \
-	-archdatadir    /usr/lib${LIBDIRSUFFIX}/qt5 \
-	-bindir /usr/bin \
-	-confirm-license \
-	-datadir                        /usr/share/qt5 \
-	-docdir                         /usr/doc/${NAMETGZ}-${VERSION} \
-	-dbus-linked \
-	-headerdir                      /usr/include/qt5 \
-	-L/usr/lib${LIBDIRSUFFIX} \
-	-libdir /usr/lib${LIBDIRSUFFIX} \
-	-no-nis \
-	-no-separate-debug-info \
-	-nomake examples \
-	-opengl es2 \
-	-opensource \
-	-openssl-linked \
-	-optimized-qmake \
-	-plugin-sql-sqlite \
-	-release \
-	-sysconfdir                     /etc/xdg \
-	-system-harfbuzz \
-	-translationdir                 /usr/share/qt5/translations
-
-make -j${JOBS} || make
-fakeroot make install INSTALL_ROOT=${PKG}
-
-# Pour Noël, je voudrais des fichiers propres pour Qt :
-sed -i "s:$PWD/qtbase:/usr/lib/qt5:g" ${PKG}/usr/lib${LIBDIRSUFFIX}/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri || true
-find /usr/lib${LIBDIRSUFFIX}/lib{qgsttools_p,Qt5*}.prl -exec sed -i -r '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/\1/' {} \; || true
-     
-# Ce paquet est sale... :
-rm -rf ${PKG}/usr/{demos,examples,tests}
-
-# On place les icônes de Qt :
-cp -a qttools/src/assistant/assistant/images/assistant-128.png        ${PKG}/usr/share/pixmaps/qt5-assistant.png
-cp -a qttools/src/designer/src/designer/images/designer.png           ${PKG}/usr/share/pixmaps/qt5-designer.png
-cp -a qttools/src/linguist/linguist/images/icons/linguist-128-32.png  ${PKG}/usr/share/pixmaps/qt5-linguist.png
-cp -a qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png        ${PKG}/usr/share/pixmaps/qt5-qdbusviewer.png
-
 # On fait comme Slackware, c'est propre et complet :
 
 # On crée un fichier pour 'pkg-config' :
@@ -392,6 +333,67 @@ Categories=Qt;Settings;
 
 EOF
 
+# On compile maintenant Qt5 :
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On force les drapeaux d'optimisation :
+sed -i "s@-O2@& ${FLAGS}@" qtbase/mkspecs/common/{g++,gcc}-base.conf
+
+# La machine doit être spécifiée selon l'architecture :
+if [ "${PKGARCH}" = "i686" ]; then
+	OPTMACHINE=32
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	OPTMACHINE=64
+fi
+
+# Compilation :
+export QT5LINK=/usr
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" OPENSOURCE_CXXFLAGS="${FLAGS}" \
+QMAKSPEC=linux-g++-${OPTMACHINE} \
+./configure \
+	-prefix                         /usr \
+	-archdatadir    /usr/lib${LIBDIRSUFFIX}/qt5 \
+	-bindir /usr/bin \
+	-confirm-license \
+	-datadir                        /usr/share/qt5 \
+	-docdir                         /usr/doc/${NAMETGZ}-${VERSION} \
+	-dbus-linked \
+	-headerdir                      /usr/include/qt5 \
+	-L/usr/lib${LIBDIRSUFFIX} \
+	-libdir /usr/lib${LIBDIRSUFFIX} \
+	-no-nis \
+	-no-separate-debug-info \
+	-nomake examples \
+	-opengl es2 \
+	-opensource \
+	-openssl-linked \
+	-optimized-qmake \
+	-plugin-sql-sqlite \
+	-release \
+	-sysconfdir                     /etc/xdg \
+	-system-harfbuzz \
+	-translationdir                 /usr/share/qt5/translations
+
+make -j${JOBS} || make
+fakeroot make install INSTALL_ROOT=${PKG}
+
+# Pour Noël, je voudrais des fichiers propres pour Qt :
+sed -i "s:$PWD/qtbase:/usr/lib/qt5:g" ${PKG}/usr/lib${LIBDIRSUFFIX}/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri || true
+find /usr/lib${LIBDIRSUFFIX}/lib{qgsttools_p,Qt5*}.prl -exec sed -i -r '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/\1/' {} \; || true
+     
+# On place les icônes de Qt :
+mkdir -p ${PKG}/usr/share/icons/hicolor/{16x16,32x32,48x48,64x64,128x128}/apps
+cp -a qttools/src/assistant/assistant/images/assistant.png            ${PKG}/usr/share/icons/hicolor/32x32/apps/qt5-assistant.png || true
+cp -a qttools/src/assistant/assistant/images/assistant-128.png        ${PKG}/usr/share/icons/hicolor/128x128/apps/qt5-assistant.png || true
+cp -a qttools/src/designer/src/designer/images/designer.png           ${PKG}/usr/share/icons/hicolor/128x128/apps/qt5-designer.png || true
+
+for icone in qttools/src/linguist/linguist/images/icons/linguist-*-32.png ; do
+	taille=$(echo $(basename ${icone}) | cut -d- -f2)
+	cp -a ${icone} ${PKG}/usr/share/icons/hicolor/${taille}x${taille}/apps/linguist.png || true
+done
+
 # On ajoute les raccourcis bureau pour Qt5 :
 cat > ${PKG}/usr/share/applications/qt5-designer.desktop << EOF
 [Desktop Entry]
@@ -440,7 +442,7 @@ Name=Qt5 QDbusViewer
 GenericName=D-Bus Debugger
 Comment=Debug D-Bus applications
 Exec=qdbusviewer
-Icon=qt5-qdbusviewer.png
+Icon=qt-logo.png
 Terminal=false
 Encoding=UTF-8
 Type=Application
@@ -468,6 +470,9 @@ QT5DIR=/usr/lib${LIBDIRSUFFIX}/qt5
 export QT5DIR
 
 EOF
+
+# Ce paquet est sale... :
+rm -rf ${PKG}/usr/{demos,examples,tests}
 
 installer_doc
 creer_post_installation
