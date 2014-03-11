@@ -20,6 +20,9 @@ echo "$$" > ${PIDFILE}
 # On s'assure que la file d'attente existe :
 touch ${FILEDATTENTE}
 
+# On s'assure que l'environnement est correctement configuré (ça saute souvent, d'ailleurs) :
+source /etc/profile
+
 ### Étape 1 : on vérifie si un commit a eu lieu dans les recettes :
 
 # On note le hash du dernier commit :
