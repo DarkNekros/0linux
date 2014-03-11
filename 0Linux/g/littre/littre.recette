@@ -6,7 +6,7 @@ VERSION=${VERSION:-2.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-littre}
 WGET=${WGET:-https://dictionnaire-le-littre.googlecode.com/files/$NAMESRC-source-$VERSION.$EXT}
-DESC="Client Qt pour le dictionnaires « Le Littré »."
+DESC="Client Qt pour le dictionnaire « Le Littré »."
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -41,7 +41,7 @@ Icon=littre.png
 Categories=Office
 StartupNotify=False
 Name[fr]=Dictionnaire Le Littré
-Comment[fr]=Le fameux dictionnaire d'Émile Littré (Qt)
+Comment[fr]=Le fameux dictionnaire de la langue française d'Émile Littré (Qt)
 
 OEF
 
