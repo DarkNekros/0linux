@@ -5,12 +5,38 @@ NAMESRC=${NAMESRC:-xbmc}
 VERSION=${VERSION:-12.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-xbmc}
-WGET=${WGET:-http://mirrors.xbmc.org/releases/source/$NAMESRC-$VERSION.$EXT}
+WGET=(http://mirrors.xbmc.org/releases/source/$NAMESRC-$VERSION.$EXT
+      https://github.com/opdenkamp/xbmc-pvr-addons/archive/12.0-Frodo.$EXT
+     )
 DESC="Le centre multimédia XBMC"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
+
+# On compile les « addons » PVR :
+preparer_sources 12.0-Frodo.$EXT
+cflags
+
+# On lance le script 'bootstrap' permettant de générer le nécessaire à la compilation :
+chmod +x bootstrap
+./bootstrap
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX}/xbmc/addons \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-addons-with-dependencies=yes \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On nettoie :
+find ${PKG} -type f -name "*.in"-delete
+
+# On compile XBMC :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
@@ -23,6 +49,11 @@ sed -i -e 's@#include <libsmbclient.h>@#include <samba-4.0/libsmbclient.h>@' xbm
 # On évite d'avoir des délais trop long en l'absence de powerkit, merci Gentoo :
 sed -i '/dbus_connection_send_with_reply_and_block/s:-1:3000:' xbmc/linux/*.cpp
 
+# On utlise les instruction SSE2 si elles sont disponibles :
+if grep 'sse2' /proc/cpuinfo 2>&1 >/dev/null; then
+	sed -i 's@USE_SSE ?= 0@USE_SSE ?= 1@' lib/libsquish/config
+fi
+
 # On lance le script 'bootstrap' permettant de générer le nécessaire à la compilation :
 chmod +x bootstrap
 ./bootstrap 
@@ -33,7 +64,8 @@ export PYTHON_VERSION=2
 # On compile avec FFMPEG 0.x en priorité :
 export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig:${PKG_CONFIG_PATH}
 
-# Compilation sans drapeaux d'optimisation :
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
 	--exec-prefix=/usr \
@@ -44,12 +76,12 @@ export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig:${PKG_CONFIG
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-debug \
+	--disable-external-ffmpeg \
 	--disable-hal \
 	--enable-alsa \
 	--enable-avahi \
 	--enable-dvdcss \
 	--enable-external-libraries \
-	--enable-ffmpeg-libvorbis \
 	--enable-gl \
 	--enable-goom \
 	--enable-joystick \
@@ -63,7 +95,6 @@ export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig:${PKG_CONFIG
 	--enable-rtmp \
 	--enable-samba \
 	--enable-sdl \
-	--enable-texturepacker \
 	--enable-udev \
 	--enable-vaapi \
 	--enable-vdpau \
@@ -77,11 +108,6 @@ fakeroot make install DESTDIR=${PKG}
 # 'lsb_release' n'existe pas sous 0Linux :
 sed -i -e 's/which lsb_release &> \/dev\/null/\[ -f \/etc\/os-release ]/g' ${PKG}/usr/bin/xbmc
 sed -i -e "s/lsb_release -a 2> \/dev\/null | sed -e 's\/\^\/    \/'/cat \/etc\/os-release/g" ${PKG}/usr/bin/xbmc
-
-# On place des outils oubliés :
-mkdir -p ${PKG}/usr/share/xbmc/
-cp -a xbmc-xrandr ${PKG}/usr/share/xbmc/
-cp -a tools/TexturePacker/TexturePacker ${PKG}/usr/share/xbmc/
 
 # On crée un fichier de démarrage pour lancer uniquement 'xbmc' en tant que « bureau » :
 mkdir -p ${PKG}/etc/X11/xinit
