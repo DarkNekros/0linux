@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-Littre}
+VERSION=${VERSION:-2.0}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-littre}
+WGET=${WGET:-https://dictionnaire-le-littre.googlecode.com/files/$NAMESRC-source-$VERSION.$EXT}
+DESC="Client Qt pour le dictionnaires « Le Littré »."
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+qmake PREFIX=/usr
+
+make -j${JOBS} || make
+
+# Installation manuelle :
+mkdir -p $PKG/usr/{share/{$NAMETGZ/bin,pixmaps,applications},bin,doc/$NAMETGZ-$VERSION}
+cp -a Licence-CeCILL.txt $PKG/usr/doc/$NAMETGZ-$VERSION
+cp -a "ui/Girls I do adore....png" $PKG/usr/share/pixmaps/$NAMETGZ.png
+cp -a bin/Littre $PKG/usr/bin/littre
+cp -a bin/*.* $PKG/usr/share/$NAMETGZ
+
+# On crée le .desktop :
+cat > $PKG/usr/share/applications/$NAMETGZ.desktop << OEF
+[Desktop Entry]
+Version=1
+Encoding=UTF-8
+Name=Le Littré Dictionary
+Comment=The great french dictionary of Émile Littré (Qt)
+Exec=littre
+Terminal=false
+Type=Application
+Icon=littre.png
+Categories=Office
+StartupNotify=False
+Name[fr]=Dictionnaire Le Littré
+Comment[fr]=Le fameux dictionnaire d'Émile Littré (Qt)
+
+OEF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
