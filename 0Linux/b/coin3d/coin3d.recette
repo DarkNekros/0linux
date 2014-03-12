@@ -62,6 +62,9 @@ make -j${JOBS} || make
 # Coin n'a rien à faire dans Libs.private :
 sed -e '/Libs.private/s/ -lCoin//' -i Coin.pc
 
+# coin-config ne prend pas en compte notre prefix :
+sed -i -e "s/\`cd \"\$wd\/..\"; pwd\`/\"\/usr\/\"/" $PKG/usr/bin/coin-config
+
 # Le pages de man (très nombreuses) sont un vrai bazard :
 for f in threads deprecated errors events ; do
 	mv  "$PKG/usr/share/man/man3/$f.3" "$PKG/usr/share/man/man3/coin-$f.3"
