@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-OpenCASCADE}
+VERSION=${VERSION:-6.6.0}
+EXT=${EXT:-tgz}
+NAMETGZ=${NAMETGZ:-opencascade}
+WGET=${WGET:-http://files.opencascade.com/OCCT/OCC_${VERSION}_release/${NAMESRC}$(echo $VERSION | sed "s/\.//g").$EXT}
+DESC="Bibliothèques de modélisation de surfaces 3D pour la CAO/DAO"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation (méthode Slackware) :
+autoreconf -vif
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-tcl=/usr/lib${LIBDIRSUFFIX} \
+	--with-tk=/usr/lib${LIBDIRSUFFIX} \
+	--disable-debug \
+	--enable-production \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+# Permet l'emploi de $DESTDIR
+sed -e "s|\$(prefix)|\$(DESTDIR)\$(prefix)|g" -i Makefile
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Corrige le chemin des include :
+mkdir -p $PKG/usr/include
+mv $PKG/usr/inc $PKG/usr/include/$NAMETGZ
+
+# Des fichiers sources sont installés au mauvais endroit :
+mkdir -p $PKG/usr/src/$NAMETGZ
+(
+	set -e
+	cd $PKG/usr
+	mv config.h src/$NAMETGZ/
+	cd src
+	for d in * ; do
+		if [ "$d" != "$NAMETGZ" ]; then
+			mv $d $NAMETGZ/
+		fi
+	done
+) || exit 1
+
+
+# Efface des fichiers inutiles et induisant en erreurs :
+rm -r $PKG/usr/Linux $PKG/usr/*.sh
+
+# Installe des fichiers de données :
+mkdir -p $PKG/usr/share/$NAMETGZ
+cp -a data samples $PKG/usr/share/$NAMETGZ
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
