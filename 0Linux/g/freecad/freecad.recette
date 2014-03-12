@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-free-cad}
+VERSION=${VERSION:-0.13.1830}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-freecad}
+WGET=${WGET:-https://prdownloads.sourceforge.net/$NAMESRC/$NAMETGZ-$VERSION.$EXT}
+DESC="Modeleur 3D paramétrique pour la CAO"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Problèmes de compatibilité avec OpenCascade 0.6 :
+for f in $(grep -Rl "BRepTools::OuterShell" *)
+do
+	sed -e "s|BRepTools|BRepClass3d|g" -i "$f"
+done
+
+# Retire une blinde de warning agaçant :
+cat $CWD/freecad.moc.patch | patch -p1
+
+# Permet de compiler sans la doc de Coin (installé mais non détecté) :
+cat $CWD/freecad.no_coin3d_docs.patch | patch -p1
+
+# Compilation :
+mkdir -p build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=OFF \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D ENABLE_SSE=ON \
+	-D ENABLE_SSE2=ON \
+	-D ENABLE_SSE3=ON \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D QT4_CREATE_MOC_COMMAND=moc \
+	-D FREECAD_USE_EXTERNAL_PIVY=ON \
+	-D PYTHON_EXECUTABLE=/usr/bin/python2 \
+	-D SYSCONF_INSTALL_DIR=/etc \
+	-D DOCDIR=/usr/doc/$NAMESRC-$VERSION \
+	-D OCC_INCLUDE_DIR=/usr/include/opencascade \
+	-D OCC_LIBRARY=/usr/lib${LIBDIRSUFFIX} \
+	-D RESOURCEDIR=/usr/share/$NAMETGZ/data \
+	-D CMAKE_C_FLAGS="$CFLAGS -fpermissive" \
+	-D CMAKE_CXX_FLAGS="$CXXFLAGS -fpermissive" \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+# On construit le plugin Qt et on l'installe :
+(
+	cd src/Tools/plugins/widget
+	qmake plugin.pro
+	make -j${JOBS} || make
+	mkdir -p $PKG/usr/lib$LIBDIRSUFFIX/qt4/plugins/designer
+	cp -a libFreeCAD_widgets.so \
+		$PKG/usr/lib$LIBDIRSUFFIX/qt4/plugins/designer/libFreeCAD_widgets.so
+)
+
+# On crée des répertoires d'accueil :
+mkdir -p $PKG/usr/share/{applications,pixmaps,mime/packages}
+
+# Création du fichier de menu :
+cat > $PKG/usr/share/applications/$NAMETGZ.desktop << EOF
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=FreeCAD
+Comment=A general purpose 3D CAD modeler
+Comment[fr]=Un modeleur 3D polyvalent pour la CAO
+GenericName=CAD Application
+GenericName[fr]=Application de CAO
+Exec=/usr/bin/freecad %F
+Path=/usr/lib/freecad
+Terminal=false
+Type=Application
+Icon=freecad
+Categories=Application;Office;Engineering;
+StartupNotify=true
+MimeType=application/x-extension-fcstd;
+
+EOF
+
+# Copie de l'icone et le type mime aus bons endroits :
+cp -a $PKG/usr/share/$NAMETGZ/data/freecad.xpm $PKG/usr/share/pixmaps
+cp -a $CWD/FreeCAD.xml $PKG/usr/share/mime/packages/
+
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
