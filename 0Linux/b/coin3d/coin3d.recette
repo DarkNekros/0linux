@@ -38,8 +38,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--disable-dl-zlib \
 	--disable-dyld \
 	--disable-loadlibrary \
-	--disable-man \
 	--disable-java-wrapper \
+	--enable-html \
 	--enable-shared \
 	--enable-optimization \
 	--enable-3ds-import \
@@ -66,7 +66,7 @@ sed -e '/Libs.private/s/ -lCoin//' -i Coin.pc
 sed -i -e "s/\`cd \"\$wd\/..\"; pwd\`/\"\/usr\/\"/" $PKG/usr/bin/coin-config
 
 # Le pages de man (très nombreuses) sont un vrai bazard :
-for f in threads deprecated errors events ; do
+for f in threads deprecated errors events fields base ; do
 	mv  "$PKG/usr/share/man/man3/$f.3" "$PKG/usr/share/man/man3/coin-$f.3"
 done
 
