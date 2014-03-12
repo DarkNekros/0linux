@@ -35,6 +35,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# soqt-config ne prend pas en compte notre prefix :
+sed -i -e "s/\`cd \"\$wd\/..\"; pwd\`/\"\/usr\/\"/" $PKG/usr/bin/soqt-config
+
 installer_doc
 creer_post_installation
 stripper
