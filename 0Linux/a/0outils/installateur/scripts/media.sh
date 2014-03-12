@@ -12,8 +12,7 @@ while [ 0 ]; do
 	echo -e "\033[1;32mChoix du média d'installation.\033[0;0m"
 	echo ""
 	echo "Veuillez entrez ci-dessous le code du support d'installation contenant le"
-	echo "dépôt des paquets de 0Linux, qui doit contenir le fichier 'paquets.db'"
-	echo "ainsi que des répertoires nommés 'a/', 'b/', 'd/', 'z/', etc."
+	echo "dépôt des paquets de 0Linux."
 	echo ""
 	echo "N.B. : si vous utilisez le média d'installation '0linux-mini', celui-ci"
 	echo "NE contient PAS de dépôt de paquets, il vous faudra choisir l'installation"
@@ -57,6 +56,7 @@ while [ 0 ]; do
 		echo "Appuyez sur ENTRÉE une fois votre réseau configuré (l'installateur ne testera"
 		echo "pas la connexion)."
 		read REPONSEREZO;
+		echo "http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets" > $TMP/choix_media
 		break
 	;;
 	"4")
