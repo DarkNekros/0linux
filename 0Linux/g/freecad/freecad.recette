@@ -40,10 +40,11 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D FREECAD_USE_EXTERNAL_PIVY=ON \
 	-D PYTHON_EXECUTABLE=/usr/bin/python2 \
 	-D SYSCONF_INSTALL_DIR=/etc \
-	-D DOCDIR=/usr/doc/$NAMESRC-$VERSION \
 	-D OCC_INCLUDE_DIR=/usr/include/opencascade \
 	-D OCC_LIBRARY=/usr/lib${LIBDIRSUFFIX} \
 	-D RESOURCEDIR=/usr/share/$NAMETGZ/data \
+	-D CMAKE_INSTALL_DATADIR=/usr/share/$NAMETGZ/data \
+	-D CMAKE_DOCDIR=/usr/doc/$NAMESRC-$VERSION \
 	-D CMAKE_C_FLAGS="$CFLAGS -fpermissive" \
 	-D CMAKE_CXX_FLAGS="$CXXFLAGS -fpermissive" \
 	./ ../
@@ -63,7 +64,10 @@ cd ../
 )
 
 # On crée des répertoires d'accueil :
-mkdir -p $PKG/usr/share/{applications,pixmaps,mime/packages}
+mkdir -p $PKG/usr/share/{applications,pixmaps,mime/packages,$NAMESRC}
+
+# Des données sont mal placées :
+mv -f $PKG/usr/{Mod,share/$NAMESRC/Mod}
 
 # Création du fichier de menu :
 cat > $PKG/usr/share/applications/$NAMETGZ.desktop << EOF
