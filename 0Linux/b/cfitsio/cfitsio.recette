@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-cfitsio}
-VERSION=${VERSION:-3360}
+VERSION=${VERSION:-3.360}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-cfitsio}
-WGET=${WGET:-ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/${NAMESRC}${VERSION}.$EXT}
+WGET=${WGET:-ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/${NAMESRC}$(echo $VERSION | sed "s/\.//g").$EXT}
 DESC="Bibliothèques permettant de lire des fichiers de données de la NASA"
 
 . /usr/share/0outils/fonctions_paquets.sh
