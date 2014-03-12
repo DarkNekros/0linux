@@ -137,7 +137,8 @@ while [ 0 ]; do
 	echo "en tmpfs si vous l'utlisez pour stocker des fichiers persistants car tous"
 	echo "les tmpfs sont effacés à chaque démarrage."
 	echo ""
-	echo "- Entrez « oui » pour ajouter une entrée tmpfs '/tmp' à '/etc/fstab' - OU"
+	echo "- Entrez « oui » pour ajouter une entrée tmpfs '/tmp' à '/etc/fstab' (moitié de"
+	echo "  la quantité de RAM par défaut) - OU"
 	echo "- Entrez une valeur en méga-octets (M) ou giga-octets (G) pour décider"
 	echo "  de la quantité de RAM allouée à '/tmp' - OU"
 	echo "- Appuyez sur ENTRÉE pour ignorer cette étape."
@@ -161,7 +162,8 @@ while [ 0 ]; do
 			else
 				# On ajoute le tmpfs à '/etc/fstab' avec la taille :
 				echo "tmpfs       /tmp        tmpfs       size=${TMPFSMOUNT}             0 0" >> ${SETUPROOT}/etc/fstab
-			break
+				break
+			fi
 		fi
 	fi
 done

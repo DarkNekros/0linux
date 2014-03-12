@@ -34,7 +34,7 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On nettoie :
-find ${PKG} -type f -name "*.in"-delete
+find ${PKG} -type f -name "*.in" -delete
 
 # On compile XBMC :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
