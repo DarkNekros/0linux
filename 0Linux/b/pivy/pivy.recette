@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-pivy}
+VERSION=${VERSION:-0.5.0~v609hg}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-pivy}
+WGET=${WGET:-http://pivy.sourcearchive.com/downloads/$VERSION-1/$NAMESRC_$VERSION.orig.$EXT}
+DESC="Binding Python pour Coin3D"
+########################################
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python2 setup.py install \
+    --root=$PKG
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
