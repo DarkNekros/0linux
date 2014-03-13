@@ -151,6 +151,7 @@ messagebus:x:81:81:User for D-BUS:/var/run/dbus:/bin/false
 haldaemon:x:82:82:User for HAL:/var/run/hald:/bin/false
 pop:x:90:90:Utilisateur POP:/:/usr/bin/false
 nobody:x:99:99:Utilisateur fictif nobody:/:/usr/bin/false
+polkitd:x:102:102:Utilisateur Policy Kit:/:/usr/bin/false
 colord:x:108:108:Utilisateur pour colord:/:/usr/bin/false
 vboxweb:x:240:215:Utilisateur VirtualBox (Web):/var/lib/vboxweb:/usr/bin/false
 dovenull:x:74:74:Utiliateur non fiable pour dovecot:/var/empty:/usr/bin/false
@@ -210,6 +211,7 @@ nobody:x:98:nobody
 nogroup:x:99:
 users:x:100:
 console:x:101:
+polkitd:x:102:
 colord:x:108:
 vboxusers:x:215:
 lock:x:54:

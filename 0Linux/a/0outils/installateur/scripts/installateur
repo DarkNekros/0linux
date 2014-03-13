@@ -229,18 +229,13 @@ echo "le média d'installation lors du redémarrage."
 echo ""
 echo -e "\033[1;0mEt ensuite ?\033[0;0m"
 echo ""
-echo "Pour installer des logiciels supplémentaires, vous utiliserez au choix :"
-echo ""
-echo "- L'installation distante via '0g' (voyez 'man 0g')"
-echo "- L'installation manuelle de paquets via 'spackadd'"
-echo ""
-echo "Référez-vous au site http://0linux.org pour en savoirdavantage sur le"
+echo "Référez-vous au site http://0linux.org pour en savoir davantage sur le"
 echo "fonctionnement de votre système Linux."
 echo ""
 echo "À bientôt !"
 echo ""
 
-# On nettoie tout si le déogage est désactivé :
+# On nettoie tout si le débogage est désactivé :
 if [ "${INSTALLDEBUG}" = "" ]; then
 	rm -rf $TMP/*
 fi

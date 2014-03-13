@@ -13,7 +13,7 @@ crunch() {
 ROOTFSUUID="$(blkid -s UUID $(cat $TMP/partition_racine | crunch) | cut -d'=' -f2 | crunch | tr -d \")"
 
 # On remplace d'office le marqueur « ROOTPART » dans 'extlinux.conf' par l'UUID de la racine  :
-sed -i "s@ROOTPART@UUID=${ROOTFSUUID})@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+sed -i "s@ROOTPART@UUID=${ROOTFSUUID}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
 
 # Boucle d'affichage pour l'installation du chargeur d'amorçage :
 while [ 0 ]; do

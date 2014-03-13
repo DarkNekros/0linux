@@ -33,18 +33,7 @@ else
 	echo -e "\033[1;32mInstallation des paquets critiques...\033[0;0m"
 	echo ""
 	echo "	0g busybox base-systeme glibc ncurses readline bash sgml-common 0outils"
-	sleep 1
-	
-	0g \
-		busybox \
-		base-systeme \
-		glibc \
-		ncurses \
-		readline \
-		bash \
-		sgml-common \
-		0outils \
-		2>/dev/null
+	sleep 3
 	
 	# On ajoute le protocole 'file://' si le dépôt est local :
 	MEDIACHOISI="$(cat $TMP/choix_media)"
@@ -57,10 +46,19 @@ else
 	# On ajoute à la configuration de 0g la source des paquets ainsi que la racine cible :
 	echo "Source=\"${PROTOCOLE}${MEDIACHOISI}\"" >> /etc/0outils/0g.conf
 	echo "ROOT=\"${SETUPROOT}\""                 >> /etc/0outils/0g.conf
-
+	
+	0g busybox
+	0g base-systeme
+	0g glibc
+	0g ncurses
+	0g readline
+	0g bash
+	0g sgml-common
+	0g 0outils
+	
 	# La config' de 0g sur $SETUPROOT n'a pas besoin de "ROOT=" :
 	echo "Source=\"${PROTOCOLE}${MEDIACHOISI}\"" >> ${SETUPROOT}/etc/0outils/0g.conf
-
+	
 	# $SETUPROOT a aussi besoin du cache de 0g :
 	mkdir -p ${SETUPROOT}/var/cache/0g
 	mount --bind /var/cache/0g ${SETUPROOT}/var/cache/0g 1>/dev/null 2>/dev/null
@@ -72,7 +70,7 @@ else
 	echo -e "\033[1;32mInstallation de 'base-abonnement'...\033[0;0m"
 	echo ""
 	echo "	0g base-abonnement"
-	sleep 1
+	sleep 3
 	
 	0g base-abonnement
 	
@@ -83,7 +81,7 @@ else
 	if [ "${INSTALLDEBUG}" = "" ]; then
 		clear
 	fi
-	echo -e "\033[1;Organisation des paquets dans 0Linux.\033[0;0m"
+	echo -e "\033[1;32mOrganisation des paquets dans 0Linux.\033[0;0m"
 	echo ""
 	echo "Les paquets de 0Linux sont rangés dans des répertoires faisant office de"
 	echo "catégories thématiques dont voici un aperçu :"
@@ -109,13 +107,13 @@ else
 	echo ""
 	echo "Il est temps de faire votre choix parmi les abonnements de 0Linux."
 	echo "Vous allez pour cela utiliser l'outil '0g' dans la console n°2."
-	echo ""
 	echo "Les paquets-abonnements (dans 'z/') sont des ensembles cohérents de logiciels"
 	echo "qui simplifient leur installation."
 	echo ""
 	echo "'base-abonnement' a déjà été installé d'office et forme la base du système."
 	echo "Si vous désirez utiliser un environnement ou un bureau graphique, installez"
 	echo "'xorg-abonnement'."
+	echo ""
 	echo "L'abonnement 'opt-abonnement', quant à lui, permet de disposer de la"
 	echo "plupart des bibliothèques et outils système dans une sélection très complète"
 	echo "de logiciels. Installez-le si vous débutez."
@@ -123,7 +121,7 @@ else
 	echo "Ainsi, pour installer les abonnements recommandés, vous taperez :"
 	echo "	0g xorg-abonnement opt-abonnement"
 	echo ""
-	echo -n "Appuyez sur ENTRÉE quand vous avez terminé avec l'installation des abonnements."
+	echo -n "Appuyez sur ENTRÉE quand vous en avez terminé avec ces abonnements."
 	read BLURB3;
 	
 	if [ "${INSTALLDEBUG}" = "" ]; then
@@ -137,15 +135,17 @@ else
 	echo "'0g' ne permet pas encore de lister les paquets disponibles ou d'en avoir"
 	echo "une description ; consultez donc directement le dépôt de paquets pour en"
 	echo "savoir plus sur son contenu. Des fichiers '*.txt' contiennent une"
-	echo "description pour chaque paquet. Les paquets eux-mêmes portent"
-	echo "l'extension '.spack'. Utilisez les abonnements pour vous faciliter la"
-	echo "tâche ! Notamment pour installer un environnement graphique, par exemple :"
+	echo "description pour chaque paquet. "
+	echo "Utilisez les abonnements de 'z/' pour vous faciliter la tâche !"
 	echo ""
+	echo "Pour installer un environnement graphique, vous ferez par exemple :"
 	echo "	0g kde-abonnement"
 	echo "	0g xfce-abonnement"
 	echo "	0g enlightenment-abonnement"
 	echo ""
-	echo "... etc."
+	echo "Puis par exemple, pour installer le navigateur Firefox :"
+	echo "	0g firefox"
+	echo ""
 	echo "Nous faciliterons l'accès aux listings et aux descriptions très prochainement."
 	echo "Vous utiliserez souvent '0g', familiarisez-vous avec, il est très simple."
 	echo "Consultez '0g -h' ou 'man 0g' pour en savoir plus."
@@ -177,6 +177,12 @@ else
 
 	# On supprime la configuration de 0g sur $SETUPROOT :
 	sed -i "/^Source=\"${PROTOCOLE}${MEDIACHOISI}\"/d" ${SETUPROOT}/etc/0outils/0g.conf
+	
+	# On place la config' standard par défaut sur $SETUPROOT :
+	sed -i '
+/# Source=file:\/\/${Cache}.*$/ i\
+Source="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
+' ${SETUPROOT}/etc/0outils/0g.conf
 	
 	# On démonte le cache de 0g sur $SETUPROOT :
 	umount -f ${SETUPROOT}/var/cache/0g 1>/dev/null 2>/dev/null || true
