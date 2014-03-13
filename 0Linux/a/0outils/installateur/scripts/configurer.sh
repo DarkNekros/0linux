@@ -37,39 +37,45 @@ fi
 # On lance un à un les scripts de configuration pour finaliser l'installation :
 
 # Paramétrage de l"horloge système :
+echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0horloge"
-sleep 1
+sleep 2
 chroot ${SETUPROOT} 0horloge
 
 # Paramétrage de la « locale » :
+echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0locale"
-sleep 1
+sleep 2
 chroot ${SETUPROOT} 0locale
 
 # Paramétrage de la police console :
+echo "Exécution de :"
 echo "chroot ${SETUPROOT} 0police"
-sleep 1
+sleep 2
 chroot ${SETUPROOT} 0police
 
 # Paramétrage du réseau :
+echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0reseau"
-sleep 1
+sleep 2
 chroot ${SETUPROOT} 0reseau
 
 # Configuration du chargeur d'amorçage :
 . bootconfig.sh
 
 # On demande à configurer le démarrage graphique et le bureau :
+echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0bureau"
-sleep 1
+sleep 2
 chroot ${SETUPROOT} 0bureau
 
 # On définit un mot de passe pour root :
 . motdepasseroot.sh
 
 # On crée un nouvel utilisateur :
+echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0nouvel_utilisateur"
-sleep 1
+sleep 2
 chroot ${SETUPROOT} 0nouvel_utilisateur
 
 # C'est fini.

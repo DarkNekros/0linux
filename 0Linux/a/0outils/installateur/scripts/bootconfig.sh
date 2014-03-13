@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # On nettoie  :
-unset BOOTERINST BLAHH PARTTABLE WINBOOT WHICHDISK WINDISK
+unset BOOTERINST BLAHH PARTTABLE BOOTDEVICE WINBOOT WHICHDISK WINDISK
 
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
@@ -77,7 +77,8 @@ while [ 0 ]; do
 			break
 		else
 			# On écrase le MBR sans aucun scrupule :
-			cat /usr/share/syslinux/mbr.bin > $(cat $TMP/partition_racine | crunch | tr -d [0-9])
+			BOOTDEVICE="$(cat $TMP/partition_racine | crunch | tr -d [0-9])"
+			cat /usr/share/syslinux/mbr.bin > ${BOOTDEVICE}
 			
 			# Si le MBR est occupé par Extlinux, alors on en profite pour ajouter d'autres « OS » :
 			
