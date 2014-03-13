@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # On nettoie  :
-unset BOOTERINST BLAHH PARTTABLE ROOTFSUUID WINBOOT WHICHDISK WINDISK
+unset BOOTERINST BLAHH PARTTABLE WINBOOT WHICHDISK WINDISK
 
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
@@ -9,11 +9,11 @@ crunch() {
 	echo $STRING;
 }
 
-# On déduit l'UUID de la partition racine :
-ROOTFSUUID="$(blkid -s UUID $(cat $TMP/partition_racine | crunch) | cut -d'=' -f2 | crunch | tr -d \")"
+# La partition racine :
+DAROOTPART=$(cat $TMP/partition_racine)
 
-# On remplace d'office le marqueur « ROOTPART » dans 'extlinux.conf' par l'UUID de la racine  :
-sed -i "s@ROOTPART@UUID=${ROOTFSUUID}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+# On remplace d'office le marqueur « ROOTPART » dans 'extlinux.conf' par la racine  :
+sed -i "s@ROOTPART@${DAROOTPART}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
 
 # Boucle d'affichage pour l'installation du chargeur d'amorçage :
 while [ 0 ]; do
@@ -142,8 +142,9 @@ while [ 0 ]; do
 			
 			# Il est temps d'installer Extlinux :
 			echo "Installation de Extlinux... "
+			echo "	extlinux --install ${SETUPROOT}/boot/extlinux"
 			extlinux --install ${SETUPROOT}/boot/extlinux
-			sleep 1
+			sleep 2
 			# Vraiment pour être sûr... :) :
 			extlinux --install ${SETUPROOT}/boot/extlinux
 			break

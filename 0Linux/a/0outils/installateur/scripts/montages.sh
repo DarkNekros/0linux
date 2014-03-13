@@ -48,11 +48,8 @@ cat $TMP/choix_partitions | while read LINE; do
 		mkdir -p ${SETUPROOT}/${MOUNTDIR}
 	fi
 	
-	# On déduit l'UUID de la partition concernée :
-	MOUNTUUID="$(blkid -s UUID ${MOUNTPART} | cut -d'=' -f2 | crunch | tr -d \")"
-	
 	# On ajoute la ligne résultante au fichier 'fstab' :
-	echo "UUID=${MOUNTUUID}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
+	echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
 	
 	# On monte la partition :
 	echo "Montage de ${MOUNTDIR}... "
@@ -84,11 +81,8 @@ if [ -r $TMP/choix_partitions_fat ]; then
 			MAJORMINOR="1 0"
 		fi
 		
-		# On déduit l'UUID de la partition concernée :
-		MOUNTUUID="$(blkid -s UUID ${MOUNTPART} | cut -d'=' -f2 | crunch | tr -d \")"
-		
 		# On ajoute la ligne résultante au fichier 'fstab' :
-		echo "UUID=${MOUNTUUID}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
+		echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
 		
 		# On crée le point de montage :
 		mkdir -p ${SETUPROOT}/${MOUNTDIR}
@@ -107,11 +101,8 @@ echo "" > ${SETUPROOT}/etc/fstab
 if [ ! -r $TMP/ignorer_swap ]; then
 	if [ -r $TMP/choix_swap ]; then
 		
-		# On déduit l'UUID de la partition concernée :
-		SWAPUUID="$(blkid -s UUID $(cat $TMP/choix_swap) | cut -d'=' -f2 | crunch | tr -d \")"
-		
 		echo "# Partition d'échange « swap » :" >> ${SETUPROOT}/etc/fstab
-		echo "UUID=${SWAPUUID}	swap		swap		defaults		0 0" >> ${SETUPROOT}/etc/fstab
+		echo "$(cat $TMP/choix_swap)	swap		swap		defaults		0 0" >> ${SETUPROOT}/etc/fstab
 		echo "" >> ${SETUPROOT}/etc/fstab
 	fi
 fi
