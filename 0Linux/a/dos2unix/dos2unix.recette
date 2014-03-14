@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-dos2unix}
+VERSION=${VERSION:-6.0.4}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-dos2unix}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Permet la conversion des fins de ligne pour passer de DOS à Unix ou l'inverse"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+RPM_OPT_FLAGS="${FLAGS}" make -j${JOBS} || RPM_OPT_FLAGS="${FLAGS}" make
+fakeroot make install \
+	prefix=$PKG/usr \
+	docdir=$PKG/usr/doc/$PRGNAM-$VERSION \
+	mandir=$PKG/usr/man
+
+# On déplace les pages de man résiduelles :
+mv $PKG/usr/share/man/* $PKG/usr/man
+rmdir $PKG/usr/share/man
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
