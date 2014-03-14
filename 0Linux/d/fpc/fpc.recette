@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-fpc}
-VERSION=${VERSION:-2.6.2}
+VERSION=${VERSION:-2.6.4}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-fpc}
 DESC="Compilateur croisé multi-plateforme pour le langage Pascal"
