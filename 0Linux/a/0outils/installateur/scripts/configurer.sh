@@ -37,24 +37,36 @@ fi
 # On lance un à un les scripts de configuration pour finaliser l'installation :
 
 # Paramétrage de l"horloge système :
+if [ "${INSTALLDEBUG}" = "" ]; then
+	clear
+fi
 echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0horloge"
 sleep 2
 chroot ${SETUPROOT} 0horloge
 
 # Paramétrage de la « locale » :
+if [ "${INSTALLDEBUG}" = "" ]; then
+	clear
+fi
 echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0locale"
 sleep 2
 chroot ${SETUPROOT} 0locale
 
 # Paramétrage de la police console :
+if [ "${INSTALLDEBUG}" = "" ]; then
+	clear
+fi
 echo "Exécution de :"
-echo "chroot ${SETUPROOT} 0police"
+echo "	chroot ${SETUPROOT} 0police"
 sleep 2
 chroot ${SETUPROOT} 0police
 
 # Paramétrage du réseau :
+if [ "${INSTALLDEBUG}" = "" ]; then
+	clear
+fi
 echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0reseau"
 sleep 2
@@ -64,6 +76,9 @@ chroot ${SETUPROOT} 0reseau
 . bootconfig.sh
 
 # On demande à configurer le démarrage graphique et le bureau :
+if [ "${INSTALLDEBUG}" = "" ]; then
+	clear
+fi
 echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0bureau"
 sleep 2
@@ -73,6 +88,9 @@ chroot ${SETUPROOT} 0bureau
 . motdepasseroot.sh
 
 # On crée un nouvel utilisateur :
+if [ "${INSTALLDEBUG}" = "" ]; then
+	clear
+fi
 echo "Exécution de :"
 echo "	chroot ${SETUPROOT} 0nouvel_utilisateur"
 sleep 2

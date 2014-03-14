@@ -32,6 +32,7 @@ else
 	fi
 	echo -e "\033[1;32mInstallation des paquets critiques...\033[0;0m"
 	echo ""
+	echo "Exécution de :"
 	echo "	0g busybox base-systeme glibc ncurses readline bash sgml-common 0outils"
 	sleep 3
 	
@@ -69,6 +70,7 @@ else
 	fi
 	echo -e "\033[1;32mInstallation de 'base-abonnement'...\033[0;0m"
 	echo ""
+	echo "Exécution de :"
 	echo "	0g base-abonnement"
 	sleep 3
 	
@@ -171,12 +173,15 @@ else
 		mv ${f} $(dirname ${f})/$(basename ${f} .0nouveau) 2>/dev/null || true
 	done
 	
+	# Astuce sed : on peut supprimer des lignes (commande '//d)' avec d'autres
+	# délimiteurs que le « slash » en échappant le premier délimiteur ;) :
+	
 	# On supprime la configuration de 0g :
-	sed -i "/^Source=\"${PROTOCOLE}${MEDIACHOISI}\"/d" /etc/0outils/0g.conf
-	sed -i "/^ROOT=\"${SETUPROOT}\"/d"                 /etc/0outils/0g.conf
+	sed -i "\@^Source=\"${PROTOCOLE}${MEDIACHOISI}\"@d" /etc/0outils/0g.conf
+	sed -i "\@^ROOT=\"${SETUPROOT}\"@d"                 /etc/0outils/0g.conf
 
 	# On supprime la configuration de 0g sur $SETUPROOT :
-	sed -i "/^Source=\"${PROTOCOLE}${MEDIACHOISI}\"/d" ${SETUPROOT}/etc/0outils/0g.conf
+	sed -i "\@^Source=\"${PROTOCOLE}${MEDIACHOISI}\"@d" ${SETUPROOT}/etc/0outils/0g.conf
 	
 	# On place la config' standard par défaut sur $SETUPROOT :
 	sed -i '

@@ -51,6 +51,11 @@ while [ 0 ]; do
 		fi
 	;;
 	"3")
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
+		fi
+		echo -e "\033[1;32mInstallation via le réseau.\033[0;0m"
+		echo ""
 		echo "Une connexion filaire de type Ethernet avec une IP attribuée automatiquement"
 		echo "par DHCP a déjà été tentée au démarrage du système."
 		echo "Vous pouvez tenter de vous connecter manuellement via un autre"
