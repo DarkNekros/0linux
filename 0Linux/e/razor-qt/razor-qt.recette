@@ -22,7 +22,6 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D CMAKE_{SHARED,MODULE,EXE}_LINKER_FLAGS='-Wl,--no-undefined -Wl,--as-needed' \
 	-D SYSCONF_INSTALL_DIR=/etc/razor-qt \
 	-D BUNDLE_XDG=OFF \
 	-D SITE="http://0.tuxfamily.org/" \
