@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-qelectrotech}
+VERSION=${VERSION:-0.3}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-qelectrotech}
+WGET=${WGET:-http://download.tuxfamily.org/qet/tags/20130928/$NAMESRC-$VERSION-src.$EXT}
+DESC="Logiciel permettant de réaliser des schémas électriques"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On doit modifier les chemin d'installation à la main :
+sed -i "s@usr\/local@usr@g" qelectrotech.pro
+sed -i "s@..\/share\/mime\/@share\/mime\/@g" qelectrotech.pro
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+qmake
+
+make -j${JOBS} || make
+fakeroot make install INSTALL_ROOT=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
