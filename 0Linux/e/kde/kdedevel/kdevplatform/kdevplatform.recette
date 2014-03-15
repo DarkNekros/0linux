@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kdevplatform}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques et outils communs de développement pour KDE"
-########################################
+EXTRADEPS="kde-dev-scripts kde-dev-utils poxml"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kdesdk-thumbnailers}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Plugins pour le système de miniatures de KDE"
-########################################
+EXTRADEPS="kde-baseapps"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-dolphin-plugins}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Plugins pour l'intégration des systèmes de contrôle de révision dans Dolphin"
-EXTRADEPS="kde-baseapps"
+EXTRADEPS="kde-baseapps kde-dev-scripts kde-dev-utils poxml"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
