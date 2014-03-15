@@ -7,7 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-polkit-kde-agent}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/apps/KDE4.x/admin/$NAMESRC-$VERSION.$EXT}
 DESC="Authentification à chaud sous KDE"
-########################################
+EXTRADEPS="kde-runtime"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

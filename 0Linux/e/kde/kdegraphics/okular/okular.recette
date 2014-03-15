@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-okular}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Okular : une visionneuse de documents pour KDE"
-########################################
+EXTRADEPS="kde-runtime"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-print-manager}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Outils et widget pour gérer vos imprimantes dans KDE"
-########################################
+EXTRADEPS="kde-runtime"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

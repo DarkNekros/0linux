@@ -7,7 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-colord-kde}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Gestion et configuration avancée des couleurs pour KDE"
-########################################
+EXTRADEPS="kde-runtime"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

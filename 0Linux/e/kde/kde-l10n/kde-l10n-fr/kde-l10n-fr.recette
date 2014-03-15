@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kde-l10n-fr}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/kde-l10n/$NAMESRC-$VERSION.$EXT}
 DESC="Fichiers de localisation en français de KDE"
-########################################
+EXTRADEPS="kdelibs"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

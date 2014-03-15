@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kdelibs}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques communes de l'environnement et des applications KDE"
-EXTRADEPS="oxygen-icons"
+EXTRADEPS="oxygen-icons media-player-info shared-desktop-ontologies"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

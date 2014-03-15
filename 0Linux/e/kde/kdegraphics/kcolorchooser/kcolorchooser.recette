@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kcolorchooser}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Widget de sélection de couleur pour Plasma de KDE"
-########################################
+EXTRADEPS="kde-runtime"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

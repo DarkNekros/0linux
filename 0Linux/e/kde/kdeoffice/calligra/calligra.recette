@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-calligra}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}
 DESC="Calligra : la suite bureautique et artistique complète pour KDE"
-########################################
+EXTRADEPS="openimageio vc kde-runtime"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

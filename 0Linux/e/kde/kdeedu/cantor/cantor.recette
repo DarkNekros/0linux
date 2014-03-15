@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-cantor}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Interface KDE pour les suites de mathématique avancées"
-########################################
+EXTRADEPS="kalgebra r"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

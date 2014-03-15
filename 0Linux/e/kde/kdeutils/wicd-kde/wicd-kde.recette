@@ -7,7 +7,7 @@ EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-wicd-kde}
 WGET=${WGET:-http://kde-apps.org/CONTENT/content-files/132366-$NAMESRC-$VERSION.$EXT}
 DESC="Intégration de Wicd dans KDE"
-########################################
+EXTRADEPS="kde-runtime wicd"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

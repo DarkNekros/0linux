@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-analitza}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèque commune aux applications éducatives de mathématiques de KDE"
-########################################
+EXTRADEPS="gl2ps"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

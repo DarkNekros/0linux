@@ -7,7 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-k3b}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Le couteau suisse pour graver ou extraire des CD, DVD ou Blu-Ray"
-########################################
+extradeps="cdparanoia dvd+rw-tools growisofs transcode vcdimager emovix"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
