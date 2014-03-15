@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-ca-certificates}
-VERSION=${VERSION:-20130610}
+VERSION=${VERSION:-20140223}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-ca-certificates}
 WGET=${WGET:-http://ftp.debian.org/debian/pool/main/c/${NAMESRC}/${NAMESRC}_${VERSION}.${EXT}}
@@ -22,6 +22,7 @@ mkdir -p ${PKG}/usr/{man/man8,sbin,share/ca-certificates}
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
 installer_doc
 
 # On complète la documentation :
@@ -35,8 +36,9 @@ cat >> ${PKG}/post-install.sh << "EOF"
 
 # On injecte tous les certificats dans le fichier de configuration :
 printf "# Généré automatiquement par ca-certificates. \n#\n" > /etc/ca-certificates.conf
-find /usr/share/ca-certificates -name '*.crt' | sort >> /etc/ca-certificates.conf
+chroot . find /usr/share/ca-certificates -name '*.crt' 2>/dev/null | sort >> /etc/ca-certificates.conf
 
+# On met à jour les certificats :
 update-ca-certificates --fresh 1>/dev/null 2>/dev/null
 
 EOF

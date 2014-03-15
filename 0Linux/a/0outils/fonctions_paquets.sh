@@ -540,9 +540,9 @@ empaqueter() {
 			echo "${extradep}" >> ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp
 		done
 		
-		# On trie, on supprime les lignes vides, on copie dans le fichier original et on nettoie :
-		cat ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp | sed '/^$/d' | sort -u > ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep
-		rm -f cat ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp
+		# On supprime les lignes vides, on copie dans le fichier original et on nettoie :
+		cat ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp | sed '/^$/d' > ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep
+		rm -f ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp
 	fi
 	
 	# On stocke également les dépendances dans la doc 0linux :

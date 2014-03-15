@@ -5,8 +5,8 @@ TMP=${TMP:-/var/log/setup/tmp}
 mkdir -p ${TMP}
 
 # La racine de destination du système à installer:
-mkdir -p /setuproot
 export SETUPROOT=${SETUPROOT:-/setuproot}
+mkdir -p ${SETUPROOT}
 
 # On extrait l'identification du système, version, etc. :
 source /etc/os-release
@@ -20,6 +20,15 @@ crunch() {
 # On vide $TMP, sans toucher au fichier 'choix_clavier' :
 rm -f $TMP/{choix_partitions,choix_partitions_fat,choix_media,choix_swap}
 rm -f $TMP/{fstab,formatages,partition_racine}
+
+# On va avoir besoin de /proc, /sys, /dev et /run plus tard pour le chroot :
+if [ ! "${SETUPROOT}" = "/" ]; then
+	mkdir -p ${SETUPROOT}/{dev,proc,run,sys}
+	mount --bind /proc ${SETUPROOT}/proc 1>/dev/null 2>/dev/null
+	mount --bind /sys  ${SETUPROOT}/sys  1>/dev/null 2>/dev/null
+	mount --bind /dev  ${SETUPROOT}/dev  1>/dev/null 2>/dev/null
+	mount --bind /run  ${SETUPROOT}/run  1>/dev/null 2>/dev/null
+fi
 
 # On affiche l'introduction : 
 if [ "${INSTALLDEBUG}" = "" ]; then
@@ -164,16 +173,6 @@ while [ 0 ]; do
 			unset CHOIXMENUPRINCIPAL
 			continue
 		else
-			
-			# On va avoir besoin de /proc, /sys, /dev et /run pour le chroot :
-			if [ ! "${SETUPROOT}" = "/" ]; then
-				mkdir -p ${SETUPROOT}/{dev,proc,run,sys}
-				mount --bind /proc ${SETUPROOT}/proc 1>/dev/null 2>/dev/null
-				mount --bind /sys  ${SETUPROOT}/sys  1>/dev/null 2>/dev/null
-				mount --bind /dev  ${SETUPROOT}/dev  1>/dev/null 2>/dev/null
-				mount --bind /run  ${SETUPROOT}/run  1>/dev/null 2>/dev/null
-			fi
-			
 			. paquets.sh
 			
 			# On copie 'resolv.conf' dans $SETUPROOT pour profiter de la résolution

@@ -169,6 +169,7 @@ squashfs \
 sqlite \
 parted \
 reiserfsprogs \
+syslinux \
 xfsprogs \
 linux; do
 	spackadd --quiet --root=${LIVEOS} $(find ${PAQUETS} -type d -name "${paq}")/*.spack
