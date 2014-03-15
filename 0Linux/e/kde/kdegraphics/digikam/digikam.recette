@@ -7,7 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-digikam}
 WGET=${WGET:-http://download.kde.org/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Gestionnaire avancé de photos et outils de retouche pour KDE"
-########################################
+EXTRADEPS="kde-runtime"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

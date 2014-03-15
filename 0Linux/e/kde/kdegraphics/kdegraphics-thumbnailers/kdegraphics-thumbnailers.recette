@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kdegraphics-thumbnailers}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Extension pour la création de vignettes supplémentaires dans KDE"
-########################################
+EXTRADEPS="kde-baseapps"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

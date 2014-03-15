@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-umbrello}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Interface de création et développement de diagrammes UML"
-########################################
+EXTRADEPS="kde-dev-scripts kde-dev-utils poxml"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

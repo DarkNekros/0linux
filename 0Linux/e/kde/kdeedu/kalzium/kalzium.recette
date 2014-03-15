@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-kalzium}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Le tableau périodique des éléments de KDE"
-########################################
+EXTRADEPS="libfacile ocaml"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

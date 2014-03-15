@@ -7,7 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-amarok}
 WGET=${WGET:-http://download.kde.org/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Amarok : Un très puissant lecteur audio pour KDE"
-########################################
+EXTRADEPS="clamz"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

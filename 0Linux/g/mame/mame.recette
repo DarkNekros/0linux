@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-mame}
+VERSION=${VERSION:-0.152}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-mame}
+WGET=${WGET:-http://0linux.geoffray-levasseur.org/$NAMESRC-$VERSION.$EXT}
+DESC="L'émulateur universel de consoles et autres ordinateurs antiques"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Corrige la priorité du fichier de configuration de mame :
+cat $CWD/ini_path.diff | patch -p0
+
+# Corrige la compilation avec gcc > 4.7.1 :
+cat $CWD/gcc471.patch | patch -p1
+
+# Corrige les fins de lignes (dos2unix est bien plus rapide) :
+if hash dos2unix 2>/dev/null ; then
+	find -type f -exec dos2unix -q {} \;
+else
+	find -type f -exec file {} \; | grep CRLF | awk 'BEGIN{FS=":"}{print $1}' | xargs perl -pi -e 's/\r\n?/\n/g'
+fi
+
+# On personnalise pour 0linux :
+sed -i 's/DISTRO = generic/DISTRO = 0Linux/' src/osd/sdl/sdl.mak
+
+# Compilation :
+make -j${JOBS} OPTIMIZE=3 \
+  ARCHOPTS="$FLAGS -Wno-error=narrowing -Wno-error=maybe-uninitialized"
+make -j${JOBS} tools
+
+# Installation manuelle (méthode Slackware modifiée) :
+mkdir -p $PKG/usr/bin
+cp -a mame${LIBDIRSUFFIX} $PKG/usr/bin/
+if [[ $LIBDIRSUFFIX ]] ; then
+	ln -s mame${LIBDIRSUFFIX} $PKG/usr/bin/mame
+fi
+cp testkeys romcmp jedutil unidasm ldresample ldverify \
+	regrep srcclean src2html $PKG/usr/bin/
+
+mkdir -p $PKG/etc
+cat $CWD/mame.ini > $PKG/etc/mame.ini.0nouveau
+
+# Create empty dirs for the user to populate with ROMs and such.
+for bin in roms samples artwork ctrlr font cheat ; do
+	mkdir -p $PKG/usr/share/mame/$bin
+done
+
+# Man pages, .desktop, and icon borrowed from Ludovic Lechapt's Debian package.
+mkdir -p $PKG/usr/man/man6
+for m in chdman jedutil ldverify romcmp testkeys mame ; do
+	cp -a $CWD/man/$m.6 $PKG/usr/man/man6/
+done
+
+sed -i 's/@VERSION@/'$VERSION'/g' $PKG/usr/man/man6/mame.6
+
+mkdir -p $PKG/usr/share/applications
+cat > $PKG/usr/share/applications/$NAMETGZ.desktop << EOF
+[Desktop Entry]
+Name=MAME
+Comment=MAME(tm) arcade emulator
+Comment[fr]=Émulateur d'arcade MAME
+Exec=/usr/games/mame
+Icon=mame
+Terminal=false
+Type=Application
+Categories=Game;
+
+EOF
+
+mkdir -p $PKG/usr/share/pixmaps
+cp $CWD/mame.xpm $PKG/usr/share/pixmaps
+
+installer_doc
+
+mkdir -p $PKG/usr/doc/$NAMETGZ-$VERSION
+cp docs/* $PKG/usr/doc/$NAMETGZ-$VERSION
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
