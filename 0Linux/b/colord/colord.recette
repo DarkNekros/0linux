@@ -47,9 +47,9 @@ creer_post_installation
 
 # On complète la post-installation :
 cat >> ${PKG}/post-install.sh << "EOF"
-# On s'assure de ce spermissions :
-chown colord:colord /var/lib/colord
-chown colord:colord /var/lib/colord/icc
+# On s'assure de ces permissions :
+chown colord:colord var/lib/colord
+chown colord:colord var/lib/colord/icc
 
 EOF
 
