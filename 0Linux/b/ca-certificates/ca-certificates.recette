@@ -3,7 +3,7 @@
 
 NAMESRC=${NAMESRC:-ca-certificates}
 VERSION=${VERSION:-20140223}
-EXT=${EXT:-tar.gz}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-ca-certificates}
 WGET=${WGET:-http://ftp.debian.org/debian/pool/main/c/${NAMESRC}/${NAMESRC}_${VERSION}.${EXT}}
 DESC="Ensembles de certificats CA pour SSL"
