@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-qgit}
+VERSION=${VERSION:-2.5}
+EXT=${EXT:-tar.gz}
+NAMETGZ=${NAMETGZ:-qgit}
+WGET=${WGET:-http://libre.tibirna.org/attachments/download/9/$NAMESRC-$VERSION.$EXT}
+DESC="Interface Qt pour naviguer dans un dépot Git"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+qmake
+make -j${JOBS} || make
+
+# Installation manuelle :
+mkdir -p $PKG/usr/{bin,share/{applications,pixmaps}}
+cp -a bin/qgit $PKG/usr/bin/qgit
+cp -a $CWD/qgit.png $PKG/usr/share/pixmaps/qgit.png
+
+# On crée le fichier desktop :
+cat > $PKG/usr/share/applications/qgit.desktop << EOF
+[Desktop Entry]
+Encoding=UTF-8
+Categories=Development;RevisionControl;
+Name=QGit
+Comment=A GIT GUI viewer built on Qt/C++
+Comment[fr]=Un interface graphique pour Git en Qt/C++
+Icon=qgit.png
+Exec=/usr/bin/qgit
+URL=http://digilander.libero.it/mcostalba/
+StartupNotify=true
+Terminal=false
+Type=Application
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
