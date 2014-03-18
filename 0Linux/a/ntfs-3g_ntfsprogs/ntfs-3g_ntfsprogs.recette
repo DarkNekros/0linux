@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-ntfs-3g_ntfsprogs}
-VERSION=${VERSION:-2013.1.13}
+VERSION=${VERSION:-2014.2.15}
 EXT=${EXT:-tgz}
 NAMETGZ=${NAMETGZ:-ntfs-3g_ntfsprogs}
 WGET=${WGET:-http://tuxera.com/opensource/$NAMESRC-$VERSION.$EXT}

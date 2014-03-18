@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-ImageMagick}
-VERSION=${VERSION:-6.8.6_8}
+VERSION=${VERSION:-6.8.8_8}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-imagemagick}
 WGET=${WGET:-http://mirror.checkdomain.de/imagemagick/$NAMESRC-$(echo $VERSION | tr '_' '-').$EXT}

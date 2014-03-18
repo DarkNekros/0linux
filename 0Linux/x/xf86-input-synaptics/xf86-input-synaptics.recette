@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xf86-input-synaptics}
-VERSION=${VERSION:-1.7.3}
+VERSION=${VERSION:-1.7.4}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xf86-input-synaptics}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT}
