@@ -7,6 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-man-pages}
 WGET=${WGET:-http://www.kernel.org/pub/linux/docs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Manuels du système Linux"
+EXTRADEPS="man-db"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

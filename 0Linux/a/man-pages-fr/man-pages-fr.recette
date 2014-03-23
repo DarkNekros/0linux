@@ -10,6 +10,7 @@ WGET=(http://alioth.debian.org/frs/download.php/file/3976/$NAMESRC-$(echo $VERSI
       http://manpagesfr.free.fr/download/man-pages-extras-fr-0.8.1.tar.bz2
      )
 DESC="Manuels francophones du système Linux"
+EXTRADEPS="man-db"
 
 . /usr/share/0outils/fonctions_paquets.sh
 

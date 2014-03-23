@@ -102,7 +102,7 @@ searchscripts () {
 }
 
 strippkg () {
-    # Exclut les paquets demandé et assure que chaque paquet n'a qu'une entrée.
+    # Exclut les paquets demandés et assure que chaque paquet n'a qu'une entrée.
     # $f
     awk 'BEGIN{for (i=1; i < ARGC; i++) GOT[ARGV[i]]; split("-", ARGV)}
          ($0 in GOT){next}{print; GOT[$0]}' $XPKG | sort
@@ -122,7 +122,7 @@ EOF
 export LC_ALL="C"
 LOGDIR="/var/log/packages"
 SCRIPTDIR="/var/log/scripts"
-XPKG="$XPKG glibc glibc-solibs" # la liste des paquets qu'on veut ignorer.
+XPKG="$XPKG glibc" # la liste des paquets qu'on veut ignorer.
 getopt "$@" || usage $(($? -1))
 
 LDDAWK="$(makeldd)" || exit 1
