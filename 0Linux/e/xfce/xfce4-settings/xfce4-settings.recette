@@ -34,9 +34,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On copie les personnalisations pour 0 :
-cp -a $CWD/*.xml ${PKG}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/
-chmod 644 ${PKG}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/*.xml
+# On copie les personnalisations pour 0Linux :
+#cp -a $CWD/*.xml ${PKG}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/
+#chmod 644 ${PKG}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/*.xml
 
 installer_doc
 creer_post_installation
