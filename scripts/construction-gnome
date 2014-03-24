@@ -24,6 +24,7 @@ libgnomekbd
 gnome-terminal
 epiphany
 libgee
+libgsf
 caribou
 libgweather
 evolution-data-server
