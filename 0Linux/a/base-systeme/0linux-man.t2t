@@ -1,13 +1,13 @@
 0LINUX
 base-systeme
-Décembre 2013
+Mars 2014
 
 %!postproc(man): "^(\.TH.*) 1 "  "\1 7 "
 %!encoding: UTF-8
 
 = NOM =[nom]
 
-0Linux - Distribution Linux francophone, didactique et originale
+0Linux - Un système Linux francophone, didactique et original
 
 = DESCRIPTION =[description]
 
@@ -24,11 +24,11 @@ Les systèmes de fichiers CHIFFRÉS sont spécifiés dans le fichier __/etc/cryp
 
 = SERVICES DU SYSTÈME =[servicesdusysteme]
 
-Les services du système sont gérés par de simples scripts nommés « rc.* » et rangés dans __/etc/rc.d/rc.*__.  On les rend actifs au démarrage de l'ordinateur en les rendant exécutables -chmod +x) et on les appelle en les exécutant, comme de simples scripts.
+Les services du système sont gérés par de simples scripts nommés « rc.* » et rangés dans __/etc/rc.d/rc.*__.  On les rend actifs au démarrage de l'ordinateur en les rendant exécutables (chmod +x) et on les appelle en les exécutant, comme de simples scripts.
 
 = PARAMÉTRAGE DU RÉSEAU ET NOM D'HÔTE =[arametragedureseauetnomdhote]
 
-On définit le nom d'hôte ainsi que les paramètres de connexion au réseau en rensignant le fichier __/etc/0linux/reseau__. Un outil dédié existe, **__0reseau__**.
+On définit le nom d'hôte ainsi que les paramètres de connexion au réseau en renseignant le fichier __/etc/0linux/reseau__. Un outil dédié existe, **__0reseau__**.
 
 = LANGUE DU SYSTÈME =[languedusysteme]
 
@@ -58,14 +58,14 @@ Le gestionnaire d'amorçage du système est **extlinux**, un outil du paquet **s
 
 = MODULES DU NOYAU =[modulesdunoyau]
 
-Les modules sont chargés automatiquement se lon le matériel. Pour forcer le chargement d'un module donné, ajoutez-le à un fichier dédié sous __/etc/modprobe.d/__. Pour empêcher un module de se charger, ajoutez une commande 'blacklist' adaptée au module dans le fichier __/etc/modprobe.d/blacklist.conf__ ou bien créez dans ce même répertoire un fichier du nom de votre choix, contenant la commande 'blacklist' à invoquer.
+Les modules sont chargés automatiquement selon le matériel. Pour forcer le chargement d'un module donné, ajoutez-le à un fichier dédié sous __/etc/modprobe.d/__. Pour empêcher un module de se charger, ajoutez une commande 'blacklist' adaptée au module dans le fichier __/etc/modprobe.d/blacklist.conf__ ou bien créez dans ce même répertoire un fichier du nom de votre choix, contenant la commande 'blacklist' à invoquer.
 
 = POUR EN SAVOIR PLUS =[pourensavoirplus]
 
 Voyez ces manuels :
 
 tzselect(8), hostname(5),, timezone(3), fstab(5), crypttab(5), modprobe.d(5), 
-0g(8), 'spackadd --help', 'spackrm --help'.
+extlinux(1), 0g(8), 'spackadd --help', 'spackrm --help'.
 
 Et consultez la documentation sur le site de 0linux : [http://0linux.org]
 

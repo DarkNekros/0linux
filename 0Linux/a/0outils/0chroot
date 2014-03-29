@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+# Le point de montage dans lequel on va « chrooter », spécifiable sur la ligne
+# de commmande :
+CHROOTDIR=${CHROOTDIR:-/mnt/0linux}
+
+# On vérifie qu'on est bien root :
+if [ ! "$(whoami)" = "root" ]; then
+	echo "Erreur : seul root peut m'exécuter !"
+	exit 1
+fi
+
+# Si l'utilisateur ne saisit pas un périph' de la forme « /dev/**** » :
+if [ "$(echo "$1" | sed -e 's/\(\/dev\/\).*$/\1/')" = "" -o ! -r "$1" ]; then
+	echo "Veuillez entrer un périphérique existant, sous la forme « /dev/xxxx » ainsi :"
+	echo "	$(basename ${0}) /dev/sda1"
+	exit 1
+fi
+
+# Si l'utilisateur veut voir l'aide :
+if [ "$1"  = "-h" -o "$1"  = "--help" -o "$1" = "-a" -o "$1"  = "--aide" -o "$1" = "" ]; then
+	echo "'$(basename ${0})' permet de « chrooter » un système 0Linux (entrer dans un"
+	echo "système 0Linux placé sur une racine déportée pour en faire la maintenance)"
+	echo "en montant au préalable la racine spécifiée en paramètre ainsi que les"
+	echo "systèmes de fichiers virtuels '/dev/', '/proc', '/sys' et '/run' afin qu'il"
+	echo "soit pleinement fonctionnel. La variable CHROOTDIR peut être spécifiée sur"
+	echo "la ligne de commande ; elle vaut '${CHROOTDIR}' par défaut')."
+	echo ""
+	echo "Exemple d'un système installé sur '/dev/sda1' :"
+	echo ""
+	echo "	$(basename ${0}) /dev/sda1"
+	echo ""
+	echo "Ce qui revient à faire soi-même :"
+	echo ""
+	echo "	mkdir ${CHROOTDIR}"
+	echo "	mount /dev/sda1 ${CHROOTDIR}"
+	echo "	mkdir ${CHROOTDIR}/{dev,proc,sys,run}"
+	echo "	mount /dev ${CHROOTDIR}/dev"
+	echo "	mount /proc ${CHROOTDIR}/proc"
+	echo "	mount /sys ${CHROOTDIR}/sys"
+	echo "	mount /run ${CHROOTDIR}/run"
+	echo ""
+	exit 1
+fi
+
+# On monte le chroot :
+echo "Montage de '$1' sous '${CHROOTDIR}'..."
+echo "mkdir ${CHROOTDIR}"
+mkdir -v ${CHROOTDIR}
+
+echo "mount ${1} ${CHROOTDIR}"
+mount -v ${1} ${CHROOTDIR}
+
+# On monte les systèmes de fichiers virtuels :
+echo "Montage des systèmes de fichiers virtuels sous '${CHROOTDIR}'..."
+echo "mkdir -p ${CHROOTDIR}/{dev,proc,run,sys}"
+mkdir -pv ${CHROOTDIR}/{dev,proc,run,sys}
+
+echo "mount --bind /proc ${CHROOTDIR}/proc"
+mount --bind /proc ${CHROOTDIR}/proc
+
+echo "mount --bind /sys ${CHROOTDIR}/sys"
+mount --bind /sys ${CHROOTDIR}/sys
+
+echo "mount --bind /dev ${CHROOTDIR}/dev"
+mount --bind /dev ${CHROOTDIR}/dev
+
+echo "mount --bind /run ${CHROOTDIR}/run"
+mount --bind /run ${CHROOTDIR}/run
+
+echo "Si tout s'est bien passé, vous pouvez maintenant entrer dans votre système"
+echo "0Linux en invoquant :"
+echo ""
+echo "	chroot ${CHROOTDIR}"
+echo ""
+echo "Vous le quitterez avec \"exit\". Pensez ensuite à démonter les systèmes de"
+echo "fichiers virtuels puis à démonter '${CHROOTDIR}' avant de redémarrer :"
+echo ""
+echo "	umount ${CHROOTDIR}/dev ${CHROOTDIR}/proc ${CHROOTDIR}/sys ${CHROOTDIR}/run"
+echo "	umount ${CHROOTDIR}"
+echo ""
+
+# C'est fini.

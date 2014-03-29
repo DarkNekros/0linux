@@ -169,7 +169,7 @@ else
 	read BLURB5;
 	
 	# On nettoie tous les fichiers '*.0nouveau' au cas où :
-	for f in $(find ${SETUPROOT}/etc -type f -name "*.0nouveau" 2>/dev/null); do
+	for f in $(find ${SETUPROOT}/{etc,var} -type f -name "*.0nouveau" 2>/dev/null); do
 		mv ${f} $(dirname ${f})/$(basename ${f} .0nouveau) 2>/dev/null || true
 	done
 	

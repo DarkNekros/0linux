@@ -12,8 +12,8 @@ Système généré le DATEGEN
            Bienvenue sur 0Linux VERSIONDISTRIB. 
 
 ---
-Pour commencer :
-
-1- Connectez-vous tout d'abord en tapant « root » ci-dessous.
-2- Débutez ensuite l'installation en tapant « installateur ».
+- Connectez-vous tout d'abord en tapant « root » ci-dessous.
+- Débutez l'installation de 0Linux en tapant « installateur »
+- Entrez dans votre système 0Linux (déjà existant) soit manuellement, soit
+  avec la commande dédiée '0chroot' (consultez '0chroot --aide').
 ---

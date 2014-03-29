@@ -298,3 +298,16 @@ chown root.utmp run/utmp* var/log/wtmp* >/dev/null 2>&1
 chmod 664 run/utmp* >/dev/null 2>&1
 chown root.shadow etc/shadow* etc/gshadow* >/dev/null 2>&1
 chgrp ftp srv/ftp >/dev/null 2>&1
+
+# La fonction de traitement des fichiers '*.0nouveau', normalement appelée
+# dans creer_post_installation() :
+traiter_nouvelle_config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .0nouveau)"
+	
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD >/dev/null 2>&1 || busybox mv $NEW $OLD >/dev/null 2>&1 || true
+	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
+		mv $NEW $OLD >/dev/null 2>&1 || busybox mv $NEW $OLD >/dev/null 2>&1 || true
+	fi
+}
