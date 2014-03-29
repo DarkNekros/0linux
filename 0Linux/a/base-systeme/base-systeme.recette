@@ -110,10 +110,6 @@ cp -a ${PKG}/etc/termcap{-Linux,}
 # On place les fichiers de configuration utilisateur (personnalisations, .xsession, etc.) :
 cp -ra $CWD/skel ${PKG}/etc/
 
-# On prend garde à ne rien écraser !
-for f in $(find ${PKG}/etc/skel -type f); do
-	
-
 # On garde un '/etc/HOSTNAME' en majuscules pour maximiser la compatibilité :
 ln -sf hostname ${PKG}/etc/HOSTNAME
 
