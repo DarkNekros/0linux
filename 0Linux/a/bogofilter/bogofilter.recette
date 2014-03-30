@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-evolution}
-VERSION=${VERSION:-3.10.1}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-evolution}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
-DESC="Client de courriel et de gestion du temps complet et intuitif pour GNOME"
-EXTRADEPS="bogofilter"
+NAMESRC=${NAMESRC:-bogofilter}
+VERSION=${VERSION:-1.2.4}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-bogofilter}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Outils de filtrage de pourriel / courrier indésirable (« spam »)"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -19,23 +18,16 @@ cflags
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
-	--sysconfdir=/etc \
+	--sysconfdir=/etc/bogofilter \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-pst-import \
-	--disable-schemas-compile \
-	--disable-spamassassin \
-	--disable-text-highlight \
-	--enable-nss=yes \
-	--enable-smime=yes \
-	--with-krb5=/usr \
-	--with-openldap=yes \
+	--enable-transactions \
+	--with-database=db \
 	--build=${PKGARCH}-0linux-linux-gnu
- 
+
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
