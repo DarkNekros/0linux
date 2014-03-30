@@ -5,7 +5,7 @@ NAMESRC=${NAMESRC:-yad}
 VERSION=${VERSION:-0.26.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-yad}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC-dialog/$NAMESRC-$VERSION.$EXT}
 DESC="Outil de création d'interfaces utilisateur, dérivé de Zenity"
 
 . /usr/share/0outils/fonctions_paquets.sh

@@ -40,34 +40,39 @@ evalpkg () {
     # $f MODE EXPERT, PAQUETS
     local exp="#"
     [ "$1" = "oui" ] || exp=""; shift 1
-    awk 'BEGIN { for (i=1;i<ARGC;i++) GET[ARGV[i]]="/"; ARGC=split("",ARGV)
+    awk 'BEGIN { for (i=ARGC-1;i>0;i--) {GET[ARGV[i]]="/"; STACK[++C]=ARGV[i]}
+                 ARGC=split("",ARGV)
                  getline; for (i=1; i <= NF; i++) SKIP[$i]
                  getline; for (i=1; i <= NF; i++) SPECIAL[$i]
                  while ((getline p) > 0) {
                     if (p == "--end--") break
                     n = p; sub(/-[^-]+-[^-]+-[^-]+$/,"",n)
-                    GET[n] = p
+                    GET[n] = p; STACK[++C] = n
                   }
                }
-               ($1 in SKIP) {delete GET[$1]; next}
-               ($1 in GET) {
-                     if ($2 != GET[$1]) {
-                       print (($1 in SPECIAL) ? 1 : 0)"\n"$3 $2
-        '$exp'         for (i=4; i <= NF; i++)
-        '$exp'           if ($i in DB) {
-        '$exp'             print (($i in SPECIAL) ? 1 : 0)"\n"DB[$i]
-        '$exp'             delete DB[$i]
-        '$exp'           } else if (!($i in SKIP)) {
-        '$exp'             GET[$i]
-        '$exp'           }
-                     }
-                     delete GET[$1]
-        '$exp'       next
-               }
-        '$exp' { DB[$1] = $3 $2 }
-               END{for (p in GET)
-                     if (GET[p] == "/")
-                       print "(!) "p": paquet introuvable !">"/dev/stderr"}' $@
+         ($1 in SKIP) {delete GET[$1]; next}
+         {DB[$1] = $0}
+         END { while (C > 0) {
+                 p = STACK[C--]
+                 if (p in DB) {
+                   i = split(DB[p], v)
+                   delete DB[p]; SKIP[p]
+                   if (v[2] != GET[p]) {
+                     print ((p in SPECIAL) ? 1 : 0)"\n"v[3] v[2]
+  '$exp'             for (; i>3; i--)
+  '$exp'               if (v[i] in DB)
+  '$exp'                 STACK[++C] = v[i]
+                   }
+                 } else if (GET[p] == "/" && !(p in SKIP)) {
+                   print "(!) "p": paquet introuvable !">"/dev/stderr"
+                 }
+               }}' $@
+    # NOTE: on emploie une pile implémentée sous forme de tableau pour la
+    # résolution des différents niveaux de dépendances. On y entre les
+    # dépendances de chaque paquet de la dernière à la première spécifiée,
+    # puis on traite le dessus de la pile. Ainsi, l'ordre des dépendances
+    # attribué par le mainteneur est toujours respecté, de même que celui
+    # des arguments donnés sur la ligne de commande.
 }
 
 getopt () {
@@ -121,7 +126,8 @@ request () {
 #spackadd () {
 #    # Simule une mise à niveau avec de faux paquets. Essentiellement
 #    # utile pour les debugs, À CONSERVER EN COMMENTAIRES.
-#    # $f PAQUET
+#    # $f RACINE, PAQUET
+#    shift 1 # on se moque de l'option racine ici.
 #    local pkg="$(basename "$1" | sed 's/-[^-]*-[^-]*-[^-]*$//')"
 #    mkdir -p "$LOGDIR"
 #    rm -f $(find "$LOGDIR/" | sed "/\/$pkg-[^-]*-[^-]*-[^-]*$/p" -n)
@@ -215,7 +221,7 @@ EOF
 }
 
 # === Programme principal ======================================================
-export LC_ALL=C
+export LC_ALL='C'
 umask 022
 unset demo root paquets
 MASTER="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
