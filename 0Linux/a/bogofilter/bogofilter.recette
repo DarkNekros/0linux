@@ -31,6 +31,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On garde un exemple de la configuration et on prend garde à ne rien écraser :
+cp -a ${PKG}/etc/bogofilter/bogofilter.cf{.example,.0nouveau}
+
+# On place les contributions :
+mkdir -p ${PKG}/usr/share/bogofilter/contrib
+cp contrib/* ${PKG}/usr/share/bogofilter/contrib/
+
 installer_doc
 creer_post_installation
 stripper
