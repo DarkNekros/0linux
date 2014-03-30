@@ -14,7 +14,13 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige le comportement sans GDM en déplaçant un raccourci.
+# Cf. https://bugzilla.gnome.org/show_bug.cgi?id=683060 :
+sed -i 's@desktopdir = $(sysconfdir)/xdg/autostart@desktopdir = $(datadir)/applications@' src/Makefile.am
+sed -i '/AutostartCondition=GNOME3 if-session gnome-fallback/d' src/gnome-screensaver.desktop.in.in
+
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
