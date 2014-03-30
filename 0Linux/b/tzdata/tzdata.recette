@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-tzdata}
-VERSION=${VERSION:-2014a}
+VERSION=${VERSION:-2014b}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-tzdata}
 WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${EXT}
@@ -56,6 +56,9 @@ chmod 444 ${PKG}/usr/share/zoneinfo/{iso3166,zone}.tab
 # On copie les binaires :
 cp tzselect zdump zic ${PKG}/usr/sbin/
 chmod 755 ${PKG}/usr/sbin/*
+
+# On corrige le chemin de TZDIR dans 'tzselect' : 
+sed -i 's@/usr/local/etc/zoneinfo@/usr/share/zoneinfo@' ${PKG}/usr/sbin/tzselect
 
 # On copie les manuels :
 cp *.3 ${PKG}/usr/man/man3
