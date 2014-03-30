@@ -19,7 +19,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--libexec=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--disable-desktop-update \
 	--disable-icon-update \
 	--disable-schemas-compile \
