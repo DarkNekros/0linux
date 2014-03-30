@@ -39,6 +39,7 @@ grilo-plugins
 eog
 eog-plugins
 evince
+gtkhtml
 evolution
 tracker
 file-roller
