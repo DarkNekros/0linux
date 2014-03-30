@@ -315,16 +315,17 @@ installer_doc() {
 creer_post_installation() {
 	touch ${PKG}/post-install.sh
 	
-	# On crée la fonction pour traiter les fichiers '*.0nouveau' éventuels :
+	# On crée la fonction pour traiter les fichiers '*.0nouveau' éventuels
+	# en s'appuyant sur BusyBox :
 	cat >> ${PKG}/post-install.sh << "EOF"
 traiter_nouvelle_config() {
 	NEW="$1"
 	OLD="$(dirname $NEW)/$(basename $NEW .0nouveau)"
 	
 	if [ ! -r $OLD ]; then
-		mv $NEW $OLD
+		mv $NEW $OLD >/dev/null 2>&1 || busybox mv $NEW $OLD >/dev/null 2>&1 || true
 	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
-		mv $NEW $OLD
+		mv $NEW $OLD >/dev/null 2>&1 || busybox mv $NEW $OLD >/dev/null 2>&1 || true
 	fi
 }
 

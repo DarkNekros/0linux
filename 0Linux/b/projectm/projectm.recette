@@ -42,7 +42,17 @@ fi
 # On corrige ces fichiers '.pc' :
 sed -i "s@^libdir=.*@libdir=\${exec_prefix}/lib${LIBDIRSUFFIX}@" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/*.pc
 
+# On se replace à la base des sources :
+cd -
+
 installer_doc
+
+# On complète la doc :
+cp *.txt *.creator *.files *.includes *.kdevelop* *.kdevses docs/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
+# On nettoie :
+rm -f ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/CMakeLists.txt
+
 creer_post_installation
 stripper
 empaqueter

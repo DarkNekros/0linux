@@ -2,9 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-base-systeme}
-VERSION=${VERSION:-5.0.3}
+VERSION=${VERSION:-5.1}
 NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
+EXTRADEPS="busybox"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -106,7 +107,7 @@ done
 # On s'assure de la présence d'un fichier 'termcap' par défaut (on prend celui de Linux) :
 cp -a ${PKG}/etc/termcap{-Linux,}
 
-# On place les fichiers de configuration utilisateur (thèmes, .xsession, etc.) :
+# On place les fichiers de configuration utilisateur (personnalisations, .xsession, etc.) :
 cp -ra $CWD/skel ${PKG}/etc/
 
 # On garde un '/etc/HOSTNAME' en majuscules pour maximiser la compatibilité :
@@ -151,6 +152,8 @@ EOF
 # On crée le fichier de blacklist des modules non désirés :
 cat > ${PKG}/etc/modprobe.d/blacklist.conf.0nouveau << "EOF"
 # Chaque module listé ici ne sera pas chargé par le système.
+# On peut aussi créer de fichiers individuels, plus pratiques, pour empêcher
+# le chargement de certains modules.
 
 # Pilote 8139 alternatif (mais tout de même nécessaire à certaines cartes...) :
 blacklist 8139cp
@@ -289,6 +292,11 @@ cat $CWD/post-install.sh >> ${PKG}/post-install.sh
 
 # On corrige pour notre suffixe :
 sed -i "s@ARCH@${LIBDIRSUFFIX}@g" ${PKG}/post-install.sh
+
+# On ajoute en post-installation tous les fichiers '*.0nouveau' qu'on trouve pour les passer à traiter_nouvelle_config() :
+for fichier_post in $(find ${PKG} -type f -name "*.0nouveau"); do
+	echo "traiter_nouvelle_config $(echo ${fichier_post} | sed "s@${PKG}/@@")" >> ${PKG}/post-install.sh
+done
 
 empaqueter
 

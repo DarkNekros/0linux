@@ -66,7 +66,7 @@ while [ 0 ]; do
 			else
 				
 				# On vérifie que 'paquets.db' se trouve bien dans le dépôt :
-				if [ -r ${SPACKBASE})/$(uname -m)/paquets.db ]; then
+				if [ -r ${SPACKBASE}/$(uname -m)/paquets.db ]; then
 					echo "$(dirname ${SPACKBASE})" > $TMP/choix_media
 					echo "Un dépôt de paquets a été trouvé sur ce volume !"
 					

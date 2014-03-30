@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libpeas}
-VERSION=${VERSION:-1.8.1}
+VERSION=${VERSION:-1.9.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-libpeas}
 WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}

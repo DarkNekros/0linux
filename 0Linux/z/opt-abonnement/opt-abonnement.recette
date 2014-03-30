@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-opt-abonnement}
-VERSION=${VERSION:-3}
+VERSION=${VERSION:-4}
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-lib                 alsa-plugins \
@@ -184,6 +184,7 @@ taglib                  taglib-extras            talloc \
 tango-icon-theme        tango-icon-theme-extras  tar \
 tbb                     tcl                      tcp_wrappers \
 tdb                     telepathy-farstream      telepathy-glib \
+telepathy-logger \
 tevent                  texinfo                  timidity++ \
 tk                      transcode                tree \
 tslib                   twolame                  tzdata \

@@ -215,8 +215,6 @@ libpcre.so* \
 libperl.so* \
 libpopt.so* \
 libpcre.so* \
-libpython*.so* \
-libqrencode.so* \
 libmpc.so* \
 libmpfr.so* \
 librtmp-*.so* \
@@ -247,20 +245,15 @@ cp ${LIVEOS}/usr/man/man8/0g.8.xz ${LIVEOS}/conserver/
 # On désinstalle les gros paquets superflus, maintenant qu'on a les bibliothèques en lieu sûr :
 for paq in \
 berkeley-db \
-binutils \
 cyrus-sasl \
-dialog \
 gcc \
-gettext \
 glib \
 libssh \
 openldap-client \
 pcre \
 perl \
 popt \
-python \
-qrencode \
-rtmtpdump \
+rtmpdump \
 sgml-common \
 sqlite \
 vim; do
@@ -403,7 +396,7 @@ ln -sf sbin/init ${LIVEOS}/init
 chroot ${LIVEOS} passwd -d root
 
 # On nettoie tous les fichiers '*.0nouveau' au cas où :
-for f in $(find ${LIVEOS}/etc -type f -name "*.0nouveau" 2>/dev/null); do
+for f in $(find ${LIVEOS}/{etc,var} -type f -name "*.0nouveau" 2>/dev/null); do
 	mv ${f} $(dirname ${f})/$(basename ${f} .0nouveau) 2>/dev/null || true
 done
 
@@ -445,7 +438,7 @@ rm -rf ${MEDIAROOT}/0/paquets/*
 # On copie les paquets selon l'option choisie :
 if [ "${1}" = "--maxi" ]; then
 	mkdir -p ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}
-	rsync -a --delete-after ${PAQUETS}/* ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}/
+	rsync -av --progress --delete ${PAQUETS}/* ${MEDIAROOT}/var/cache/0g/${VERSION}/${PKGARCH}/
 fi
 
 # On s'assure des permissions :

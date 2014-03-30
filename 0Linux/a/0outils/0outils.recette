@@ -2,8 +2,9 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-0outils}
-VERSION=${VERSION:-9.9}
-DESC="Outils « maison » pour la configuration du système"
+VERSION=${VERSION:-10.2}
+DESC="Outils « maison » pour l'installation et l'administration du système 0Linux"
+EXTRADEPS="realpath"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -16,6 +17,7 @@ mkdir -p ${PKG}/usr/{s,}bin
 
 # On place les scripts réservés à root :
 for script in \
+0chroot \
 0clavier \
 0comparer_config \
 0creation_live \
@@ -59,7 +61,8 @@ creer_post_installation
 # On complète la post-installation en asurant la migration vers le nouveau '0g' :
 cat >> ${PKG}/post-install.sh <<"EOF"
 
-# On s'asure qu'il ne reste rien des anciens '0g' :
+# On s'assure qu'il ne reste rien des anciens '0g'. On supprime en deux temps
+# car un 'rm -rf' supprimerait le nouveau fichier 'etc/0outils/0g.conf' ;) :
 rm -f etc/0outils/0g/*
 rmdir etc/0outils/0g/ 2>/dev/null || true
 

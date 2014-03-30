@@ -5,7 +5,7 @@ NAMESRC=${NAMESRC:-MesaLib}
 VERSION=${VERSION:-10.1.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mesa}
-WGET=${WGET:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.freedesktop.org/pub/$NAMETGZ/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques graphiques 3D pour X11"
 
 . /usr/share/0outils/fonctions_paquets.sh
