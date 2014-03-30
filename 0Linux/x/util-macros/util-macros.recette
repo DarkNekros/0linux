@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-util-macros}
-VERSION=${VERSION:-1.18.0}
+VERSION=${VERSION:-1.19.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-util-macros}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/util/$NAMESRC-$VERSION.$EXT}
