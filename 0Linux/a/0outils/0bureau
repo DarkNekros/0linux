@@ -5,7 +5,9 @@ unset RUNLEVEL4 XDE XINITRC
 # Si l'on est root :
 if [ "$(whoami)" = "root" ]; then
 	while [ 0 ]; do
-		clear
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
+		fi
 		echo -e "\033[1;32mChoix du type de démarrage.\033[0;0m"
 		echo ""
 		echo "Souhaitez-vous que le système démarre automatiquement en mode graphique"
@@ -40,7 +42,9 @@ fi
 
 # On propose un bureau à activer par défaut pour 'xdm' ou 'startx' :
 while [ 0 ]; do
-	clear
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
 	echo -e "\033[1;32mChoix de l'environnement graphique via 'xinit'.\033[0;0m"
 	echo ""
 	echo "Veuillez choisir l'environnement graphique que vous souhaitez"

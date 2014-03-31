@@ -55,7 +55,9 @@ crunch() {
 
 # Boucle pour le choix du nom d'hôte et du domaine :
 while [ 0 ]; do
-	clear
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
 	echo -e "\033[1;32mNommage de votre machine.\033[0;0m"
 	echo ""
 	echo "Il est temps de baptiser votre machine en lui donnant un nom d'hôte"
@@ -104,7 +106,9 @@ while [ 0 ]; do
 	if [ "${NETCONFIG}" = "ok" ]; then
 		break
 	fi
-	clear
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
 	echo -e "\033[1;32mConfiguration du réseau filaire.\033[0;0m"
 	echo ""
 	echo "Définissez comment votre machine se connecte au réseau."
@@ -129,7 +133,9 @@ while [ 0 ]; do
 		if [ "$CHOIXCONFIG" = "1" ]; then
 			# Boucle pour la config' par DHCP :
 			while [ 0 ]; do
-				clear
+				if [ "${INSTALLDEBUG}" = "" ]; then
+					clear
+				fi
 				echo -e "\033[1;32mNom de l'hôte DHCP.\033[0;0m"
 				echo ""
 				echo "Certains fournisseurs requièrent un nom d'hôte DHCP pour la"
@@ -153,7 +159,9 @@ while [ 0 ]; do
 		# Configuration manuelle :
 		else
 			while [ 0 ]; do
-				clear
+				if [ "${INSTALLDEBUG}" = "" ]; then
+					clear
+				fi
 				echo -e "\033[1;32mConfiguration manuelle du réseau.\033[0;0m"
 				echo ""
 				echo "Veuillez entrer ci-dessous votre paramètres réseau, séparés par"
@@ -194,7 +202,9 @@ while [ 0 ]; do
 			
 			# Le serveur de noms pour '/etc/resolv.conf' :
 			while [ 0 ]; do
-				clear
+				if [ "${INSTALLDEBUG}" = "" ]; then
+					clear
+				fi
 				echo -e "\033[1;32mConfiguration d 'un éventuel serveur de noms de domaine (DNS).\033[0;0m"
 				echo ""
 				echo "Si vous devez utiliser des serveurs de noms de domaine (DNS) précis"

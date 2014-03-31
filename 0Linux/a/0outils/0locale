@@ -7,7 +7,9 @@ unset CHOIXLOCALE LOCALECHOISIE
 LOCALECONFIGFILE=/etc/0linux/locale
 
 while [ 0 ]; do
-	clear
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
 	echo -e "\033[1;32mLocalisation francophone du système.\033[0;0m"
 	echo ""
 	echo "Veuillez entrer le code de la localisation francophone souhaitée"

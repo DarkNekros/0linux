@@ -15,7 +15,9 @@ crunch() {
 }
 
 while [ 0 ]; do
-	clear
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
 	echo -e "\033[1;32mAjout d'un nouvel utilisateur.\033[0;0m"
 	echo ""
 	echo "Entrez ci-après le nom du nouvel utilisateur souhaité."
@@ -46,7 +48,9 @@ while [ 0 ]; do
 done
 
 # Choix de l'UID :
-clear
+if [ "${INSTALLDEBUG}" = "" ]; then
+	clear
+fi
 echo -e "\033[1;32mChoix d'un numéro d'identifiant utilisateur (UID).\033[0;0m"
 echo ""
 echo "Entrez ci-après le numéro d'identifiant utilisateur souhaité ou appuyez sur"

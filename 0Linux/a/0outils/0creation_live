@@ -24,7 +24,7 @@ fi
 
 # On analyse la ligne de commande :
 if [ "$1" != "--mini" -a "$1" != "--maxi" -o ! -d "$2" -o  "$2" = "" ]; then
-	echo "$0 : "
+	echo "$(basename $0) : "
 	echo "Crée un système autonome (ou système « live ») pour média"
 	echo "amovible (DVD, clé USB, etc.), contenant le noyau, un système minimal,"
 	echo "l'installateur et éventuellement les paquets du système 0linux."
@@ -33,11 +33,11 @@ if [ "$1" != "--mini" -a "$1" != "--maxi" -o ! -d "$2" -o  "$2" = "" ]; then
 	echo "fichier 'paquets.db' ainsi que les sous-répertoires (a/, b/, d/, etc.)."
 	echo ""
 	echo "Créer une image du système autonome nu, dépourvue de paquets :"
-	echo "	$0 --mini /quelque/part/paquets/"
+	echo "	$(basename $0) --mini /quelque/part/paquets/"
 	echo ""
 	echo "Créer une image complète du système autonome (pèse très lourd, plus"
 	echo "de 4.3 Go pour la version « eta » de 0Linux) :"
-	echo "	$0 --maxi /quelque/part/paquets/"
+	echo "	$(basename $0) --maxi /quelque/part/paquets/"
 	echo ""
 	exit 1
 fi

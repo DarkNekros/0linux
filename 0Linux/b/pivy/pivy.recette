@@ -5,9 +5,8 @@ NAMESRC=${NAMESRC:-pivy}
 VERSION=${VERSION:-0.5.0~v609hg}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-pivy}
-WGET=${WGET:-http://pivy.sourcearchive.com/downloads/$VERSION-1/$NAMESRC_$VERSION.orig.$EXT}
-DESC="Bibliothèque de liaison Python pour Coin3D et SoQt"
-########################################
+WGET=${WGET:-http://pivy.sourcearchive.com/downloads/${VERSION}-1/${NAMESRC}_${VERSION}.orig.${EXT}}
+DESC="Bibliothèques de liaison Python pour Coin3D et SoQt"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -17,8 +16,7 @@ cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-python2 setup.py install \
-    --root=$PKG
+fakeroot python2 setup.py install --root=${PKG}
 
 installer_doc
 creer_post_installation
