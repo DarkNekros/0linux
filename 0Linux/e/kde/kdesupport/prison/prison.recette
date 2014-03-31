@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-prison}
-VERSION=${VERSION:-1.0}
-EXT=${EXT:-tar.gz}
+VERSION=${VERSION:-1.1.0}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-prison}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/src/$NAMESRC-$VERSION.$EXT}
 DESC="Services de gestion des codes-barres pour KDE"
 ########################################
 
