@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-upower}
-VERSION=${VERSION:-0.9.23}
+VERSION=${VERSION:-0.99.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-upower}
 WGET=${WGET:-http://upower.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT}
