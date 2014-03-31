@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-R}
-VERSION=${VERSION:-3.0.2}
+VERSION=${VERSION:-3.0.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-r}
 WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/CRAN/src/base/$NAMESRC-3/$NAMESRC-$VERSION.$EXT}
