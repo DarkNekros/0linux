@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gobject-introspection}
-VERSION=${VERSION:-1.38.0}
+VERSION=${VERSION:-1.40.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gobject-introspection}
 WGET=${WGET:-http://ftp.gnome.org/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}

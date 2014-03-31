@@ -127,6 +127,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-schemas-compile \
+	--enable-gtk2-dependency \
+	--enable-introspection \
 	--enable-xkb \
 	--build=${PKGARCH}-0linux-linux-gnu
 
