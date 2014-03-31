@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-VERSION=${VERSION:-0.9.2}
+VERSION=${VERSION:-0.9.3}
 NAMETGZ=${NAMETGZ:-initialisation-systeme}
 DESC="Fichiers d'initialisation système et services de 0Linux"
 

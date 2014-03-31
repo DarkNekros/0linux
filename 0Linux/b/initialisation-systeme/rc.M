@@ -58,7 +58,9 @@ if [ -x /etc/rc.d/rc.messagebus ]; then
 fi
 
 # Lancement des programmes pour GDK-Pixbuf :
-gdk-pixbuf-query-loaders --update-cache
+if [ -x /usr/bin/gdk-pixbuf-query-loaders ]; then
+	/usr/bin/gdk-pixbuf-query-loaders --update-cache 2>/dev/null
+fi
 
 # Lancement des programmes pour les modules GTK+ :
 if [ -x /etc/rc.d/rc.gtk+ ]; then
