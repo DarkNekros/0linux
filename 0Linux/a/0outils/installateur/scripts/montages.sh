@@ -33,8 +33,9 @@ cat $TMP/choix_partitions | while read LINE; do
 		MAJORMINOR="1 1"
 		
 		# On monte la racine au passage :
-		echo "Montage de la racine... "
-		mount ${MOUNTPART} ${SETUPROOT} 2>/dev/null
+		echo "Montage de la racine dans '${SETUPROOT}'... "
+		mount -v ${MOUNTPART} ${SETUPROOT}
+		sleep 1
 		
 		# On note la partition racine pour plus tard :
 		echo ${MOUNTPART} > $TMP/partition_racine
@@ -52,8 +53,9 @@ cat $TMP/choix_partitions | while read LINE; do
 	echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
 	
 	# On monte la partition :
-	echo "Montage de ${MOUNTDIR}... "
-	mount ${MOUNTPART} -t ${FSMOUNT} ${SETUPROOT}/${MOUNTDIR} 2>/dev/null
+	echo "Montage de ${SETUPROOT}/${MOUNTDIR}... "
+	mount -v ${MOUNTPART} -t ${FSMOUNT} ${SETUPROOT}/${MOUNTDIR} 2>/dev/null
+	sleep 1
 	
 done
 
@@ -90,6 +92,17 @@ if [ -r $TMP/choix_partitions_fat ]; then
 		# Il est inutile de monter ce type de partition ici.
 		
 	done
+fi
+
+# On va avoir besoin de /proc, /sys, /dev et /run plus tard pour le chroot :
+if [ ! "${SETUPROOT}" = "/" ]; then
+	mkdir -p ${SETUPROOT}/{dev,proc,run,sys}
+	echo "Montage des systèmes de fichiers virtuels dans ${SETUPROOT}... "
+	mount -v --bind /proc ${SETUPROOT}/proc
+	mount -v --bind /sys  ${SETUPROOT}/sys
+	mount -v --bind /dev  ${SETUPROOT}/dev
+	mount -v --bind /run  ${SETUPROOT}/run
+	sleep 1
 fi
 
 # On écrit notre 'fstab' temporaire depuis rien pour éviter de l'écrire plusieurs

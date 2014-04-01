@@ -21,15 +21,6 @@ crunch() {
 rm -f $TMP/{choix_partitions,choix_partitions_fat,choix_media,choix_swap}
 rm -f $TMP/{fstab,formatages,partition_racine}
 
-# On va avoir besoin de /proc, /sys, /dev et /run plus tard pour le chroot :
-if [ ! "${SETUPROOT}" = "/" ]; then
-	mkdir -p ${SETUPROOT}/{dev,proc,run,sys}
-	mount --bind /proc ${SETUPROOT}/proc 1>/dev/null 2>/dev/null
-	mount --bind /sys  ${SETUPROOT}/sys  1>/dev/null 2>/dev/null
-	mount --bind /dev  ${SETUPROOT}/dev  1>/dev/null 2>/dev/null
-	mount --bind /run  ${SETUPROOT}/run  1>/dev/null 2>/dev/null
-fi
-
 # On affiche l'introduction : 
 if [ "${INSTALLDEBUG}" = "" ]; then
 	clear
