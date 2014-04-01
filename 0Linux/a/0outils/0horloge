@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # On nettoie :
-unset TZSELECTRESULT FAIL
+unset TZSELECTRESULT FAIL UTCORNOT
 
 while [ 0 ]; do
 	if [ "${INSTALLDEBUG}" = "" ]; then
@@ -36,15 +36,49 @@ while [ 0 ]; do
 			continue
 		else
 			# On installe le fichier '/etc/localtime' :
-			ln -sf ../usr/share/zoneinfo/${FUSEAUCHOISI} /etc/localtime
+			ln -sf ../usr/share/zoneinfo/${TZSELECTRESULT} /etc/localtime
 			
-			# On crée le fichier '/etc/hardwareclock' :
-			echo "# /etc/hardwareclock : fichier de configuration de l'horloge matérielle." > /etc/hardwareclock
-			echo "localtime" >> /etc/hardwareclock
-			
-			# On copie l'horloge matérielle vers l'horloge système :
-			hwclock --localtime --hctosys 2>/dev/null
-			break
+			# On propose le temps local ou universel coordonné (UTC) :
+			while [ 0 ]; do
+				if [ "${INSTALLDEBUG}" = "" ]; then
+					clear
+				fi
+				echo -e "\033[1;32mChoix du type d'horloge système.\033[0;0m"
+				echo ""
+				echo "Désirez-vous une horloge systèm en temps local (« localtime ») ou bien en"
+				echo "temps universel coordonné (« UTC ») ? Votre horloge matérielle doit"
+				echo "correspondre à l'horloge système idéalement. La commande 'hwclock --show'"
+				echo "vous montrera l'heure de votre horloge matérielle."
+				echo "'UTC' est préférable, mais 'localtime' peut éviter des incompatibilités avec"
+				echo "d'autres systèmes (vieillissants)."
+				echo ""
+				echo "1 : UTC       - Temps universel coordonné (recommandé)"
+				echo "2 : localtime - Temps local"
+				echo ""
+				echo -n "Votre choix : "
+				read UTCORNOT;
+				case "$UTCORNOT" in
+				"1")
+					HWCLOCKTYPE="UTC"
+					break
+				;;
+				"2")
+					HWCLOCKTYPE="localtime"
+					break
+				;;
+				*)
+					echo "Veuillez entrer un numéro valide (entre 1 et 2)."
+					sleep 2
+					continue
+				esac
+				
+				# On crée le fichier '/etc/hardwareclock' :
+				echo "# /etc/hardwareclock : fichier de configuration de l'horloge matérielle." > /etc/hardwareclock
+				echo "${HWCLOCKTYPE}" >> /etc/hardwareclock
+				break
+			done
+
+		break
 		fi
 	fi
 done
