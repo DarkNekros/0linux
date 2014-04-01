@@ -21,10 +21,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 python setup.py configure \
 	--lib=/usr/lib${LIBDIRSUFFIX}/wicd/ \
 	--backends=/usr/lib${LIBDIRSUFFIX}/wicd/backends/ \
-	--mandir=/usr/man/ \
+	--distro=slackware \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION}/ \
-	--kdedir=/usr/share/autostart \
-	--systemd=/usr/lib${LIBDIRSUFFIX}/systemd/system
+	--kdedir=/usr/share/autostart/ \
+	--mandir=/usr/man/
 
 # On blouse le système pour se passer de la dépendance à 'pybabel' :
 for fichierpo in $(find po/ -type f -name "*.po") ; do
