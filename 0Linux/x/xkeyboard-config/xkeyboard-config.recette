@@ -14,6 +14,11 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige une bétise : le "." du pavé numérique doit afficher un "." :
+sed -i '/include "kpdl(comma)"/d' symbols/fr
+sed -i '/include "kpdl(comma)"/d' symbols/it
+sed -i '/include "kpdl(comma)"/d' symbols/nl
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
