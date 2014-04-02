@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-openssh}
-VERSION=${VERSION:-6.5p1}
+VERSION=${VERSION:-6.6p1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssh}
 WGET=${WGET:-ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/$NAMESRC-$VERSION.$EXT}
@@ -66,6 +66,10 @@ sshd_start() {
 		/usr/bin/ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -N ''
 	fi
 	
+	# On crée toute clé manquante avec cette commande générique :
+	/usr/bin/ssh-keygen -A
+	
+	# On démarre le serveur SSH :
 	/usr/sbin/sshd &
 }
 
