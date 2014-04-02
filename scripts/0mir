@@ -94,7 +94,7 @@ mirror () {
     #lftp -c "open $FTP $user && mirror -ReN"$1" -X*~ -X*.dep . ." || exit 1
     
     ## Méthode rsync :
-    RSYNC_PASSWORD="${CREDRSYNC}" rsync -azP --delete --exclude "*~" * rsync://${LOGINRSYNC}@ftp.igh.cnrs.fr/0linuxadmin/
+    RSYNC_PASSWORD="${CREDRSYNC}" rsync -aP --delete --exclude "*~" * rsync://${LOGINRSYNC}@ftp.igh.cnrs.fr/0linuxadmin/
 }
 
 # === Main =====================================================================

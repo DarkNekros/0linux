@@ -54,10 +54,24 @@ cat ${FILEDATTENTE} | while read recette_demandee; do
 		# On compile/installe (nvidia est ignoré automatiquement à l'installation) :
 		./construction.sh ${recette_demandee}
 		
-		# On nettoie le paquet demandé (première ligne) de la file d'attente :
+		# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
 		sed -i '1d' ${FILEDATTENTE}
 	fi
 done
+
+# Puis on vérifie les exécutables pour s'assurer que rien n'a cassé (API ou ABI qui casse) :
+SUDOBINAIRE=""
+[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
+
+for f in $(find /usr -type f -executable); do
+	${SUDOBINAIRE} ldd ${f} 2>/dev/null | grep -q 'not found' && echo "! ${f} est cassé" >> /tmp/binaires_casses.log && NOTOK="1"
+done
+
+# On a des cassages, on quitte :
+[ "$NOTOK" = "1" ] && exit 1
+
+# On est toujours là ? Aucun cassage, donc. On vide le journal :
+echo "" > /tmp/binaires_casses.log
 
 # Puis on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
 ./0mir
