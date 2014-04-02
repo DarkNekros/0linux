@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-efl}
-VERSION=${VERSION:-1.8.5}
+VERSION=${VERSION:-1.9.2}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-efl}
 WGET=${WGET:-http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
