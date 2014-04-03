@@ -17,3 +17,5 @@ DisplayManager*session:		/usr/lib64/X11/xdm/xdm-0linux/Xsession
 DisplayManager*authComplain:	true
 
 DisplayManager.requestPort:	0
+
+DisplayManager*authName:        MIT-MAGIC-COOKIE-1

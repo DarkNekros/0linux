@@ -60,11 +60,9 @@ while [ 0 ]; do
 				case "$UTCORNOT" in
 				"1")
 					HWCLOCKTYPE="UTC"
-					break
-				;;
+								;;
 				"2")
 					HWCLOCKTYPE="localtime"
-					break
 				;;
 				*)
 					echo "Veuillez entrer un numéro valide (entre 1 et 2)."

@@ -59,26 +59,7 @@ cat ${FILEDATTENTE} | while read recette_demandee; do
 	fi
 done
 
-### Étape 3 : on vérifie les exécutables pour s'assurer que rien n'a cassé (API ou ABI qui casse) :
-
-# On vide le journal :
-echo "" > /tmp/binaires_casses.log
-
-# On cherche les binaires cassés :
-SUDOBINAIRE=""
-[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
-
-${SUDOBINAIRE} ./trouver_binaires_casses.sh /usr/bin /usr/sbin /usr/lib /usr/lib64 /usr/share /opt >> /tmp/binaires_casses.log
-
-# On a des cassages, on quitte :
-if [ $(cat /tmp/binaires_casses.log | wc -l) -gt 0 ]; then
-	exit 1
-fi
-
-# On est toujours là ? Aucun cassage, donc. On vide le journal :
-echo "" > /tmp/binaires_casses.log
-
-### Étape 4 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
+### Étape 3 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
 ./0mir
 
 # On peut supprimer le fichier du processus pour les prochaines fois :
