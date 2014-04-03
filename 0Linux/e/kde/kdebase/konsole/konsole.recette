@@ -34,6 +34,10 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
 
+# On lance konsole avec le bon shell :
+sed -i -e 's/Exec=konsole/Exec=konsole -e $SHELL -l/' \
+	$PKG/usr/share/applications/kde4/konsole.desktop
+
 installer_doc
 creer_post_installation
 stripper
