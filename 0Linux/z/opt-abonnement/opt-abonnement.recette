@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-opt-abonnement}
-VERSION=${VERSION:-4}
+VERSION=${VERSION:-5}
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-lib                 alsa-plugins \
@@ -67,7 +67,7 @@ initialisation-systeme  intltool                 iproute2 \
 iptables                isl                      iso-codes \
 itstool                 iwlwifi-ucode            jack \
 jasper                  jdk                      jfsutils \
-js185                   json-c                   json-glib \
+                        json-c                   json-glib \
 kbd                     kerberos                 kmod \
 ktsuss                  ladspa                   lame \
 lash                    lcms                     ldb \
@@ -129,6 +129,7 @@ lzip                    lzo                      man-db \
 man-pages               man-pages-fr             mariadb \
 mdadm                   media-player-info        mediastreamer \
 mjpegtools              mkvtoolnix               mlt \
+mozjs \
 mpc                     mpfr                     mplayer \
 mplayer-codecs          mplayer-skins            mtdev \
 mtr                     murrine                  murrine-themes \

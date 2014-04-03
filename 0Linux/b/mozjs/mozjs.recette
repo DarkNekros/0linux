@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-js185}
-VERSION=${VERSION:-1.0.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-js185}
+NAMESRC=${NAMESRC:-mozjs}
+VERSION=${VERSION:-24.2.0}
+EXT=${EXT:-tar.bz2}
+NAMETGZ=${NAMETGZ:-mozjs}
 WGET=(http://ftp.mozilla.org/pub/mozilla.org/js/$NAMESRC-$VERSION.$EXT
-      http://ftp.mozilla.org/pub/mozilla.org/js/mozjs17.0.0.$EXT
+      http://ftp.mozilla.org/pub/mozilla.org/js/js185-1.0.0.tar.gz
+      http://ftp.mozilla.org/pub/mozilla.org/js/mozjs17.0.0.tar.gz
      )
 DESC="Bibliothèques et interpréteur Javascript de Mozilla"
 
@@ -15,7 +16,7 @@ DESC="Bibliothèques et interpréteur Javascript de Mozilla"
 telecharger_sources
 
 # On compile d'abord mozjs 17 :
-preparer_sources mozjs17.0.0.$EXT
+preparer_sources mozjs17.0.0.tar.gz
 cflags
 
 cd js/src
@@ -37,8 +38,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On compile la version de la recette :
-preparer_sources
+# on place la doc dans un sous-répertoire :
+installer_doc ${NAMETGZ}-${VERSION}/mozjs17.0.0
+
+# On compile ensuite js185 (mettez-vous d'accord sur le nommage, chers Mozilliens) :
+preparer_sources js185-1.0.0.tar.gz
 cflags
 
 cd js/src
@@ -53,19 +57,47 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--enable-threadsafe \
+	--with-system-ffi \
 	--with-system-nspr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On place le binaire :
-mkdir -p ${PKG}/usr/bin
-cp -a shell/js ${PKG}/usr/bin/js
-
 # On doit recréer les liens, ils sont erronés :
 ln -sf libmozjs185.so.1.0.0 ${PKG}/usr/lib${LIBDIRSUFFIX}/libmozjs185.so.1.0
 ln -sf libmozjs185.so.1.0   ${PKG}/usr/lib${LIBDIRSUFFIX}/libmozjs185.so
+
+# on place la doc dans un sous-répertoire :
+installer_doc ${NAMETGZ}-${VERSION}/js185
+
+# On compile la version de la recette :
+preparer_sources
+cflags
+
+cd js/src
+
+# On supprime ce sfihcier spour forcer à lier sur les bibliothèques du système :
+rm -rf editline
+rm -rf ctypes/libffi
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--enable-readline \
+	--enable-system-ffi \
+	--enable-threadsafe \
+	--with-system-nspr \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation

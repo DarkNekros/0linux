@@ -342,8 +342,9 @@ EOF
 	fi
 	
 	# On ajoute la mise à jour des dépendances des modules si on en trouve :
-	if [ -d ${PKG}/lib/modules ]; then
+	if [ -r ${PKG}/lib/modules -o -r ${PKG}/usr/lib/modules -o -r ${PKG}/lib${LIBDIRSUFFIX}/modules ]; then
 		echo "chroot . depmod -a 2>/dev/null" >> ${PKG}/post-install.sh
+		EXTRADEPS="${EXTRADEPS} kmod"
 	fi
 	
 	# On réindexe les polices si on en trouve dans le paquet :
@@ -575,11 +576,13 @@ empaqueter() {
 	
 	# On décompresse et on recompresse en 'xz' tous les modules noyau (et on tire la
 	# langue au mainteneur de 'kmod' qui voulait supprimer la prise en charge de 'xz') :
-	if [ -d ${PKG}/lib/modules ]; then
-		find ${PKG}/lib/modules -type f -name "*.ko.gz"  -exec gzip  -d {} \;
-		find ${PKG}/lib/modules -type f -name "*.ko.bz2" -exec bzip2 -d {} \;
-		find ${PKG}/lib/modules -type f -name "*.ko"     -exec xz       {} \;
-	fi
+	for d in lib/modules usr/lib/modules usr/lib${LIBDIRSUFFIX}/modules; do
+		if [ -d ${PKG}/${d} ]; then
+			find ${PKG}/${d} -type f -name "*.ko.gz"  -exec gzip  -d {} \;
+			find ${PKG}/${d} -type f -name "*.ko.bz2" -exec bzip2 -d {} \;
+			find ${PKG}/${d} -type f -name "*.ko"     -exec xz       {} \;
+		fi
+	done
 	
 	# On place la description en la créant via 'spackdesc -' :
 	echo "${DESC}" | spackdesc --package="${NAMETGZ}" - > ${PKG}/about.txt
