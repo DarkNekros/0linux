@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-obsolete-abonnement}
-VERSION=${VERSION:-5}
+VERSION=${VERSION:-6}
 DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -41,6 +41,7 @@ cat >> ${PKG}/post-install.sh << "EOF"
 	gtk3 \
 	gtk2mm \
 	gtk3mm \
+	js185 \
 	kdeadmin \
 	kdenetwork \
 	kdesdk \
@@ -63,7 +64,7 @@ EOF
 cat > ${TMP}/${NAMETGZ}.t2t << EOF
 Description de l'abonnement $NAMETGZ
 appzer0 - appzer0@free.fr
-Mars 2014
+Avril 2014
 
 = Les paquets marqués obsolètes dans 0Linux =
 
@@ -98,6 +99,7 @@ gtk2: fusionné dans 'gtk'
 gtk3: fusionné dans 'gtk'
 gtk2mm: fusionné dans 'gtkmm'
 gtk3mm: fusionné dans 'gtkmm'
+js185: remplacé par 'mozjs'
 kdeadmin: supprimé dans la distribution de KDE
 kdenetwork: supprimé dans la distribution de KDE
 kdesdk: supprimé dans la distribution de KDE
