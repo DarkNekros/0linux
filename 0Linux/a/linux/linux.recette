@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-3.13.1}
+VERSION=${VERSION:-3.14}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-linux}
 # Le nommage des versions « .0 » est incohérent :
