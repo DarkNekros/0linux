@@ -17,6 +17,7 @@ cflags
 
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/etc/{dbus-1/system.d,wpa_supplicant}
+mkdir -p ${PKG}/etc/logrotate.d/
 mkdir -p ${PKG}/var/{log,run}/wpa_supplicant
 mkdir -p ${PKG}/usr/share/dbus-1/system-services
 mkdir -p ${PKG}/usr/man/man{5,8}
@@ -116,7 +117,7 @@ cp -a doc/docbook/*.8 ${PKG}/usr/man/man8
 cp -a doc/docbook/*.5 ${PKG}/usr/man/man5
 
 # on place le fichier pour le renouvellement des journaux :
-cat > ${PKG}/etc/logrotate.d/wpa_suplicant << "EOF"
+cat > ${PKG}/etc/logrotate.d/wpa_supplicant << "EOF"
 /var/log/wpa_supplicant.log {
 	missingok
 	notifempty
@@ -138,7 +139,6 @@ chmod 600 ${PKG}/etc/wpa_supplicant.conf.0nouveau
 
 # On place l'exemple (très) fourni :
 cp wpa_supplicant.conf ${PKG}/etc/wpa_supplicant.conf.example
-chmod 600 ${PKG}/etc/wpa_supplicant.conf.0nouveau.example
 
 installer_doc
 creer_post_installation
