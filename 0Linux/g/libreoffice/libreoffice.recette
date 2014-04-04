@@ -45,11 +45,11 @@ for RPMPACK in *.rpm; do
 	rpmunpack ${RPMPACK}
 done
 
-# On copie chaque sous-répertoire principal 'opt', on renomme 'opt' en 'lib${LIBDIRSUFFIX}' :
-# puis on déplace le tout sous /usr :
+# On renomme 'opt' en 'lib${LIBDIRSUFFIX}', puis on déplace le tout sous /usr :
 find . -type d -name "opt" -exec cp -ar {} . \;
-mv opt lib${LIBDIRSUFFIX}
+cp -a opt lib${LIBDIRSUFFIX}
 cp -ar lib${LIBDIRSUFFIX} ${PKG}/usr
+rm -rf opt
 
 # On copie tout ce qui se trouve sous 'usr/' (Freedesktop & Co.) :
 cp -ar libreoffice$(echo $VERSION | cut -d'.' -f1-2)-freedesktop-menus-$(echo $VERSION | cut -d'.' -f1-2)*.noarch/usr/* ${PKG}/usr
