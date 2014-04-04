@@ -12,7 +12,7 @@ else
 	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$VERSION.$EXT}
 fi
 DESC="Le noyau Linux avec ses modules, ses firmwares, ses entêtes et son code source complet"
-EXTRADEPS="make"
+EXTRADEPS="bc make"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
