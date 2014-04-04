@@ -2,11 +2,11 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-3.14.0}
+VERSION=${VERSION:-3.14}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-linux}
 # Le nommage des versions « .0 » est incohérent :
-if [ "$(echo $VERSION | cut -d'.' -f3)" = "0" ]; then
+if [ "$(echo $VERSION | cut -d'.' -f3)" = "" ]; then
 	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2).$EXT}
 	MINVERSION=".0"
 else
