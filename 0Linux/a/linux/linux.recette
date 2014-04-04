@@ -8,8 +8,10 @@ NAMETGZ=${NAMETGZ:-linux}
 # Le nommage des versions « .0 » est incohérent :
 if [ "$(echo $VERSION | cut -d'.' -f3)" = "0" ]; then
 	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2).$EXT}
+	MINVERSION=".0"
 else
 	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$VERSION.$EXT}
+	MINVERSION=""
 fi
 DESC="Le noyau Linux avec ses modules, ses firmwares, ses entêtes et son code source complet"
 EXTRADEPS="bc make"
@@ -74,10 +76,10 @@ chmod og-w -R ${PKG}/usr/src/${NAMESRC}-${VERSION}/scripts
 mkdir -p ${PKG}/usr/src/${NAMESRC}-${VERSION}/.tmp_versions
 
 # On relie enfin les répertoires 'build' et 'source' des modules aux sources du noyau :
-rm -rf ${PKG}/lib/modules/${VERSION}/build
-rm -rf ${PKG}/lib/modules/${VERSION}/source
-ln -sf ../../../../usr/src/${NAMESRC}-${VERSION} ${PKG}/lib/modules/${VERSION}/build
-ln -sf ../../../../usr/src/${NAMESRC}-${VERSION} ${PKG}/lib/modules/${VERSION}/source
+rm -rf ${PKG}/lib/modules/${VERSION}${MINVERSION}/build
+rm -rf ${PKG}/lib/modules/${VERSION}${MINVERSION}/source
+ln -sf ../../../../usr/src/${NAMESRC}-${VERSION} ${PKG}/lib/modules/${VERSION}${MINVERSION}/build
+ln -sf ../../../../usr/src/${NAMESRC}-${VERSION} ${PKG}/lib/modules/${VERSION}${MINVERSION}/source
 
 # Installation de la documentation (on crée simplement un lien) :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
@@ -98,7 +100,7 @@ chroot . make -C usr/src/${NAMESRC}-${VERSION} clean oldconfig prepare scripts 2
 rm -f usr/src/${NAMESRC}-${VERSION}/.version
 
 # On actualise les dépendances des modules du noyau :
-chroot . depmod -a ${VERSION} 2>/dev/null
+chroot . depmod -a ${VERSION}${MINVERSION} 2>/dev/null
 
 EOF
 
