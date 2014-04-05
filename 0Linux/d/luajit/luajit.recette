@@ -16,11 +16,11 @@ cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-make -j${JOBS} amalg PREFIX=/usr || \
+make -j${JOBS} amalg PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} || \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-make amalg PREFIX=/usr
+make amalg PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX}
 
-fakeroot make install PREFIX=/usr DESTDIR=${PKG}
+fakeroot make install PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
