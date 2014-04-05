@@ -16,6 +16,7 @@ cflags
 
 # Compilation :
 CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS}" \
+LDFLAGS+="-ldl" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
