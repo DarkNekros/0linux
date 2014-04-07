@@ -58,6 +58,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 
 # Coin n'a rien à faire dans Libs.private :
 sed -e '/Libs.private/s/ -lCoin//' -i Coin.pc
@@ -67,12 +68,12 @@ sed -i -e "s/\`cd \"\$wd\/..\"; pwd\`/\"\/usr\/\"/" $PKG/usr/bin/coin-config
 
 # Le pages de man (très nombreuses) sont un vrai bazard :
 for f in threads deprecated errors events fields base ; do
-	mv  "$PKG/usr/share/man/man3/$f.3" "$PKG/usr/share/man/man3/coin-$f.3"
+	mv  "$PKG/usr/man/man3/$f.3" "$PKG/usr/man/man3/coin-$f.3"
 done
 
 # Amélioration à apporter :
 # renomer les pages de man commençant par _tmp_0-marmite_coin3d_sources_Coin-3.1.3
-# de manière à ce que ça fonctionne même si $TMP et ou $MARMITE ne sont pas standard.
+# de manière à ce que ça fonctionne même si $TMP et/ou $MARMITE ne sont pas standard.
 
 fakeroot make install DESTDIR=${PKG}
 
