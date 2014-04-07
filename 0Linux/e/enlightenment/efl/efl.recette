@@ -15,6 +15,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
+EDJE_LDFLAGS+="-ldl" \
 CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -25,10 +26,13 @@ CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-lua-old \
 	--enable-fb \
 	--enable-harfbuzz \
 	--enable-image-loader-webp \
 	--enable-multisense \
+	--enable-sdl \
+	--enable-valgrind \
 	--enable-xinput22 \
 	--build=${PKGARCH}-0linux-linux-gnu
 

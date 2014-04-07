@@ -15,13 +15,8 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
-export LDFLAGS="${LDFLAGS} -ldl"
-
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-LDFLAGS+="-ldl" \
 make -j${JOBS} amalg PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} || \
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-LDFLAGS+="-ldl" \
 make amalg PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX}
 
 fakeroot make install PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} DESTDIR=${PKG}
