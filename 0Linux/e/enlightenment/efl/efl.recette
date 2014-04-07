@@ -16,7 +16,6 @@ cflags
 
 # Compilation :
 CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS}" \
-LDFLAGS+="-ldl" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -26,6 +25,7 @@ LDFLAGS+="-ldl" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-static \
 	--enable-fb \
 	--enable-harfbuzz \
 	--enable-image-loader-webp \

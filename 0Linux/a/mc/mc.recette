@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-mc}
-VERSION=${VERSION:-4.8.11}
+VERSION=${VERSION:-4.8.12}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-mc}
 WGET=${WGET:-http://www.midnight-commander.org/downloads/$NAMESRC-$VERSION.$EXT}
