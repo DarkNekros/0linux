@@ -5,10 +5,7 @@ NAMESRC=${NAMESRC:-man-pages-fr}
 VERSION=${VERSION:-3.62.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-man-pages-fr}
-WGET=(http://alioth.debian.org/frs/download.php/file/4021/$NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').$EXT # Version différente !
-      http://www.delafond.org/traducmanfr/mansupfr.tar.bz2
-      http://manpagesfr.free.fr/download/man-pages-extras-fr-0.8.1.tar.bz2
-     )
+WGET=${WGET:-http://alioth.debian.org/frs/download.php/file/4021/$NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').$EXT} # Version différente !
 DESC="Manuels francophones du système Linux"
 EXTRADEPS="man-db"
 
