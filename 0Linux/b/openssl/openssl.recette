@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-openssl}
-VERSION=${VERSION:-1.0.1f}
+VERSION=${VERSION:-1.0.1g}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-openssl}
 WGET=${WGET:-http://www.openssl.org/source/$NAMESRC-$VERSION.$EXT}
