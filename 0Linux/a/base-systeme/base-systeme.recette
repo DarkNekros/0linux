@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-base-systeme}
-VERSION=${VERSION:-5.1}
+VERSION=${VERSION:-5.1.1}
 NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
@@ -148,6 +148,9 @@ DISTRIB_RELEASE=eta
 DISTRIB_DESCRIPTION="0Linux eta"
 
 EOF
+
+# On crée un lien de compatibilité :
+ln -sf os-release ${PKG}/etc/lsb-release
 
 # On crée le fichier de blacklist des modules non désirés :
 cat > ${PKG}/etc/modprobe.d/blacklist.conf.0nouveau << "EOF"
