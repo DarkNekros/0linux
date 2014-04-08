@@ -16,25 +16,11 @@ EXTRADEPS="man-db"
 
 telecharger_sources
 
-# On déballe d'abord les manuels du projet de Gérard Delafond (merci !),
-# plus anciens mais très utiles, certains étant absents de l'actuel projet Perkamon :
-tar xf ${PKGSOURCES}/${NAMETGZ}/mansupfr.tar.bz2 -C $TMP
-tar xf ${PKGSOURCES}/${NAMETGZ}/man-pages-extras-fr-0.8.1.tar.bz2 -C $TMP
-
 preparer_sources $NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').$EXT
 cflags
 
 # On crée le réperoire d'accueil :
 mkdir -p ${PKG}/usr/man/fr
-
-# On va d'abord copier tous les manuels du projet de Gérard Delefond. Les manuels
-# en doublon du projet Perkamon les écraseront, ils sont à priori plus récents :
-cp -ar $TMP/pagesdeman/* ${PKG}/usr/man/fr/
-
-# On place maintenant les manuels de man-pages-extras-fr :
-for section in 1 2 3 4 5 6 7 8 9; do
-	find $TMP/man-pages-extras-fr-0.8.1 -type f -name "*.${section}" -exec cp -a {} ${PKG}/usr/man/fr/man${section}/ \;
-done
 
 # Installation des manuels du projet Perkamon:
 cp -ar man? ${PKG}/usr/man/fr
