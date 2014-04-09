@@ -3,7 +3,7 @@
 
 NAMESRC=${NAMESRC:-raw-thumbnailer}
 VERSION=${VERSION:-0.2.1}
-EXT=${EXT:-tar.bz2}
+EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-raw-thumbnailer}
 WGET=${WGET:-http://raw-thumbnailer.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
 DESC="Outil de génération de vignettes pour fichiers RAW"
