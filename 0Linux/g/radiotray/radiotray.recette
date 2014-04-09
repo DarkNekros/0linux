@@ -5,7 +5,7 @@ NAMESRC=${NAMESRC:-radiotray}
 VERSION=${VERSION:-0.7.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-radiotray}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Lecteur de radios en ligne fonctionnant en zone de notification"
 
 . /usr/share/0outils/fonctions_paquets.sh
