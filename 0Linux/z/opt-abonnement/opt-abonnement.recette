@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-opt-abonnement}
-VERSION=${VERSION:-6}
+VERSION=${VERSION:-7}
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-lib                 alsa-plugins \
@@ -103,6 +103,7 @@ libmusicbrainz          libmygpo-qt              libnfs \
 libnfsidmap             libnice                  libnl \
 libnotify               liboauth                 libofa \
 libofx                  libogg                   liboil \
+libopenraw \
 libpcap                 libpipeline              libplist \
 libpng                  libproxy                 libpwquality \
 libqalculate            libraw                   libraw1394 \
