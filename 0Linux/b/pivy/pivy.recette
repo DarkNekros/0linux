@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-pivy}
-VERSION=${VERSION:-0.5.0~v609hg}
+VERSION=${VERSION:-20101207}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-pivy}
-WGET=${WGET:-http://pivy.sourcearchive.com/downloads/${VERSION}-1/${NAMESRC}_${VERSION}.orig.${EXT}}
+WGET=${WGET:-http://www.nielshorn.net/_download/slackware/source/Pivy-hg_${VERSION}.${EXT}}
 DESC="Bibliothèques de liaison Python pour Coin3D et SoQt"
 
 . /usr/share/0outils/fonctions_paquets.sh
