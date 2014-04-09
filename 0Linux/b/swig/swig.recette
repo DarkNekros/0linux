@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-swig}
-VERSION=${VERSION:-2.0.9}
+VERSION=${VERSION:-3.0.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-swig}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
