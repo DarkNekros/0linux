@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-pygobject}
-VERSION=${VERSION:-3.10.2}
+VERSION=${VERSION:-3.12.0}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-pygobject}
 WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
