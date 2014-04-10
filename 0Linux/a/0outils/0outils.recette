@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-0outils}
-VERSION=${VERSION:-10.4.3}
+VERSION=${VERSION:-11.0}
 DESC="Outils « maison » pour l'installation et l'administration du système 0Linux"
 EXTRADEPS="realpath"
 

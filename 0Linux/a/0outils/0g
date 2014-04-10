@@ -40,39 +40,33 @@ evalpkg () {
     # $f MODE EXPERT, PAQUETS
     local exp="#"
     [ "$1" = "oui" ] || exp=""; shift 1
-    awk 'BEGIN { for (i=ARGC-1;i>0;i--) {GET[ARGV[i]]="/"; STACK[++C]=ARGV[i]}
-                 ARGC=split("",ARGV)
+    awk 'function update (p, c,v,i) {
+           if (p in SKIP)
+             return
+           c = split(DB[p], v)
+           delete DB[p]; SKIP[p]
+           if (v[2] != GET[p]) {
+  '$exp'     for (i=4; i<=c; i++)
+  '$exp'       (v[i] in DB) && update(v[i])
+             print ((p in SPECIAL) ? 1 : 0)"\n"v[3] v[2]
+           }
+         }
+         BEGIN { for (i=ARGC-1;i>0;i--) GET[ARGV[i]]="/"; ARGC=split("",ARGV)
                  getline; for (i=1; i <= NF; i++) SKIP[$i]
                  getline; for (i=1; i <= NF; i++) SPECIAL[$i]
                  while ((getline p) > 0) {
                     if (p == "--end--") break
-                    n = p; sub(/-[^-]+-[^-]+-[^-]+$/,"",n)
-                    GET[n] = p; STACK[++C] = n
+                    n = p; sub(/-[^-]+-[^-]+-[^-]+$/,"",n); GET[n] = p
                   }
                }
          ($1 in SKIP) {delete GET[$1]; next}
          {DB[$1] = $0}
-         END { while (C > 0) {
-                 p = STACK[C--]
-                 if (p in DB) {
-                   i = split(DB[p], v)
-                   delete DB[p]; SKIP[p]
-                   if (v[2] != GET[p]) {
-                     print ((p in SPECIAL) ? 1 : 0)"\n"v[3] v[2]
-  '$exp'             for (; i>3; i--)
-  '$exp'               if (v[i] in DB)
-  '$exp'                 STACK[++C] = v[i]
-                   }
-                 } else if (GET[p] == "/" && !(p in SKIP)) {
+         END { for (p in GET) 
+                 if (p in DB)
+                    update(p)
+                else if ((GET[p] == "/") && !(p in SKIP))
                    print "(!) "p": paquet introuvable !">"/dev/stderr"
-                 }
-               }}' $@
-    # NOTE: on emploie une pile implémentée sous forme de tableau pour la
-    # résolution des différents niveaux de dépendances. On y entre les
-    # dépendances de chaque paquet de la dernière à la première spécifiée,
-    # puis on traite le dessus de la pile. Ainsi, l'ordre des dépendances
-    # attribué par le mainteneur est toujours respecté, de même que celui
-    # des arguments donnés sur la ligne de commande.
+             }' $@
 }
 
 getopt () {
