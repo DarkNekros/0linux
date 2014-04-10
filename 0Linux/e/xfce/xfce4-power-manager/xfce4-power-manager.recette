@@ -7,6 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xfce4-power-manager}
 WGET=${WGET:-http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DESC="Gestion de l'énergie pour Xfce"
+EXTRADEPS="udisks hicolor-icon-theme"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
