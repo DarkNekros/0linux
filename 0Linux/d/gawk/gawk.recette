@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-gawk}
-VERSION=${VERSION:-4.1.0}
+VERSION=${VERSION:-4.1.1}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-gawk}
 WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
