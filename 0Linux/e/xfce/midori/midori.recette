@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-midori}
-VERSION=${VERSION:-0.5.7}
+VERSION=${VERSION:-0.5.8}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-midori}
 WGET=${WGET:-http://www.midori-browser.org/downloads/${NAMESRC}_${VERSION}_all_.$EXT}
@@ -11,16 +11,49 @@ DESC="Navigateur Web léger pour Xfce"
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# Les archives n'ont désormais plus de répertoire principal... :
+mkdir -p ${TMP}/${NAMESRC}-${VERSION}
+tar xf ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}_${VERSION}_all_.$EXT -C ${TMP}/${NAMESRC}-${VERSION}
+cd ${TMP}/${NAMESRC}-${VERSION}
+
+# On définit des permissions correctes pour l'ensemble des sources :
+find * \
+	\( \
+	-perm 777 -o \
+	-perm 775 -o \
+	-perm 711 -o \
+	-perm 555 -o \
+	-perm 511 \
+	\) \
+	-exec chmod 755 {} \; -o \
+	\( \
+	-perm 666 -o \
+	-perm 664 -o \
+	-perm 600 -o \
+	-perm 444 -o \
+	-perm 440 -o \
+	-perm 400 \
+	\) \
+	-exec chmod 644 {} \;
+
 cflags
+
+# On compile dans un répertoire dédié :
+mkdir build
+cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--enable-gtk3
+cmake \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-DCMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
+	-DUSE_GTK3=1 \
+	..
 
-make -j${JOBS} || make
+make
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc
