@@ -15,8 +15,9 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS=" -DLUAJIT_ENABLE_LUA52COMPAT -dl ${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} amalg PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} || \
+CFLAGS=" -DLUAJIT_ENABLE_LUA52COMPAT -dl ${FLAGS}" CXXFLAGS="${FLAGS}" \
 make amalg PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX}
 
 fakeroot make install PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} DESTDIR=${PKG}
