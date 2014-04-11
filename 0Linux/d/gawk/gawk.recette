@@ -17,6 +17,9 @@ cflags
 # On corrige une étourderie nous empêchant de compiler en utilisateur normal :
 sed -i 's@$(RM) $(pkgextensiondir)/$$i@$(RM) $(DESTDIR)$(pkgextensiondir)/$$i@g' extension/Makefile.am
 
+# Et on corrige la syntaxe M4 pour nos versions de autoconf/automake :
+sed -i 's@AC_DEFUN([AM_PATH_DOTCONF],@AC_DEFUN(AM_PATH_DOTCONF,@' dotconf.m4
+
 # Compilation :
 autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
