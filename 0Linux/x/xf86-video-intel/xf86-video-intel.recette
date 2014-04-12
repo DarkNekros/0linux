@@ -2,11 +2,11 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-xf86-video-intel}
-VERSION=${VERSION:-2.21.15}
+VERSION=${VERSION:-2.99.911}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-xf86-video-intel}
 WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT}
-DESC="Pilotes graphiques pour X11"
+DESC="Pilotes graphiques Intel pour X11"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
@@ -14,8 +14,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige la compilation avec une API qui a changé :
-cat $CWD/xf86-video-intel.damageunregister-api.patch | patch -p1
+# On corrige des régressions causant des artefacts visuels :
+cat $CWD/xf86-video-intel.discard-damage.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -26,6 +26,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--enable-glamor \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
