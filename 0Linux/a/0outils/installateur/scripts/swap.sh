@@ -2,11 +2,11 @@
 
 # On nettoie avant toute chose :
 rm -f $TMP/choix_swap $TMP/ignorer_swap
-unset NOSWAP JHVF SWAPSELECT ABANDONSWAP
+unset NOSWAP JHVF SWAPSELECT ABANDONSWAP FORMATSWAP
 
 # On tente de détecter une ou plusieurs partitions swap existantes :
 listeswap() {
-	LISTESWAP=$(fdisk -l | grep swap 2> /dev/null)
+	LISTESWAP=$(fdisk -l 2>/dev/null | grep swap 2>/dev/null)
 	echo "${LISTESWAP}"
 }
 
@@ -99,12 +99,38 @@ while [ 0 ]; do
 			continue
 		# Si tout semble OK, on active la swap et on l'ajoute au fichier 'choix_swap' :
 		else
-			echo "Création de la partition d'échange : "
-			echo "		mkswap -v1 ${SWAPSELECT}"
-			mkswap -v1 ${SWAPSELECT}
-			echo "Activation de la partition d'échange :"
-			echo "		swapon ${SWAPSELECT}"
-			swapon ${SWAPSELECT}
+			if [ "${INSTALLDEBUG}" = "" ]; then
+				clear
+			fi
+			echo -e "\033[1;32mFormatage de la partition d'échange ?\033[0;0m"
+			echo ""
+			echo "Si la partition ${SWAPSELECT} est déjà formatée ou sert déjà à d'autres"
+			echo "systèmes, il est recommandé de ne pas la formater (le formatage modifie"
+			echo "l'identificateur UUID de la partition et peut la rendre inutilisable sur"
+			echo "d'autres systèmes Linux). Si elle vient d'être créée, vous devez la"
+			echo "formater maintenant."
+			echo ""
+			echo "Dois-je formater la partition d'échange '${SWAPSELECT}' ?"
+			echo "Répondez « oui » pour formater cette partition d'échange ou appuyez sur"
+			echo "ENTRÉE pour ignorer son formatage."
+			echo ""
+			echo -n "Votre choix (oui/ENTRÉE) : "
+			read FORMATSWAP;
+			
+			# Si l'utilisateur veut formater :
+			if [ "${FORMATSWAP}" = "oui" ]; then
+				echo "Formatage de la partition d'échange : "
+				echo "		mkswap -v1 ${SWAPSELECT}"
+				sleep 1
+				mkswap -v1 ${SWAPSELECT}
+			else
+				echo "Activation de la partition d'échange :"
+				echo "		swapon ${SWAPSELECT}"
+				sleep 1
+				swapon ${SWAPSELECT}
+			fi
+			
+			# On enregistre le choix de la swap :
 			touch $TMP/choix_swap
 			echo "${SWAPSELECT}" > $TMP/choix_swap
 			break
