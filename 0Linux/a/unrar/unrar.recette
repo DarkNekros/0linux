@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-unrarsrc}
-VERSION=${VERSION:-4.2.4}
+VERSION=${VERSION:-5.1.2}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-unrar}
 WGET=${WGET:-http://www.rarlab.com/rar/$NAMESRC-$VERSION.$EXT}
@@ -19,7 +19,7 @@ mkdir -p ${PKG}/usr/bin
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-make -j${JOBS} -f makefile.unix || make -f makefile.unix
+make -j${JOBS} -f makefile || make -f makefile
 
 # On installe le binaire :
 cp -a unrar ${PKG}/usr/bin
