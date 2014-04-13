@@ -38,12 +38,17 @@ compiler_installer() {
 	# On compile chaque recette dans un sous-shell pour éviter de quitter
 	# la boucle à la moindre erreur :
 	(
-		# On se place dans le répertoire de la recette en paramètre :
-		cd $(dirname ${1})
-		
 		# On construit et on installe le paquet, avec ou sans 'sudo' :
 		SUDOBINAIRE=""
 		[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
+		
+		# On se place dans le répertoire de la recette en paramètre :
+		cd $(dirname ${1})
+		
+		# On désinstalle au préalable ces paquets récalcitrants en attendant mieux :
+		if [ "$(basename ${1} .recette)" = "samba" ] || [ "$(basename ${1} .recette)" = "talloc" ]; then
+			${SUDOBINAIRE} spackrm "$(basename ${1} .recette)"
+		fi
 		
 		# On n'installe pas nvidia, il écrase des fichiers de Mesa :
 		if [ "$(basename ${1} .recette)" = "nvidia" ]; then
