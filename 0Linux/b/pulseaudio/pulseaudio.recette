@@ -44,9 +44,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On ne compile qu'un minimum de bibliothèques :
 	make -j${JOBS} -C src libpulse.la libpulse-simple.la libpulse-mainloop-glib.la || \
-		make -C src libpulse.la libpulse-simple.la libpulse-mainloop-glib.la
+	make -C src libpulse.la libpulse-simple.la libpulse-mainloop-glib.la
+	
 	make -j${JOBS} -C src libpulsecommon-${VERSION}.la libpulsedsp.la || \
-		make -C src libpulsecommon-${VERSION}.la libpulsedsp.la
+	make -C src libpulsecommon-${VERSION}.la libpulsedsp.la
 	
 	# On installe le minimum :
 	fakeroot make -C src \
@@ -92,8 +93,10 @@ daemon-binary = /bin/true
 
 EOF
 
-# 2- On supprime les messages de D-Bus (l'utilisateur 'pulse' n'existe pas) ainsi
-# que le complètement pour Bash (qui fait planter XDM entre autres...) :
+# On supprime le démarrage automatique :
+rm -rf ${PKG}/etc/xdg/autostart
+
+# On corrige le complètement pour Bash (qui fait planter XDM entre autres...) :
 rm -rf ${PKG}/etc/dbus-1 ${PKG}/etc/bash_completion.d
 
 installer_doc
