@@ -14,14 +14,7 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige une étourderie nous empêchant de compiler en utilisateur normal :
-sed -i 's@$(RM) $(pkgextensiondir)/$$i@$(RM) $(DESTDIR)$(pkgextensiondir)/$$i@g' extension/Makefile.am
-
-# Et on corrige la syntaxe M4 pour nos versions de autoconf/automake :
-sed -i 's@AC_DEFUN([AM_PATH_DOTCONF],@AC_DEFUN(AM_PATH_DOTCONF,@' dotconf.m4
-
 # Compilation :
-autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -33,6 +26,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
+
+# On corrige une étourderie nous empêchant de compiler en utilisateur normal :
+sed -i 's@$(RM) $(pkgextensiondir)/$$i@$(RM) $(DESTDIR)$(pkgextensiondir)/$$i@g' extension/Makefile
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
