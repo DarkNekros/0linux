@@ -23,7 +23,7 @@ sed -i -e "s@lib/libgmic@lib${LIBDIRSUFFIX}/libgmic@g" src/Makefile
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-make -j${JOBS} -C src all
+make -j${JOBS} -C src all | make -C src all
 
 fakeroot make -C src install DESTDIR=${PKG} USR=/usr
 

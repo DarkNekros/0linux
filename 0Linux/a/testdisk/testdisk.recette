@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-testdisk}
-VERSION=${VERSION:-6.13}
+VERSION=${VERSION:-6.14}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-testdisk}
 WGET=${WGET:-http://www.cgsecurity.org/$NAMESRC-$VERSION.$EXT}

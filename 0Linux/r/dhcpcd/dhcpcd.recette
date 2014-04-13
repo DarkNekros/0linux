@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-dhcpcd}
-VERSION=${VERSION:-6.1.0}
+VERSION=${VERSION:-6.2.1}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-dhcpcd}
 WGET=${WGET:-http://roy.marples.name/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT}

@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libdmapsharing}
-VERSION=${VERSION:-2.9.16}
+VERSION=${VERSION:-2.9.24}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libdmapsharing}
 WGET=${WGET:-http://www.flyn.org/projects/$NAMESRC/$NAMESRC-$VERSION.$EXT}

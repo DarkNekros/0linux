@@ -27,7 +27,7 @@ cat $CWD/speechd.libc_procname.patch | patch -p1
 cat $CWD/speechd.pico-generic.patch | patch -p1
 
 # Corrige l'appel de l'executable espeack :
-cat $CWD/speechd.espeack.patch | patch -p1
+cat $CWD/speechd.espeak.patch | patch -p1
 
 # Compilation :
 autoreconf -vif

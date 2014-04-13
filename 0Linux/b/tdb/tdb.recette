@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-tdb}
-VERSION=${VERSION:-1.2.11}
+VERSION=${VERSION:-1.2.13}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-tdb}
 WGET=${WGET:-http://www.samba.org/ftp/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
