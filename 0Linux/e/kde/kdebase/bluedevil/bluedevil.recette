@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-bluedevil}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Application de gestion des périphériques Bluetooth"
-########################################
+EXTRADEPS="kde-runtime"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
