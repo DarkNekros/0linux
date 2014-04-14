@@ -293,6 +293,14 @@ if [ ! -L var/run ] && [ -d var/run ]; then
 	${BUSYBOXBIN} ln -sf ../run/lock var/
 fi
 
+# On s'assure que les utilisateurs disposent de leur '~/.bash_profile' pour charger
+# le contenuu de '.bashrc' :
+for d in $(find home/* -type d 2>/dev/null); do
+	if [ ! -e ${d}/.bash_profile ] ; then
+		cp -a etc/skel/.bash_profile ${d}/
+	fi
+done
+
 # On s'assure des permissions :
 chown root.utmp run/utmp* var/log/wtmp* >/dev/null 2>&1
 chmod 664 run/utmp* >/dev/null 2>&1

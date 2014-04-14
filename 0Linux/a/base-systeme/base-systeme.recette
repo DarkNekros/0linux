@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-base-systeme}
-VERSION=${VERSION:-5.1.1}
+VERSION=${VERSION:-5.1.}
 NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
