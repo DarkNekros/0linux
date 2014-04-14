@@ -24,4 +24,15 @@ makeldd () {
 # === Main =====================================================================
 export LC_ALL="C"
 LDDAWK="$(makeldd)" || exit 1
-findelves "$@" 2>&1 | grep 'cannot open shared object file: No such file or directory'
+
+# On vérifie qu'aucun binaire n'est cassé. Sur tous les binaires
+# apparaissant comme cassés, on considère réllement cassé tout binaire dont
+# on ne trouve nulle part ailleurs la bibliothèque liée marqué comme manquante,
+# ce afin d'ignorer tous les binaires possédant leur propre système de
+# chargement d'objet partagé (Samba, les softs de Mozilla, Java, Ardour,
+# LibreOffice, etc.) :
+findelves "$@" 2>&1 | grep 'cannot open shared object file: No such file or directory' | \
+	while read missinglib; do
+		[ $(find /usr -name "$(echo ${missinglib} | cut -d':' -f3 | tr -d '[[:blank:]]')" 2>/dev/null | wc -l) -eq 0 ] && \
+		echo "Cassé : $(echo \"${missinglib}\" | cut -d':' -f1,3) manquant"
+	done
