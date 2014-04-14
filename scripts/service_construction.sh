@@ -6,15 +6,6 @@ PIDFILE="/tmp/service_construction.pid"
 # La file d'attente :
 FILEDATTENTE="/tmp/en_attente.tmp"
 
-# La fichier journal :
-SVCLOG="/tmp/service_construction.log"
-
-# Cette fonction supprime les espaces superflus via 'echo' :
-crunch() {
-	read STRING;
-	echo $STRING;
-}
-
 # On supprime un éventuel déchet '.pid' restant :
 if ! ps axc | grep 'service_construction' 1> /dev/null 2> /dev/null ; then
 	rm -f ${PIDFILE}
@@ -68,34 +59,7 @@ cat ${FILEDATTENTE} | while read recette_demandee; do
 	fi
 done
 
-### Étape 3 : on vérifie qu'aucun binaire n'est cassé. Sur tous les binaires
-# apparaissant comme cassés, on considère réllement cassé tout binaire dont
-# on ne trouve nulle part ailleurs la bibliothèque liée marqué comme manquante,
-# ce afin d'ignorer tous les binaires possédant leur propre système de
-# chargement d'objet partagé (Samba, les softs de Mozilla, Java, Ardour,
-# LibreOffice, etc.) :
-
-# On vide le'éventuel journal :
-echo "" > ${SVCLOG}
-
-# On remplit le journal avec tout fichier lié réellement introuvable :
-sudo ./trouver_binaires_casses.sh \
-	/usr/bin \
-	/usr/sbin \
-	/usr/lib* \
-	/usr/share | \
-	while read missinglib; do
-		[ $(find /usr -name "$(echo ${missinglib} | cut -d':' -f3 | tr -d '[[:blank:]]')" 2>/dev/null | wc -l) -eq 0 ] && \
-		echo "Cassé : $(echo \"${missinglib}\" | cut -d':' -f1,3) manquant" >> ${SVCLOG}
-	done
-
-# Si le journal contient des binaires pétés, on quitte :
-if [ $(cat ${SVCLOG} | wc -l) -gt 0 ]; then
-	echo "Des binaires sont cassés ! Cf. '${SVCLOG}'"
-	exit 1
-fi
-
-### Étape 4 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
+### Étape 3 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
 ./0mir
 
 # On peut supprimer le fichier du processus pour les prochaines fois :
