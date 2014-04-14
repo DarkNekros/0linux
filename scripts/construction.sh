@@ -46,7 +46,7 @@ compiler_installer() {
 		cd $(dirname ${1})
 		
 		# On désinstalle au préalable ces paquets récalcitrants en attendant mieux :
-		if [ "$(basename ${1} .recette)" = "samba" ] || [ "$(basename ${1} .recette)" = "talloc" ] || [ "$(basename ${1} .recette)" = "evolution-data-server" ]; then
+		if [ "$(basename ${1} .recette)" = "samba" ] || [ "$(basename ${1} .recette)" = "talloc" ] || [ "$(basename ${1} .recette)" = "evolution-data-server" ] || [ "$(basename ${1} .recette)" = "gnome-shell" ]; then
 			${SUDOBINAIRE} spackrm "$(basename ${1} .recette)"
 		fi
 		
