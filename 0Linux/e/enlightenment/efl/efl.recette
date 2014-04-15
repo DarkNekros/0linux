@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-efl}
-VERSION=${VERSION:-1.9.2}
+VERSION=${VERSION:-1.9.3}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-efl}
 WGET=${WGET:-http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
@@ -15,7 +15,6 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
-EDJE_LDFLAGS+="-ldl" \
 CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
