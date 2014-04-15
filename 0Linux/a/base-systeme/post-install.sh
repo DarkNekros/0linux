@@ -295,7 +295,7 @@ fi
 
 # On s'assure que les utilisateurs disposent de leur '~/.bash_profile' pour charger
 # le contenuu de '.bashrc' :
-for d in $(find home/* -type d 2>/dev/null); do
+for d in $(find home -maxdepth 0 -type d 2>/dev/null); do
 	if [ ! -e ${d}/.bash_profile ] ; then
 		cp -a etc/skel/.bash_profile ${d}/
 	fi
