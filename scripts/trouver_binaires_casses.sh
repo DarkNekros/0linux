@@ -30,9 +30,17 @@ LDDAWK="$(makeldd)" || exit 1
 # on ne trouve nulle part ailleurs la bibliothèque liée marqué comme manquante,
 # ce afin d'ignorer tous les binaires possédant leur propre système de
 # chargement d'objet partagé (Samba, les softs de Mozilla, Java, Ardour,
-# LibreOffice, etc.) :
+# LibreOffice, etc.).
+
+# On déduit ensuite le paquet à recompiler en fouillant dans les logs, dont on va
+# ignorer les paquets binaires (par exemple, LibreOffice reste lié à de vieilles
+# libs de KDE3).
+
 findelves "$@" 2>&1 | grep 'cannot open shared object file: No such file or directory' | \
 	while read missinglib; do
-		[ $(find /usr -name "$(echo ${missinglib} | cut -d':' -f3 | tr -d '[[:blank:]]')" 2>/dev/null | wc -l) -eq 0 ] && \
-		echo "Cassé : $(echo \"${missinglib}\" | cut -d':' -f1,3) manquant"
-	done
+		egrep -q "$(echo ${missinglib} | cut -d':' -f3 | tr -d '[[:blank:]]')\$" /var/log/paquets/* || \
+		egrep "$(echo ${missinglib} | cut -d':' -f1 | tr -d '[[:blank:]]' | sed 's@^/@@')\$" /var/log/paquets/* | \
+		cut -d':' -f1 | \
+		xargs basename -a | \
+		sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n
+	done | egrep -v '\(firefox|jdk|libreoffice|opera|skype|steam|thunderbird\)' | sort -u

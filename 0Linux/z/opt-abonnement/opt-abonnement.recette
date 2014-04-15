@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-opt-abonnement}
-VERSION=${VERSION:-7}
+VERSION=${VERSION:-8}
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-lib                 alsa-plugins \
@@ -93,7 +93,7 @@ libgphoto2              libgpod                  libgssapi \
 libgtop                 libical                  libid3tag \
 libidl                  libidn                   libiec61883 \
 libieee1284             libiodbc                 libisofs \
-libjpeg                 libkate                  libksba \
+libjpeg                 libksba \
 liblastfm               liblo                    liblqr-1 \
 liblrdf                 libmad                   libmatroska \
 libmcs                  libmediaart libmikmod    libmkv \

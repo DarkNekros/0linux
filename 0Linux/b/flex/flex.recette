@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-flex}
-VERSION=${VERSION:-2.5.38}
+VERSION=${VERSION:-2.5.37}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-flex}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
