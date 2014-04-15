@@ -95,7 +95,7 @@ libieee1284             libiodbc                 libisofs \
 libjpeg                 libkate                  libksba \
 liblastfm               liblo                    liblqr-1 \
 liblrdf                 libmad                   libmatroska \
-libmcs                  libmikmod                libmkv \
+libmcs                  libmediaart libmikmod    libmkv \
 libmms                  libmng                   libmodplug \
 libmowgli               libmp4v2                 libmpeg2 \
 libmsn                  libmspack                libmtp \
