@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libdrm}
-VERSION=${VERSION:-2.4.52}
+VERSION=${VERSION:-2.4.53}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-libdrm}
 WGET=${WGET:-http://dri.freedesktop.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
