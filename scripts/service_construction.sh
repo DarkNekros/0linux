@@ -17,11 +17,26 @@ fi
 # On est toujours là ? OK, on crée donc le fichier du processus : 
 echo "$$" > ${PIDFILE}
 
-# On s'assure que la file d'attente existe :
-touch ${FILEDATTENTE}
-
-# On s'assure que l'environnement est correctement configuré (ça saute souvent, d'ailleurs) :
+# On s'assure que l'environnement est correctement configuré :
 source /etc/profile
+
+# La fonction de traitement de la file d'attente :
+traiter_filedattente() {
+	# On s'assure que la file d'attente existe :
+	touch ${FILEDATTENTE}
+	
+	# On traite la file d'attente (qu'on peut remplir aussi manuellement au besoin) :
+	cat ${FILEDATTENTE} | while read recette_demandee; do
+		if [ ! "${recette_demandee}" = "" ]; then
+			
+			# On compile/installe (nvidia est ignoré automatiquement à l'installation) :
+			./construction.sh ${recette_demandee}
+			
+			# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
+			sed -i '1d' ${FILEDATTENTE}
+		fi
+	done
+}
 
 ### Étape 1 : on vérifie si un commit a eu lieu dans les recettes :
 
@@ -47,17 +62,25 @@ fi
 
 ### Étape 2 : on compile/installe le contenu de la file d'attente :
 
-# On traite la file d'attente (qu'on peut remplir aussi manuellement au besoin) :
-cat ${FILEDATTENTE} | while read recette_demandee; do
-	if [ ! "${recette_demandee}" = "" ]; then
-		
-		# On compile/installe (nvidia est ignoré automatiquement à l'installation) :
-		./construction.sh ${recette_demandee}
-		
-		# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
-		sed -i '1d' ${FILEDATTENTE}
-	fi
-done
+# Doit-on vérifier les binaires du système ?
+CHECKBINAIRES="non"
+
+# ... Oui, si la file d'attente contient des paquets à construire :
+if [ $(cat ${FILEDATTENTE} | wc -l) -gt 0 ]; then
+	CHECKBINAIRES="oui"
+fi
+
+# On traite la file d'attente pour la vider :
+traiter_filedattente
+
+# On doit vérifier les binaires du système. Si des paquets sont retournés, on les ajoute
+# à la file d'attente pour construction immédiate :
+if [ "${CHECKBINAIRES}" = "oui" ]; then
+	sudo ./trouver_binaires_casses.sh /usr/bin /usr/sbin /usr/lib* /usr/share >> ${FILEDATTENTE}
+	
+	# On traite à nouveau la file d'attente pour la vider :
+	traiter_filedattente
+fi
 
 ### Étape 3 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
 ./0mir
