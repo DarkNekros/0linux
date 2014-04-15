@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-geoclue}
-VERSION=${VERSION:-2.0.0}
+VERSION=${VERSION:-2.1.7}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-geoclue}
 WGET=(https://launchpad.net/$NAMESRC/trunk/$(echo $VERSION | cut -d'.' -f1-2)/+download/$NAMESRC-0.12.99.tar.gz
@@ -35,7 +35,7 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On place la doc dans un sous-répertoire :
-installer_doc $NAMETGZ-$VERSION/geoclue-0.12.99
+installer_doc ${NAMETGZ}-${VERSION}/geoclue-0.12.99
 
 # On compile la version de la recette :
 preparer_sources
