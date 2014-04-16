@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-NetworkManager}
+VERSION=${VERSION:-0.9.8.9}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-networkmanager}
+WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+DESC="Démon de gestion du réseau"
+EXTRADEPS="dhcpcd iptables iproute2 modemmanager polkit ppp wpa_supplicant"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/networkmanager \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-doc \
+	--with-crypto=nss \
+	--with-dhcpcd=/usr/sbin/dhcpcd \
+	--with-modem-manager-1 \
+	--with-pppg-plugin-dir="$(basename $(find /usr/lib${LIBDIRSUFFIX}/pppd -maxdepth 1 -mindepth 1 -type d))" \
+	--without-resolvconf \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.networkmanager << "EOF"
+#!/usr/bin/env bash
+
+PIDFILE="/var/run/NetworkManager/NetworkManager.pid"
+
+nm_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du démon NetworkManager.."
+	[ ! -e ${PIDFILE} ] && NetWorkManager
+}
+
+nm_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt du démon NetworkManager..."
+	
+	# On doit fermer les connexions DHCP avant tout :
+	ps ax | grep dhcpcd | grep nm-dhcp | while read line ; do
+		kill -HUP $(echo $line | cut -b 1-5)
+	done
+	
+	local pidlist="$(cat $PIDFILE 2>/dev/null)"
+	[ ! -z "$pidlist" ] && kill ${pidlist} &>/dev/null
+	sleep 2
+	rm -f ${PIDFILE}
+}
+
+case "$1" in
+	'start')
+		nm_start
+	;;
+	
+	'stop')
+		nm_stop
+	;;
+	
+	'restart')
+		nm_stop
+		sleep 1
+		nm_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 {start|stop|restart}"
+		exit 1
+	;;
+esac
+
+EOF
+chmod 755 ${PKG}/etc/rc.d/rc.networkmanager
+
+# ON crée le fichier de configuration sans rien écraser :
+cat > ${PKG}/etc/NetworkManager/NetworkManager.0nouveau << "EOF"
+# Fichier de configuration de NetworkManager.
+# Voyez 'man 5 NetworkManager.conf' pour en savoir plus.
+[main]
+plugins=keyfile
+dhcp=dhcpcd
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

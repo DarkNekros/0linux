@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+NAMESRC=${NAMESRC:-ModemManager}
+VERSION=${VERSION:-1.2.0}
+EXT=${EXT:-tar.xz}
+NAMETGZ=${NAMETGZ:-modemmanager}
+WGET=${WGET:-http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+DESC="Service de gestion de connexions réseau par modem"
+EXTRADEPS="libmbim libqmi"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige le service, on n'a pas 'systemd' :
+sed -i -e 's|Exec=@sbindir@/ModemManager|Exec=/usr/sbin/ModemManager|' \
+	-e '/SystemdService=.*$/d' \
+		data/org.freedesktop.ModemManager1.service.in
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-gtk-doc \
+	--with-udev-base-dir=/usr/lib${LIBDIRSUFFIX}/udev \
+	--with-polkit=permissive \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
