@@ -18,12 +18,19 @@ cflags
 python waf configure \
 	--prefix=/usr \
 	--configdir=/etc \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--freedesktop \
 	--docs \
-	--libdir=/usr/lib${LIBDIRSUFFIX}
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--lv2 \
+	--mandir=/usr/man \
+	--noconfirm \
+	--optimize \
+	--use-external-libs \
+	--windows-vst
 
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" python waf build -j${JOBS} || \
-	python waf build
-
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" python waf build -j${JOBS} || python waf build
+python waf i18n -j${JOBS} || python waf i18n
 fakeroot python waf install --destdir=${PKG}
 
 # On veille à ne rien écraser :
