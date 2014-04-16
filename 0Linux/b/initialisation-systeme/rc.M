@@ -97,6 +97,11 @@ if [ -x /etc/rc.d/rc.wicd ]; then
 	. /etc/rc.d/rc.wicd start
 fi
 
+# Lancement de NetworkManager :
+if [ -x /etc/rc.d/rc.networkmanager ]; then
+	. /etc/rc.d/rc.networkmanager start
+fi
+
 # Lancement de dcron :
 if [ -x /usr/sbin/crond ]; then
 	/usr/sbin/crond -l10 >> /var/log/cron 2>&1
