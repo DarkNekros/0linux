@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-ardour}
-VERSION=${VERSION:-3.0}
+NAMESRC=${NAMESRC:-Ardour3}
+VERSION=${VERSION:-3.5.357}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-ardour}
 WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
@@ -17,9 +17,13 @@ cflags
 # Compilation avec drapeaux supplémentaires:
 python waf configure \
 	--prefix=/usr \
-	--configdir=/etc
+	--configdir=/etc \
+	--docs \
+	--libdir=/usr/lib${LIBDIRSUFFIX}
 
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" python waf build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" python waf build -j${JOBS} || \
+	python waf build
+
 fakeroot python waf install --destdir=${PKG}
 
 # On veille à ne rien écraser :
@@ -29,7 +33,6 @@ done
 
 # On crée le raccourci bureau :
 mkdir -p ${PKG}/usr/share/applications
-
 cat > ${PKG}/usr/share/applications/ardour.desktop << "EOF"
 [Desktop Entry]
 Name=Ardour
