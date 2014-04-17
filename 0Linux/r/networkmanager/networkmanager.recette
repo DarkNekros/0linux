@@ -46,7 +46,7 @@ PIDFILE="/var/run/NetworkManager/NetworkManager.pid"
 
 nm_start() {
 	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du démon NetworkManager.."
-	[ ! -e ${PIDFILE} ] && NetWorkManager
+	[ ! -e ${PIDFILE} ] && NetworkManager
 }
 
 nm_stop() {
