@@ -14,7 +14,12 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# Au cas où TeX ferait son apparition dans 0Linux, on corrige le répertoire 'texmf' :
+sed -i 's@$(rsharedir)/texmf@${datarootdir}/texmf@' share/Makefile.in
+
 # Compilation :
+F77=gfortran \
+LIBnn=lib${LIBDIRSUFFIX} \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -25,25 +30,52 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--datarootdir=/usr/share \
-	  rsharedir=/usr/share/R/ \
-	  rincludedir=/usr/include/R/ \
-	  rdocdir=/usr/doc/${NAMETGZ}-${VERSION}/ \
-	--with-x \
-	--with-lapack \
-	--with-blas \
 	--enable-R-shlib \
+	  rdocdir=/usr/doc/${NAMETGZ}-${VERSION}/ \
+	  rincludedir=/usr/include/R/ \
+	  rsharedir=/usr/share/R/ \
+	--with-blas \
+	--with-lapack \
+	--with-x \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# Installation de l'icone :
+# On compile/installe aussi la bibliothèque 'libRmath.so' :
+cd src/nmath/standalone
+make -j${JOBS} shared || make shared
+fakeroot make install DESTDIR=${PKG}
+cd -
+
+
+# On corrige les scripts et autres enveloppes pour le binaire 'R' :
+sed -i "s@${PKG} @@" ${PKG}/usr/bin/R
+
+# On supprime ce doublon et on le lie au répertoire standard :
+rm  -f ${PKG}/usr/lib${LIBDIRSUFFIX}/R/bin/R
+ln -s ../../../bin/R ${PKG}/usr/lib${LIBDIRSUFFIX}/R/bin/
+
+# On déplace le répertoire pour la configuration et on crée des liens en
+# veillant à ne rien écraser :
+mkdir -p  ${PKG}/etc/R
+for conf in ${PKG}/usr/lib${LIBDIRSUFFIX}/R/etc/*; do
+	mv -f ${conf} ${PKG}/etc/R/$(basename ${conf}).0nouveau
+	ln -sf ../../../../etc/R/$(basename ${conf}) $(basename ${conf})
+done
+
+# On lie chaque bibliothèque de R dans le répertoire standard :
+for libr in ${PKG}/usr/lib${LIBDIRSUFFIX}/R/lib/*.so; do
+	ln -sf ../R/lib/$(basename ${libr}) ${PKG}/usr/lib${LIBDIRSUFFIX}/
+done
+
+# On installation les icônes :
 mkdir -p  ${PKG}/usr/share/{applications,pixmaps}
 cp -a $CWD/r.png ${PKG}/usr/share/pixmaps
 cp -a $CWD/r.desktop ${PKG}/usr/share/applications
 
 # On efface des fichiers assez mal placés qui seront installés avec la doc :
-rm -f $PKG/usr/lib${LIBDIRSUFFIX}/R/{NEWS.*,COPYING,SVN-REVISION}
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/R/{COPYING,NEWS*,SVN-REVISION}
 
 installer_doc
 creer_post_installation
