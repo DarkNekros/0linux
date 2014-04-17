@@ -15,7 +15,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On corrige le verrou numérique, la compilation avec FFMPEG 2 et une faille de scéurité :
-cat $CWD/freerdp.ffmpeg2.patch | patch -p1
+cat $CWD/freerdp.ffmpeg2.patch | patch -p0
 cat $CWD/freerdp.numlock.patch | patch -p1
 cat $CWD/freerdp.CVE-2014-0791.patch | patch -p1
 
