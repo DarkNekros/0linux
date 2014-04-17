@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-jdk}
-VERSION=${VERSION:-7u40}
+VERSION=${VERSION:-7u55}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-jdk}
 
