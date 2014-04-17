@@ -33,6 +33,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# on place un fichier manquant pour 'pkgconfig' :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+cp data/tracker-sparql-*.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/
+
 installer_doc
 creer_post_installation
 stripper
