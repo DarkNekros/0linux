@@ -82,6 +82,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-gpm \
 	--enable-multibyte \
 	--enable-pythoninterp \
+	--enable-python3interp \
 	--enable-perlinterp \
 	--enable-rubyinterp \
 	--with-compiledby="0Linux" \
@@ -111,6 +112,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-gui=gtk2 \
 	--enable-multibyte \
 	--enable-pythoninterp \
+	--enable-python3interp \
 	--enable-perlinterp \
 	--enable-rubyinterp \
 	--with-compiledby="0Linux" \
@@ -131,6 +133,9 @@ cp -a ${PKGSOURCES}/${NAMETGZ}/*.utf-8.* ${PKG}/usr/share/vim/spell/
 # On place l'icône et on crée le raccourci bureau pour 'gvim' :
 mkdir -p ${PKG}/usr/share/{applications,pixmaps}
 cp runtime/vim48x48.png ${PKG}/usr/share/pixmaps/gvim.png
+
+# On corrige la coloration des journaux système :
+sed -i 's@messages,/var@messages,/var/log/messages.log,/var@' ${PKG}/usr/share/vim/filetype.vim
 
 cat >${PKG}/usr/share/applications/gvim.desktop << "EOF"
 [Desktop Entry]
@@ -197,7 +202,7 @@ map Q gq
 " CTRL+U en mode insertion efface beaucoup. On utilise donc ici CTRL+G qui 
 " permet de récupérer le tampon d'annulation afin de pouvoir annuler
 " l'annulation (sic) sans perte de texte.
-Cf. http://vim.wikia.com/wiki/Recover_from_accidental_Ctrl-U
+" Cf. http://vim.wikia.com/wiki/Recover_from_accidental_Ctrl-U
 inoremap <C-U> <C-G>u<C-U>
 
 " La souris fonctionne correctement dans de très nombreux émulateurs de
@@ -269,9 +274,10 @@ EOF
 
 # Puis on crée un fichier personnalisé pour 0Linux. 
 # Ce fichier est chargé automatiquement par '/etc/vimrc' :
+mkdir -p ${PKG}/usr/share/vim/vimfiles
 cat > ${PKG}/usr/share/vim/vimfiles/0linux.vim << "EOF"
-\" Options pour 0Linux :
-\" ----------------
+" Options pour 0Linux :
+" ----------------
 
 " Couleurs brillantes (pour terminaux sombres) :
 set background=dark
