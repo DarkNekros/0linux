@@ -59,9 +59,38 @@ fakeroot make install DESTDIR=${PKG}
 make -j${JOBS} -C src/nmath/standalone shared || make -C src/nmath/standalone shared
 fakeroot make -C src/nmath/standalone install DESTDIR=${PKG}
 
-# Les fichiers '.pc' contiennent n'importe quoi :
-sed -i 's@lib6464@lib64@g' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/*.pc
-sed -i 's@rlibdir=\${rhome}/lib.*@rlibdir=${rhome}/lib@' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/*.pc
+# Les fichiers '.pc' contiennent n'importe quoi, on les crée : :
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libR.pc << "EOF"
+rhome=/usr/libARCH/R
+rlibdir=${rhome}/lib
+rincludedir=${rhome}/include
+
+Name: libR
+Description: Bibliothèques R
+Version: VERSION
+Libs: -Wl,--export-dynamic -fopenmp  -L/usr/libARCH -L${rlibdir} -lR
+Cflags: -I${rincludedir} -I${rincludedir}
+Libs.private:
+
+EOF
+
+# On corrige pour prendre en charge notre suffixe et la version :
+sed -i -e "s@ARCH@${LIBDIRSUFFIX}@g"-e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libR.pc
+
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libRmath.pc << "EOF"
+includedir=/usr/include
+libdir=/usr/libARCH
+
+Name: libRmath
+Description: Bibliothèques Rmath
+Version: VERSION
+Libs: -L${libdir} -lRmath -lm
+Cflags: -I${includedir}
+
+EOF
+
+# On corrige pour prendre en charge notre suffixe et la version :
+sed -i -e "s@ARCH@${LIBDIRSUFFIX}@g"-e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libRmath.pc
 
 installer_doc
 creer_post_installation
