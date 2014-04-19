@@ -23,7 +23,7 @@ cflags
 # On télécharge chaque correctif :
 mkdir -p ${PKGSOURCES}/${NAMETGZ}/patches
 
-for correctif in {001..155}; do # Indiquer ici le nombre de correctifs à appliquer.
+for correctif in {001..258}; do # Indiquer ici le nombre de correctifs à appliquer.
 	if [ ! -r ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} ]; then
 		wget -vc "ftp://ftp.vim.org/pub/vim/patches/${VERSION}/${VERSION}.${correctif}" \
 			-O ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif}.part
@@ -31,7 +31,7 @@ for correctif in {001..155}; do # Indiquer ici le nombre de correctifs à appliq
 	fi
 	
 	# On applique un à un les correctifs des mainteneurs :
-	cat ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} | patch -p0
+	cat ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} | patch -Np0
 done
 
 # Compilation en 3 temps : 
@@ -128,26 +128,170 @@ ln -sf gvim ${PKG}/usr/bin/gview
 # On ajoute le dictionnaire pour le français en encodage UTF-8 :
 cp -a ${PKGSOURCES}/${NAMETGZ}/*.utf-8.* ${PKG}/usr/share/vim/spell/
 
-# On copie le vimrc à sa place :
+# On place l'icône et on crée le raccourci bureau pour 'gvim' :
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+cp runtime/vim48x48.png ${PKG}/usr/share/pixmaps/gvim.png
+
+cat >${PKG}/usr/share/applications/gvim.desktop << "EOF"
+[Desktop Entry]
+Name=gVim (graphical Vi IMproved)
+Name[fr]=gVim (interface graphique pour Vim)
+Comment=Powerful text editor with scripting functions and macro recorder
+Comment[fr]=Un puissant éditeur de texte scriptable et programmable par macros
+MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
+Exec=gvim -f %F
+Icon=gvim
+Type=Application
+Terminal=false
+X-XClassHintResName=VIM
+Categories=Utility;TextEditor;
+
+EOF
+
+# On place le 'vimrc' d'exemple :
 cp -a runtime/vimrc_example.vim ${PKG}/usr/share/vim
 
-# Puis on en copie un autre dans /etc pour en faire la configuration globale :
+# Puis on crée un fichier de configuration générale en français en veillant à
+# ne rien écraser:
 mkdir -p ${PKG}/etc
-cp runtime/vimrc_example.vim ${PKG}/etc/vimrc.0nouveau
+cat > ${PKG}/etc/vimrc.0nouveau << "EOF"
+" Fichier de configuration pour Vim.
+" Traduit par appzer0@0linux.org pour 0Linux - 19 avril 2014
+"
+" Pour l'utiliser et le personnaliser en tant que simple utilisateur, copiez-le
+" dans :
+"   Pour  Unix et OS/2 : ~/.vimrc
+"   Pour Amiga : s:.vimrc
+"   Pour MS-DOS et Win32 : $VIM\_vimrc
+"   Pour OpenVMS : sys$login:.vimrc
 
-# On y ajoute quelques paramètres personnalisés (compatibilité 'crontab -e', 
-# dictionnaires, police brillante, coloration, lignes numérotées, auto-détection de la souris) :
-echo "
-\" Options pour 0 :
+" Si Vim est lancé en appelant 'evim', 'evim.vim' contient déjà les paramètres
+" de ce fichier :
+if v:progname =~? "evim"
+  finish
+endif
+
+" Utiliser les paramètres pour Vim, bien meilleurs que ceux pour Vi.
+" Cette option doit être spécifiée avant les autres car elle modifie d'autres
+" option par effet de bord :
+set nocompatible
+
+" Autoriser le retour arrière pour les déplacement en mode insertion avec la
+" touche idoine du clavier (appelée aussi « Backspace ») :
+set backspace=indent,eol,start
+
+if has("vms")
+  set nobackup		" Ne pas créer de fichier de sauvegarde, mais versionner
+else
+  set backup		" Conserver un fichier de sauvegarde
+endif
+
+set history=50		" Conserver 50 lignes d'historique de la ligne de commande
+set ruler		" Toujours montrer la position du curseur
+set showcmd		" Afficher les commandes incomplètes
+set incsearch		" Activer la recherche incrémentale
+
+" Ne pas utiliser le mode Ex ; utiliser plutôt Q pour le formatage :
+map Q gq
+
+" CTRL+U en mode insertion efface beaucoup. On utilise donc ici CTRL+G qui 
+" permet de récupérer le tampon d'annulation afin de pouvoir annuler
+" l'annulation (sic) sans perte de texte.
+Cf. http://vim.wikia.com/wiki/Recover_from_accidental_Ctrl-U
+inoremap <C-U> <C-G>u<C-U>
+
+" La souris fonctionne correctement dans de très nombreux émulateurs de
+" terminal : on l'active d'emblée :
+if has('mouse')
+  set mouse=a
+endif
+
+" On active la coloration syntaxique si le terminal sait afficher les couleurs.
+" On active également la surbrillance des résultats de la dernière recherche
+" effectuée :
+if &t_Co > 2 || has("gui_running")
+  syntax on
+  set hlsearch
+endif
+
+" Cette partie ne s'applique que si Vim a été compilé avec la prise en charge
+" des commandes automatisées :
+if has("autocmd")
+
+  " Activer la détection des types de fichiers.
+  " Utiliser les paramètres par défaut des types de fichiers prédéfinis, afin
+  " que les courriels soient par exemple coupés à 72 caractères ('tw'), que
+  " 'cindent' soit activé dans les fichiers écrits en C, etc.
+  " On active également l'indentation spécifiques aux langages utilisés :
+  filetype plugin indent on
+
+  " On ajoute ces paramètre à un groupe d'autocommandes afin d epouvoir les
+  " effacer aisément :
+  augroup vimrcEx
+  au!
+
+  " Définir la largeur de tous les fichiers texte à 78 caractères :
+  autocmd FileType text setlocal textwidth=78
+
+  " Toujours placer le curseur à la dernière position connue dès l'ouvertue
+  " d'un fichier.
+  " Ne pas le faire si la dernière position connue est le début du fichier (par
+  " défaut), une position incorrecte ou un évènement (un glisser-déposer dans
+  " 'gvim', par exemple) :
+  autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+  augroup END
+
+else
+
+  set autoindent		" Toujours activer l'indentation automatique
+
+endif " has("autocmd")
+
+" Une commande bien pratique pour voir la différence entre le tampon et le
+" fichier ouvert correspondant, affichant ainsi les changement en cours.
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+    \ | wincmd p | diffthis
+endif
+
+" Cette ligne charge les paramètres personnalisés pour 0Linux se trouvant
+" typiquemant dans '/usr/share/vim/vimfiles/0linux.vim'. Vous pouvez surcharger
+" ces paramètres avec les vôtres ici même, mais ne modifiez pas '0linux.vim'
+" car il est écrasé à chaque mise à jour du paquet 'vim' :
+runtime! 0linux.vim
+
+EOF
+
+
+# Puis on crée un fichier personnalisé pour 0Linux. 
+# Ce fichier est chargé automatiquement par '/etc/vimrc' :
+cat > ${PKG}/usr/share/vim/vimfiles/0linux.vim << "EOF"
+\" Options pour 0Linux :
 \" ----------------
 
-set backupskip+=/var/spool/cron/*
-set spelllang=fr,en
-set spell
+" Couleurs brillantes (pour terminaux sombres) :
 set background=dark
+
+" Compatibilité avec 'crontab -e' :
+set backupskip+=/var/spool/cron/*
+
+" Numérotation des lignes :
 set number
+
+" Correction orthographique :
+set spell
+
+" Ordre de priorité des dictionnaires pour la correction orthographique :
+set spelllang=fr,en
+
+" Coloration syntaxique :
 syntax enable
-" >> ${PKG}/etc/vimrc.0nouveau
+
+EOF
 
 # On ajoute un lien de 'vi' vers 'vim' :
 ln -sf vim ${PKG}/usr/bin/vi
