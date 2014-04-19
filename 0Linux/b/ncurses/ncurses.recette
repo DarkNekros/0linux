@@ -33,14 +33,12 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--enable-pc-files \
 		--enable-symlinks \
 		--enable-widec \
+		--without-gpm \
 		--with-manpage-format=normal \
 		--with-normal \
 		--with-pkg-config=/usr/lib${LIBDIRSUFFIX}/pkgconfig \
 		--with-shared \
 		--without-ada \
-		--without-debug \
-		--without-gpm \
-		--without-profile \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -98,6 +96,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-pc-files \
 	--enable-symlinks \
 	--enable-widec \
+	--with-gpm \
 	--with-manpage-format=normal \
 	--with-gpm \
 	--with-normal \
