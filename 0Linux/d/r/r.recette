@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-R}
-VERSION=${VERSION:-3.0.3}
+VERSION=${VERSION:-3.1.0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-r}
 WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/CRAN/src/base/$NAMESRC-3/$NAMESRC-$VERSION.$EXT}
@@ -17,9 +17,18 @@ cflags
 # Au cas où TeX ferait son apparition dans 0Linux, on corrige le répertoire 'texmf' :
 sed -i 's@$(rsharedir)/texmf@${datarootdir}/texmf@' share/Makefile.in
 
+# On corrige la prise en charge de la parallélisation :
+sed -i 's@install: installdirs install-intl@install: $(OBJ_HEADERS) installdirs install-intl@' src/include/Makefile.in
+
+# On ajoute des LDFLAGS manquants pour la libnmath ::
+sed -i 's@libRmath_la_LDFLAGS = @libRmath_la_LDFLAGS = -Wl,-soname=libRmath.so@' src/nmath/standalone/Makefile.in
+sed -i '/libRmath_la_LDFLAGS = -Wl,-soname=libRmath.so/a \
+libRmath_la_LIBADD = $(LIBM)' src/nmath/standalone/Makefile.in
+sed -i 's|$(DYLIB_LINK) -o $@ $(libRmath_la_LDFLAGS) $(libRmath_la_OBJECTS) $(LIBM)|$(DYLIB_LINK) $(libRmath_la_LDFLAGS) $(libRmath_la_OBJECTS) $(libRmath_la_LIBADD) -o $@|' \
+	src/nmath/standalone/Makefile.in
+
 # Compilation :
 F77=gfortran \
-LIBnn=lib${LIBDIRSUFFIX} \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -30,52 +39,29 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--datarootdir=/usr/share \
+	--enable-BLAS-shlib \
 	--enable-R-shlib \
+	--enable-byte-compiled-packages \
 	  rdocdir=/usr/doc/${NAMETGZ}-${VERSION}/ \
-	  rincludedir=/usr/include/R/ \
-	  rsharedir=/usr/share/R/ \
 	--with-blas \
 	--with-lapack \
 	--with-x \
+	--with-system-bzlib \
+	--with-system-pcre \
+	--with-system-xz \
+	--with-system-zlib \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On compile/installe aussi la bibliothèque 'libRmath.so' :
-cd src/nmath/standalone
-make -j${JOBS} shared || make shared
-fakeroot make install DESTDIR=${PKG}
-cd -
+make -j${JOBS} -C src/nmath/standalone shared || make -C src/nmath/standalone shared
+fakeroot make -C src/nmath/standalone install DESTDIR=${PKG}
 
-
-# On corrige les scripts et autres enveloppes pour le binaire 'R' :
-sed -i "s@${PKG} @@" ${PKG}/usr/bin/R
-
-# On supprime ce doublon et on le lie au répertoire standard :
-rm  -f ${PKG}/usr/lib${LIBDIRSUFFIX}/R/bin/R
-ln -s ../../../bin/R ${PKG}/usr/lib${LIBDIRSUFFIX}/R/bin/
-
-# On déplace le répertoire pour la configuration et on crée des liens en
-# veillant à ne rien écraser :
-mkdir -p  ${PKG}/etc/R
-for conf in ${PKG}/usr/lib${LIBDIRSUFFIX}/R/etc/*; do
-	mv -f ${conf} ${PKG}/etc/R/$(basename ${conf}).0nouveau
-	ln -sf ../../../../etc/R/$(basename ${conf}) $(basename ${conf})
-done
-
-# On lie chaque bibliothèque de R dans le répertoire standard :
-for libr in ${PKG}/usr/lib${LIBDIRSUFFIX}/R/lib/*.so; do
-	ln -sf ../R/lib/$(basename ${libr}) ${PKG}/usr/lib${LIBDIRSUFFIX}/
-done
-
-# On installation les icônes :
-mkdir -p  ${PKG}/usr/share/{applications,pixmaps}
-cp -a $CWD/r.png ${PKG}/usr/share/pixmaps
-cp -a $CWD/r.desktop ${PKG}/usr/share/applications
-
-# On efface des fichiers assez mal placés qui seront installés avec la doc :
-rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/R/{COPYING,NEWS*,SVN-REVISION}
+# Les fichiers '.pc' contiennent n'importe quoi :
+sed -i 's@lib6464@lib64@g' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/*.pc
+sed -i 's@rlibdir=\${rhome}/lib.*@rlibdir=${rhome}/lib@' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/*.pc
 
 installer_doc
 creer_post_installation

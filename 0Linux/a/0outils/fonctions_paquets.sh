@@ -330,11 +330,58 @@ traiter_nouvelle_config() {
 }
 
 EOF
-
+	
 	# On ajoute en post-installation tous les fichiers '*.0nouveau' qu'on trouve pour les passer à traiter_nouvelle_config() :
 	for fichier_post in $(find ${PKG} -type f -name "*.0nouveau"); do
 		echo "traiter_nouvelle_config $(echo ${fichier_post} | sed "s@${PKG}/@@")" >> ${PKG}/post-install.sh
 	done
+	
+	# Si on trouve des fichiers services, on doit respecter les permissions choisies par l'utilisateur.
+	# On va donc renommer chaque service en '*.0nouveauservice' et traiter ces nouveaux fichiers
+	# en post-installation pour récupérer le fichier avec les permissions de l'utilisateur
+	# et y injecter le contenu de notre '.0nouveauservice' :
+	if [ -d ${PKG}/etc/rc.d ]; then
+		cat >> ${PKG}/post-install.sh << "EOF"
+
+traiter_service() {
+	NEWSVCFILE="$1"
+	OLDSVCFILE="$(dirname $NEWSVCFILE)/$(basename $NEWSVCFILE .0nouveauservice)"
+	
+	if [ -e ${OLDSVCFILE} ]; then
+		
+		# On copie temporairement le service déjà installé en préservant les permissions :
+		cp -a ${OLDSVCFILE} ${NEWSVCFILE}.tmp || busybox cp -a ${OLDSVCFILE} ${NEWSVCFILE}.tmp || true
+		
+		# On injecte le contenu du nouveau fichier service dans le temporaire (qui a les bonnes permissions) :
+		cat ${NEWSVCFILE} > ${NEWSVCFILE}.tmp || busybox cat ${NEWSVCFILE} > ${NEWSVCFILE}.tmp || true
+		
+		# On renomme le temporaire pour écraser l'ancien, les permissions sont alors OK :
+		mv ${NEWSVCFILE}{.tmp,} >/dev/null 2>&1 || busybox mv ${NEWSVCFILE}{.tmp,} >/dev/null 2>&1 || true
+		
+		# On supprime le '.0nouveauservice' ('rm -f' dans BusyBox a un comportement parfois différent) :
+		rm -f ${NEWSVCFILE} || busybox rm ${NEWSVCFILE} >/dev/null 2>&1 || true
+	fi
+}
+
+EOF
+		
+		# On ajoute le traitement des services à la post-installation.
+		# On ignore les fichiers d''initialisation-systeme', qui ne doivent pas changer :
+		for fichier_rcd in $(find ${PKG}/etc/rc.d -type f -name "rc.*" -a \
+			\! -name "*.0nouveau" -a \
+			\! -name "rc.4" -a \
+			\! -name "rc.6" -a \
+			\! -name "rc.K" -a \
+			\! -name "rc.M" -a \
+			\! -name "rc.S"); do
+			
+			# On renomme d'abord chaque service :
+			mv ${fichier_rcd}{,.0nouveauservice} >/dev/null 2>&1 || busybox mv ${fichier_rcd}{,.0nouveauservice} >/dev/null 2>&1 || true
+			
+			# Et on l'ajoute pour traitement en post-installation :
+			echo "traiter_service $(echo ${fichier_rcd}.0nouveauservice | sed "s@${PKG}/@@")" >> ${PKG}/post-install.sh
+		done
+	fi
 	
 	# Si on trouve des bibliothèques, on actualise l'éditeur de liens :
 	if [ -d ${PKG}/usr/lib -o -d ${PKG}/usr/lib${LIBDIRSUFFIX} -o -d ${PKG}/lib -o -d ${PKG}/lib${LIBDIRSUFFIX} ]; then
