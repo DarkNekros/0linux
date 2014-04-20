@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-eudev}
-VERSION=${VERSION:-1.1}
+VERSION=${VERSION:-1.6}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-eudev}
-WGET=${WGET:-http://dev.gentoo.org/~blueness/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-https://github.com/gentoo/$NAMESRC/archive/v${VERSION}.$EXT}
 DESC="Système de noeuds de périphériques dynamiques"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -25,7 +25,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	cflags i686
 	
 	# Compilation pour i686 :
-	autoreconf -vif
+	./autogen.sh
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
 		--prefix=/usr \
@@ -37,6 +37,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 		--htmldir=/usr/doc/${NAMETGZ}-${VERSION}/html \
 		--enable-gudev \
+		--enable-modules \
 		--disable-introspection \
 		--enable-rule-generator \
 		--enable-static \
@@ -63,7 +64,7 @@ cflags
 sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@" $(find . -type f -name "*.pc*")
 
 # Compilation :
-autoreconf -vif
+./autogen.sh
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -76,6 +77,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--htmldir=/usr/doc/${NAMETGZ}-${VERSION}/html \
 	--enable-gudev \
+	--enable-modules \
 	--enable-introspection \
 	--enable-rule-generator \
 	--enable-static \
@@ -171,7 +173,7 @@ cat > ${PKG}/etc/rc.d/rc.udev << "EOF"
 #!/usr/bin/env bash
 
 udev_start() {
-	echo "Démarrage de Udev..."
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de Udev..."
 	
 	# Cette méthode est dépréciée :
 	if [ -e /proc/sys/kernel/hotplug ]; then
@@ -192,7 +194,7 @@ udev_start() {
 }
 
 udev_stop() {
-	echo "Arrêt de Udev..."
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de Udev..."
 	killall udevd 
 }
 

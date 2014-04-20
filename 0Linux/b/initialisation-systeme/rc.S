@@ -26,11 +26,21 @@ mount -v -n -t proc   proc   /proc
 mount -v -n -t sysfs  sysfs  /sys
 mount -v -n -t tmpfs  tmpfs  /run
 
-# Mode débogage : il faut passer l'argument « 0linuxdebug » sur la ligne
-# d'amorçage du noyau pour activer l'exécution pas-à-pas :
-if [ ! "$(cat /proc/cmdline | grep '0linuxdebug')" = "" ]; then
-	set -x
-	trap "echo '<MODE DÉBOGAGE : Appuyez sur ENTRÉE pour la suite>'; read x" DEBUG
+# Mode débogage :
+DEBUGBOOTLINE="$(cat /proc/cmdline | grep '0linuxdebug')"
+
+if [ ! "${DEBUGBOOTLINE}" = "" ]; then
+	echo "--- MODE DÉBOGAGE ---"
+	
+	# Mode lent avec pause entre chaque étape :
+	if [ ! "$(echo "${DEBUGBOOTLINE}" | grep '0linuxdebug lent')" = "" ]; then
+		set -x
+		trap "sleep 5" DEBUG
+	
+	# Mode de débogage normal :
+	else
+		set -x
+	fi
 fi
 
 # On lance très tôt le module 'loop' :
