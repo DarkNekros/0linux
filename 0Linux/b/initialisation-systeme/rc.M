@@ -3,6 +3,13 @@
 # /etc/rc.d/rc.M : ce fichier est exécuté lors du passage en mode multi-
 # utilisateur par 'init' (donc dans les niveaux d'exécution 2 à 6).
 
+# Mode débogage : il faut passer l'argument « 0linuxdebug » sur la ligne
+# d'amorçage du noyau pour activer l'exécution pas-à-pas :
+if [ ! "$(cat /proc/cmdline | grep '0linuxdebug')" = "" ]; then
+	set -x
+	trap "echo '<MODE DÉBOGAGE : Appuyez sur ENTRÉE pour la suite>'; read x" DEBUG
+fi
+
 # L'écran se vide au bout de 15 minutes et entre en veille au bout d'une heure :
 setterm -blank 15 -powersave powerdown -powerdown 60
 
