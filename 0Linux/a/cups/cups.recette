@@ -30,6 +30,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--sysconfdir=/etc \
 		--localstatedir=/var \
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--libexecdir=/usr/lib${LIBDIRSUFFIX}/cups \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
