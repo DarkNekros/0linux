@@ -77,6 +77,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--htmldir=/usr/doc/${NAMETGZ}-${VERSION}/html \
 	--enable-gudev \
+	--enable-libkmod \
 	--enable-modules \
 	--enable-introspection \
 	--enable-rule-generator \
@@ -175,11 +176,6 @@ cat > ${PKG}/etc/rc.d/rc.udev << "EOF"
 udev_start() {
 	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de Udev..."
 	
-	# Cette méthode est dépréciée :
-	if [ -e /proc/sys/kernel/hotplug ]; then
-		echo "" > /proc/sys/kernel/hotplug
-	fi
-	
 	# On lance 'udevd' :
 	if [ "$(pidof udevd)" = "" ]; then
 		udevd --daemon
@@ -194,7 +190,7 @@ udev_start() {
 }
 
 udev_stop() {
-	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de Udev..."
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de Udev..."
 	killall udevd 
 }
 
