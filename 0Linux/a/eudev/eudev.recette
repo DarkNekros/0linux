@@ -60,7 +60,7 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige les fichiers pour 'pkg-config'... :
+# On corrige les fichiers pour 'pkg-config' :
 sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@" $(find . -type f -name "*.pc*")
 
 # Compilation :
@@ -86,7 +86,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-rootlibdir=/usr/lib${LIBDIRSUFFIX} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-# On corrige les fichiers pour 'pkg-config'... :
+# On corrige les fichiers pour 'pkg-config' :
 sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@" $(find . -type f -name "*.pc*")
 
 # On force notre suffixe de bibliothèques :
