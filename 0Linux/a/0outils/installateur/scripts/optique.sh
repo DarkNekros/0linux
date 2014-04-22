@@ -26,7 +26,7 @@ while [ ! -r $TMP/choix_media ]; do
 			fi
 			echo -e "\033[1;32mDisque détecté.\033[0;0m"
 			echo ""
-			echo "Un disque a été trouvé dans ${optique}."
+			echo "Un disque a été trouvé dans '/dev/sr${optique}'."
 			echo ""
 			sleep 2
 			

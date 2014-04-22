@@ -26,6 +26,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# Compilation pour i686 :
 	./autogen.sh
+	
+	# On force notre suffixe de bibliothèques :
+	sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@g" configure
+	
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
 		--prefix=/usr \
@@ -48,9 +52,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On corrige les fichiers pour 'pkg-config'... :
 	sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@" $(find . -type f -name "*.pc*")
 	
-	# On force notre suffixe de bibliothèques :
-	sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@g" $(find . -type f -name "Makefile*")
-	
 	make -j${JOBS} || make
 	fakeroot make install DESTDIR=${PKG}
 fi
@@ -65,6 +66,10 @@ sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@" $(find . -type f -name "*.pc*")
 
 # Compilation :
 ./autogen.sh
+
+# On force notre suffixe de bibliothèques :
+sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@g" configure
+
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -88,9 +93,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 # On corrige les fichiers pour 'pkg-config' :
 sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@" $(find . -type f -name "*.pc*")
-
-# On force notre suffixe de bibliothèques :
-sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@g" $(find . -type f -name "Makefile*")
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
