@@ -14,9 +14,6 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On crée un répertoire manquant :
-mkdir -p ${PKG}/var/state/saslauthd
-
 # On corrige le comportement de crypt() depuis la glibc 2.17 :
 cat $CWD/cyrus-sasl.CVE-2013-4122.patch | patch -p1
 
@@ -25,9 +22,6 @@ cat $CWD/cyrus-sasl.types.patch | patch -p1
 
 # On force notre répertoire standard pour les bibliothèques :
 sed -i "/sasldir/s/lib/&${LIBDIRSUFFIX}/" plugins/Makefile.in
-
-# On crée les répertoires d'accueil :
-mkdir -p ${PKG}/var/state/saslauthd
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -55,10 +49,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-sql \
 	--enable-shared \
 	--enable-tcl \
-	--with-configdir=/etc/sasl2 \
+	--with-configdir=/etc/sasl2:/etc/sasl:/usr/lib${LIBDIRSUFFIX}/sasl2 \
+	--with-devrandom=/dev/urandom \
 	--with-gdbm \
 	--with-ldap \
-	--with-saslauthd \
+	--with-sqlite3=/usr/lib${LIBDIRSUFFIX} \
+	--with-saslauthd=/var/run/saslauthd \
 	--with-tcl=/usr/lib${LIBDIRSUFFIX} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
