@@ -239,10 +239,12 @@ cflags() {
 	# On peut forcer l'architecture pour des cas spéciaux (compilation 
 	# croisée, etc.) en spécifiant $PKGARCH sur la ligne de commande ou en
 	# appelant la fonction dans le script, par exemple : 'cflags i686'.
-	if [ "$1" = "i686" -o "$1" = "x86_64" -o "$1" = "arm" ]; then
-		PKGARCH="$1"
-	else
-		PKGARCH="$(uname -m)"
+	if [ -z ${PKGARCH} ]; then
+		if [ "$1" = "i686" -o "$1" = "x86_64" -o "$1" = "arm" ]; then
+			PKGARCH=${PKGARCH:-"$1"}
+		else
+			PKGARCH=${PKGARCH:-"$(uname -m)"}
+		fi
 	fi
 	
 	# Parallélisation : 
