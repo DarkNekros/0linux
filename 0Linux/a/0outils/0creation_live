@@ -469,7 +469,7 @@ mkisofs -o ${ISODIR}/${ISONAME} \
 # On rend cette image amorçable même sur volume USB, grâce à 'isohybrid' :
 isohybrid ${ISODIR}/${ISONAME}
 
-echo "L'image '${ISODIR}/${ISONAME}' a été créée ."
+echo "L'image '${ISODIR}/${ISONAME}' a été créée."
 echo "Gravez-la sur un DVD ou copiez-la sur une clé/carte USB amorçable"
 echo "via 'dd'."
 echo ""
