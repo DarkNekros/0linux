@@ -33,18 +33,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-	
-# On place les règles pour 'polkit' permettant aux utilisateurs du groupe
-# 'netev' de manipuler 'networkmanager' :
-mkdir -p ${PKG}/etc/polkit-1/rules.d
-cat > ${PKG}/etc/polkit-1/rules.d/10-nm-applet.rules << "EOF"
-polkit.addRule(function(action, subject) {
-	if (action.id == 'org.freedesktop.NetworkManager.' && subject.isInGroup('netdev')) {
-		return polkit.Result.YES;
-	}
-});
-
-EOF
 
 installer_doc
 creer_post_installation

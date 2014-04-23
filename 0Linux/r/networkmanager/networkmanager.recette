@@ -87,13 +87,25 @@ esac
 EOF
 chmod 755 ${PKG}/etc/rc.d/rc.networkmanager
 
-# ON crée le fichier de configuration sans rien écraser :
+# On crée le fichier de configuration sans rien écraser :
 cat > ${PKG}/etc/NetworkManager/NetworkManager.0nouveau << "EOF"
 # Fichier de configuration de NetworkManager.
 # Voyez 'man 5 NetworkManager.conf' pour en savoir plus.
 [main]
 plugins=keyfile
 dhcp=dhcpcd
+
+EOF
+
+# On place les règles pour 'polkit' permettant aux utilisateurs du groupe
+# 'netev' de manipuler 'networkmanager' :
+mkdir -p ${PKG}/etc/polkit-1/rules.d
+cat > ${PKG}/etc/polkit-1/rules.d/10-networkmanager.rules << "EOF"
+polkit.addRule(function(action, subject) {
+	if (action.id == 'org.freedesktop.NetworkManager.' && subject.isInGroup('netdev')) {
+		return polkit.Result.YES;
+	}
+});
 
 EOF
 
