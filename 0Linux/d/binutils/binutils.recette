@@ -55,7 +55,9 @@ fakeroot make install tooldir=/usr DESTDIR=${PKG}
 cp -a $TMP/${NAME}/include/libiberty.h ${PKG}/usr/include/libiberty.h
 
 # On passe les "ldscripts" dans lib$LIBDIRSUFFIX :
-mv ${PKG}/usr/lib/ldscripts ${PKG}/usr/lib${LIBDIRSUFFIX}/ || true
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	mv ${PKG}/usr/lib/ldscripts ${PKG}/usr/lib${LIBDIRSUFFIX}/
+fi
 
 # 'binutils' s'entête à placer '/usr/share/man' et '/usr/share/info' en doublon :
 rm -rf ${PKG}/usr/{share/{info,man}}

@@ -267,6 +267,7 @@ cflags() {
 	if [ ${PKGARCH} = "i686" ]; then
 		export CC="gcc -m32"
 		export CXX="g++ -m32"
+		export LDFLAGS="-m32" # Utilisé uniquement en multilib
 		FLAGS="-m32 -O2 -march=i686 -pipe"
 		LIBDIRSUFFIX=""
 		USE_ARCH=32 # Utilisé uniquement en multilib
@@ -296,7 +297,7 @@ cflags() {
 	
 	# Utiles pour la compilation croisée et le multilib :
 	export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
-	export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+	export LDFLAGS="${LDFLAGS} -L/usr/lib${LIBDIRSUFFIX}"
 }
 
 installer_doc() {

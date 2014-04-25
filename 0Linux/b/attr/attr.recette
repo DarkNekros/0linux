@@ -34,13 +34,12 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--enable-shared \
+		--enable-static \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
 	fakeroot make install install-dev install-lib DIST_ROOT=${PKG}
-	
-	# On s'assure des permissions des bibliothèques :
-	chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/*.so
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
@@ -62,13 +61,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-shared \
+	--enable-static \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install install-dev install-lib DIST_ROOT=${PKG}
-
-# On s'assure des permissions des bibliothèques :
-chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/*.so
 
 installer_doc
 creer_post_installation

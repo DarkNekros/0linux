@@ -14,9 +14,10 @@
 # 	construction-gimp
 # 	construction-xorg
 #
-# Exemple : construire et installer les listes construction-kde et 
-# construction-gimp, le paquet 'libpng' ainsi que tous les paquets commençant 
+# Exemple : construire et installer les listes 'construction-kde' et 
+# 'construction-gimp', le paquet 'libpng' ainsi que tous les paquets commençant 
 # par « alsa » :
+#
 # 	./construction.sh @kde @gimp libpng alsa*
 #
 # Deux options spéciales existent :
@@ -27,6 +28,11 @@
 #                                     installés dans '/usr/local/paquets' 
 #                                     (permet de s'assurer que le système est 
 #                                     complet).
+#
+# On peut installer chaque paquet dans une racine spécifique en spécifiant la
+# variable DESTDIR sur la ligne de commande :
+#
+#	DESTDIR=/mon/chroot ./construction.sh blah
 
 # Emplacement du dépôt des paquets résultant de la construction :
 PKGREPO=${PKGREPO:-/usr/local/paquets}
@@ -45,16 +51,35 @@ compiler_installer() {
 		# On se place dans le répertoire de la recette en paramètre :
 		cd $(dirname ${1})
 		
-		# On désinstalle au préalable ces paquets récalcitrants en attendant mieux :
-		if [ "$(basename ${1} .recette)" = "samba" ] || [ "$(basename ${1} .recette)" = "talloc" ] || [ "$(basename ${1} .recette)" = "evolution-data-server" ] || [ "$(basename ${1} .recette)" = "gnome-shell" ]; then
-			${SUDOBINAIRE} spackrm "$(basename ${1} .recette)"
+		# Si DESTDIR est positionnée :
+		if [ ! "${DESTDIR}" = "" ]; then
+			ROOTCMD="--root=${DESTDIR}"
+		else
+			ROOTCMD=""
 		fi
 		
-		# On n'installe pas nvidia, il écrase des fichiers de Mesa :
-		if [ "$(basename ${1} .recette)" = "nvidia" ]; then
+		# On désinstalle au préalable ces paquets récalcitrants en attendant mieux :
+		if [ "$(basename ${1} .recette)" = "samba" ] || [ "$(basename ${1} .recette)" = "talloc" ] || [ "$(basename ${1} .recette)" = "evolution-data-server" ] || [ "$(basename ${1} .recette)" = "gnome-shell" ]; then
+			
+			# On scanne la racine si elle est spécifiée :
+			if [ ! "${DESTDIR}" = "" ]; then
+				for f in $(find ${DESTDIR}/var/log/paquets/* -type f -name "$(basename ${1} .recette)*"); do
+					if [ "$(echo $(basename ${f}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)" = "$(basename ${1} .recette)" ]; then
+						${SUDOBINAIRE} spackrm ${f} || true
+					fi
+				done
+			
+			# Sinon, c'est bien plus simple, 'spackrm' sait déjà le faire :
+			else
+				${SUDOBINAIRE} spackrm "$(basename ${1} .recette)" || true
+			fi
+		fi
+		
+		# On n'installe ni nvidia ni catalyst, il écrasent des fichiers de Mesa :
+		if [ "$(basename ${1} .recette)" = "nvidia" -o "$(basename ${1} .recette)" = "catalyst" ]; then
 			bash -ex $(basename ${1})
 		else
-			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd $(find ${PKGREPO}/$(uname -m)/ -type d -name "$(basename ${1} .recette)")/*.spack
+			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd ${ROOTCMD} $(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/ -type d -name "$(basename ${1} .recette)")/*.spack
 		fi
 	)
 }

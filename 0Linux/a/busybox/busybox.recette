@@ -20,11 +20,20 @@ sed '1,1i#include <sys/resource.h>' -i include/libbb.h
 # On place notre fichier 'config' :
 cp -a $CWD/config-busybox-${PKGARCH} .config
 
-# On corrige les CFLAGS directement dans le fichier '.config' :
-sed -i -e "s@CONFIG_EXTRA_CFLAGS=""@CONFIG_EXTRA_CFLAGS=\" ${FLAGS} \"@" .config
+# On nettoie tous les drapeaux codés en dur (merci Gentoo) :
+sed -i -r -e 's@[[:space:]]?-(Werror|Os|falign-(functions|jumps|loops|labels)=1|fomit-frame-pointer)\>@@g' Makefile.flags
+sed -i '/^#error Aborting compilation./d' applets/applets.c 
+sed -i 's@-Wl,--gc-sections@@' Makefile
+sed -i \
+	-e "/^CROSS_COMPILE/s:=.*:= ${CC}-:" \
+	-e "/^AR\>/s:=.*:= ${AR}:" \
+	-e "/^CC\>/s:=.*:= ${CC}:" \
+	-e "/^HOSTCC/s:=.*:= ${CC}:" \
+	-e "/^PKG_CONFIG\>/s:=.*:= ${PKG_CONFIG_PATH}:" \
+	Makefile
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS} -fno-strict-aliasing " CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 
 # On modifie l'orthographe car on a déjà un binaire qui va s'appeller 'busybox' !
