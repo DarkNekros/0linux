@@ -7,7 +7,7 @@ EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-krdc}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
 DESC="Client de partage de bureau"
-########################################
+EXTRADEPS="freerdp"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
