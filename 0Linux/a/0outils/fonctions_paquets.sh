@@ -240,13 +240,15 @@ preparer_sources() {
 
 cflags() {
 	# On peut forcer l'architecture pour des cas spéciaux (compilation 
-	# croisée, etc.) en spécifiant $PKGARCH sur la ligne de commande ou en
+	# croisée, etc.) en spécifiant $FORCE_PKGARCH sur la ligne de commande ou en
 	# appelant la fonction dans le script, par exemple : 'cflags i686'.
-	if [ -z ${PKGARCH} ]; then
-		if [ "$1" = "i686" -o "$1" = "x86_64" -o "$1" = "arm" ]; then
-			PKGARCH=${PKGARCH:-"$1"}
+	if [ ! "$1" = "" ]; then
+		PKGARCH="$1"
+	else
+		if [ "${FORCE_PKGARCH}" = "" ]; then
+			PKGARCH="$(uname -m)"
 		else
-			PKGARCH=${PKGARCH:-"$(uname -m)"}
+			PKGARCH="${FORCE_PKGARCH}"
 		fi
 	fi
 	
