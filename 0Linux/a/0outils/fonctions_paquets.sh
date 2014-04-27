@@ -274,6 +274,8 @@ cflags() {
 		FLAGS="-m32 -O2 -march=i686 -pipe"
 		LIBDIRSUFFIX=""
 		USE_ARCH=32 # Utilisé uniquement en multilib
+		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	
 	# x86 64 bits :
 	elif [ ${PKGARCH} = "x86_64" ]; then
@@ -282,6 +284,8 @@ cflags() {
 		FLAGS="-O2 -fPIC -pipe"
 		LIBDIRSUFFIX="64"
 		USE_ARCH=64 # Utilisé uniquement en multilib
+		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	
 	# ARM v7-a :
 	elif [ ${PKGARCH} = "arm" ]; then
@@ -289,6 +293,8 @@ cflags() {
 		export CXX="g++"
 		FLAGS="-O2 -march=armv7-a -mfpu=vfpv3-d16 -pipe"
 		LIBDIRSUFFIX=""
+		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	
 	# Tout le reste :
 	else
@@ -296,11 +302,9 @@ cflags() {
 		export CXX="g++"
 		FLAGS="-O2 -pipe"
 		LIBDIRSUFFIX=""
+		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	fi
-	
-	# Utiles pour la compilation croisée et le multilib :
-	export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
-	export LDFLAGS="${LDFLAGS} -L/usr/lib${LIBDIRSUFFIX}"
 }
 
 installer_doc() {

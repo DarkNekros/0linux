@@ -21,9 +21,6 @@ sed '1,1i#include <sys/resource.h>' -i include/libbb.h
 cp -a $CWD/config-busybox-${PKGARCH} .config
 
 # On nettoie tous les drapeaux codés en dur (merci Gentoo) :
-sed -i -r -e 's@[[:space:]]?-(Werror|Os|falign-(functions|jumps|loops|labels)=1|fomit-frame-pointer)\>@@g' Makefile.flags
-sed -i '/^#error Aborting compilation./d' applets/applets.c 
-sed -i 's@-Wl,--gc-sections@@' Makefile
 sed -i \
 	-e "/^CROSS_COMPILE/s:=.*:= ${CC}-:" \
 	-e "/^AR\>/s:=.*:= ${AR}:" \
