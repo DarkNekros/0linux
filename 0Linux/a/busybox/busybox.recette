@@ -22,8 +22,6 @@ cp -a $CWD/config-busybox-${PKGARCH} .config
 
 # On nettoie tous les drapeaux codés en dur (merci Gentoo) :
 sed -i \
-	-e "/^CROSS_COMPILE/s:=.*:= ${CC}-:" \
-	-e "/^AR\>/s:=.*:= ${AR}:" \
 	-e "/^CC\>/s:=.*:= ${CC}:" \
 	-e "/^HOSTCC/s:=.*:= ${CC}:" \
 	-e "/^PKG_CONFIG\>/s:=.*:= ${PKG_CONFIG_PATH}:" \

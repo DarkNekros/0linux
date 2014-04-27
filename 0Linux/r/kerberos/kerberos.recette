@@ -34,6 +34,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--without-tcl \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -64,6 +65,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-system-et \
 	--with-system-ss \
 	--without-system-verto \
+	--without-tcl \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
