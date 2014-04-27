@@ -5,12 +5,13 @@ fonctionnement, il doit écraser des fichiers vitaux du système avec les
 siens et pose donc un problème d'intégrité du système s'il vient un jour
 à être désinstallé ou mis à niveau.
 
-En cas de désinstallation, il faudrait donc impérativement :
+En cas de désinstallation, il faudra donc impérativement :
 
 1) réinstaller les paquets suivants :
-	spackadd -f mesa glew vdpau x11-proto x11-libs xorg-server
+	mesa glew vdpau x11-proto x11-libs xorg-server
 
-2) Modifier ou supprimer le fichier /etc/X11/xorg.conf.d/nvidia.conf
+2) Modifier ou supprimer le fichier /etc/X11/xorg.conf.d/nvidia.conf ainsi
+   que les fichiers qui blacklistent les pilotes libres
 
 3) Mettre à jour les dépendances des modules :
 	depmod -a

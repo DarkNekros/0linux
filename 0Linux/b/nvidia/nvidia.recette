@@ -143,8 +143,8 @@ chroot . depmod -a
 
 # On prévient l'utilisateur sur la nature intrusive du paquet :
 echo "***"
-echo "IMPORTANT : veuillez lire le fichier '/usr/doc/nvidia-$VERSION>/0-LISEZMOI'"
-echo "si vous prévoyez plus tard de désinstaller 'nvidia' !"
+echo "IMPORTANT : veuillez lire le fichier '/usr/doc/${NAMETGZ}/0-LISEZMOI'"
+echo "si vous prévoyez plus tard de désinstaller '${NAMETGZ}' !"
 echo "***"
 
 EOF

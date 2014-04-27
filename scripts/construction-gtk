@@ -4,6 +4,7 @@ gdk-pixbuf
 glibmm
 dbus-glib
 atk
+graphite
 harfbuzz
 cairo
 cairomm

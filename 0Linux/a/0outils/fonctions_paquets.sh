@@ -100,6 +100,9 @@ else
 fi
 
 telecharger_sources() {
+	# On peut ajouter une option à 'wget' en paramètre en cas de besoin (notamment --referer) :
+	WGETEXTRAOPTION=${1}
+	
 	# Pour tout ce qu'on trouve dans $WGET, que ce soit une variable unique ou un tableau contenant plusieurs URL :
 	
 	# On télécharge chaque archive source :
@@ -108,7 +111,7 @@ telecharger_sources() {
 		# On télécharge l'archive source en '.part 'et on retombe sur le FTP de 0linux
 		# si le téléchargement se passe mal (fichier inexistant, erreur du serveur, etc.) :
 		if [ ! -r ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) ]; then
-			wget -vc \
+			wget -vc ${WGETEXTRAOPTION} \
 				--no-check-certificate \
 				--timeout=20 \
 				--tries=3 \
