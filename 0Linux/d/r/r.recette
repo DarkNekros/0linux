@@ -75,7 +75,7 @@ Libs.private:
 EOF
 
 # On corrige pour prendre en charge notre suffixe et la version :
-sed -i -e "s@ARCH@${LIBDIRSUFFIX}@g"-e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libR.pc
+sed -i -e "s@ARCH@${LIBDIRSUFFIX}@g" -e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libR.pc
 
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libRmath.pc << "EOF"
 includedir=/usr/include
