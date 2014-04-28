@@ -4,6 +4,13 @@
 set -e
 umask 022
 
+# Fonction qui quitte le processus et émet un message :
+# $f "MESSAGE"
+argh() {
+	echo "${1}"
+	exit 1
+}
+
 # Le répertoire courant :
 CWD=$(pwd)
 
@@ -28,11 +35,15 @@ if [ "$(echo $(basename $0) | egrep '\.recette$')" = "" ]; then
 	# On appelle les 'fonctions_paquets.sh' depuis un script autre qu'une recette.
 	# Emplacement où on compile et on empaquète : :
 	TMP=${TMP:-${MARMITE}}
-	mkdir -p ${TMP}
 else
 	# On appelle bien les 'fonctions_paquets.sh' depuis une recette.
 	# On définit $NAMETGZ selon le nom de la recette s'il n'est pas déjà défini :
 	[ -z ${NAMETGZ} ] && NAMETGZ="$(basename $0 .recette)"
+	
+	# Les noms ne doivent comporter ni majuscule, ni espace
+	if [ ! "$(echo ${NAMETGZ} | egrep '[A-Z]|[[:space:]]')" = "" ]; then
+		argh "La variable NAMETGZ ne doit comporter ni majuscules ni espaces."
+	fi
 	
 	# On crée un journal complet automatiquement en plus des messages à l'écran.
 	# Voir http://stackoverflow.com/a/11886837 - c'est en fait loin d'être
@@ -79,7 +90,6 @@ else
 					break
 				fi
 			fi
-			
 		done
 	fi
 	
@@ -87,36 +97,29 @@ else
 	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux
 	
 	# On crée un lien générique vers notre répertoire de doc (Xorg en a besoin, notamment) :
-	if [ -n "${NAMESRC}" ]; then
+	[ -z ${NAMESRC} ] && NAMESRC="${NAMETGZ}"
 		
-		# Si $NAMESRC et $NAMETGZ sont différents, on crée un lien $NAMESRC -> $NAMETGZ -> $NAMETGZ-$VERSION :
-		if [ ! "${NAMESRC}" = "${NAMETGZ}" ]; then
-			ln -sf ${NAMETGZ} ${PKG}/usr/doc/${NAMESRC}
-			ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
-		
-		# Sinon, on crée un simple lien $NAMETGZ -> $NAMETGZ-$VERSION :
-		else
-			ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
-		fi
-	fi
+	# Si $NAMESRC et $NAMETGZ sont différents, on crée un lien $NAMESRC -> $NAMETGZ -> $NAMETGZ-$VERSION :
+	if [ ! "${NAMESRC}" = "${NAMETGZ}" ]; then
+		ln -sf ${NAMETGZ} ${PKG}/usr/doc/${NAMESRC}
+		ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
 	
-else
-	# Pour tous les autres cas, on appelle les 'fonctions_paquets.sh' depuis un script autre qu'une recette :
-	# Emplacement où on compile et on empaquète : :
-	TMP=${TMP:-${MARMITE}}
-	mkdir -p ${TMP}
+	# Sinon, on crée un simple lien $NAMETGZ -> $NAMETGZ-$VERSION :
+	else
+		ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
+	fi
 fi
 
 telecharger_sources() {
 	# On peut ajouter une option à 'wget' en paramètre en cas de besoin (notamment --referer) :
+	# Ex. : 'telecharger_sources --referer=http://www.bla.fr?click=ok'
 	WGETEXTRAOPTION=${1}
 	
-	# Pour tout ce qu'on trouve dans $WGET, que ce soit une variable unique ou un tableau contenant plusieurs URL :
-	
-	# On télécharge chaque archive source :
+	# Pour tout ce qu'on trouve dans $WGET, que ce soit une variable unique ou
+	# un tableau contenant plusieurs URL, on télécharge chaque archive source :
 	for wgeturl in ${WGET[*]}; do
 		
-		# On télécharge l'archive source en '.part e t on retombe sur le FTP de 0linux
+		# On télécharge l'archive source en '.part et on retombe sur le FTP de 0linux
 		# si le téléchargement se passe mal (fichier inexistant, erreur du serveur, etc.) :
 		if [ ! -r ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) ]; then
 			wget -vc ${WGETEXTRAOPTION} \
@@ -138,13 +141,15 @@ telecharger_sources() {
 		# On vérifie l'archive téléchargée :
 		case $(basename ${wgeturl}) in
 			*.tar.*|*.TAR.*|*.tgz|*.TGZ|*.tbz*|*.TBZ*)
-				tar ft ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) 1>/dev/null 2>/dev/null
+				tar ft ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) 1>/dev/null 2>/dev/null || \
+					argh "L'archive '$(basename ${wgeturl}) 'semble incorrecte."
 			;;
 			*.zip|*.ZIP)
-				unzip -tq ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) 1>/dev/null 2>/dev/null
+				unzip -tq ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) 1>/dev/null 2>/dev/null || \
+					argh "L'archive '$(basename ${wgeturl}) 'semble incorrecte."
 			;;
 			*)
-				echo "Format d'archive source non pris en charge. Elle ne sera pas vérifiée."
+				echo "Format d'archive source non pris en charge. Vérification ignorée."
 			;;
 		esac
 	done
@@ -169,35 +174,26 @@ preparer_sources() {
 		if [ ${#WGET[*]} -gt 1 ]; then
 			
 			# On tente de sauver les meubles si $NAMESRC-$VERSION.$EXT existe :
-			for wgetline in ${WGET[*]}; do
-				if [ "$(basename ${wgetline})" = "$NAMESRC-$VERSION.$EXT" ]; then
-					CURRENTARCHIVE="$NAMESRC-$VERSION.$EXT"
-					break
-				fi
-			done
-			
+			if [ -n ${EXT} ]; then
+				for wgetline in ${WGET[*]}; do
+					if [ "$(basename ${wgetline})" = "$NAMESRC-$VERSION.$EXT" ]; then
+						CURRENTARCHIVE="$NAMESRC-$VERSION.$EXT"
+						break
+					fi
+				done
+			fi
 			# Si l'on n'a rien trouvé :
 			if [ -z ${CURRENTARCHIVE} ]; then
 				echo "Erreur : plusieurs archives sources non-standards sont spécifiées dans"
-				echo "cette recette. Appelez obligatoirement 'preparer_sources' avec un argument."
+				echo "cette recette. Appelez obligatoirement 'preparer_sources' suivi du nom"
+				echo "l'archive à décompacter, par exemple :"
+				echo "	preparer_sources nomdelarchive.tar.gz"
 				exit 1
 			fi
 		else
 			CURRENTARCHIVE="$(basename ${WGET})"
 		fi
 	fi
-	
-	# Cette fonction doit être améliorée pour prendre en charge les autres
-	# formats de compressions ainsi que l'absence d'un répertoire principal
-	# dans l'archive. Pour le moment, on doit extraire manuellement.
-	case ${EXT} in
-		tar*|TAR*|tbz*|TBZ*|tgz|TGZ|txz|TXZ)
-			NAME=$(tar ft ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | head -n 1 | awk -F/ '{ print $1 }')
-		;;
-		*)
-			echo "Format d'archive (.${EXT}) non géré pour l'instant ; elle ne sera pas vérifiée."
-		;;
-	esac
 	
 	# On nettoie au maximum :
 	if [ -n "${NAME}" -a  "${NAME}" != "." ]; then
@@ -208,17 +204,42 @@ preparer_sources() {
 		rm -rf ${TMP}/${NAMESRC}-build
 	fi
 	
-	# On extrait et on se place dans les sources :
+	# Si l'archive contient plus d'un élément différent, alors on considère 
+	# que tout est en vrac à l'intérieur, on devra donc décompacter dans un
+	# répertoire dédié :
 	echo "Extraction en cours..."
 	case ${EXT} in
 		tar*|TAR*|tbz*|TBZ*|tgz|TGZ|txz|TXZ)
-			tar xf ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -C $TMP
+			if [ $(tar ft ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | cut -d'/' -f1 | uniq | wc -l) -eq 1 ]; then
+				NAME="$(tar ft ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | cut -d'/' -f1 | uniq)"
+				tar xf ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -C $TMP
+			else
+				echo "L'archive contient des fichiers en vrac. Extraction dans :"
+				echo "	${TMP}/${CURRENTARCHIVE}/"
+				NAME="${TMP}/${CURRENTARCHIVE}"
+				mkdir -p ${TMP}/${CURRENTARCHIVE}
+				tar xf ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -C $TMP/${CURRENTARCHIVE}
+			fi
 		;;
-		zip|ZIP)
-			unzip ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -d $TMP
+		*.zip|*.ZIP)
+			if [ $(unzip -l ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | egrep '/$' | sed 's/^.* \(.*\/$\)/\1/p' -n | cut -d'/' -f1 | uniq | wc -l) -eq 1 ]; then
+				NAME="$(unzip -l ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | egrep '/$' | sed 's/^.* \(.*\/$\)/\1/p' -n | cut -d'/' -f1 | uniq)"
+				unzip ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -d $TMP
+			else
+				echo "L'archive contient des fichiers en vrac. Extraction dans :"
+				echo "	${TMP}/${CURRENTARCHIVE}/"
+				NAME="${CURRENTARCHIVE}"
+				mkdir -p ${TMP}/${CURRENTARCHIVE}
+				unzip ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -d $TMP/${CURRENTARCHIVE}
+			fi
+		;;
+		*)
+			echo "Format d'archive (.${EXT}) non géré pour l'instant ; elle ne sera pas vérifiée."
+			sleep 1
 		;;
 	esac
 	
+	# On se place dans les sources :
 	if [ -n "${NAME}" ]; then
 		
 		# On définit des permissions correctes pour l'ensemble des sources :

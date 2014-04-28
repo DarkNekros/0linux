@@ -10,26 +10,20 @@ WGET=(ftp://ftp.musicbrainz.org/pub/musicbrainz/$NAMESRC-2.1.5.$EXT
       https://github.com/downloads/metabrainz/$NAMESRC/$NAMESRC-4.0.3.$EXT
       https://github.com/downloads/metabrainz/$NAMESRC/$NAMESRC-$VERSION.$EXT
      )
-
 DESC="Bibliothèques de gestion de signatures audio"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
-cflags
 
 # On compile la version 2.1.5 :
-tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-2.1.5.$EXT -C $TMP
-cd $TMP/$NAMESRC-2.1.5
-
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+preparer_sources $NAMESRC-2.1.5.$EXT
+cflags
 
 # On corrige la compilation avec GCC >= 4.3.x :
 cat $CWD/libmusicbrainz.gcc4.patch | patch -p1
 
+# Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -39,7 +33,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-2.1.5 \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
@@ -49,15 +43,14 @@ cd python
 fakeroot python setup.py install --root=${pkgdir}
 cd -
 
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMESRC}-2.1.5
+
 # On compile maintenant la version 3.0.3 :
-tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-3.0.3.$EXT -C $TMP
-cd $TMP/$NAMESRC-3.0.3
+preparer_sources $NAMESRC-3.0.3.$EXT
+cflags
 
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
+# Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
 	-D CMAKE_BUILD_TYPE=Release \
@@ -69,15 +62,14 @@ cmake \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMESRC}-3.0.3
+
 # On compile maintenant la version 3.0.3 :
-tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-4.0.3.$EXT -C $TMP
-cd $TMP/$NAMESRC-4.0.3
+preparer_sources $NAMESRC-4.0.3.$EXT
+cflags
 
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
+# Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
 	-D CMAKE_BUILD_TYPE=Release \
@@ -88,16 +80,15 @@ cmake \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMESRC}-4.0.3
 
 # On compile maintenant la version de la recette :
-tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-$VERSION.$EXT -C $TMP
-cd $TMP/$NAMESRC-$VERSION
+preparer_sources
+cflags
 
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
+# Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
 	-D CMAKE_BUILD_TYPE=Release \
