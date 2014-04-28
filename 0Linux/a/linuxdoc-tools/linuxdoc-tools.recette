@@ -20,11 +20,11 @@ cat $CWD/linuxdoc-tools-0.9.13-letter.patch | patch -p1
 cat $CWD/linuxdoc-tools.libdir.patch | sed -i -e "s:@@MULTILIB_DIR@@:lib${LIBDIRSUFFIX}:g" | patch -p1
 sed -i "75s/^/\/\//" rtf-fix/rtf2rtf.l
 
-# On modifie le PATH pour en retire 'tex', non fourni et qui pose problème :
+# On modifie le PATH pour en retirer 'tex', non fourni et qui pose problème :
 ORIGINALPATH=$PATH
 export PATH=$( echo $PATH | sed -e 's?:/usr/share/texmf/bin??g' -e 's?/usr/share/texmf/bin:??g' )
 
-# Comfiguration :
+# Configuration :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \

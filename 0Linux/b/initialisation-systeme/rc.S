@@ -204,7 +204,7 @@ fsck -V $FORCEFSCK -C -R -A -a
 # On monte tous les systèmes de fichiers locaux et non distants (le réseau
 # n'est pas encore activé à ce stade). devpts, sysfs et proc sont déjà montés :
 echo "Montage des sytèmes de fichiers locaux..."
-mount -v -a -F -t nonnfs,nonnfs3,nonnfs4,nosmbfs,nocifs,noproc,nosysfs,nodevpts
+mount -v -a -F -t nonfs,nonnfs,nonnfs3,nonnfs4,nosmbfs,nocifs,noproc,nosysfs,nodevpts
 
 # Si random-seed est présent, on « crée du hasard » :
 if [ -f /etc/random-seed ]; then

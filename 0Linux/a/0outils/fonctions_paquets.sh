@@ -23,12 +23,20 @@ PKGREPO=${PKGREPO:-/usr/local/paquets}
 mkdir -p ${MARMITE}
 mkdir -p ${MARMITELOGS}
 
-# Si cette variable n'est pas vide, c'est qu'on appelle d'une recette :
-if [ -n "${NAMETGZ}" ]; then
+# On vérifie si on appelle ces fonctions depuis une recette :
+if [ "$(echo $(basename $0) | egrep '\.recette$')" = "" ]; then
+	# On appelle les 'fonctions_paquets.sh' depuis un script autre qu'une recette.
+	# Emplacement où on compile et on empaquète : :
+	TMP=${TMP:-${MARMITE}}
+	mkdir -p ${TMP}
+else
+	# On appelle bien les 'fonctions_paquets.sh' depuis une recette.
+	# On définit $NAMETGZ selon le nom de la recette s'il n'est pas déjà défini :
+	[ -z ${NAMETGZ} ] && NAMETGZ="$(basename $0 .recette)"
 	
 	# On crée un journal complet automatiquement en plus des messages à l'écran.
 	# Voir http://stackoverflow.com/a/11886837 - c'est en fait loin d'être
-	# évident à faire depuis un script.
+	# évident à faire depuis un script :
 	rm -f ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log
 	exec >  >(tee -a ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log)
 	exec 2> >(tee -a ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log >&2)
@@ -108,7 +116,7 @@ telecharger_sources() {
 	# On télécharge chaque archive source :
 	for wgeturl in ${WGET[*]}; do
 		
-		# On télécharge l'archive source en '.part 'et on retombe sur le FTP de 0linux
+		# On télécharge l'archive source en '.part e t on retombe sur le FTP de 0linux
 		# si le téléchargement se passe mal (fichier inexistant, erreur du serveur, etc.) :
 		if [ ! -r ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) ]; then
 			wget -vc ${WGETEXTRAOPTION} \
@@ -187,7 +195,7 @@ preparer_sources() {
 			NAME=$(tar ft ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | head -n 1 | awk -F/ '{ print $1 }')
 		;;
 		*)
-			echo "Format d'archive source (.${EXT}) non géré pour l'instant, désolé !"
+			echo "Format d'archive (.${EXT}) non géré pour l'instant ; elle ne sera pas vérifiée."
 		;;
 	esac
 	
@@ -203,7 +211,7 @@ preparer_sources() {
 	# On extrait et on se place dans les sources :
 	echo "Extraction en cours..."
 	case ${EXT} in
-		tar*|TAR*|tgz|TGZ|tbz*|TBZ*)
+		tar*|TAR*|tbz*|TBZ*|tgz|TGZ|txz|TXZ)
 			tar xf ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -C $TMP
 		;;
 		zip|ZIP)
