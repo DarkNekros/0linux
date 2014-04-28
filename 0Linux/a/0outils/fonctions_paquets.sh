@@ -96,9 +96,10 @@ else
 	# On crée le répertoire de doc pour notre journal et nos dépendances :
 	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux
 	
-	# On crée un lien générique vers notre répertoire de doc (Xorg en a besoin, notamment) :
+	# Si $NAMESRC n'est pas défini (rare), on lui affecte $NAMETGZ :
 	[ -z ${NAMESRC} ] && NAMESRC="${NAMETGZ}"
-		
+	
+	# On crée un lien générique vers notre répertoire de doc (Xorg en a besoin, notamment) :
 	# Si $NAMESRC et $NAMETGZ sont différents, on crée un lien $NAMESRC -> $NAMETGZ -> $NAMETGZ-$VERSION :
 	if [ ! "${NAMESRC}" = "${NAMETGZ}" ]; then
 		ln -sf ${NAMETGZ} ${PKG}/usr/doc/${NAMESRC}

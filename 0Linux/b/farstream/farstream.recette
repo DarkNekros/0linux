@@ -13,17 +13,11 @@ DESC="Ensemble réseau pour les communications audio/vidéo"
 . /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
+
+# On compile la version 0.1.x :
+preparer_sources $NAMESRC-0.1.2.$EXT
 cflags
 
-# On compile la version 0.1.2 :
-tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-0.1.2.$EXT -C $TMP
-cd $TMP/$NAMESRC-0.1.2
-
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-	
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -40,15 +34,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On compile maintenant la version normale de la recette :
-tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-$VERSION.$EXT -C $TMP
-cd $TMP/$NAMESRC-$VERSION
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-0.1.2
 
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-	
+# On compile maintenant la version de la recette :
+preparer_sources
+cflags
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \

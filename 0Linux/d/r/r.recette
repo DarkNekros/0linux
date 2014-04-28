@@ -90,7 +90,7 @@ Cflags: -I${includedir}
 EOF
 
 # On corrige pour prendre en charge notre suffixe et la version :
-sed -i -e "s@ARCH@${LIBDIRSUFFIX}@g"-e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libRmath.pc
+sed -i -e "s@ARCH@${LIBDIRSUFFIX}@g" -e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libRmath.pc
 
 installer_doc
 creer_post_installation
