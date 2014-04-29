@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMETGZ=${NAMETGZ:-obsolete-abonnement}
-VERSION=${VERSION:-6}
+VERSION=${VERSION:-7}
 DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -41,6 +41,7 @@ cat >> ${PKG}/post-install.sh << "EOF"
 	gtk3 \
 	gtk2mm \
 	gtk3mm \
+	iwlwifi-ucode \
 	js185 \
 	kdeadmin \
 	kdenetwork \
