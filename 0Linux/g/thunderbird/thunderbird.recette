@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-24.4.0}
+VERSION=${VERSION:-24.5.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-thunderbird}
 . /usr/share/0outils/fonctions_paquets.sh
