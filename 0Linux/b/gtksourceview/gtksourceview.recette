@@ -39,7 +39,7 @@ installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.10.5
 
 # On compile maintenant la version de la recette :
 preparer_sources
-cflas
+cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
