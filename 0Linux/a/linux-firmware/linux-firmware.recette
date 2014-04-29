@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+VERSION=${VERSION:-dec41bce44}
+WGET=${WGET:-git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git}
+DESC="Firmwares et microcodes matériels spécifiques pour le noyau Linux"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags # Pour définir LIBDIRSUFFIX
+
+# On clone le dépôt git :
+mkdir -p ${PKGSOURCES}/${NAMETGZ}
+cd ${PKGSOURCES}/${NAMETGZ}
+git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+
+# On passe le dépôt à la version voulue :
+cd linux-firmware
+git checkout ${VERSION}
+
+# On place tous les firmwares :
+mkdir -p  ${PKG}/usr/lib${LIBDIRSUFFIX}/firmware
+cp -a * ${PKG}/usr/lib${LIBDIRSUFFIX}/firmware/
+
+# On supprime les fichiers de construction et la doc:
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/firmware/{README*,configure,GPL*,LICEN*,WHENCE,Makefile*}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

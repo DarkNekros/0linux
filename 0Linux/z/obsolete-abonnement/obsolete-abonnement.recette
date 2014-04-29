@@ -100,6 +100,7 @@ gtk2: fusionné dans 'gtk'
 gtk3: fusionné dans 'gtk'
 gtk2mm: fusionné dans 'gtkmm'
 gtk3mm: fusionné dans 'gtkmm'
+iwlwifi-ucode: remplacé par 'linux-firmware'
 js185: remplacé par 'mozjs'
 kdeadmin: supprimé dans la distribution de KDE
 kdenetwork: supprimé dans la distribution de KDE
