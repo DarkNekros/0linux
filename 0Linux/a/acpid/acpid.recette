@@ -2,10 +2,10 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-acpid}
-VERSION=${VERSION:-1.0.10}
-EXT=${EXT:-tar.gz}
+VERSION=${VERSION:-2.0.22}
+EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-acpid}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/${NAMESRC}2/$NAMESRC-$VERSION.$EXT}
 DESC="Gestion de l'énergie ACPI"
 
 . /usr/share/0outils/fonctions_paquets.sh
@@ -19,8 +19,18 @@ mkdir -p ${PKG}/etc/acpi/events
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
 make -j${JOBS} || make
-fakeroot make install INSTPREFIX=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 # On copie les scripts et la configuration :
 cp -a $CWD/acpi_handler.sh ${PKG}/etc/acpi/acpi_handler.sh.0nouveau
@@ -40,7 +50,7 @@ acpid_start() {
 }
 
 acpid_stop() {
-	echo -e"[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt du démon ACPI..."
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt du démon ACPI..."
 	killall acpid
 }
 
@@ -66,10 +76,6 @@ esac
 
 EOF
 chmod +x ${PKG}/etc/rc.d/rc.acpid
-
-# On déplace les manuels dans /usr/man :
-mv ${PKG}/usr/share/man ${PKG}/usr/
-rm -rf ${PKG}/usr/share
 
 installer_doc
 creer_post_installation

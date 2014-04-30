@@ -11,31 +11,28 @@
 # Par exemple :
 #	PKGSOURCES=/quelque/part/sources/ ./0linux-toolchain.recette
 
-# Il est fortement recommandé de NE PAS faire confiance à l'environnement et
-# d'ajouter au début de son PATH le répertoire '/cross-tools', ainsi :
-# 	export PATH=/cross-tools/bin:/cross-tools/usr/bin:${PATH}
-
-# On doit entrer dans un environnement vide avec notamment le PATH placant la
-# nouvelle chaine d'outils en premier, qui va donc se remplir au fur et à
-# mesure en la privilégiant toujours à l'hôte ainsi que la locale (C ou POSIX
-# et pas autre chose) :
-#env -i \
-#	HOME=${HOME} \
-#	LC_ALL="POSIX" \
-#	PATH="/cross-tools/bin:/bin:/usr/bin" \
-#	PS1='\u:\w\$ ' \
-#	TERM=${TERM} \
-#	/bin/bash --login +h
+# Vous devez avoir un environnement SAIN et VIDE pour lancer ce script.
+# Exemple :
+#	env -i PKGSOURCES=/home/appzer0/0/pub/archives_sources/ FORCE_PKGARCH="arm" ./0linux-toolchain.recette
 
 # On supprime le « hash » servant de cache à bash (quel poète) :
 set +h
 
+# On prépare l'environnement :
+umask 022
+export PATH="/cross-tools/bin:/cross-tools/usr/bin:/cross-tools/sbin:/cross-tools/usr/sbin:/usr/bin:/usr/sbin"
+export HOME=/home/nimportequi
+export LC_ALL="POSIX"
+export PS1='\u:\w\$ '
+export TERM="linux"
+
 # On affiche l'environnement 10 secondes :
-echo "Voici 10 secondes pour vérifier l'environnement ci-dessous:"
+echo "Vérifiez l'environnement ci-dessous:"
 echo "---"
 env
 echo "---"
-sleep 10
+echo "Appuyez sur ENTRÉE pour continuer."
+read BLAH;
 
 NAMESRC=${NAMESRC:-0linux-toolchain}
 VERSION=${VERSION:-$(date +%d%m%Y)}
@@ -47,6 +44,9 @@ DESC="La chaîne d'outils croisés pour 0Linux"
 # On a besoin de cflags() pour définir $PKGARCH et $LIBDIRSUFFIX :
 cflags
 
+# On nettoie au maximum l'environnement créé par cflags() :
+unset ARCH CC CFLAGS CPP CPPFLAGS CXX CXXFLAGS LDFLAGS AR AS RANLIB PKG_CONFIG_PATH USE_ARCH
+
 # La racine du système hypothétique final. Ici, c'est le paquet lui-même :
 FINAL_SYSROOT=${PKG}
 
@@ -55,6 +55,9 @@ HOST=$(echo ${MACHTYPE} | sed -e 's/-[^-]*/-cross/')
 
 # La machine cible :
 TARGET="${PKGARCH}-0linux-linux-gnu"
+
+# ARM a besoin de l'OS et de l'ABI :
+[ "${PKGARCH}" = "arm" ] && TARGET="${TARGET}eabi"
 
 # On vérifie que les liens à la racine existent :
 if [ ! -L /cross-tools ]; then
@@ -160,19 +163,22 @@ fakeroot make install
 cd -
 rm -rf $TMP/$FILE
 
-## m4
-#cd $TMP
-#rm -rf $TMP/$M4
-#tar xf $PKGSOURCES/m4/$M4.tar.*
-#cd $TMP/$M4
-#
-#./configure --prefix=/cross-tools
-#
-#make -j${JOBS} || make
-#fakeroot make install
-#
-#cd -
-#rm -rf $TMP/$M4
+# m4
+cd $TMP
+rm -rf $TMP/$M4
+tar xf $PKGSOURCES/m4/$M4.tar.*
+cd $TMP/$M4
+
+# On corrige la compilation avec les plus récentes 'glibc' :
+sed -i '/_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");/d' lib/stdio.in.h
+
+./configure --prefix=/cross-tools
+
+make -j${JOBS} || make
+fakeroot make install
+
+cd -
+rm -rf $TMP/$M4
 
 # ncurses
 cd $TMP
@@ -351,6 +357,7 @@ $TMP/$GCC/configure \
 	--disable-libsanitizer \
 	--disable-libssp \
 	--disable-nls \
+	--disable-ppl-version-check \
 	--disable-threads \
 	--disable-shared \
 	--disable-target-libiberty \
@@ -367,6 +374,7 @@ $TMP/$GCC/configure \
 	--with-sysroot=${FINAL_SYSROOT} \
 	--with-native-system-header-dir=/tools/include \
 	--without-headers \
+	--without-ppl \
 	--build=${HOST} \
 	--host=${HOST} \
 	--target=${TARGET}
@@ -399,7 +407,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--prefix=/tools \
 		--cache-file=config.cache \
 		--disable-profile \
-		--enable-kernel=3.1.0 \
+		--enable-kernel=3.12.0 \
 		--enable-obsolete-rpc \
 		--with-__thread \
 		--with-binutils=/cross-tools/bin \
@@ -439,7 +447,7 @@ RANLIB="${TARGET}-ranlib" \
 	--libdir=/tools/lib${LIBDIRSUFFIX} \
 	--cache-file=config.cache \
 	--disable-profile \
-	--enable-kernel=3.1.0 \
+	--enable-kernel=3.12.0 \
 	--enable-obsolete-rpc \
 	--with-__thread \
 	--with-binutils=/cross-tools/bin \
@@ -477,6 +485,7 @@ $TMP/$GCC/configure \
 	--prefix=/cross-tools \
 	--disable-cloog-version-check \
 	--disable-nls \
+	--disable-ppl-version-check \
 	--disable-static \
 	--enable-threads=posix \
 	--enable-__cxa_atexit \
@@ -494,6 +503,7 @@ $TMP/$GCC/configure \
 	--with-mpc=/cross-tools \
 	--with-mpfr=/cross-tools \
 	--with-native-system-header-dir=/tools/include \
+	--without-ppl \
 	--with-sysroot=${FINAL_SYSROOT} \
 	--with-system-zlib \
 	--build=${HOST} \
@@ -519,6 +529,9 @@ export    CXX="${TARGET}-g++"
 export     LD="${TARGET}-ld"
 export RANLIB="${TARGET}-ranlib"
 export  STRIP="${TARGET}-strip"
+
+# On remplit cette fois complètement notre environnement :
+cflags
 
 # gmp
 cd $TMP
@@ -709,6 +722,7 @@ $TMP/$GCC/configure \
 	--disable-install-libiberty \
 	--disable-libstdcxx-pch \
 	--disable-nls \
+	--disable-ppl-version-check \
 	--enable-__cxa_atexit \
 	--enable-c99 \
 	--enable-languages=c,c++ \
@@ -717,6 +731,7 @@ $TMP/$GCC/configure \
 	--enable-shared \
 	--enable-threads=posix \
 	--with-local-prefix=/tools \
+	--without-ppl \
 	--build=${HOST} \
 	--host=${TARGET} \
 	--target=${TARGET}
