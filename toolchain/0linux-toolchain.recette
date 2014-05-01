@@ -347,7 +347,6 @@ AR=ar \
 LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
 $TMP/$GCC/configure \
 	--prefix=/cross-tools \
-	--disable-cloog-version-check \
 	--disable-decimal-float \
 	--disable-libatomic \
 	--disable-libgomp \
@@ -357,7 +356,6 @@ $TMP/$GCC/configure \
 	--disable-libsanitizer \
 	--disable-libssp \
 	--disable-nls \
-	--disable-ppl-version-check \
 	--disable-threads \
 	--disable-shared \
 	--disable-target-libiberty \
@@ -367,12 +365,14 @@ $TMP/$GCC/configure \
 	--enable-languages=c \
 	--with-cloog=/cross-tools \
 	--with-gmp=/cross-tools \
+	--with-isl=/cross-tools \
 	--with-mpc=/cross-tools \
 	--with-mpfr=/cross-tools \
 	--with-local-prefix=/tools \
 	--with-newlib \
 	--with-sysroot=${FINAL_SYSROOT} \
 	--with-native-system-header-dir=/tools/include \
+	--without-cloog \
 	--without-headers \
 	--without-ppl \
 	--build=${HOST} \
@@ -484,8 +484,8 @@ LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
 $TMP/$GCC/configure \
 	--prefix=/cross-tools \
 	--disable-cloog-version-check \
+	--disable-isl-version-check \
 	--disable-nls \
-	--disable-ppl-version-check \
 	--disable-static \
 	--enable-threads=posix \
 	--enable-__cxa_atexit \
@@ -499,11 +499,11 @@ $TMP/$GCC/configure \
 	--enable-threads=posix \
 	--with-cloog=/cross-tools \
 	--with-gmp=/cross-tools \
+	--with-isl=/cross-tools \
 	--with-local-prefix=/tools \
 	--with-mpc=/cross-tools \
 	--with-mpfr=/cross-tools \
 	--with-native-system-header-dir=/tools/include \
-	--without-ppl \
 	--with-sysroot=${FINAL_SYSROOT} \
 	--with-system-zlib \
 	--build=${HOST} \
@@ -719,19 +719,19 @@ $TMP/$GCC/configure \
 	--libdir=/tools/lib${LIBDIRSUFFIX} \
 	--libexecdir=/tools/lib${LIBDIRSUFFIX} \
 	--disable-cloog-version-check \
+	--disable-isl-version-check \
 	--disable-install-libiberty \
 	--disable-libstdcxx-pch \
 	--disable-nls \
-	--disable-ppl-version-check \
 	--enable-__cxa_atexit \
 	--enable-c99 \
+	--enable-cloog-backend=isl \
 	--enable-languages=c,c++ \
 	--enable-libstdcxx-time \
 	--enable-long-long \
 	--enable-shared \
 	--enable-threads=posix \
 	--with-local-prefix=/tools \
-	--without-ppl \
 	--build=${HOST} \
 	--host=${TARGET} \
 	--target=${TARGET}
