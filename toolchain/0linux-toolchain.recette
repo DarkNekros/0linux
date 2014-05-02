@@ -12,6 +12,8 @@
 #	PKGSOURCES=/quelque/part/sources/ ./0linux-toolchain.recette
 
 # Vous devez avoir un environnement SAIN et VIDE pour lancer ce script.
+# Utilisez FORCE_PKGARCH de préférence pour l'architecture (le multilib peut vous
+# écraser PKGARCH).
 # Exemple :
 #	env -i PKGSOURCES=/home/appzer0/0/pub/archives_sources/ FORCE_PKGARCH="arm" ./0linux-toolchain.recette
 
@@ -1007,11 +1009,10 @@ CC="${CC}" CXX="${CXX}" \
 	--build=${HOST} \
 	--host=${TARGET}
 
-make -j${JOBS} -C gettext-tools/gnulib-lib || make -C gettext-tools/gnulib-lib
-make -j${JOBS} -C src gettext-tools/msgfmt || make -C gettext-tools/src msgfmt
-
-fakeroot cp src/msgfmt /tools/bin
-chmod +x /tools/bin/msgfmt
+make -j${JOBS} -C gnulib-lib || make -C gnulib-lib
+make -j${JOBS} -C src msgfmt msgmerge xgettext || make -C msgfmt msgmerge xgettext
+fakeroot cp src/{msgfmt,msgmerge,xgettext} /tools/bin/
+chmod +x /tools/bin/{msgfmt,msgmerge,xgettext}
 
 cd -
 rm -rf $TMP/$GETTEXT

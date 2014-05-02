@@ -1,10 +1,13 @@
 # Ceci est le fichier de configuration pour le démon ACPI.
 
-# Exemple : pour traiter tous les événements liés à « power » comme
-# l'extinction immédiate de la machine, saisissez :
-#
-# event=button power.*
-# action=/sbin/init 0
-
+# Ici on demande au script 'acpi_handler.sh' de traiter tous les évènements :
 event=.*
 action=/etc/acpi/acpi_handler.sh %e
+
+# On peut aussi faire ainsi :pour traiter tous les événements liés à « power »
+# comme l'extinction immédiate de la machine :
+# event=button power.*
+# action=/sbin/init 0
+#
+# Il est toutefois recommandé de s'appuyer sur 'acpi_handler.sh', lequel ne
+# sera jamais écrasé par une mise à jour du paquet 'acpid'.
