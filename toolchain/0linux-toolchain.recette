@@ -15,6 +15,19 @@
 # Exemple :
 #	env -i PKGSOURCES=/home/appzer0/0/pub/archives_sources/ FORCE_PKGARCH="arm" ./0linux-toolchain.recette
 
+NAMESRC=${NAMESRC:-0linux-toolchain}
+VERSION=${VERSION:-$(date +%d%m%Y)}
+NAMETGZ=${NAMETGZ:-0linux-toolchain}
+DESC="La chaîne d'outils croisés pour 0Linux"
+
+. /usr/share/0outils/fonctions_paquets.sh
+
+# On a besoin de cflags() pour définir $PKGARCH et $LIBDIRSUFFIX :
+cflags
+
+# On nettoie au maximum l'environnement créé par cflags() :
+unset ARCH CC CFLAGS CPP CPPFLAGS CXX CXXFLAGS LDFLAGS AR AS NM PKG_CONFIG_PATH RANLIB USE_ARCH
+
 # On supprime le « hash » servant de cache à bash (quel poète) :
 set +h
 
@@ -34,19 +47,6 @@ echo "---"
 echo "Appuyez sur ENTRÉE pour continuer."
 read BLAH;
 
-NAMESRC=${NAMESRC:-0linux-toolchain}
-VERSION=${VERSION:-$(date +%d%m%Y)}
-NAMETGZ=${NAMETGZ:-0linux-toolchain}
-DESC="La chaîne d'outils croisés pour 0Linux"
-
-. /usr/share/0outils/fonctions_paquets.sh
-
-# On a besoin de cflags() pour définir $PKGARCH et $LIBDIRSUFFIX :
-cflags
-
-# On nettoie au maximum l'environnement créé par cflags() :
-unset ARCH CC CFLAGS CPP CPPFLAGS CXX CXXFLAGS LDFLAGS AR AS RANLIB PKG_CONFIG_PATH USE_ARCH
-
 # La racine du système hypothétique final. Ici, c'est le paquet lui-même :
 FINAL_SYSROOT=${PKG}
 
@@ -56,7 +56,7 @@ HOST=$(echo ${MACHTYPE} | sed -e 's/-[^-]*/-cross/')
 # La machine cible :
 TARGET="${PKGARCH}-0linux-linux-gnu"
 
-# ARM a besoin de l'OS et de l'ABI :
+# ARM a besoin de l'ABI dans le triplet de la cible :
 [ "${PKGARCH}" = "arm" ] && TARGET="${TARGET}eabi"
 
 # On vérifie que les liens à la racine existent :
@@ -370,8 +370,8 @@ $TMP/$GCC/configure \
 	--with-mpfr=/cross-tools \
 	--with-local-prefix=/tools \
 	--with-newlib \
+	--with-headers=/tools/usr/include \
 	--with-sysroot=${FINAL_SYSROOT} \
-	--with-native-system-header-dir=/tools/include \
 	--without-cloog \
 	--without-headers \
 	--without-ppl \
@@ -521,7 +521,7 @@ rm -rf $TMP/gcc-build
 # PHASE 2 : recompilation croisée des outils critiques sur notre propre chaîne d'outils croisée.
 # On place les fichiers résultants dans /tools.
 
-# On utilise désormais nos outils croisés sur la machine cible et on:
+# On utilise désormais nos outils croisés sur la machine cible :
 export     AR="${TARGET}-ar"
 export     AS="${TARGET}-as"
 export     CC="${TARGET}-gcc"
@@ -530,9 +530,6 @@ export     LD="${TARGET}-ld"
 export RANLIB="${TARGET}-ranlib"
 export  STRIP="${TARGET}-strip"
 
-# On remplit cette fois complètement notre environnement :
-cflags
-
 # gmp
 cd $TMP
 rm -rf $TMP/$GMP
@@ -540,11 +537,10 @@ tar xf $PKGSOURCES/gmp/$GMP.tar.* -C $TMP
 cd $TMP/$GMP
 
 # On force l'ABI 32 bits selon l'architecture :
-if [ ! "${PKGARCH}" = "x86_64" ]; then
-	export ABI=32
-fi
+unset ABI
+[ "${PKGARCH}" = "i486" -o "${PKGARCH}" = "i586" -o "${PKGARCH}" = "i686" ] && export ABI=32
 
-HOST_CC="gcc" CC="${CC}" CXX="${CXX}" \
+NM="nm" HOST_CC="gcc" CC="${CC}" CXX="${CXX}" \
 ./configure \
 	--prefix=/tools \
 	--libdir=/tools/lib${LIBDIRSUFFIX} \
@@ -861,8 +857,8 @@ rm -rf $TMP/$COREUTILS
 tar xf $PKGSOURCES/coreutils/$COREUTILS.tar.*
 cd $TMP/$COREUTILS
 
-# On empêche la régénération du manuel :
-touch man/hostname.1
+# Ce correctif supprime toute dépendance à 'man' :
+cat $CWD/coreutils.noman.patch | patch -p1
 
 # On adapte à l'environnement croisé pour être sur de compiler tous les
 # programmes ('df' est ignoré entre autres) :
