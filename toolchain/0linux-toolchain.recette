@@ -1231,13 +1231,13 @@ rm -rf $TMP/$UTILLINUX
 tar xf $PKGSOURCES/util-linux/$UTILLINUX.tar.*
 cd $TMP/$UTILLINUX
 
+PKG_CONFIG= \
 CC="${CC}" CXX="${CXX}" \
 ./configure \
 	--prefix=/tools \
 	--libdir=/tools/lib${LIBDIRSUFFIX} \
-	--disable-login \
 	--disable-makeinstall-chown \
-	--disable-su \
+	--disable-makeinstall-setuid \
 	--build=${HOST} \
 	--host=${TARGET}
 
@@ -1247,7 +1247,7 @@ fakeroot make install
 cd -
 rm -rf $TMP/$UTILLINUX
 
-# Spéficiques à 0 :
+# Spéficiques à 0Linux :
 
 # cpio
 cd $TMP
@@ -1278,7 +1278,7 @@ rm -rf $TMP/$CPIO
 # fakeroot
 cd $TMP
 rm -rf $TMP/$FAKEROOT
-tar xf $PKGSOURCES/fakeroot/$FAKEROOT.tar.*
+tar xf $PKGSOURCES/fakeroot/${FAKEROOT}*.tar.*
 cd $TMP/$FAKEROOT
 
 CC="${CC}" CXX="${CXX}" \
@@ -1333,6 +1333,7 @@ rm -rf $TMP/$SPACK
 # 0outils
 mkdir -p /tools/usr/share/0outils
 fakeroot cp /usr/share/0outils/fonctions_paquets.sh /tools/usr/share/0outils/
+chmod +x /tools/usr/share/0outils/fonctions_paquets.sh
 
 # On supprime toute documentation :
 for repfinal in ${PKG} /cross-tools /tools; do
