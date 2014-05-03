@@ -1278,7 +1278,7 @@ rm -rf $TMP/$CPIO
 # fakeroot
 cd $TMP
 rm -rf $TMP/$FAKEROOT
-tar xf $PKGSOURCES/fakeroot/${FAKEROOT}*.tar.*
+tar xf $PKGSOURCES/fakeroot/$(echo ${FAKEROOT} | tr '-' '_')*.tar.*
 cd $TMP/$FAKEROOT
 
 CC="${CC}" CXX="${CXX}" \
