@@ -112,7 +112,7 @@ log="/tmp/0mir-error.log"
 
 # On génère les descriptions de chaque paquet :
 cd "$(pwd)/../../../$ROOT" || exit 1
-for arch in i686 x86_64; do # On ne fait que 2 archis pour le moment
+for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 	echo "   Génère les descriptions dans $pkgroot/$arch/..."
 
 	(
@@ -149,7 +149,7 @@ for arch in i686 x86_64; do # On ne fait que 2 archis pour le moment
 done
 
 rm -f "$log" # sa présence signifie qu'il y a eu erreur.
-for arch in i686 x86_64; do # On ne fait que 2 archis pour le moment
+for arch in x86_64; do # On ne fait que x86_64 pour le moment...
     echo "   Génère    $pkgroot/$arch/paquets.db..."
     ( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
       find * -type f \( -name "*.spack" -o -name "*.dep" \) \
