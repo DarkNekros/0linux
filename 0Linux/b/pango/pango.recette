@@ -94,21 +94,24 @@ cat > ${PKG}/etc/rc.d/rc.pango << "EOF"
 #!/usr/bin/env bash
 
 pango_start() {
-	# Prise en charge du multilib pour x86_64 :
-	if [ "$(uname -m)" = "x86_64" ]; then
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Indexation des modules Pango..."
+	
+	if [ -d etc/pango-32 ]; then
 		if [ ! -r etc/pango-32/pango.modules ]; then
-			echo "Mise à jour des modules Pango 32 bits..."
 			touch /etc/pango-32/pango.modules
 			pango-querymodules-32 > /etc/pango-32/pango.modules
 		fi
+	fi
+	
+	if [ -d etc/pango-64 ]; then
 		if [ ! -r etc/pango-64/pango.modules ]; then
-			echo "Mise à jour des modules Pango 64 bits..."
 			touch /etc/pango-64/pango.modules
 			pango-querymodules-64 > /etc/pango-64/pango.modules
 		fi
-	else
+	fi
+	
+	if [ -d etc/pango ]; then
 		if [ ! -r etc/pango/pango.modules ]; then
-			echo "Mise à jour des modules Pango..."
 			touch /etc/pango/pango.modules
 			pango-querymodules > /etc/pango/pango.modules
 		fi
@@ -142,14 +145,17 @@ creer_post_installation
 cat >> ${PKG}/post-install.sh << "EOF"
 
 # On régénère les modules Pango :
-if [ "$(uname -m)" = "x86_64" ]; then
+if [ -d etc/pango-32 ]; then
 	rm -f etc/pango-32/pango.modules
 	touch etc/pango-32/pango.modules
 	chroot . pango-querymodules-32 > /etc/pango-32/pango.modules 2>/dev/null
+fi
+if [ -d etc/pango-64 ]; then
 	rm -f etc/pango-64/pango.modules
 	touch etc/pango-64/pango.modules
 	chroot . pango-querymodules-64 > /etc/pango-64/pango.modules 2>/dev/null
-else
+fi
+if [ -d etc/pango ]; then
 	rm -f etc/pango/pango.modules
 	touch etc/pango/pango.modules
 	chroot . pango-querymodules > /etc/pango/pango.modules 2>/dev/null
