@@ -7,7 +7,7 @@ umask 022
 unset PLOP MNTTYPE
 
 # On définit l'architecture visée :
-PKGARCH="$(uname -m)"
+PKGARCH=${PKGARCH:-"$(uname -m)"}
 
 # On définit le suffixe du répertoire standard accueillant les bibliothèques :
 if [ ${PKGARCH} = "x86_64" ]; then
