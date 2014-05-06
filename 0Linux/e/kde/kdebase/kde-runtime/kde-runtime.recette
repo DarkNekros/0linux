@@ -47,12 +47,9 @@ rm -rf ${PKG}/usr/share/icons/hicolor/index.theme
 installer_doc
 creer_post_installation
 
-# Corrige un bug empêchant d'utiliser kdesu :
-cat >> ${PKG}/post-install.sh << "EOF"
-chown :nobody /usr/lib/kde4/libexec/kdesud
-chmod g+s /usr/lib/kde4/libexec/kdesud
-
-EOF
+# Permet d'utiliser kdesu :
+echo "chown :nobody /usr/lib${LIBDIRSUFFIX}/kde4/libexec/kdesud" >> ${PKG}/post-install.sh
+echo "chmod g+s /usr/lib${LIBDIRSUFFIX}/kde4/libexec/kdesud" >> ${PKG}/post-install.sh
 
 stripper
 empaqueter
