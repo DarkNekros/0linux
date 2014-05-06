@@ -345,6 +345,7 @@ installer_doc() {
 		mkdir -p ${PKG}/usr/doc/${1}
 		CURRENTDOC="$1"
 	else
+		mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 		CURRENTDOC="${NAMETGZ}-${VERSION}"
 	fi
 	cp -a AUTHORS BUGS ?hange?og* *CHANGES* CODING* Contents *COPYING* COPYRIGHT* Copyright* \
