@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-lazarus}
-VERSION=${VERSION:-1.2_0}
+VERSION=${VERSION:-1.2.2_0}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-lazarus}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/\-/').$EXT}
