@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-kdelibs}
-VERSION=${VERSION:-4.12.4}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kdelibs}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+VERSION=${VERSION:-4.13.0}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/kdelibs-$VERSION.tar.xz}
 DESC="Bibliothèques communes de l'environnement et des applications KDE"
 EXTRADEPS="oxygen-icons media-player-info shared-desktop-ontologies upower"
 
@@ -14,6 +11,9 @@ EXTRADEPS="oxygen-icons media-player-info shared-desktop-ontologies upower"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# Permet d'éviter un conflit avec les menus de Gnome :
+cat $CWD/klibs.kde-application_menu.patch | patch -p1
 
 # Compilation :
 mkdir -p build && cd build

@@ -15,9 +15,6 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On utilise /etc/os-release au lieu du machin d'Ubuntu :
-sed -i "s@/etc/lsb-release@/etc/os-release@g" src/LSBRelease.cpp
-
 # Compilation :
 mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
