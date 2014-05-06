@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-gtkspell}
 VERSION=${VERSION:-3.0.4}
@@ -11,7 +11,6 @@ WGET=(
      )
 DESC="Outil d'analyse et de correction de texte"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

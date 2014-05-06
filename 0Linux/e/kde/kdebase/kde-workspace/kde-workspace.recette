@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-kde-workspace}
 VERSION=${VERSION:-4.11.8}
@@ -9,7 +9,6 @@ WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/4.12.4/src/$NAMESRC-$VERSION.$EXT}
 DESC="Espace de travail Plasma de KDE"
 EXTRADEPS="kde-runtime about-distro konsole kde-base-artwork kde-base-apps bluedevil marble"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

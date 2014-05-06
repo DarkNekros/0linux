@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-jack-audio-connection-kit}
 VERSION=${VERSION:-0.121.3}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-jack}
 WGET=${WGET:-http://jackaudio.org/downloads/$NAMESRC-$VERSION.$EXT}
 DESC="Le serveur de son « Jack Audio Connection Kit »"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

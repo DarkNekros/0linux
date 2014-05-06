@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-xdg-utils}
 VERSION=${VERSION:-1.1.0_rc1}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-xdg-utils}
 WGET=${WGET:-ftp://ftp.slackware.at/slackware-13.37/source/x/xdg-utils/${NAMESRC}-$(echo $VERSION | sed 's/_/\-/').$EXT}
 DESC="Outils d'intégration Freedesktop pour applications"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

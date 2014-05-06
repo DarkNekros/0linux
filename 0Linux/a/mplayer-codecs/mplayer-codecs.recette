@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-mplayer-codecs}
 VERSION=${VERSION:-20071007}
 NAMETGZ=${NAMETGZ:-mplayer-codecs}
-. /usr/share/0outils/fonctions_paquets.sh
 cflags
 if [ "${PKGARCH}" = "i686" ]; then
 	WGET=(http://www.mplayerhq.hu/MPlayer/releases/codecs/essential-$VERSION.tar.bz2

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-man-pages-fr}
 VERSION=${VERSION:-3.62.1}
@@ -9,7 +9,6 @@ WGET=${WGET:-http://alioth.debian.org/frs/download.php/file/4021/$NAMESRC-$(echo
 DESC="Manuels francophones du système Linux"
 EXTRADEPS="man-db"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

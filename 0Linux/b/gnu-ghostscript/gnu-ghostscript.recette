@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-ghostscript}
 VERSION=${VERSION:-9.14}
@@ -11,7 +11,6 @@ WGET=(http://downloads.ghostscript.com/public/$NAMESRC-$VERSION.$EXT
      )
 DESC="Bibliothèques, interpréteurs et pilotes PostScript et PDF"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

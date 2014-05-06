@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-sane-backends}
 VERSION=${VERSION:-1.0.24}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-sane-backends}
 WGET=${WGET:-https://alioth.debian.org/frs/download.php/file/3958/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques d'interfaçage pour la numérisation via scanneurs"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

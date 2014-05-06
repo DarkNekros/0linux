@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=${VERSION:-1.20}
 WGET=${WGET:-http://ftp.gnome.org/pub/gnome/sources/gtk-doc/gtk-doc/gtk-doc-$VERSION.tar.xz}
 DESC="Système de documentation"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

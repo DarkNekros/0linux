@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-povray}
 VERSION=${VERSION:-3.7.0.RC7}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-povray}
 WGET=${WGET:-http://www.povray.org/beta/source/$NAMESRC-$VERSION.$EXT}
 DESC="Persistance of Vision Raytracer, un lanceur de rayons ultra-puissant pour la création 3D."
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

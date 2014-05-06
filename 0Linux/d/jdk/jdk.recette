@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-jdk}
 VERSION=${VERSION:-7u55}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-jdk}
 
-. /usr/share/0outils/fonctions_paquets.sh
 cflags # Pour définir de suite $PKGARCH
 
 # La sous-archive et le répertoire des bibliothèques changent de nom selon

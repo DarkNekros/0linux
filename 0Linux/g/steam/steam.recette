@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-steam}
 VERSION=${VERSION:-1.0.0.43}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-steam}
 WGET=${WGET:-http://repo.steampowered.com/$NAMESRC/archive/precise/${NAMESRC}_${VERSION}.$EXT}
 DESC="La plateforme ludique de divertissement centralisé multijoueur de Valve"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

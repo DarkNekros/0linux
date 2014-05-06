@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=${NAMETGZ:-obsolete-abonnement}
 VERSION=${VERSION:-7}
 DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags
 

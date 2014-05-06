@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-x264-snapshot}
 VERSION=${VERSION:-20130208}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-x264}
 WGET=${WGET:-ftp://ftp.videolan.org/pub/videolan/x264/snapshots/${NAMESRC}-${VERSION}-2245.$EXT} # Version différente !
 DESC="Bibliothèques de codage de flux X264/AVC"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

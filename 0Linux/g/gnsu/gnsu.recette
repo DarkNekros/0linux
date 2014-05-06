@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-gnsu}
 VERSION=${VERSION:-07fbec42ab}
@@ -9,7 +9,6 @@ WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/${NAMET
 DESC="Outil graphique pour 'sudo' et autres commandes privilégiées, remplaçant 'gksu' ou 'ktsuss'"
 EXTRADEPS="sudo yad"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

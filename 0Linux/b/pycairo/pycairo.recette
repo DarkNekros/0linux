@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-pycairo}
 VERSION=${VERSION:-1.10.0}
@@ -10,7 +10,6 @@ WGET=(http://cairographics.org/releases/py2cairo-$VERSION.$EXT
      )
 DESC="Interfaçage Python pour Cairo"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

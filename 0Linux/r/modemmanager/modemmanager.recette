@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-ModemManager}
 VERSION=${VERSION:-1.2.0}
@@ -9,7 +9,6 @@ WGET=${WGET:-http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Service de gestion de connexions réseau par modem"
 EXTRADEPS="libmbim libqmi"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

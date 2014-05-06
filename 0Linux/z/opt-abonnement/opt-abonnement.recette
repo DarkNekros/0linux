@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=${NAMETGZ:-opt-abonnement}
 VERSION=${VERSION:-9}
@@ -202,7 +202,6 @@ x264                    xdg-user-dirs            xdg-utils \
 xfsprogs                xmlto                    xscreensaver \
 xvidcore                xz                       zlib"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-nasm}
 VERSION=${VERSION:-2.10.07}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-nasm}
 WGET=${WGET:-http://www.nasm.us/pub/$NAMESRC/releasebuilds/$VERSION/$NAMESRC-$VERSION.$EXT}
 DESC="Les assembleur et désassembleur pour x86 NASM et NDISASM"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-tk}
 VERSION=${VERSION:-8.6.1}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-tk}
 WGET=${WGET:-http://downloads.sourceforge.net/tcl/${NAMESRC}${VERSION}-src.$EXT}
 DESC="Bibliothèques pour interfaces graphiques"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

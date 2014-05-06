@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-vte}
 VERSION=${VERSION:-0.34.9}
@@ -10,7 +10,6 @@ WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'
      )
 DESC="Bibliothèques pour émulateurs de terminal"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

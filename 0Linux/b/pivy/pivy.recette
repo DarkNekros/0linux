@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-pivy}
 VERSION=${VERSION:-20101207}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-pivy}
 WGET=${WGET:-http://www.nielshorn.net/_download/slackware/source/Pivy-hg_${VERSION}.${EXT}}
 DESC="Bibliothèques de liaison Python pour Coin3D et SoQt"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

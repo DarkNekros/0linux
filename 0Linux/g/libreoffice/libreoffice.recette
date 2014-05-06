@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-LibreOffice}
 VERSION=${VERSION:-4.2.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libreoffice}
-. /usr/share/0outils/fonctions_paquets.sh
 cflags
 if [ "${PKGARCH}" = "i686" ]; then
 	SUBARCH="x86"

@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=${VERSION:-dec41bce44}
 WGET=${WGET:-git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git}
 DESC="Firmwares et microcodes matériels spécifiques pour le noyau Linux"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags # Pour définir LIBDIRSUFFIX
 

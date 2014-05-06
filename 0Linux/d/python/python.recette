@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-Python}
 VERSION=${VERSION:-2.7.5}
@@ -14,7 +14,6 @@ WGET=(http://www.python.org/ftp/python/3.3.4/$NAMESRC-3.3.4.$EXT
      )
 DESC="Langage de programmation interprété orienté objet"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

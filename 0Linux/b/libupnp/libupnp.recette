@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-libupnp}
 VERSION=${VERSION:-1.6.18}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-libupnp}
 WGET=${WGET:-http://prdownloads.sourceforge.net/pupnp/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques de découverte, notification et contrôle de services"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

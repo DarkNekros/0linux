@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=${VERSION:-2.9.4}
 WGET=${WGET:-http://prdownloads.sourceforge.net/project/soprano/Soprano/$VERSION/soprano-$VERSION.tar.bz2}
 DESC="Bibliothèques de haut niveau de traitement de données RDF"
 
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
-
-NAMESRC=${NAMESRC:-xfsprogs}
-VERSION=${VERSION:-3.1.11}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-xfsprogs}
-WGET=${WGET:-ftp://oss.sgi.com/projects/xfs/cmd_tars/$NAMESRC-$VERSION.$EXT}
-DESC="Outils pour le système de fichiers XFS"
-
 . /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=${VERSION:-3.1.11}
+WGET=${WGET:-ftp://oss.sgi.com/projects/xfs/cmd_tars/$NAMESRC-$VERSION.tar.gz}
+DESC="Outils pour le système de fichiers XFS"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

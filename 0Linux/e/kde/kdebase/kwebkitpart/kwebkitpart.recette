@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-kwebkitpart}
 VERSION=${VERSION:-1.3.3}
@@ -9,7 +9,6 @@ WGET=${WGET:-ftp://ftp.archlinux.org/other/packages/$NAMESRC/$NAMESRC-$VERSION.$
 DESC="Module KPart permettant d'utiliser WebKit dans les applications KDE"
 EXTRADEPS="kde-runtime kde-baseapps"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

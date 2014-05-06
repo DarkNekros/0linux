@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-base-systeme}
 VERSION=${VERSION:-5.1.4}
-NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
-
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags # cflags() permet de définir $PKGARCH et $LIBDIRSUFFIX
 

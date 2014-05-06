@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-net-tools}
 VERSION=${VERSION:-26022013}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-net-tools}
 WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
 DESC="Outils réseau pour Linux"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

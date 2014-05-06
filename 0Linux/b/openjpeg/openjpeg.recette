@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-openjpeg}
 VERSION=${VERSION:-2.0.0}
@@ -10,7 +10,6 @@ WGET=(http://openjpeg.googlecode.com/files/$NAMESRC-1.5.1.$EXT
      )
 DESC="Codec JPEG 2000"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

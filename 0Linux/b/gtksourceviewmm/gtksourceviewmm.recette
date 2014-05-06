@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-gtksourceviewmm}
 VERSION=${VERSION:-3.2.0}
@@ -10,7 +10,6 @@ WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.10/$NAMESRC-2.10.3.$EXT
      )
 DESC="Outils d'analyse et de coloration syntaxique pour GTK+"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

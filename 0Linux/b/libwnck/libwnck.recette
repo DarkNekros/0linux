@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-libwnck}
 VERSION=${VERSION:-3.4.7}
@@ -10,7 +10,6 @@ WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.31.0/$NAMESRC-2.31.0.$E
      )
 DESC="Outils de construction de fenêtres"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

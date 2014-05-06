@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-db}
 VERSION=${VERSION:-6.0.30}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-berkeley-db}
 WGET=${WGET:-http://download.oracle.com/berkeley-db/$NAMESRC-$VERSION.$EXT}
 DESC="Système de bases de données pour applications"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

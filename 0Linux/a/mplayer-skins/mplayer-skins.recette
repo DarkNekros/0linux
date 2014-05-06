@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-mplayer-skins}
 VERSION=${VERSION:-14092012}
@@ -79,7 +79,6 @@ WGET=(http://www.mplayerhq.hu/MPlayer/skins/Abyss-1.7.${EXT}
 WGET=${WGET:-http://www.mplayerhq.hu/MPlayer/skins/}
 DESC="Ensemble d'habillages visuels pour MPlayer"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

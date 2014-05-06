@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-Text-WrapI18N}
 VERSION=${VERSION:-0.06}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-perl-text-wrapi18n}
 WGET=${WGET:-http://search.cpan.org/CPAN/authors/id/K/KU/KUBOTA/$NAMESRC-$VERSION.$EXT}
 DESC="Module Text-WrapI18N pour Perl"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

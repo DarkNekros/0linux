@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=${NAMETGZ:-kde-abonnement}
 VERSION=${VERSION:-4}
 DESC="l'environnement de bureau KDE complet"
 EXTRADEPS="oxygen-icons nepomuk-widgets smokegen smokeqt okular smokekde pykde perlqt perlkde kde-runtime kde-base-artwork kdeartwork marble kde-workspace kde-baseapps kde-wallpapers konsole kate kwebkitpart bluedevil colord-kde gwenview kamera kcolorchooser kdegraphics-mobipocket kdegraphics-strigi-analyzer kdegraphics-thumbnailers kgamma kruler ksaneplugin ksnapshot svgpart digikam skanlite kamerka ark filelight kcalc kcharselect kdf kfloppy kgpg kwalletmanager print-manager sweeper krename kdeplasma-addons superkaramba oxygen-gtk2 oxygen-gtk3 kde-gtk-config audiocd-kio ffmpegthumbs kmix dragon juk kscd k3b telepathy-qt wicd-kde knemo smb4k kde-l10n-fr kdepim-runtime kdepim bomber bovo granatier kajongg kapman katomic kblackbox kblocks kbounce kbreakout kdiamond kfourinline kgoldrunner kigo killbots kiriki kjumpingcube klickety klines kmahjongg kmines knavalbattle knetwalk kolf kollision konquest kpat kreversi kshisen ksirk ksnakeduel kspaceduel ksquares ksudoku ktuberling kubrick lskat palapeli picmi knights analitza blinken cantor kalgebra kalzium kanagram kbruch kgeography khangman kig kiten klettres kmplot kstars ktouch kturtle kwordquiz parley rocs step calligra calligra-l10n-fr amarok skrooge tellico krecipes kdenlive kvirc massif-visualizer kdewebdev kdevelop kdevelop-pg-qt kdevelop-php kdevelop-php-docs kdevelop-modeles"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags
 

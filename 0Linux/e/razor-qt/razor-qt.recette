@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-razorqt}
 VERSION=${VERSION:-0.5.2}
@@ -9,7 +9,6 @@ WGET=${WGET:-http://razor-qt.org/downloads/$NAMESRC-$VERSION.$EXT}
 DESC="Environnement de bureau très léger basé sur Qt"
 ########################################
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-syslinux}
 VERSION=${VERSION:-5.10}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-syslinux}
 WGET=${WGET:-http://www.kernel.org/pub/linux/utils/boot/syslinux/$NAMESRC-$VERSION.$EXT}
 DESC="La collection de chargeurs d'amorçage Syslinux"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

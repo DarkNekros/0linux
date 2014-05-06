@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-lcms}
 VERSION=${VERSION:-2.4}
@@ -10,7 +10,6 @@ WGET=(http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}-1.19.$EXT
      )
 DESC="Bibliothèques et moteur de gestion des couleurs"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources ${NAMESRC}-1.19.$EXT

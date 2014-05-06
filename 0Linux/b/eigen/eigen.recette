@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-eigen}
 VERSION=${VERSION:-3.1.4}
@@ -10,7 +10,6 @@ WGET=(http://bitbucket.org/$NAMESRC/$NAMESRC/get/2.0.17.${EXT}
      )
 DESC="Bibliothèques C++ d'algèbre linéaire"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources 2.0.17.${EXT}

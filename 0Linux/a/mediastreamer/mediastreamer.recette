@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-mediastreamer}
 VERSION=${VERSION:-2.9.0}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-mediastreamer}
 WGET=${WGET:-http://download-mirror.savannah.gnu.org/releases/linphone/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques de gestion de flux audio et vidéo"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

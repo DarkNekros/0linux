@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-broadcom-wl}
 VERSION=${VERSION:-5.100.138}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-b43-firmware}
 WGET=${WGET:-http://mirror2.openwrt.org/sources/$NAMESRC-${VERSION}.$EXT}
 DESC="Firmware pour cartes réseau sans fil Broadcom"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 
 telecharger_sources

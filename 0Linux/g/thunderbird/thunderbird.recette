@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-thunderbird}
 VERSION=${VERSION:-24.5.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-thunderbird}
-. /usr/share/0outils/fonctions_paquets.sh
 cflags
 WGET=${WGET:-http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.$EXT}
 DESC="Client de messagerie électronique de la fondation Mozilla"

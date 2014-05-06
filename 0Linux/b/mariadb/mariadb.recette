@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-mariadb}
 VERSION=${VERSION:-5.5.36}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-mariadb}
 WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/$NAMESRC/$NAMESRC-$VERSION/kvm-tarbake-jaunty-x86/$NAMESRC-$VERSION.$EXT}
 DESC="Le serveur de bases de données MariaDB, remplaçant libre de MySQL"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

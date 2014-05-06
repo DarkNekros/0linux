@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
-
-NAMESRC=${NAMESRC:-libusb}
-VERSION=${VERSION:-1.0.9}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libusb}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
-DESC="Bibliothèques USB"
-
 . /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=${VERSION:-1.0.9}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2}
+DESC="Bibliothèques USB"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

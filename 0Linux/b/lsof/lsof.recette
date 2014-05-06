@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-lsof}
 VERSION=${VERSION:-4.87}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-lsof}
 WGET=${WGET:-ftp://lsof.itap.purdue.edu/pub/tools/unix/$NAMESRC/${NAMESRC}_${VERSION}.$EXT}
 DESC="Outil d'information sur les processus système ouverts"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

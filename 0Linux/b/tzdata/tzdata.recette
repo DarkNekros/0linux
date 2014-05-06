@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-tzdata}
 VERSION=${VERSION:-2014b}
@@ -10,7 +10,6 @@ WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${
 	 )
 DESC="Outils et données chronologiques pour l'horloge système et fuseaux horaires"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-tango-icon-theme}
 VERSION=${VERSION:-0.8.90}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-tango-icon-theme}
 WGET=${WGET:-http://tango.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT}
 DESC="Le thème d'icônes «Tango »"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

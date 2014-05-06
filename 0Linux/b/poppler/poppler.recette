@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-poppler}
 VERSION=${VERSION:-0.24.5}
@@ -11,7 +11,6 @@ WGET=(http://poppler.freedesktop.org/$NAMESRC-$VERSION.$EXT
 
 DESC="Bibliothèques de rendu PDF"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

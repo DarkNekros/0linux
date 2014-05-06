@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-wpa_supplicant}
 VERSION=${VERSION:-2.0}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-wpa_supplicant}
 WGET=${WGET:-http://hostap.epitest.fi/releases/$NAMESRC-$VERSION.$EXT}
 DESC="Démon pour réseaux sans fil avec chiffrements WEP, WPA et WPA2"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-sudo}
 VERSION=${VERSION:-1.8.7}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-sudo}
 WGET=${WGET:-http://www.sudo.ws/$NAMESRC/dist/$NAMESRC-$VERSION.$EXT}
 DESC="Outil de gestion de privilèges utilisateurs"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

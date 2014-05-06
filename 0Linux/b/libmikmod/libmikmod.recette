@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-libmikmod}
 VERSION=${VERSION:-3.3.1}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-libmikmod}
 WGET=${WGET:-http://mikmod.shlomifish.org/files/$NAMESRC-$VERSION.$EXT}
 DESC="Outils et bibliothèques pour modules audio (dont it, s3m et xm)"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

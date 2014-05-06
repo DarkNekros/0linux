@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-enveloppe_multiarch}
 VERSION=${VERSION:-0.1}
 NAMETGZ=${NAMETGZ:-enveloppe_multiarch}
 DESC="Le programme enveloppe multi-architecture pour certains binaires spécifiques"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags
 
