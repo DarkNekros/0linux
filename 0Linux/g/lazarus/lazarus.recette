@@ -67,11 +67,6 @@ rm -f $PKG/usr/lib${LIBDIRSUFFIX}/lazarus/startlazarus{,-qt} \
 ln -s /usr/lib${LIBDIRSUFFIX}/lazarus/lazbuild $PKG/usr/bin/lazbuild
 rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/lazarus/install
 
-# Installation des manuels et documentation :
-cp -a install/man/man1/* $PKG/usr/man/man1/
-cp -a COPYING* README.txt $PKG/usr/doc/$NAMETGZ-$VERSION
-ln -s /usr/lib/lazarus/docs/html $PKG/usr/doc/$NAMETGZ-$VERSION/docs
-
 # Installation de l'entrée de menu :
 sed -e 's|\(Categories\).*|\1=IDE;Development;|' \
 	-e 's|\.png|\.xpm|' -i install/lazarus.desktop
@@ -79,6 +74,12 @@ cp -a install/lazarus.desktop $PKG/usr/share/applications/lazarus.desktop
 cp -a images/ide_icon48x48.png $PKG/usr/share/pixmaps/lazarus.png
 
 installer_doc
+
+# Installation des manuels et documentation :
+cp -a install/man/man1/* $PKG/usr/man/man1/
+cp -a COPYING* README.txt $PKG/usr/doc/$NAMETGZ-$VERSION
+ln -s /usr/lib/lazarus/docs/html $PKG/usr/doc/$NAMETGZ-$VERSION/docs
+
 creer_post_installation
 stripper
 empaqueter
