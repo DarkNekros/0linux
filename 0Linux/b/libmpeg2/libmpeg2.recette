@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-libmpeg2}
 VERSION=${VERSION:-0.5.1}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-libmpeg2}
 WGET=${WGET:-http://$NAMESRC.sourceforge.net/files/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques pour le format vidéo MPEG2"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

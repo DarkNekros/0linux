@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-raptor2}
 VERSION=${VERSION:-2.0.8}
@@ -10,7 +10,6 @@ WGET=(http://librdf.org/dist/source/raptor-1.4.21.$EXT
     )
 DESC="Bibliothèques d'analyse XML/RDF"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

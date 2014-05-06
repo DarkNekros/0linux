@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-libgadu}
 VERSION=${VERSION:-1.11.3}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-libgadu}
 WGET=${WGET:-http://github.com/wojtekka/$NAMESRC/releases/download/$VERSION/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques pour la gestion du protocole Gadu-Gadu"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

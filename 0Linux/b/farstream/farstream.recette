@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-farstream}
 VERSION=${VERSION:-0.2.2}
@@ -10,7 +10,6 @@ WGET=(http://freedesktop.org/software/farstream/releases/$NAMESRC/$NAMESRC-$VERS
      )
 DESC="Ensemble réseau pour les communications audio/vidéo"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

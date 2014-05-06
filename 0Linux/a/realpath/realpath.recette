@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-realpath}
 VERSION=${VERSION:-1.19}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-realpath}
 WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/r/$NAMESRC/${NAMESRC}_${VERSION}.$EXT}
 DESC="Outil de détermination de chemins absolus canoniques"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

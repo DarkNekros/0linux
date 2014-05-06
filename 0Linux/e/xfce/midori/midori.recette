@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-midori}
 VERSION=${VERSION:-0.5.8}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-midori}
 WGET=${WGET:-http://www.midori-browser.org/downloads/${NAMESRC}_${VERSION}_all_.$EXT}
 DESC="Navigateur Web léger pour Xfce"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

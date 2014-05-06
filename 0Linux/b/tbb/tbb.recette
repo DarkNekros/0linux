@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-tbb}
 VERSION=${VERSION:-41_20130314}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-tbb}
 WGET=${WGET:-http://threadingbuildingblocks.org/sites/default/files/software_releases/source/${NAMESRC}${VERSION}oss_src.$EXT}
 DESC="Bibliothèques de parallèlisation de haut niveau"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

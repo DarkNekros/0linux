@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=${NAMETGZ:-xfce-abonnement}
 VERSION=${VERSION:-2}
 DESC="L'environnement de bureau Xfce complet et ses applications"
 EXTRADEPS="libxfce4util xfconf libxfce4ui garcon libxfcegui4 exo xfce4-panel thunar thunar-volman xfce4-settings xfce4-session xfdesktop xfwm4 xfwm4-themes xfce4-appfinder gtk-xfce-engine xfce4-notifyd xfce4-power-manager xfce4-screenshooter xfce4-taskmanager orage xfce4-terminal tumbler ristretto parole xarchiver xfburn midori mousepad thunar-archive-plugin thunar-media-tags-plugin xfce4-clipman-plugin xfce4-cpufreq-plugin xfce4-cpugraph-plugin xfce4-dict xfce4-diskperf-plugin xfce4-fsguard-plugin xfce4-mixer xfce4-netload-plugin xfce4-notes-plugin xfce4-sensors-plugin xfce4-vala xfce4-weather-plugin"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags
 

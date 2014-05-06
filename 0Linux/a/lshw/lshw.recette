@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-lshw}
 VERSION=${VERSION:-B.02.17}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-lshw}
 WGET=${WGET:-http://ezix.org/software/files/$NAMESRC-$VERSION.$EXT}
 DESC="Outil d'exploration des informations sur le matériel "
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

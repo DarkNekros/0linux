@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
 NAMESRC=${NAMESRC:-kdevelop-modeles}
@@ -12,7 +12,6 @@ WGET=(http://opendesktop.org/CONTENT/content-files/138514-make_plainc.tar.bz2
 DESC="Modèles supplémentaires pour KDevelop"
 EXTRADEPS="kdevelop"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

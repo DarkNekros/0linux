@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-iptables}
 VERSION=${VERSION:-1.4.21}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-iptables}
 WGET=${WGET:-http://www.netfilter.org/projects/$NAMESRC/files/$NAMESRC-$VERSION.$EXT}
 DESC="Outils de filtrage de paquets pour Linux"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

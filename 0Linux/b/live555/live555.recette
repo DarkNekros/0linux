@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-live}
 VERSION=${VERSION:-2013.03.07}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-live555}
 WGET=${WGET:-http://www.live555.com/liveMedia/public/${NAMESRC}.${VERSION}.$EXT}
 DESC="Outils et bibliothèque pour flux en streaming"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

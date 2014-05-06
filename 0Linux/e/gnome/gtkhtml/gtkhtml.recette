@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-gtkhtml}
 VERSION=${VERSION:-4.8.0}
@@ -10,7 +10,6 @@ WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/3.32/$NAMESRC-3.32.2.tar.
      )
 DESC="Éditeur et rendu HTML pour GTK+"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

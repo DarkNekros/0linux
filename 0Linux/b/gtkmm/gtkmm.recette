@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-gtkmm}
 VERSION=${VERSION:-3.12.0}
@@ -10,7 +10,6 @@ WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.24/$NAMESRC-2.24.4.$EXT
      )
 DESC="Interfaçage C++ pour GTK+"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

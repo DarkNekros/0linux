@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 # Créez avant tout les liens à la racine du système hôte (donc en root)
 # pour les répertoires 'cross-tools' et 'tools', même s'ils n'existent pas encore :
@@ -22,7 +22,6 @@ VERSION=${VERSION:-$(date +%d%m%Y)}
 NAMETGZ=${NAMETGZ:-0linux-toolchain}
 DESC="La chaîne d'outils croisés pour 0Linux"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 # On a besoin de cflags() pour définir $PKGARCH et $LIBDIRSUFFIX :
 cflags

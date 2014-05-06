@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-qt-everywhere-opensource-src}
 VERSION=${VERSION:-4.8.5} # recette prévue pour Qt5, "4.8.5" apparait donc partout dans la recette
@@ -9,7 +9,6 @@ WGET=(http://download.qt-project.org/official_releases/qt/4.8/4.8.5/$NAMESRC-4.8
 DESC="Outils et bibliothèques de création d'applications graphiques"
 # Qt5 : http://download.qt-project.org/official_releases/qt/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/single/$NAMESRC-$VERSION.$EXT
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

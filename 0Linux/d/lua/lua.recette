@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-lua}
 VERSION=${VERSION:-5.1.5}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-lua}
 WGET=${WGET:-http://www.lua.org/ftp/$NAMESRC-$VERSION.$EXT}
 DESC="Le langage de programmation Lua"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=${VERSION:-1.12.1}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/akonadi/src/akonadi-$VERSION.tar.bz2}
 DESC="Services de gestion des informations personnelles"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

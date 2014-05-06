@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-libunique}
 VERSION=${VERSION:-3.0.2}
@@ -10,7 +10,6 @@ WGET=(http://ftp.gnome.org/pub/gnome/sources/$NAMESRC/1.1/$NAMESRC-1.1.6.$EXT
      )
 DESC="Bibliothèques de gestion des instances"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

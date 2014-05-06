@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-b43-fwcutter}
 VERSION=${VERSION:-015}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-b43-fwcutter}
 WGET=${WGET:-http://bues.ch/b43/fwcutter/$NAMESRC-$VERSION.$EXT}
 DESC="Outil d'extraction de firmware Broadcom"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 
 telecharger_sources

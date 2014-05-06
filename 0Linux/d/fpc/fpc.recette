@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-fpc}
 VERSION=${VERSION:-2.6.4}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-fpc}
 DESC="Compilateur croisé multi-plateforme pour le langage Pascal"
 ########################################
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags
 

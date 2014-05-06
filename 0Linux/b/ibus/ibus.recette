@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-ibus}
 VERSION=${VERSION:-1.5.5}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-ibus}
 WGET=${WGET:-http://ibus.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
 DESC="Bus de traitement des entrées pour Linux"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

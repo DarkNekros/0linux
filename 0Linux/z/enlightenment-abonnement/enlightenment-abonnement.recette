@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=${NAMETGZ:-enlightenment-abonnement}
 VERSION=${VERSION:-1}
 DESC="L'environnement graphique Enlightenment"
 EXTRADEPS="enlightenment efl evas_generic_loaders emotion_generic_players elementary expedite exquisite"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags
 

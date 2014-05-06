@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-pcre}
 VERSION=${VERSION:-8.33}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-pcre}
 WGET=${WGET:-ftp://ftp.csx.cam.ac.uk/pub/software/programming/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Fonctions pour expressions régulières de type Perl"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-mutagen}
 VERSION=${VERSION:-1.21}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-mutagen}
 WGET=${WGET:-http://mutagen.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
 DESC="Module Python de gestion des méta-données audio"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

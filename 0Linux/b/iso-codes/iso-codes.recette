@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-iso-codes}
 VERSION=${VERSION:-3.40}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-iso-codes}
 WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/i/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT}
 DESC="Les listes des codes ISO et leur traduction"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

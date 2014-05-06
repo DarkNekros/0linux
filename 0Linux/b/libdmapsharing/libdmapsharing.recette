@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-libdmapsharing}
 VERSION=${VERSION:-2.9.24}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-libdmapsharing}
 WGET=${WGET:-http://www.flyn.org/projects/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques pour protocoles DMAP (DAAP et DPAP)"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

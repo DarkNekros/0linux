@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-free-cad}
 VERSION=${VERSION:-0.13.1830}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-freecad}
 WGET=${WGET:-https://prdownloads.sourceforge.net/$NAMESRC/$NAMETGZ-$VERSION.$EXT}
 DESC="Modeleur 3D paramétrique pour la CAO"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-linux}
 VERSION=${VERSION:-3.14}
@@ -16,7 +16,6 @@ fi
 DESC="Le noyau Linux avec ses modules, ses firmwares, ses entêtes et son code source complet"
 EXTRADEPS="bc make"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

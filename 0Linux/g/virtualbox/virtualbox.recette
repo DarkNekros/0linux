@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-VirtualBox}
 VERSION=${VERSION:-4.3.10}
@@ -13,7 +13,6 @@ WGET=(http://download.virtualbox.org/virtualbox/$VERSION/$NAMESRC-$VERSION.$EXT
      )
 DESC="Logiciel complet de virtualisation x86"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 # On empêche le téléchargement de la doc si on trouve les bonnes versions en
 # les renommant :

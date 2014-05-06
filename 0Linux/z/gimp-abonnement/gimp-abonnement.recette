@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=${NAMETGZ:-gimp-abonnement}
 VERSION=${VERSION:-1}
 DESC="Le programme de manipulation d'images GIMP et ses programmes additionnels"
 EXTRADEPS="gimp gmic"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags
 

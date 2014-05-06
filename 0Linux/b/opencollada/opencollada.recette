@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-opencollada}
 VERSION=${VERSION:-15062013}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-opencollada}
 WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC/${NAMESRC}-${VERSION}.${EXT}}
 DESC="Bibliothèques de décodage des fichiers « 3D Studio » et « Maya »"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

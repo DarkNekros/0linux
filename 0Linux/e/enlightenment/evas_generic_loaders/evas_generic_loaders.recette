@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-evas_generic_loaders}
 VERSION=${VERSION:-1.9.0}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-evas_generic_loaders}
 WGET=${WGET:-http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques supplémentaires de rendu graphique pour E"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

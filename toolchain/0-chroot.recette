@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 # '0-chroot' « chroot » un système minimal contenant une chaîne d'outils
 # temporaire comme celle du paquet '0linux-toolchain', installé
@@ -30,7 +30,6 @@
 # contiennent bien le répertoire '/tools' une fois chrooté, sinon :
 # 	export PATH=$PATH:/tools/bin:/tools/sbin:/tools/usr/bin:/tools/usr/sbin
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 # Pour définir $PKGARCH, $LIBDIRSUFFIX, etc.
 cflags

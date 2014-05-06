@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-kbd}
 VERSION=${VERSION:-1.15.3}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-kbd}
 WGET=${WGET:-http://ftp.altlinux.com/pub/people/legion/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Dispositions pour claviers et polices pour console"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

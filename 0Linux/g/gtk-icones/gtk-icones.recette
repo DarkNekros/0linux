@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=${VERSION:-0.1}
 NAMETGZ=${NAMETGZ:-gtk-icones}
@@ -31,7 +31,6 @@ WGET=(http://art.gnome.org/download/themes/icon/1002/ICON-BlankOn.tar.gz
      )
 DESC="Ensemble d'icônes pour GTK+"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 cflags
 telecharger_sources

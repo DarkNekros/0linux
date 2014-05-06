@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-numlockx}
 VERSION=${VERSION:-1.2}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-numlockx}
 WGET=${WGET:-http://pkgs.fedoraproject.org/repo/pkgs/$NAMESRC/$NAMESRC-$VERSION.$EXT/be9109370447eae23f6f3f8527bb1a67/$NAMESRC-$VERSION.$EXT}
 DESC="Outil d'activation du pavé numérique sous X"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

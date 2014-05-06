@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-ntp}
 VERSION=${VERSION:-4.2.6p5}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-ntp}
 WGET=${WGET:-http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
 DESC="Service permettant de synchroniser l'heure avec des serveurs de temps"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-streamtuner2}
 VERSION=${VERSION:-2.0.8}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-streamtuner2}
 WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Lecteur de webradios et flux audio en ligne"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources || true
 cflags

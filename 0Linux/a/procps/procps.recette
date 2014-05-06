@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-procps-ng}
 VERSION=${VERSION:-3.3.8}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-procps}
 WGET=${WGET:-http://gitorious.org/procps/procps/archive-tarball/v${VERSION}}
 DESC="Outils de surveillance des processus"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

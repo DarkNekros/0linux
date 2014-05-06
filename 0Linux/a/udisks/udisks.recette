@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-udisks}
 VERSION=${VERSION:-2.1.3}
@@ -10,7 +10,6 @@ WGET=(http://hal.freedesktop.org/releases/$NAMESRC-1.0.5.tar.gz
      )
 DESC="Service de gestion de périphériques de stockage"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 cflags

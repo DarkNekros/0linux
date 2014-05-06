@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-NVIDIA}
 VERSION=${VERSION:-334.21}
 EXT=${EXT:-run}
 NAMETGZ=${NAMETGZ:-nvidia}
-. /usr/share/0outils/fonctions_paquets.sh
 cflags
 if [ "${PKGARCH}" = "i686" ]; then
 	SUBARCH="x86"

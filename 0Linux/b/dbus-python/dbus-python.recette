@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-dbus-python}
 VERSION=${VERSION:-1.1.1}
@@ -8,7 +8,6 @@ NAMETGZ=${NAMETGZ:-dbus-python}
 WGET=${WGET:-http://dbus.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Interfaçage D-Bus - Python"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 

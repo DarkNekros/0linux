@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-SDL_net}
 VERSION=${VERSION:-2.0.0}
@@ -10,7 +10,6 @@ WGET=(http://www.libsdl.org/projects/$NAMESRC/release/$(echo $NAMESRC | sed 's@S
      )
 DESC="Bibliothèques réseau « Simple DirectMedia Layer »"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 
