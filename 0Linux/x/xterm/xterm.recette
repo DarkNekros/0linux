@@ -25,6 +25,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--enable-wide-chars \
 	--with-app-defaults=/etc/X11/app-defaults \
+	--with-utempter \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
