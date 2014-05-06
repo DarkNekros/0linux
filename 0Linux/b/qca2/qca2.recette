@@ -7,7 +7,7 @@ EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-qca2}
 WGET=${WGET:-http://delta.affinix.com/download/qca/2.0/$NAMESRC-$VERSION.$EXT}
 DESC="Extension de cryptographie pour Qt"
-########################################
+EXTRADEPS="ca-certificates"
 
 . /usr/share/0outils/fonctions_paquets.sh
 
