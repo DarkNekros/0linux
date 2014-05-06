@@ -40,7 +40,7 @@ else
 	# On définit $NAMETGZ selon le nom de la recette s'il n'est pas déjà défini :
 	[ -z ${NAMETGZ} ] && NAMETGZ="$(basename $0 .recette)"
 	
-	# Les noms ne doivent comporter ni majuscule, ni espace
+	# Les noms ne doivent comporter ni majuscules, ni espaces :
 	if [ ! "$(echo ${NAMETGZ} | egrep '[A-Z]|[[:space:]]')" = "" ]; then
 		argh "La variable NAMETGZ ne doit comporter ni majuscules ni espaces."
 	fi
@@ -48,12 +48,12 @@ else
 	# On crée un journal complet automatiquement en plus des messages à l'écran.
 	# Voir http://stackoverflow.com/a/11886837 - c'est en fait loin d'être
 	# évident à faire depuis un script :
-	rm -f ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log
-	exec >  >(tee -a ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log)
-	exec 2> >(tee -a ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log >&2)
+	rm -f ${MARMITELOGS}/${NAMETGZ}.log
+	exec >  >(tee -a ${MARMITELOGS}/${NAMETGZ}.log)
+	exec 2> >(tee -a ${MARMITELOGS}/${NAMETGZ}.log >&2)
 	
 	# On place également un marqueur d'échec, qu'on effacera une fois le script terminé avec succès :
-	echo "" > ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log.echec
+	echo "" > ${MARMITELOGS}/${NAMETGZ}.log.echec
 	
 	# On crée le répertoire des archives sources :
 	mkdir -p ${PKGSOURCES}/${NAMETGZ}
@@ -93,22 +93,8 @@ else
 		done
 	fi
 	
-	# On crée le répertoire de doc pour notre journal et nos dépendances :
-	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux
-	
 	# Si $NAMESRC n'est pas défini (rare), on lui affecte $NAMETGZ :
 	[ -z ${NAMESRC} ] && NAMESRC="${NAMETGZ}"
-	
-	# On crée un lien générique vers notre répertoire de doc (Xorg en a besoin, notamment) :
-	# Si $NAMESRC et $NAMETGZ sont différents, on crée un lien $NAMESRC -> $NAMETGZ -> $NAMETGZ-$VERSION :
-	if [ ! "${NAMESRC}" = "${NAMETGZ}" ]; then
-		ln -sf ${NAMETGZ} ${PKG}/usr/doc/${NAMESRC}
-		ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
-	
-	# Sinon, on crée un simple lien $NAMETGZ -> $NAMETGZ-$VERSION :
-	else
-		ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
-	fi
 fi
 
 telecharger_sources() {
@@ -628,8 +614,21 @@ empaqueter() {
 		fi
 	done
 	
-	# On extrait les dépendances dynamiques (fichiers) grâce à '0ldd_clean', basé sur '0dep' :
+	# On crée le répertoire de doc pour notre journal et nos dépendances :
 	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux
+	
+	# On crée un lien générique vers notre répertoire de doc (Xorg en a besoin, notamment) :
+	# Si $NAMESRC et $NAMETGZ sont différents, on crée un lien $NAMESRC -> $NAMETGZ -> $NAMETGZ-$VERSION :
+	if [ ! "${NAMESRC}" = "${NAMETGZ}" ]; then
+		ln -sf ${NAMETGZ} ${PKG}/usr/doc/${NAMESRC}
+		ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
+	
+	# Sinon, on crée un simple lien $NAMETGZ -> $NAMETGZ-$VERSION :
+	else
+		ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
+	fi
+	
+	# On extrait les dépendances dynamiques (fichiers) grâce à '0ldd_clean', basé sur '0dep' :
 	0ldd_clean ${PKG}/* > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log
 	
 	# On extrait les dépendances (paquets) grâce à '0dep' (merci Seb) :
@@ -655,12 +654,16 @@ empaqueter() {
 	# On stocke également les dépendances dans la doc 0linux :
 	cp -a ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/
 	
-	# On place le journal dans la doc sous forme compressée :
-	if [ -r ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log ]; then
+	# On place le journal - en ajoutant la version - dans la doc sous forme compressée :
+	if [ -r ${MARMITELOGS}/${NAMETGZ}.log ]; then
+		mv ${MARMITELOGS}/${NAMETGZ}{,-${VERSION}}.log
 		cp ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/
 		xz ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/${NAMETGZ}-${VERSION}.log
 		rm -f ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log
 	fi
+	
+	# On place la description en la créant via 'spackdesc -' :
+	echo "${DESC}" | spackdesc --package="${NAMETGZ}" - > ${PKG}/about.txt
 	
 	# On décompresse et on recompresse en 'xz' tous les manuels :
 	if [ -d ${PKG}/usr/man ]; then
@@ -688,9 +691,6 @@ empaqueter() {
 			find ${PKG}/${d} -type f -name "*.ko"     -exec xz       {} \;
 		fi
 	done
-	
-	# On place la description en la créant via 'spackdesc -' :
-	echo "${DESC}" | spackdesc --package="${NAMETGZ}" - > ${PKG}/about.txt
 	
 	# Paquet créé avec succès à ce stade, on supprime le marqueur d'échec :
 	if [ -n "${NAMETGZ}" ]; then
