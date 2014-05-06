@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libiodbc}
-VERSION=${VERSION:-3.52.8}
+VERSION=${VERSION:-3.52.9}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libiodbc}
 WGET=${WGET:-http://prdownloads.sourceforge.net/iodbc/$NAMESRC-$VERSION.$EXT}
