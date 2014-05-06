@@ -1,21 +1,18 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
+. /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libssh}
-VERSION=${VERSION:-0.5.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libssh}
-WGET=(https://red.libssh.org/attachments/download/27/$NAMESRC-$VERSION.$EXT
-      http://www.libssh2.org/download/libssh2-1.4.3.$EXT
+VERSION=${VERSION:-0.6.3}
+WGET=(https://red.libssh.org/attachments/download/87/$NAMESRC-$VERSION.tar.xz
+      http://www.libssh2.org/download/libssh2-1.4.3.tar.gz
      )
 DESC="Outils et bibliothèques d'accès aux services et clients SSH"
 
-. /usr/share/0outils/fonctions_paquets.sh
 
 telecharger_sources
 
 # On compile 'libssh2' !
-preparer_sources libssh2-1.4.3.$EXT
+preparer_sources libssh2-1.4.3.tar.gz
 cflags
 
 # Compilation :
