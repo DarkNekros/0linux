@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-libgadu}
-VERSION=${VERSION:-1.11.2}
+VERSION=${VERSION:-1.11.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libgadu}
 WGET=${WGET:-http://toxygen.net/$NAMESRC/files/$NAMESRC-$VERSION.$EXT}
