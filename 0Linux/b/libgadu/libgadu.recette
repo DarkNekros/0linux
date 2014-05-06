@@ -5,7 +5,7 @@ NAMESRC=${NAMESRC:-libgadu}
 VERSION=${VERSION:-1.11.3}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-libgadu}
-WGET=${WGET:-http://toxygen.net/$NAMESRC/files/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://github.com/wojtekka/$NAMESRC/releases/download/$VERSION/$NAMESRC-$VERSION.$EXT}
 DESC="Bibliothèques pour la gestion du protocole Gadu-Gadu"
 
 . /usr/share/0outils/fonctions_paquets.sh
