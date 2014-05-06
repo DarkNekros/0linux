@@ -1,3 +1,4 @@
+optipng
 grantlee
 libmsn
 libgadu
@@ -17,8 +18,13 @@ shared-desktop-ontologies
 media-player-info
 herqq
 qt-gstreamer
+libutemper
 kdelibs
 kdepimlibs
+kdegraphics-mobipocket
+kfilemetadata
+baloo
+baloo-widget
 nepomuk-core
 nepomuk-widgets
 kactivities
@@ -49,7 +55,6 @@ colord-kde
 gwenview
 kamera
 kcolorchooser
-kdegraphics-mobipocket
 kdegraphics-strigi-analyzer
 kdegraphics-thumbnailers
 kgamma
@@ -145,6 +150,7 @@ openbabel
 avogadro
 libfacile
 analitza
+artikulate
 blinken
 cantor
 kalgebra
