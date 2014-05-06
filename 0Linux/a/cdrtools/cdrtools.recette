@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cdrtools}
 VERSION=${VERSION:-3.01a23}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-cdrtools}
-WGET=${WGET:-ftp://ftp.berlios.de/pub/cdrecord/alpha/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-ftp://ftp.berlios.de/pub/cdrecord/alpha/$NAMESRC-$VERSION.tar.bz2}
 DESC="Outils de gravure pour disques optiques"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

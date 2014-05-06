@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-base-systeme}
 VERSION=${VERSION:-5.1.4}
-NAMETGZ=${NAMETGZ:-base-systeme}
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
-
 
 cflags # cflags() permet de définir $PKGARCH et $LIBDIRSUFFIX
 
