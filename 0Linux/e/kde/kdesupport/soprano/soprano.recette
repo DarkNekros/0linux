@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-soprano}
 VERSION=${VERSION:-2.9.4}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-soprano}
-WGET=${WGET:-http://prdownloads.sourceforge.net/project/$NAMESRC/Soprano/$VERSION/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://prdownloads.sourceforge.net/project/soprano/Soprano/$VERSION/soprano-$VERSION.tar.bz2}
 DESC="Bibliothèques de haut niveau de traitement de données RDF"
-########################################
+
 
 . /usr/share/0outils/fonctions_paquets.sh
 

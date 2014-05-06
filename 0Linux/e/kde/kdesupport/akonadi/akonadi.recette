@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-akonadi}
 VERSION=${VERSION:-1.12.1}
-NAMETGZ=${NAMETGZ:-akonadi}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/src/$NAMESRC-$(echo $VERSION | sed "s/_/-/").tar.bz2}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/akonadi/src/akonadi-$VERSION.tar.bz2}
 DESC="Services de gestion des informations personnelles"
 
 . /usr/share/0outils/fonctions_paquets.sh
