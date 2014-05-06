@@ -31,7 +31,7 @@ make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
 # On compile 'libssh' :
-preparer_sources
+preparer_sources libssh-$VERSION.tar.xz
 cflags
 
 # La compilation se fait dans un répertoire dédié :
