@@ -209,8 +209,8 @@ preparer_sources() {
 	# que tout est en vrac à l'intérieur, on devra donc décompacter dans un
 	# répertoire dédié :
 	echo "Extraction en cours..."
-	case ${EXT} in
-		tar*|TAR*|tbz*|TBZ*|tgz|TGZ|txz|TXZ)
+	case ${CURRENTARCHIVE} in
+		*.tar.*|*.TAR.*|*.tgz|*.TGZ|*.tbz*|*.TBZ*|*.txz|*.TXZ)
 			if [ $(tar ft ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | cut -d'/' -f1 | uniq | wc -l) -eq 1 ]; then
 				NAME="$(tar ft ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | cut -d'/' -f1 | uniq)"
 				tar xf ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -C $TMP

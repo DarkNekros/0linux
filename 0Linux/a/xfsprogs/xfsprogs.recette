@@ -15,9 +15,11 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
+export OPTIMIZER="${FLAGS}"
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
+	--sbindir=/usr/sbin \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -40,8 +42,13 @@ cp -a $(find ${PKG}/lib* -type f) ${PKG}/usr/lib${LIBDIRSUFFIX}/
 if [ -r ${PKG}/usr/lib3264 ]; then
 	cp -a $(find ${PKG}/usr/lib3264 -type f) ${PKG}/usr/lib${LIBDIRSUFFIX}/
 fi
-if [ -r ${PKG}/usr/lib ]; then
-	cp -a $(find ${PKG}/usr/lib -type f) ${PKG}/usr/lib${LIBDIRSUFFIX}/
+
+# On déplace les bibliothèques où il faut :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	if [ -r ${PKG}/usr/lib ]; then
+		cp -a $(find ${PKG}/usr/lib -type f) ${PKG}/usr/lib${LIBDIRSUFFIX}/
+		rm -rf ${PKG}/usr/lib
+	fi
 fi
 
 # On lie tout ce beau monde correctement :
@@ -51,7 +58,6 @@ ln -sf libhandle.so.1 ${PKG}/usr/lib${LIBDIRSUFFIX}/libhandle.so
 # On nettoie :
 rm -rf ${PKG}/lib*
 rm -rf ${PKG}/usr/lib3264
-rm -rf ${PKG}/usr/lib
 
 installer_doc
 

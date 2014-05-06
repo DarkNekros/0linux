@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
-NAMESRC=${NAMESRC:-gtk-doc}
 VERSION=${VERSION:-1.20}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gtk-doc}
-WGET=${WGET:-http://ftp.gnome.org/pub/gnome/sources/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://ftp.gnome.org/pub/gnome/sources/gtk-doc/gtk-doc/gtk-doc-$VERSION.tar.xz}
 DESC="Système de documentation"
 
 . /usr/share/0outils/fonctions_paquets.sh
