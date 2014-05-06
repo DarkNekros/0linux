@@ -2,7 +2,7 @@
 # Voyez le fichier LICENCES pour connaître la licence de ce script.
 
 NAMESRC=${NAMESRC:-nss}
-VERSION=${VERSION:-3.15.2}
+VERSION=${VERSION:-3.16.1}
 EXT=${EXT:-tar.gz}
 NAMETGZ=${NAMETGZ:-nss}
 WGET=${WGET:-ftp://ftp.mozilla.org/pub/mozilla.org/security/$NAMESRC/releases/NSS_$(echo $VERSION | sed 's/\./_/g')_RTM/src/$NAMESRC-$VERSION.$EXT}
