@@ -35,14 +35,14 @@ libkipi
 libksane
 libbluedevil
 libktorrent
+kde-runtime
+okular
 smokegen
 smokeqt
-okular
 smokekde
 pykde
 perlqt
 perlkde
-kde-runtime
 marble
 kde-workspace
 kde-baseapps
