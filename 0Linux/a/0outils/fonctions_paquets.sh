@@ -174,7 +174,7 @@ preparer_sources() {
 		# Si $WGET est un tableau contenant plusieurs archives sources à télécharger :
 		if [ ${#WGET[*]} -gt 1 ]; then
 			
-			# On tente de sauver les meubles si $NAMESRC-$VERSION.$EXT existe :
+			# On tente de sauver les meubles si l'extension $EXT existe :
 			if [ -n ${EXT} ]; then
 				for wgetline in ${WGET[*]}; do
 					if [ "$(basename ${wgetline})" = "$NAMESRC-$VERSION.$EXT" ]; then
@@ -182,15 +182,28 @@ preparer_sources() {
 						break
 					fi
 				done
+			
+			# Sinon, on considère que la première archive nommée "$NAMESRC-$VERSION.*"
+			# correspond à l'archive voulue (on peut rêver) :
+			else
+				for wgetline in ${WGET[*]}; do
+					if [ ! "$(echo $(basename ${wgetline}) | egrep \"$NAMESRC-$VERSION\..*$\")" = "" ]; then
+						CURRENTARCHIVE="$(basename ${wgetline})"
+						break
+					fi
+				done
 			fi
-			# Si l'on n'a rien trouvé :
+			
+			# Si l'on n'a rien trouvé, on plante car on a besoin d'un argument :
 			if [ -z ${CURRENTARCHIVE} ]; then
-				echo "Erreur : plusieurs archives sources non-standards sont spécifiées dans"
-				echo "cette recette. Appelez obligatoirement 'preparer_sources' suivi du nom"
-				echo "l'archive à décompacter, par exemple :"
+				echo "Erreur : plusieurs archives sources non-standards sont spécifiées dans cette"
+				echo "recette. Appelez obligatoirement 'preparer_sources' suivi du nom de l'archive"
+				echo "à décompacter, par exemple :"
 				echo "	preparer_sources nomdelarchive.tar.gz"
 				exit 1
 			fi
+		
+		# Si $WGET est une simple variable, c'est beaucoup plus simple : :
 		else
 			CURRENTARCHIVE="$(basename ${WGET})"
 		fi
