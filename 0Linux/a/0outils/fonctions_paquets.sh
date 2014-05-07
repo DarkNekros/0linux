@@ -670,7 +670,7 @@ empaqueter() {
 	
 	# Paquet créé avec succès à ce stade, on supprime le marqueur d'échec :
 	if [ -n "${NAMETGZ}" ]; then
-		rm -f ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log.echec
+		rm -f ${MARMITELOGS}/${NAMETGZ}.log.echec
 	fi
 	
 	# On définit le compteur de compilations $BUILD en se basant sur l'éventuel
