@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-konsole}
 VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-konsole}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
-DESC="Konsole : le puissant émulateur de terminal de KDE"
+DESC="Puissant émulateur de terminal de KDE"
 EXTRADEPS="kde-runtime"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -32,10 +28,6 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
-
-# On lance konsole avec le bon shell :
-sed -i -e 's/Exec=konsole/Exec=konsole -e $SHELL -l/' \
-	$PKG/usr/share/applications/kde4/konsole.desktop
 
 installer_doc
 creer_post_installation
