@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+NAMESRC=${NAMESRC:-Clementine}
+VERSION=${VERSION:-1.2.3}
+WGET=${WGET:-https://github.com/clementine-player/$NAMESRC/archive/$VERSION.tar.gz}
+DESC="Un lecteur audio moderne avec gestion d'audiothèque"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On doit compiler dans un répertoire dédié :
+mkdir build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
