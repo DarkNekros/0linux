@@ -52,9 +52,6 @@ else
 	exec >  >(tee -a ${MARMITELOGS}/${NAMETGZ}.log)
 	exec 2> >(tee -a ${MARMITELOGS}/${NAMETGZ}.log >&2)
 	
-	# On place également un marqueur d'échec, qu'on effacera une fois le script terminé avec succès :
-	echo "" > ${MARMITELOGS}/${NAMETGZ}.log.echec
-	
 	# On crée le répertoire des archives sources :
 	mkdir -p ${PKGSOURCES}/${NAMETGZ}
 	
@@ -630,14 +627,6 @@ empaqueter() {
 	# On stocke également les dépendances dans la doc 0linux :
 	cp -a ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/
 	
-	# On place le journal - en ajoutant la version - dans la doc sous forme compressée :
-	if [ -r ${MARMITELOGS}/${NAMETGZ}.log ]; then
-		mv ${MARMITELOGS}/${NAMETGZ}{,-${VERSION}}.log
-		cp ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/
-		xz ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/${NAMETGZ}-${VERSION}.log
-		rm -f ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log
-	fi
-	
 	# On place la description en la créant via 'spackdesc -' :
 	echo "${DESC}" | spackdesc --package="${NAMETGZ}" - > ${PKG}/about.txt
 	
@@ -668,11 +657,6 @@ empaqueter() {
 		fi
 	done
 	
-	# Paquet créé avec succès à ce stade, on supprime le marqueur d'échec :
-	if [ -n "${NAMETGZ}" ]; then
-		rm -f ${MARMITELOGS}/${NAMETGZ}.log.echec
-	fi
-	
 	# On définit le compteur de compilations $BUILD en se basant sur l'éventuel
 	# paquet déjà installé dans le système. On laisse néanmoins la possibilité de
 	# spécifier $BUILD sur la ligne de commande (qui reste prioritaire) :
@@ -696,6 +680,15 @@ empaqueter() {
 				fi
 			fi
 		done
+	fi
+	
+	# On place le journal - en ajoutant la version - dans la doc sous forme compressée
+	# et on supprime le journal, signe que la compilation s'est bien passée :
+	if [ -r ${MARMITELOGS}/${NAMETGZ}.log ]; then
+		mv ${MARMITELOGS}/${NAMETGZ}{,-${VERSION}}.log
+		cp ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/
+		xz ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/${NAMETGZ}-${VERSION}.log
+		rm -f ${MARMITELOGS}/${NAMETGZ}-${VERSION}.log
 	fi
 	
 	# Empaquetage !

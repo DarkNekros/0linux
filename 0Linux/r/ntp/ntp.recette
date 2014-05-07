@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ntp}
 VERSION=${VERSION:-4.2.6p5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-ntp}
-WGET=${WGET:-http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz}
 DESC="Service permettant de synchroniser l'heure avec des serveurs de temps"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -54,12 +50,12 @@ cat > ${PKG}/etc/rc.d/rc.ntp << "EOF"
 
 
 ntpd_start() {
-	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du démon NTP......"
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du démon NTP..."
 	ntpd -g -p /var/run/ntpd.pid
 }
 
 ntpd_stop() {
-	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt du démon NTP......"
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt du démon NTP..."
 	kill $(cat /var/run/ntpd.pid)
 	rm -f /var/run/ntpd.pid
 	killall ntpd 2>/dev/null

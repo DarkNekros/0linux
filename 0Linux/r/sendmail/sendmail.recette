@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-sendmail}
-VERSION=${VERSION:-8.14.7}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-sendmail}
-WGET=${WGET:-ftp://ftp.sendmail.org/pub/$NAMESRC/$NAMESRC.$VERSION.$EXT}
-DESC="Démons d'envoi de messages électroniques"
-
+VERSION=${VERSION:-8.14.8}
+WGET=${WGET:-ftp://ftp.sendmail.org/pub/$NAMESRC/$NAMESRC.$VERSION.tar.gz}
+DESC="Démons d'envoi de courrier électronique"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -20,7 +16,7 @@ echo "APPENDDEF(\`conf_sendmail_ENVDEF', \`-DSASL=2')" >> devtools/OS/Linux
 echo "APPENDDEF(\`conf_sendmail_LIBS', \`-lsasl2')" >> devtools/OS/Linux
 
 # On applique nos flags :
-sed -i "s/OPTIMIZE',\`-O2'/OPTIMIZE',\`$FLAGS'/g" devtools/OS/Linux
+sed -i "s/OPTIMIZE',\`-O2'/OPTIMIZE',\`${FLAGS}'/g" devtools/OS/Linux
 
 # Compilation :
 make -j${JOBS} || make
@@ -32,32 +28,30 @@ sed -i -e '449 s/-o [^}]*}[^}]*}//' -e '449 s/-m .{GBINMODE}/-m 755/' obj.*/send
 GROFF_NO_SGR=1 make -j${JOBS} -C doc/op op.txt op.ps || make -C doc/op op.txt op.ps
 
 # On doit créer les répertoires d'accueil :
-mkdir -p $PKG/usr/{bin,sbin,share/man,/lib${LIBDIRSUFFIX}/systemd/system} \
-	$PKG/usr/man/man{1,5,8} $PKG/var/spool/mqueue
+mkdir -p ${PKG}/usr/{bin,sbin,share/man,/lib${LIBDIRSUFFIX}}
+mkdir -p ${PKG}/usr/man/man{1,5,8}
+mkdir -p ${PKG}/var/spool/mqueue
 
 # Installation :
-fakeroot make install DESTDIR=$PKG
-fakeroot make -C mail.local force-install DESTDIR=$PKG
-fakeroot make -C rmail force-install DESTDIR=$PKG
+fakeroot make install DESTDIR=${PKG}
+fakeroot make -C mail.local force-install DESTDIR=${PKG}
+fakeroot make -C rmail force-install DESTDIR=${PKG}
 
 # Une partie de la configuration est installé manuellement :
 cp -r cf $PKG/usr/share/sendmail-cf
 cp sendmail/aliases $PKG/etc/mail/aliases.0nouveau
 cp cf/cf/generic-linux.cf $PKG/etc/mail/sendmail.cf.0nouveau
-echo "# Fichiers de configuration des noms d'hotes locaux pour sendmail." > $PKG/etc/mail/local-host-names.0nouveau
+echo "# Fichiers de configuration des noms d'hôtes locaux pour sendmail." > ${PKG}/etc/mail/local-host-names.0nouveau
 
-# On renome le reste de la configuration :
+# On renomme le reste de la configuration :
 mv $PKG/etc/mail/helpfile{,.0nouveau}
 mv $PKG/etc/mail/statistics{,.0nouveau}
 mv $PKG/etc/mail/submit.cf{,.0nouveau}
 
-# On installe la doc, bien utile :
-cp doc/op/op.{ps,txt} $PKG/usr/doc/$NAMETGZ-$VERSION
-
 # On fabrique la libmilter :
 cd libmilter
 make -j${JOBS} || make
-cd ..
+cd -
 
 # Installation de libmilter manuelle :
 mkdir -p $PKG/usr/include/libmilter
@@ -66,43 +60,47 @@ cp -a obj.*/libmilter/libmilter.a $PKG/usr/lib${LIBDIRSUFFIX}
 mkdir -p $PKG/usr/doc/$NAMETGZ-$VERSION/libmilter
 cp -a libmilter/README $PKG/usr/doc/$NAMETGZ-$VERSION/libmilter
 
-# Installation des fichiers systemd :
-cat > $PKG/usr/lib${LIBDIRSUFFIX}/systemd/system/sendmail.service << "EOF"
-[Unit]
-Description=Agent de transport de messages Sendmail
-After=syslog.target network.target
-Conflicts=postfix.service exim.service
-Wants=sm-client.service
+# On crée le fichier service, désactvé par défaut :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.sendmail << "EOF"
+#!/usr/bin/env bash
 
-[Service]
-Type=forking
-PIDFile=/var/run/sendmail.pid
-ExecStartPre=-/usr/bin/newaliases > /dev/null 2>&1
-ExecStart=/usr/sbin/sendmail -bd -q30m -L sm-mta
+sendmail_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du MTA sendmail..."
+	echo "Exécution de : '/usr/sbin/sendmail -L sm-mta -bd -q25m'"
+	/usr/sbin/sendmail -L sm-mta -bd -q25m
+	echo "Exécution de : '/usr/sbin/sendmail -L sm-msp-queue -Ac -q25m'"
+	/usr/sbin/sendmail -L sm-msp-queue -Ac -q25m
+}
 
-[Install]
-WantedBy=multi-user.target
+sendmail_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt du MTA sendmail..."
+	killall sendmail
+}
 
-EOF
-
-cat > $PKG/usr/lib${LIBDIRSUFFIX}/systemd/system/sm-client.service << "EOF"
-[Unit]
-Description=Client de messagerie Sendmail
-After=syslog.target network.target sendmail.service
-Wants=sendmail.service
-
-[Service]
-Type=forking
-PIDFile=/var/spool/clientmqueue/sm-client.pid
-ExecStartPre=/usr/bin/rm -f /var/spool/mqueue/xf*
-ExecStart=/usr/sbin/sendmail -Ac -q30m -L sm-cm > /dev/null 2>&1
-
-[Install]
-WantedBy=multi-user.target
+case "$1" in
+	'start')
+		sendmail_start
+	;;
+	'stop')
+		sendmail_stop
+	;;
+	'restart')
+		sendmail_stop
+		sleep 1
+		sendmail_start
+	;;
+	*)
+		echo "Utilisation : $0 start|stop|restart|status"
+esac
 
 EOF
 
 installer_doc
+
+# On complète la documentation :
+cp doc/op/op.{ps,txt} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
 creer_post_installation
 stripper
 empaqueter
