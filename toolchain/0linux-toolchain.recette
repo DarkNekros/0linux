@@ -22,7 +22,6 @@ VERSION=${VERSION:-$(date +%d%m%Y)}
 NAMETGZ=${NAMETGZ:-0linux-toolchain}
 DESC="La chaîne d'outils croisés pour 0Linux"
 
-
 # On a besoin de cflags() pour définir $PKGARCH et $LIBDIRSUFFIX :
 cflags
 
