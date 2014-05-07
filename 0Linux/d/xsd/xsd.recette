@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=${VERSION:-3.3.0_2+dep}
+WGET=${WGET:-http://www.codesynthesis.com/download/xsd/3.3/xsd-$(echo $VERSION | sed 's/_/\-/').tar.bz2}
+DESC="Compilateur pour modèle XML pour le C++"
+
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Le manuel ne tien pas compte d'un changement de nom d'un executable :
+cat $CWD/xsdcxx.patch | patch -p0
+
+# Compilation :
+make -j${JOBS} CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" || make CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}"
+fakeroot make install install_prefix=${PKG}/usr
+cd ../
+
+# Corrige un conflit avec mono :
+mv $PKG/usr/bin/xsd{,cxx}
+mv $PKG/usr/share/man/man1/xsd{,cxx}.1
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
