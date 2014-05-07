@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-smb4k}
-VERSION=${VERSION:-1.1.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-smb4k}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+VERSION=${VERSION:-1.1.2}
+WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.xz}
 DESC="Gestion de vos partages Samba avec KDE"
-########################################
 
 
 telecharger_sources
