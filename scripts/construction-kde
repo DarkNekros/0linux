@@ -44,6 +44,7 @@ pykde
 perlqt
 perlkde
 marble
+kde-base-artwork
 kde-workspace
 kde-baseapps
 kde-wallpapers
@@ -97,7 +98,11 @@ wicd-kde
 knemo
 smb4k
 kde-l10n-fr
+xsd
 libkgapi
+libkfbapi
+libkolabxml
+libkolab
 kdepim-runtime
 kdepim
 libkdegames

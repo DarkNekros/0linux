@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-2.1.1}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.tar.bz2}
-DESC="Bibliothèque permettant l'accès aux ressources Google"
+VERSION=${VERSION:-1.0.1}
+WGET=${WGET:-http://git.kolab.org/libkolabxml/snapshot/libkolabxml-$VERSION.tar.gz}
+DESC="Bibliothèque pour la messagerie collaborative Kolab"
 
 
 telecharger_sources
@@ -17,12 +17,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
-	-D KDE4_BUILD_TESTS=FALSE \
-	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D SYSCONF_INSTALL_DIR=/etc/kde \
+	-D LIB_INSTALL_DIR=/usr/lib$LIBDIRSUFFIX \
 	./ ../
 
 make -j${JOBS} || make
