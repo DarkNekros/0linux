@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-digikam}
 VERSION=${VERSION:-3.5.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-digikam}
 WGET=${WGET:-http://download.kde.org/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 DESC="Gestionnaire avancé de photos et outils de retouche pour KDE"
 EXTRADEPS="kde-runtime"
@@ -28,7 +25,6 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	-D DIGIKAMSC_USE_PRIVATE_KDEGRAPHICS=OFF \
-	-D ImageMagick_MagickCore_INCLUDE_DIR=/usr/include/ImageMagick-6 \
 	./ ../
 
 make -j${JOBS} || make
