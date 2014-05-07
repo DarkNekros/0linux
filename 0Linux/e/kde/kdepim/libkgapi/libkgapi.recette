@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libkgapi}
-VERSION=${VERSION:-2.1.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libkgapi}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+VERSION=${VERSION:-2.1.1}
+WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.tar.bz2}
 DESC="Bibliothèque permettant l'accès aux ressources Google"
-########################################
 
 
 telecharger_sources
