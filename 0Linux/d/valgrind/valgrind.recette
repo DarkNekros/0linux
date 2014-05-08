@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-valgrind}
-VERSION=${VERSION:-3.8.1}
+VERSION=${VERSION:-3.9.0}
 EXT=${EXT:-tar.bz2}
 NAMETGZ=${NAMETGZ:-valgrind}
 WGET=${WGET:-http://valgrind.org/downloads/$NAMESRC-$VERSION.$EXT}
@@ -15,9 +15,6 @@ cflags
 
 # On corrige pour s'adapter aux 'glibc' les plus récentes :
 cat $CWD/valgrind.glibc.patch | patch -p1
-
-# On régénère le système de construction :
-./autogen.sh
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
