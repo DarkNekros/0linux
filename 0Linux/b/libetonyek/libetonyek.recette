@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.62
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
-DESC="Outils de conversion PostScript et PDF"
+VERSION=0.0.4
+WGET=http://dev-www.libreoffice.org/src/$NAMESRC-$VERSION.tar.xz
+DESC="Bibliothèques d'importation de fichiers au format Apple Keynote"
 
 
 telecharger_sources
@@ -21,9 +21,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
-
-# On retire un entête superflu :
-sed -i '/#include "ming_config.h"/d' src/drvswf.h
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}

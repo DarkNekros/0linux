@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.62
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
-DESC="Outils de conversion PostScript et PDF"
+VERSION=0.92.405
+WGET=ftp://ftp.freetds.org/pub/freetds/stable/freetds-$VERSION.tar.bz2
+DESC="Gestion de bases de données Microsoft SQL Server"
 
 
 telecharger_sources
@@ -20,10 +20,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-msdblib \
+	--with-tdsver=7.0 \
+	--with-unixodbc=/usr \
+	--with-openssl \
 	--build=${PKGARCH}-0linux-linux-gnu
-
-# On retire un entête superflu :
-sed -i '/#include "ming_config.h"/d' src/drvswf.h
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}

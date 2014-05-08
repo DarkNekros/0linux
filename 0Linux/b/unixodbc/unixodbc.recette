@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.62
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
-DESC="Outils de conversion PostScript et PDF"
+VERSION=2.3.2
+WGET=ftp://ftp.unixodbc.org/pub/unixODBC/unixODBC-$VERSION.tar.gz
+DESC="API standard pour la gestion de bases de données"
 
 
 telecharger_sources
@@ -22,11 +22,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-# On retire un entête superflu :
-sed -i '/#include "ming_config.h"/d' src/drvswf.h
-
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+# On renome les fichiers de configuration :
+mv $PKG/etc/odbc.ini{,.0nouveau}
+mv $PKG/etc/odbcinst.ini{,.0nouveau}
 
 installer_doc
 creer_post_installation

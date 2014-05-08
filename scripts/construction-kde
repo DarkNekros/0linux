@@ -51,6 +51,7 @@ kde-wallpapers
 konsole
 kate
 kwebkitpart
+about-distro
 bluedevil
 colord-kde
 gwenview
@@ -76,6 +77,7 @@ kgpg
 kwalletmanager
 print-manager
 sweeper
+yakuake
 krename
 kdeplasma-addons
 superkaramba
@@ -184,6 +186,10 @@ partio
 openimageio
 opencolorio
 vc
+unixodbc
+freetds
+libetonyek
+libodfgen
 calligra
 calligra-l10n-fr
 clamz

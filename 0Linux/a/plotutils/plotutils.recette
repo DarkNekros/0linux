@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.62
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
-DESC="Outils de conversion PostScript et PDF"
+VERSION=2.6
+WGET=http://ftp.gnu.org/pub/gnu/plotutils/plotutils-$VERSION.tar.gz
+DESC="Outils et bibliothèques pour le traçage de courbes"
 
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# Permet la compilation avec un libpng récent :
+cat $CWD/plotutils.libpng15.patch | patch -p0
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -20,10 +23,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-gnu-ld \
+	--with-x \
+	--enable-libploter \
 	--build=${PKGARCH}-0linux-linux-gnu
-
-# On retire un entête superflu :
-sed -i '/#include "ming_config.h"/d' src/drvswf.h
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
