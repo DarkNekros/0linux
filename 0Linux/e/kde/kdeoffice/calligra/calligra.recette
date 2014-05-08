@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=${NAMESRC:-calligra}
-VERSION=${VERSION:-2.8.1}
+VERSION=${VERSION:-2.8.2}
 EXT=${EXT:-tar.xz}
 NAMETGZ=${NAMETGZ:-calligra}
 WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}

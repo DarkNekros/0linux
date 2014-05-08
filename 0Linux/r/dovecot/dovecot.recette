@@ -32,7 +32,6 @@ LDFLAGS="-ldl" \
 	--mandir=/usr/man \
 	--disable-static \
 	--with-notify=inotify \
-	--with-systemdsystemunitdir=/usr/lib${LIBDIRSUFFIX}/systemd/system \
 	--without-pam \
 	--with-bzlib \
 	--with-docs \

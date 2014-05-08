@@ -31,7 +31,7 @@ mv startlazarus{,-qt}
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make FPC=/usr/bin/fpc LCL_PLATFORM=gtk2 bigide
 
-# On renome le binaire gtk :
+# On renome les binaires gtk :
 mv startlazarus{,-gtk}
 mv lazarus{,-gtk}
 
@@ -78,7 +78,7 @@ installer_doc
 # Installation des manuels et documentation :
 cp -a install/man/man1/* $PKG/usr/man/man1/
 cp -a COPYING* README.txt $PKG/usr/doc/$NAMETGZ-$VERSION
-ln -s /usr/lib/lazarus/docs/html $PKG/usr/doc/$NAMETGZ-$VERSION/docs
+ln -s /usr/lib${LIBDIRSUFFIX}/lazarus/docs $PKG/usr/doc/$NAMETGZ-$VERSION/docs
 
 creer_post_installation
 stripper

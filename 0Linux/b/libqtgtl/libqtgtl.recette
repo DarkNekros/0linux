@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libQtGTL}
 VERSION=${VERSION:-0.9.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libqtgtl}
-WGET=${WGET:-http://download.opengtl.org/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://download.opengtl.org/libQtGTL-$VERSION.tar.bz2}
 DESC="Surcouche Qt pour les langages de manipulation graphique CTL et Shiva"
-########################################
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

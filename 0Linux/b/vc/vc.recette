@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Vc}
 VERSION=${VERSION:-0.7.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-vc}
-WGET=${WGET:-http://code.compeng.uni-frankfurt.de/attachments/download/174/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://code.compeng.uni-frankfurt.de/attachments/download/174/Vc-$VERSION.tar.gz}
 DESC="Bibliothèques de manipulation d'objets vectoriels"
-########################################
 
 
 telecharger_sources

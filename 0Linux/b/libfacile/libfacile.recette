@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-facile}
 VERSION=${VERSION:-1.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libfacile}
-WGET=${WGET:-http://www.recherche.enac.fr/log/$NAMESRC/distrib/$NAMESRC-$VERSION.$EXT}
+WGET=${WGET:-http://www.recherche.enac.fr/log/facile/distrib/facile-$VERSION.tar.gz}
 DESC="Résolveur d'équation"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
