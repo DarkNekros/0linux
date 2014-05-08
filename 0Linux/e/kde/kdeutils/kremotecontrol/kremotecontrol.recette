@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kremotecontrol}
-VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kremotecontrol}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kremotecontrol
+VERSION=4.13.0
+EXT=tar.xz
+NAMETGZ=kremotecontrol
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Prise en charge des télécommandes avec KDE"
 ########################################
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-tcl}
-VERSION=${VERSION:-8.6.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-tcl}
-WGET=${WGET:-http://prdownloads.sourceforge.net/${NAMESRC}/${NAMESRC}${VERSION}-src.$EXT}
+NAMESRC=tcl
+VERSION=8.6.1
+EXT=tar.gz
+NAMETGZ=tcl
+WGET=http://prdownloads.sourceforge.net/${NAMESRC}/${NAMESRC}${VERSION}-src.$EXT
 DESC="Langage de script interactif"
 
 

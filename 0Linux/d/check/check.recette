@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-check}
-VERSION=${VERSION:-0.9.10}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-check}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=check
+VERSION=0.9.10
+EXT=tar.gz
+NAMETGZ=check
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de tests unitaires pour C"
 
 

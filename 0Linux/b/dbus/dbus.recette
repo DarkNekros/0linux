@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-dbus}
-VERSION=${VERSION:-1.6.12}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-dbus}
-WGET=${WGET:-http://dbus.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=dbus
+VERSION=1.6.12
+EXT=tar.gz
+NAMETGZ=dbus
+WGET=http://dbus.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bus de messages système"
 
 

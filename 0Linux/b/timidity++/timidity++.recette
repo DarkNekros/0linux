@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-TiMidity++}
-VERSION=${VERSION:-2.13.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-timidity++}
-WGET=${WGET:-http://prdownloads.sourceforge.net/timidity/$NAMESRC-$VERSION.$EXT}
+NAMESRC=TiMidity++
+VERSION=2.13.2
+EXT=tar.bz2
+NAMETGZ=timidity++
+WGET=http://prdownloads.sourceforge.net/timidity/$NAMESRC-$VERSION.$EXT
 DESC="Synthétiseur MIDI"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-tbb}
-VERSION=${VERSION:-41_20130314}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-tbb}
-WGET=${WGET:-http://threadingbuildingblocks.org/sites/default/files/software_releases/source/${NAMESRC}${VERSION}oss_src.$EXT}
+NAMESRC=tbb
+VERSION=41_20130314
+EXT=tgz
+NAMETGZ=tbb
+WGET=http://threadingbuildingblocks.org/sites/default/files/software_releases/source/${NAMESRC}${VERSION}oss_src.$EXT
 DESC="Bibliothèques de parallèlisation de haut niveau"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xcb-util-renderutil}
-VERSION=${VERSION:-0.3.8}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xcb-util-renderutil}
-WGET=${WGET:-http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xcb-util-renderutil
+VERSION=0.3.8
+EXT=tar.bz2
+NAMETGZ=xcb-util-renderutil
+WGET=http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'interfaçage pour X11"
 
 

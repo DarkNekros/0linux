@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-transmission}
-VERSION=${VERSION:-2.82}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-transmission}
-WGET=${WGET:-http://download.transmissionbt.com/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=transmission
+VERSION=2.82
+EXT=tar.xz
+NAMETGZ=transmission
+WGET=http://download.transmissionbt.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Clients et démon de partage BitTorrent"
 
 

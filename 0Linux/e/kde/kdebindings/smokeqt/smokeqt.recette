@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-smokeqt}
-VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-smokeqt}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=smokeqt
+VERSION=4.13.0
+EXT=tar.xz
+NAMETGZ=smokeqt
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Interface de programmation unifiée pour Qt"
 ########################################
 

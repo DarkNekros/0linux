@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-doxygen}
-VERSION=${VERSION:-1.8.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-doxygen}
-WGET=${WGET:-ftp://ftp.stack.nl/pub/users/dimitri/$NAMESRC-${VERSION}.src.$EXT}
+NAMESRC=doxygen
+VERSION=1.8.6
+EXT=tar.gz
+NAMETGZ=doxygen
+WGET=ftp://ftp.stack.nl/pub/users/dimitri/$NAMESRC-${VERSION}.src.$EXT
 DESC="Système de documentation pour de nombreux langages"
 
 

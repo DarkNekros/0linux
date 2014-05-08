@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-broadcom-wl}
-VERSION=${VERSION:-5.100.138}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-b43-firmware}
-WGET=${WGET:-http://mirror2.openwrt.org/sources/$NAMESRC-${VERSION}.$EXT}
+NAMESRC=broadcom-wl
+VERSION=5.100.138
+EXT=tar.bz2
+NAMETGZ=b43-firmware
+WGET=http://mirror2.openwrt.org/sources/$NAMESRC-${VERSION}.$EXT
 DESC="Firmware pour cartes réseau sans fil Broadcom"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kwebkitpart}
-VERSION=${VERSION:-1.3.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-kwebkitpart}
-WGET=${WGET:-ftp://ftp.archlinux.org/other/packages/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kwebkitpart
+VERSION=1.3.3
+EXT=tar.bz2
+NAMETGZ=kwebkitpart
+WGET=ftp://ftp.archlinux.org/other/packages/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Module KPart permettant d'utiliser WebKit dans les applications KDE"
 EXTRADEPS="kde-runtime kde-baseapps"
 

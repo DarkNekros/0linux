@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-openttd}
-VERSION=${VERSION:-1.3.3}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-openttd}
-WGET=${WGET:-http://binaries.openttd.org/releases/$VERSION/$NAMESRC-$VERSION-source.$EXT}
+NAMESRC=openttd
+VERSION=1.3.3
+EXT=tar.xz
+NAMETGZ=openttd
+WGET=http://binaries.openttd.org/releases/$VERSION/$NAMESRC-$VERSION-source.$EXT
 DESC="Jeu de simulation de transport."
 
 

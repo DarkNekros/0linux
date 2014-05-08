@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-blender}
-VERSION=${VERSION:-2.69}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-blender}
-WGET=${WGET:-http://download.blender.org/source/$NAMESRC-$VERSION.$EXT}
+NAMESRC=blender
+VERSION=2.69
+EXT=tar.gz
+NAMETGZ=blender
+WGET=http://download.blender.org/source/$NAMESRC-$VERSION.$EXT
 DESC="Modéliseur 3D avancé de référence"
 ########################################
 

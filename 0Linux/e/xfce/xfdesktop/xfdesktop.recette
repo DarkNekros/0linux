@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xfdesktop}
-VERSION=${VERSION:-4.10.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xfdesktop}
-WGET=${WGET:-http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xfdesktop
+VERSION=4.10.2
+EXT=tar.bz2
+NAMETGZ=xfdesktop
+WGET=http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Environnement de bureau d'Xfce"
 
 

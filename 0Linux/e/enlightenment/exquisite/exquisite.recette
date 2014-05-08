@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-exquisite}
-VERSION=${VERSION:-1.0.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-exquisite}
-WGET=${WGET:-http://download.enlightenment.org/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=exquisite
+VERSION=1.0.0
+EXT=tar.gz
+NAMETGZ=exquisite
+WGET=http://download.enlightenment.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Programme d'écran d'accueil pour E"
 
 

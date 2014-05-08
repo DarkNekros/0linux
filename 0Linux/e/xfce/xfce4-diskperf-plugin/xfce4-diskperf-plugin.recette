@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xfce4-diskperf-plugin}
-VERSION=${VERSION:-2.5.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xfce4-diskperf-plugin}
-WGET=${WGET:-http://archive.xfce.org/src/panel-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xfce4-diskperf-plugin
+VERSION=2.5.3
+EXT=tar.bz2
+NAMETGZ=xfce4-diskperf-plugin
+WGET=http://archive.xfce.org/src/panel-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Greffon d'affichage graphique des performances disques pour Xfce"
 
 

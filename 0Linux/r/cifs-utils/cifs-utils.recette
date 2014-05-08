@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cifs-utils}
-VERSION=${VERSION:-6.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-cifs-utils}
-WGET=${WGET:-ftp://ftp.samba.org/pub/linux-cifs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=cifs-utils
+VERSION=6.3
+EXT=tar.bz2
+NAMETGZ=cifs-utils
+WGET=ftp://ftp.samba.org/pub/linux-cifs/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils pour les systèmes de fichiers SMB et CIFS"
 
 

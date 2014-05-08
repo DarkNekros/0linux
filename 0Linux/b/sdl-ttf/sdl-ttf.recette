@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-SDL_ttf}
-VERSION=${VERSION:-2.0.12}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-sdl-ttf}
+NAMESRC=SDL_ttf
+VERSION=2.0.12
+EXT=tar.gz
+NAMETGZ=sdl-ttf
 WGET=(http://www.libsdl.org/projects/$NAMESRC/release/$(echo $NAMESRC | sed 's@SDL@SDL2@')-$VERSION.$EXT
       http://www.libsdl.org/projects/$NAMESRC/release/$NAMESRC-2.0.11.$EXT
      )

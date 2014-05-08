@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-glproto}
-VERSION=${VERSION:-1.4.17}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-glproto}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT}
+NAMESRC=glproto
+VERSION=1.4.17
+EXT=tar.bz2
+NAMETGZ=glproto
+WGET=http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers d'en-têtes de protocole pour X11"
 
 

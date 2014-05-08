@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-tellico}
-VERSION=${VERSION:-2.3.8}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-tellico}
-WGET=${WGET:-http://tellico-project.org/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=tellico
+VERSION=2.3.8
+EXT=tar.bz2
+NAMETGZ=tellico
+WGET=http://tellico-project.org/files/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de collections avancé pour KDE"
 ########################################
 

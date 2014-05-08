@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-expedite}
-VERSION=${VERSION:-1.7.10}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-expedite}
-WGET=${WGET:-http://download.enlightenment.org/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=expedite
+VERSION=1.7.10
+EXT=tar.gz
+NAMETGZ=expedite
+WGET=http://download.enlightenment.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de tests de performances pour E"
 
 

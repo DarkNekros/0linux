@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-lua}
-VERSION=${VERSION:-5.1.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-lua}
-WGET=${WGET:-http://www.lua.org/ftp/$NAMESRC-$VERSION.$EXT}
+NAMESRC=lua
+VERSION=5.1.5
+EXT=tar.gz
+NAMETGZ=lua
+WGET=http://www.lua.org/ftp/$NAMESRC-$VERSION.$EXT
 DESC="Le langage de programmation Lua"
 
 

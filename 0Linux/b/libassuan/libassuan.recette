@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libassuan}
-VERSION=${VERSION:-2.0.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libassuan}
-WGET=${WGET:-ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libassuan
+VERSION=2.0.3
+EXT=tar.bz2
+NAMETGZ=libassuan
+WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour le protocole Assuan"
 
 

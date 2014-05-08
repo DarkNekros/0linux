@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libtool}
-VERSION=${VERSION:-2.4.2}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-libtool}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libtool
+VERSION=2.4.2
+EXT=tar.xz
+NAMETGZ=libtool
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Script GNU de support de bibliothèques génériques"
 
 

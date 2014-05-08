@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-goom}
-VERSION=${VERSION:-2k4}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-goom}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION-0-src.$EXT}
+NAMESRC=goom
+VERSION=2k4
+EXT=tar.gz
+NAMETGZ=goom
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION-0-src.$EXT
 DESC="Greffon de visualisation d'effets sur flux audio"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-tango-icon-theme-extras}
-VERSION=${VERSION:-0.1.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-tango-icon-theme-extras}
-WGET=${WGET:-http://tango.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=tango-icon-theme-extras
+VERSION=0.1.0
+EXT=tar.gz
+NAMETGZ=tango-icon-theme-extras
+WGET=http://tango.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Suppléments pour le thème d'icônes « Tango »"
 
 

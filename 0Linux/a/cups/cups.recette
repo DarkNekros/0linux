@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cups}
-VERSION=${VERSION:-1.7.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-cups}
-WGET=${WGET:-http://www.cups.org/software/$VERSION/$NAMESRC-$VERSION-source.$EXT}
+NAMESRC=cups
+VERSION=1.7.1
+EXT=tar.bz2
+NAMETGZ=cups
+WGET=http://www.cups.org/software/$VERSION/$NAMESRC-$VERSION-source.$EXT
 DESC="Le système d'impression « Common Unix Printing System »"
 
 

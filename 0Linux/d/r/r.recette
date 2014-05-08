@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-3.1.0}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/CRAN/src/base/R-3/R-$VERSION.tar.gz}
+VERSION=3.1.0
+WGET=http://ftp.igh.cnrs.fr/pub/CRAN/src/base/R-3/R-$VERSION.tar.gz
 DESC="Suite complète de mathématiques et de statistiques avancées"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

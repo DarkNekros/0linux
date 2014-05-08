@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Dev86src}
-VERSION=${VERSION:-0.16.19}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-dev86}
-WGET=${WGET:-http://www.debath.co.uk/dev86/$NAMESRC-$VERSION.$EXT}
+NAMESRC=Dev86src
+VERSION=0.16.19
+EXT=tar.gz
+NAMETGZ=dev86
+WGET=http://www.debath.co.uk/dev86/$NAMESRC-$VERSION.$EXT
 DESC="Compilateur, assembleur et éditeur de liens 8086"
 
 

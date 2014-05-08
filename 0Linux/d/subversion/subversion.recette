@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-subversion}
-VERSION=${VERSION:-1.8.8}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-subversion}
-WGET=${WGET:-http://apache.crihan.fr/dist/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=subversion
+VERSION=1.8.8
+EXT=tar.bz2
+NAMETGZ=subversion
+WGET=http://apache.crihan.fr/dist/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Système de contrôle de versions centralisé"
 
 

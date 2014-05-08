@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-docbook-xml}
-VERSION=${VERSION:-4.5}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-docbook-xml}
+NAMESRC=docbook-xml
+VERSION=4.5
+EXT=tar.xz
+NAMETGZ=docbook-xml
 WGET=(http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
       http://prdownloads.sourceforge.net/docbook/docbook-xsl-1.76.1.tar.bz2
      )

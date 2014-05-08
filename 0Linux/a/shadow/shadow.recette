@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-shadow}
-VERSION=${VERSION:-4.1.5}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-shadow}
-WGET=${WGET:-http://pkg-shadow.alioth.debian.org/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=shadow
+VERSION=4.1.5
+EXT=tar.bz2
+NAMETGZ=shadow
+WGET=http://pkg-shadow.alioth.debian.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Gestion de mots de passe"
 
 

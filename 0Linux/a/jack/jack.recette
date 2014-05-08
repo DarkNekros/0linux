@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-jack-audio-connection-kit}
-VERSION=${VERSION:-0.121.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-jack}
-WGET=${WGET:-http://jackaudio.org/downloads/$NAMESRC-$VERSION.$EXT}
+NAMESRC=jack-audio-connection-kit
+VERSION=0.121.3
+EXT=tar.gz
+NAMETGZ=jack
+WGET=http://jackaudio.org/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Le serveur de son « Jack Audio Connection Kit »"
 
 

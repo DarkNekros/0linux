@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kdesdk-strigi-analyzers}
-VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kdesdk-strigi-analyzers}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kdesdk-strigi-analyzers
+VERSION=4.13.0
+EXT=tar.xz
+NAMETGZ=kdesdk-strigi-analyzers
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Plugin KIO qui permet de naviguer dans les branches SVN"
 ########################################
 

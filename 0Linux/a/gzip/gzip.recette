@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gzip}
-VERSION=${VERSION:-1.6}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gzip}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gzip
+VERSION=1.6
+EXT=tar.xz
+NAMETGZ=gzip
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Compresseur de fichiers"
 
 

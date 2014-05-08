@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-syslinux}
-VERSION=${VERSION:-5.10}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-syslinux}
-WGET=${WGET:-http://www.kernel.org/pub/linux/utils/boot/syslinux/$NAMESRC-$VERSION.$EXT}
+NAMESRC=syslinux
+VERSION=5.10
+EXT=tar.xz
+NAMETGZ=syslinux
+WGET=http://www.kernel.org/pub/linux/utils/boot/syslinux/$NAMESRC-$VERSION.$EXT
 DESC="La collection de chargeurs d'amorçage Syslinux"
 
 

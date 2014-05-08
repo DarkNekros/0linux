@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xf86-video-tdfx}
-VERSION=${VERSION:-1.4.5}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xf86-video-tdfx}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xf86-video-tdfx
+VERSION=1.4.5
+EXT=tar.bz2
+NAMETGZ=xf86-video-tdfx
+WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT
 DESC="Pilotes graphiques pour X11"
 
 

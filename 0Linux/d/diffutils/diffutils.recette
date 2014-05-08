@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-diffutils}
-VERSION=${VERSION:-3.3}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-diffutils}
-WGET=${WGET:-ftp://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=diffutils
+VERSION=3.3
+EXT=tar.xz
+NAMETGZ=diffutils
+WGET=ftp://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de comparaison de fichiers"
 
 

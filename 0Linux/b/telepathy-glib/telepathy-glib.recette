@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-telepathy-glib}
-VERSION=${VERSION:-0.20.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-telepathy-glib}
-WGET=${WGET:-http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=telepathy-glib
+VERSION=0.20.1
+EXT=tar.gz
+NAMETGZ=telepathy-glib
+WGET=http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de gestion de messagerie instantanée"
 
 

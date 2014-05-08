@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=${NAMETGZ:-baloo}
-VERSION=${VERSION:-4.13.0}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMETGZ-$VERSION.tar.xz}
+NAMETGZ=baloo
+VERSION=4.13.0
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMETGZ-$VERSION.tar.xz
 DESC="Système d'indexation des fichiers pour KDE"
 
 

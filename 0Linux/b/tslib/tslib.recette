@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-tslib}
-VERSION=${VERSION:-1.1}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-tslib}
-WGET=${WGET:-https://github.com/kergoth/$NAMESRC/releases/download/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=tslib
+VERSION=1.1
+EXT=tar.xz
+NAMETGZ=tslib
+WGET=https://github.com/kergoth/$NAMESRC/releases/download/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour périphériques tactiles"
 
 

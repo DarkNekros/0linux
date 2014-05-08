@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mc}
-VERSION=${VERSION:-4.8.12}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-mc}
-WGET=${WGET:-http://www.midnight-commander.org/downloads/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mc
+VERSION=4.8.12
+EXT=tar.bz2
+NAMETGZ=mc
+WGET=http://www.midnight-commander.org/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de fichiers en mode texte et interpréteur"
 
 

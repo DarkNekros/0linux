@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pxe}
-VERSION=${VERSION:-1.4.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-pxe}
-WGET=${WGET:-http://www.kano.org.uk/projects/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pxe
+VERSION=1.4.2
+EXT=tar.gz
+NAMETGZ=pxe
+WGET=http://www.kano.org.uk/projects/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Serveur de démarrage réseau"
 
 

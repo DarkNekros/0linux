@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libksane}
-VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-libksane}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libksane
+VERSION=4.13.0
+EXT=tar.xz
+NAMETGZ=libksane
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèque de gestion de scanner pour KDE"
 ########################################
 

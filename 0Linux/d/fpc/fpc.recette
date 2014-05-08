@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-fpc}
-VERSION=${VERSION:-2.6.4}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-fpc}
+NAMESRC=fpc
+VERSION=2.6.4
+EXT=tar.gz
+NAMETGZ=fpc
 DESC="Compilateur croisé multi-plateforme pour le langage Pascal"
 ########################################
 

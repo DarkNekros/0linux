@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-strace}
-VERSION=${VERSION:-4.7}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-strace}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=strace
+VERSION=4.7
+EXT=tar.xz
+NAMETGZ=strace
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Traceur d'appels système pour le débogage"
 
 

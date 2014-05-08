@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-amarok}
-VERSION=${VERSION:-2.8.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-amarok}
-WGET=${WGET:-http://download.kde.org/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=amarok
+VERSION=2.8.0
+EXT=tar.bz2
+NAMETGZ=amarok
+WGET=http://download.kde.org/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Amarok : Un très puissant lecteur audio pour KDE"
 EXTRADEPS="clamz"
 

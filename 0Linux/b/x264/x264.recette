@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-x264-snapshot}
-VERSION=${VERSION:-20130208}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-x264}
-WGET=${WGET:-ftp://ftp.videolan.org/pub/videolan/x264/snapshots/${NAMESRC}-${VERSION}-2245.$EXT} # Version différente !
+NAMESRC=x264-snapshot
+VERSION=20130208
+EXT=tar.bz2
+NAMETGZ=x264
+WGET=ftp://ftp.videolan.org/pub/videolan/x264/snapshots/${NAMESRC}-${VERSION}-2245.$EXT} # Version différente !
 DESC="Bibliothèques de codage de flux X264/AVC"
 
 

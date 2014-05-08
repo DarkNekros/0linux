@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-bash-completion}
-VERSION=${VERSION:-2.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-bash-completion}
-WGET=${WGET:-http://bash-completion.alioth.debian.org/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=bash-completion
+VERSION=2.1
+EXT=tar.bz2
+NAMETGZ=bash-completion
+WGET=http://bash-completion.alioth.debian.org/files/$NAMESRC-$VERSION.$EXT
 DESC="Complètement automatique de la ligne de commande pour Bash"
 
 

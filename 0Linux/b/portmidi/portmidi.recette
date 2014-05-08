@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-portmidi}
-VERSION=${VERSION:-200}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-portmidi}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=portmidi
+VERSION=200
+EXT=tar.xz
+NAMETGZ=portmidi
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour entrées/sorties MIDI"
 
 

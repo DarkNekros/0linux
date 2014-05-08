@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-flex}
-VERSION=${VERSION:-2.5.37}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-flex}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=flex
+VERSION=2.5.37
+EXT=tar.bz2
+NAMETGZ=flex
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Générateur d'analyseur lexical"
 
 

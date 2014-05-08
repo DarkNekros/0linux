@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pcre}
-VERSION=${VERSION:-8.33}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-pcre}
-WGET=${WGET:-ftp://ftp.csx.cam.ac.uk/pub/software/programming/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pcre
+VERSION=8.33
+EXT=tar.bz2
+NAMETGZ=pcre
+WGET=ftp://ftp.csx.cam.ac.uk/pub/software/programming/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Fonctions pour expressions régulières de type Perl"
 
 

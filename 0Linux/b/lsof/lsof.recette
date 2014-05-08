@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-lsof}
-VERSION=${VERSION:-4.87}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-lsof}
-WGET=${WGET:-ftp://lsof.itap.purdue.edu/pub/tools/unix/$NAMESRC/${NAMESRC}_${VERSION}.$EXT}
+NAMESRC=lsof
+VERSION=4.87
+EXT=tar.bz2
+NAMETGZ=lsof
+WGET=ftp://lsof.itap.purdue.edu/pub/tools/unix/$NAMESRC/${NAMESRC}_${VERSION}.$EXT
 DESC="Outil d'information sur les processus système ouverts"
 
 

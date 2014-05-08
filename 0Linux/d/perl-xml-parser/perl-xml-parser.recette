@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-XML-Parser}
-VERSION=${VERSION:-2.36}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-perl-xml-parser}
-WGET=${WGET:-http://cpan.org/authors/id/M/MS/MSERGEANT/$NAMESRC-$VERSION.$EXT}
+NAMESRC=XML-Parser
+VERSION=2.36
+EXT=tar.gz
+NAMETGZ=perl-xml-parser
+WGET=http://cpan.org/authors/id/M/MS/MSERGEANT/$NAMESRC-$VERSION.$EXT
 DESC="Module XML-Parser pour Perl"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-hunspell}
-VERSION=${VERSION:-1.3.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-hunspell}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=hunspell
+VERSION=1.3.2
+EXT=tar.gz
+NAMETGZ=hunspell
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de correction orthographique"
 
 

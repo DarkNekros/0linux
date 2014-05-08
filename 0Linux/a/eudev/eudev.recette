@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-eudev}
-VERSION=${VERSION:-1.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-eudev}
-WGET=${WGET:-https://github.com/gentoo/$NAMESRC/archive/v${VERSION}.$EXT}
+NAMESRC=eudev
+VERSION=1.6
+EXT=tar.gz
+NAMETGZ=eudev
+WGET=https://github.com/gentoo/$NAMESRC/archive/v${VERSION}.$EXT
 DESC="Système de noeuds de périphériques dynamiques"
 
 

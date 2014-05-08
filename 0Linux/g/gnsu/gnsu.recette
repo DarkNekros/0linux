@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnsu}
-VERSION=${VERSION:-07fbec42ab}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnsu}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/${NAMETGZ}/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnsu
+VERSION=07fbec42ab
+EXT=tar.xz
+NAMETGZ=gnsu
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/${NAMETGZ}/$NAMESRC-$VERSION.$EXT
 DESC="Outil graphique pour 'sudo' et autres commandes privilégiées, remplaçant 'gksu' ou 'ktsuss'"
 EXTRADEPS="sudo yad"
 

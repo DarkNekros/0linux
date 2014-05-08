@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libsndfile}
-VERSION=${VERSION:-1.0.25}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libsndfile}
-WGET=${WGET:-http://www.mega-nerd.com/$NAMESRC/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libsndfile
+VERSION=1.0.25
+EXT=tar.gz
+NAMETGZ=libsndfile
+WGET=http://www.mega-nerd.com/$NAMESRC/files/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèque de lecture/écriture d'échantillons audio"
 
 

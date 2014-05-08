@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-b43-fwcutter}
-VERSION=${VERSION:-015}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-b43-fwcutter}
-WGET=${WGET:-http://bues.ch/b43/fwcutter/$NAMESRC-$VERSION.$EXT}
+NAMESRC=b43-fwcutter
+VERSION=015
+EXT=tar.bz2
+NAMETGZ=b43-fwcutter
+WGET=http://bues.ch/b43/fwcutter/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'extraction de firmware Broadcom"
 
 

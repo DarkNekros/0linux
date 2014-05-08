@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-leafpad}
-VERSION=${VERSION:-0.8.18.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-leafpad}
-WGET=${WGET:-http://savannah.nongnu.org/download/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=leafpad
+VERSION=0.8.18.1
+EXT=tar.gz
+NAMETGZ=leafpad
+WGET=http://savannah.nongnu.org/download/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Éditeur texte simple en GTK+"
 
 

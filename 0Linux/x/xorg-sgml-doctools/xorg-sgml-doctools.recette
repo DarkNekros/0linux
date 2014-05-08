@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xorg-sgml-doctools}
-VERSION=${VERSION:-1.11}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xorg-sgml-doctools}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/doc/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xorg-sgml-doctools
+VERSION=1.11
+EXT=tar.bz2
+NAMETGZ=xorg-sgml-doctools
+WGET=http://xorg.freedesktop.org/releases/individual/doc/$NAMESRC-$VERSION.$EXT
 DESC="Documents et ressources pour la documentation de X11"
 
 

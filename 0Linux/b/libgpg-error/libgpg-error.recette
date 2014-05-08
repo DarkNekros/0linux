@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libgpg-error}
-VERSION=${VERSION:-1.12}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libgpg-error}
-WGET=${WGET:-ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libgpg-error
+VERSION=1.12
+EXT=tar.bz2
+NAMETGZ=libgpg-error
+WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de gestion des erreurs GnuPG"
 
 

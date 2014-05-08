@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kdesdk-kioslaves}
-VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kdesdk-kioslaves}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kdesdk-kioslaves
+VERSION=4.13.0
+EXT=tar.xz
+NAMETGZ=kdesdk-kioslaves
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Plugin KIO qui permet de naviguer dans les branches SVN"
 ########################################
 

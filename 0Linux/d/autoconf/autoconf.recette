@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-autoconf}
-VERSION=${VERSION:-2.69}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-autoconf}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=autoconf
+VERSION=2.69
+EXT=tar.xz
+NAMETGZ=autoconf
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Générateur de scripts de configuration"
 
 

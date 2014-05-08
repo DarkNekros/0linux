@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-rpm2targz}
-VERSION=${VERSION:-9.0.0.4g}
-EXT=${EXT:-tar.lzma}
-NAMETGZ=${NAMETGZ:-rpm2targz}
-WGET=${WGET:-http://gentoo.osuosl.org/distfiles/$NAMESRC-$VERSION.$EXT}
+NAMESRC=rpm2targz
+VERSION=9.0.0.4g
+EXT=tar.lzma
+NAMETGZ=rpm2targz
+WGET=http://gentoo.osuosl.org/distfiles/$NAMESRC-$VERSION.$EXT
 DESC="Outils de conversion RPM vers .tar.gz"
 
 

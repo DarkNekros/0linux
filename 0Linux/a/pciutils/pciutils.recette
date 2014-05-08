@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pciutils}
-VERSION=${VERSION:-3.2.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-pciutils}
+NAMESRC=pciutils
+VERSION=3.2.0
+EXT=tar.xz
+NAMETGZ=pciutils
 WGET=(
       ftp://ftp.kernel.org/pub/software/utils/$NAMESRC/$NAMESRC-$VERSION.$EXT
       http://pci-ids.ucw.cz/v2.2/pci.ids

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-fftw}
-VERSION=${VERSION:-3.3.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-fftw}
-WGET=${WGET:-ftp://ftp.fftw.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=fftw
+VERSION=3.3.3
+EXT=tar.gz
+NAMETGZ=fftw
+WGET=ftp://ftp.fftw.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèque scientifique C de calcul scalaire"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-clucene-core}
-VERSION=${VERSION:-2.3.3.4}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-clucene}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=clucene-core
+VERSION=2.3.3.4
+EXT=tar.gz
+NAMETGZ=clucene
+WGET=http://prdownloads.sourceforge.net/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Moteur de recherche de texte avancé et rapide"
 
 

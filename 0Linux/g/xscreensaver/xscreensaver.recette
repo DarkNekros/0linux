@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xscreensaver}
-VERSION=${VERSION:-5.26}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-xscreensaver}
-WGET=${WGET:-http://www.jwz.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xscreensaver
+VERSION=5.26
+EXT=tar.gz
+NAMETGZ=xscreensaver
+WGET=http://www.jwz.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Écrans de veille pour X"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libcap}
-VERSION=${VERSION:-2.22}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libcap}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libcap
+VERSION=2.22
+EXT=tar.gz
+NAMETGZ=libcap
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques POSIX.1e"
 
 

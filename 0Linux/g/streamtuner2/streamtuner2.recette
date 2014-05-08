@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-streamtuner2}
-VERSION=${VERSION:-2.0.8}
-EXT=${EXT:-rpm}
-NAMETGZ=${NAMETGZ:-streamtuner2}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=streamtuner2
+VERSION=2.0.8
+EXT=rpm
+NAMETGZ=streamtuner2
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Lecteur de webradios et flux audio en ligne"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-openssh}
-VERSION=${VERSION:-6.6p1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-openssh}
-WGET=${WGET:-ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/$NAMESRC-$VERSION.$EXT}
+NAMESRC=openssh
+VERSION=6.6p1
+EXT=tar.gz
+NAMETGZ=openssh
+WGET=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/$NAMESRC-$VERSION.$EXT
 DESC="Serveur et clients sécurisés OpenSSH"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-qt-gstreamer}
-VERSION=${VERSION:-0.10.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-qt-gstreamer}
-WGET=${WGET:-http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=qt-gstreamer
+VERSION=0.10.3
+EXT=tar.bz2
+NAMETGZ=qt-gstreamer
+WGET=http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Interface Qt pour GStreamer"
 ########################################
 

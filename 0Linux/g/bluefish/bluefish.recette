@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-bluefish}
-VERSION=${VERSION:-2.2.5}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-bluefish}
-WGET=${WGET:-http://www.bennewitz.com/$NAMESRC/stable/source/$NAMESRC-$VERSION.$EXT}
+NAMESRC=bluefish
+VERSION=2.2.5
+EXT=tar.bz2
+NAMETGZ=bluefish
+WGET=http://www.bennewitz.com/$NAMESRC/stable/source/$NAMESRC-$VERSION.$EXT
 DESC="Éditeur de développpement intégré en GTK+"
 
 

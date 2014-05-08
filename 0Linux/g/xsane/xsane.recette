@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xsane}
-VERSION=${VERSION:-0.999}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-xsane}
-WGET=${WGET:-http://www.xsane.org/download/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xsane
+VERSION=0.999
+EXT=tar.gz
+NAMETGZ=xsane
+WGET=http://www.xsane.org/download/$NAMESRC-$VERSION.$EXT
 DESC="Interface graphique pour SANE"
 
 

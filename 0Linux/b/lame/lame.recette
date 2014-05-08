@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-lame}
-VERSION=${VERSION:-3.99.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-lame}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=lame
+VERSION=3.99.5
+EXT=tar.gz
+NAMETGZ=lame
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Encodeur et analyseur MP3"
 
 

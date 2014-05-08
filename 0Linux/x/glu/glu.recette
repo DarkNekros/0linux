@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-glu}
-VERSION=${VERSION:-9.0.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-glu}
-WGET=${WGET:-ftp://ftp.freedesktop.org/pub/mesa/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=glu
+VERSION=9.0.0
+EXT=tar.bz2
+NAMETGZ=glu
+WGET=ftp://ftp.freedesktop.org/pub/mesa/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour la gestion asynchrone des entrées-sorties"
 
 

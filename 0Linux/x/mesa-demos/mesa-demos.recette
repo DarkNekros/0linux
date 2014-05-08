@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mesa-demos}
-VERSION=${VERSION:-8.1.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-mesa-demos}
-WGET=${WGET:-ftp://ftp.freedesktop.org/pub/mesa/demos/$VERSION/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mesa-demos
+VERSION=8.1.0
+EXT=tar.bz2
+NAMETGZ=mesa-demos
+WGET=ftp://ftp.freedesktop.org/pub/mesa/demos/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Outils et applications de démonstration pour Mesa"
 
 

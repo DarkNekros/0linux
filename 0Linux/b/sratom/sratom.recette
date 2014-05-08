@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-sratom}
-VERSION=${VERSION:-0.4.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-sratom}
-WGET=${WGET:-http://download.drobilla.net/$NAMESRC-$VERSION.$EXT}
+NAMESRC=sratom
+VERSION=0.4.0
+EXT=tar.bz2
+NAMETGZ=sratom
+WGET=http://download.drobilla.net/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de sérialisation Atom et RDF pour greffons LV2"
 
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-1.2.17}
-WGET=${WGET:-http://oligarchy.co.uk/xapian/$VERSION/xapian-core-$VERSION.tar.xz}
+VERSION=1.2.17
+WGET=http://oligarchy.co.uk/xapian/$VERSION/xapian-core-$VERSION.tar.xz
 DESC="Bibliothèques pour moteurs de recherche"
 
 

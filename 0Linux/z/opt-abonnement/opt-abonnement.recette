@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=${NAMETGZ:-opt-abonnement}
-VERSION=${VERSION:-9}
+NAMETGZ=opt-abonnement
+VERSION=9
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-lib                 alsa-plugins \

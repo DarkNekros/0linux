@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-opencv}
-VERSION=${VERSION:-2.4.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-opencv}
-WGET=${WGET:-http://prdownloads.sourceforge.net/opencvlibrary/$NAMESRC-$VERSION.$EXT}
+NAMESRC=opencv
+VERSION=2.4.5
+EXT=tar.gz
+NAMETGZ=opencv
+WGET=http://prdownloads.sourceforge.net/opencvlibrary/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques graphiques « Open Source Computer Vision »"
 
 

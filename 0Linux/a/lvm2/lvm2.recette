@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-LVM2}
-VERSION=${VERSION:-2.02.98}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-lvm2}
-WGET=${WGET:-ftp://sources.redhat.com/pub/lvm2/releases/${NAMESRC}.${VERSION}.$EXT}
+NAMESRC=LVM2
+VERSION=2.02.98
+EXT=tgz
+NAMETGZ=lvm2
+WGET=ftp://sources.redhat.com/pub/lvm2/releases/${NAMESRC}.${VERSION}.$EXT
 DESC="Outils de gestion des volumes logiques « LVM »"
 
 

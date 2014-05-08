@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libXmu}
-VERSION=${VERSION:-1.1.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libxmu}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libXmu
+VERSION=1.1.2
+EXT=tar.bz2
+NAMETGZ=libxmu
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques natives de X11"
 
 

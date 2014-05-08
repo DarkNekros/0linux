@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libebml}
-VERSION=${VERSION:-1.2.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libebml}
-WGET=${WGET:-http://dl.matroska.org/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libebml
+VERSION=1.2.2
+EXT=tar.bz2
+NAMETGZ=libebml
+WGET=http://dl.matroska.org/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'analyse XML EBML"
 
 

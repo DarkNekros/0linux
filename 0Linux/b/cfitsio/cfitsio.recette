@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cfitsio}
-VERSION=${VERSION:-3.360}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-cfitsio}
-WGET=${WGET:-ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/${NAMESRC}$(echo $VERSION | sed "s/\.//g").$EXT}
+NAMESRC=cfitsio
+VERSION=3.360
+EXT=tar.gz
+NAMETGZ=cfitsio
+WGET=ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/${NAMESRC}$(echo $VERSION | sed "s/\.//g").$EXT
 DESC="Bibliothèques permettant de lire des fichiers de données de la NASA"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mkvtoolnix}
-VERSION=${VERSION:-6.7.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-mkvtoolnix}
-WGET=${WGET:-http://www.bunkus.org/videotools/$NAMESRC/sources/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mkvtoolnix
+VERSION=6.7.0
+EXT=tar.xz
+NAMETGZ=mkvtoolnix
+WGET=http://www.bunkus.org/videotools/$NAMESRC/sources/$NAMESRC-$VERSION.$EXT
 DESC="Outils de manipulation de fichiers vidéo MKV"
 
 

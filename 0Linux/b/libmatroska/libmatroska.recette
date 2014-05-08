@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libmatroska}
-VERSION=${VERSION:-1.4.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libmatroska}
-WGET=${WGET:-http://dl.matroska.org/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libmatroska
+VERSION=1.4.0
+EXT=tar.bz2
+NAMETGZ=libmatroska
+WGET=http://dl.matroska.org/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques multimédia Matroska"
 
 

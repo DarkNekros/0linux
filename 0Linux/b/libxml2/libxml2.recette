@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libxml2}
-VERSION=${VERSION:-2.7.8}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libxml2}
-WGET=${WGET:-ftp://xmlsoft.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libxml2
+VERSION=2.7.8
+EXT=tar.gz
+NAMETGZ=libxml2
+WGET=ftp://xmlsoft.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'analyse XML"
 
 

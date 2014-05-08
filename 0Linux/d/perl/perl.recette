@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-perl}
-VERSION=${VERSION:-5.18.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-perl}
-WGET=${WGET:-http://www.cpan.org/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=perl
+VERSION=5.18.0
+EXT=tar.gz
+NAMETGZ=perl
+WGET=http://www.cpan.org/src/$NAMESRC-$VERSION.$EXT
 DESC="Le « Langage pratique d'extraction et de rapport »"
 
 

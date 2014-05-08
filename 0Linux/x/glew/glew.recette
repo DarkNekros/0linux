@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-1.9.0}
-NAMETGZ=${NAMETGZ:-glew}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tgz}
+VERSION=1.9.0
+NAMETGZ=glew
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tgz
 DESC="Bibliothèques d'extension pour OpenGL"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mdadm}
-VERSION=${VERSION:-3.3}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-mdadm}
-WGET=${WGET:-https://www.kernel.org/pub/linux/utils/raid/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mdadm
+VERSION=3.3
+EXT=tar.xz
+NAMETGZ=mdadm
+WGET=https://www.kernel.org/pub/linux/utils/raid/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de gestion de volumes RAID logiciels"
 
 

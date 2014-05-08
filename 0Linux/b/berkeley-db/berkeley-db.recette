@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-db}
-VERSION=${VERSION:-6.0.30}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-berkeley-db}
-WGET=${WGET:-http://download.oracle.com/berkeley-db/$NAMESRC-$VERSION.$EXT}
+NAMESRC=db
+VERSION=6.0.30
+EXT=tar.gz
+NAMETGZ=berkeley-db
+WGET=http://download.oracle.com/berkeley-db/$NAMESRC-$VERSION.$EXT
 DESC="Système de bases de données pour applications"
 
 

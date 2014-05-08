@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-efl}
-VERSION=${VERSION:-1.9.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-efl}
-WGET=${WGET:-http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=efl
+VERSION=1.9.3
+EXT=tar.bz2
+NAMETGZ=efl
+WGET=http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques du cœur d'Enlightenment"
 
 

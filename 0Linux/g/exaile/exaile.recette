@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-exaile}
-VERSION=${VERSION:-3.3.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-exaile}
-WGET=${WGET:-http://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2).x/$VERSION/+download/$NAMESRC-$VERSION.$EXT}
+NAMESRC=exaile
+VERSION=3.3.2
+EXT=tar.gz
+NAMETGZ=exaile
+WGET=http://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2).x/$VERSION/+download/$NAMESRC-$VERSION.$EXT
 DESC="Lecteur audio et gestionnaire de bibliothèque musicale"
 
 

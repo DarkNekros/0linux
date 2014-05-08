@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xcb-util}
-VERSION=${VERSION:-0.3.9}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xcb-util}
-WGET=${WGET:-http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xcb-util
+VERSION=0.3.9
+EXT=tar.bz2
+NAMETGZ=xcb-util
+WGET=http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT
 DESC="Outils d'interfaçage pour X11"
 
 

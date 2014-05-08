@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-frei0r-plugins}
-VERSION=${VERSION:-1.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-frei0r-plugins}
-WGET=${WGET:-http://www.piksel.no/frei0r/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=frei0r-plugins
+VERSION=1.3
+EXT=tar.gz
+NAMETGZ=frei0r-plugins
+WGET=http://www.piksel.no/frei0r/releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques et greffons d'effets vidéo"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-knights}
-VERSION=${VERSION:-2.5.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-knights}
-WGET=${WGET:-http://dl.dropbox.com/u/2888238/Knights/$NAMESRC-$VERSION.$EXT}
+NAMESRC=knights
+VERSION=2.5.0
+EXT=tar.bz2
+NAMETGZ=knights
+WGET=http://dl.dropbox.com/u/2888238/Knights/$NAMESRC-$VERSION.$EXT
 DESC="Un jeu d'échecs pour KDE"
 EXTRADEPS="gnuchess"
 

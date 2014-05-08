@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gc}
-VERSION=${VERSION:-7.2d}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-gc}
-WGET=${WGET:-http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gc
+VERSION=7.2d
+EXT=tar.gz
+NAMETGZ=gc
+WGET=http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/$NAMESRC-$VERSION.$EXT
 DESC="Outil de nettoyage mémoire pour C et C++"
 
 

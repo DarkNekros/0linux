@@ -2,11 +2,11 @@
 . /usr/share/0outils/fonctions_paquets.sh
 # Merci à Seb pour sa constance !
 
-NAMESRC=${NAMESRC:-spack}
-VERSION=${VERSION:-3.11}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-spack}
-WGET=${WGET:-http://requiescant.tuxfamily.org/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=spack
+VERSION=3.11
+EXT=tar.gz
+NAMETGZ=spack
+WGET=http://requiescant.tuxfamily.org/files/$NAMESRC-$VERSION.$EXT
 DESC="Suite d'outils et gestionnaire de paquets"
 
 

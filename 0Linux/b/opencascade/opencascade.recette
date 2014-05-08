@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-OpenCASCADE}
-VERSION=${VERSION:-6.6.0}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-opencascade}
-WGET=${WGET:-http://files.opencascade.com/OCCT/OCC_${VERSION}_release/${NAMESRC}$(echo $VERSION | sed "s/\.//g").$EXT}
+NAMESRC=OpenCASCADE
+VERSION=6.6.0
+EXT=tgz
+NAMETGZ=opencascade
+WGET=http://files.opencascade.com/OCCT/OCC_${VERSION}_release/${NAMESRC}$(echo $VERSION | sed "s/\.//g").$EXT
 DESC="Bibliothèques de modélisation de surfaces 3D pour la CAO/DAO"
 
 

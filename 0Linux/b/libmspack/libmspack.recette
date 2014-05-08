@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libmspack}
-VERSION=${VERSION:-0.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libmspack}
-WGET=${WGET:-http://www.cabextract.org.uk/$NAMESRC/$NAMESRC-${VERSION}alpha.$EXT}
+NAMESRC=libmspack
+VERSION=0.3
+EXT=tar.gz
+NAMETGZ=libmspack
+WGET=http://www.cabextract.org.uk/$NAMESRC/$NAMESRC-${VERSION}alpha.$EXT
 DESC="Bibliothèques de (dé)compression pour certains formats d'archives"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ffmpegthumbnailer}
-VERSION=${VERSION:-2.0.8}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-ffmpegthumbnailer}
-WGET=${WGET:-http://$NAMESRC.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ffmpegthumbnailer
+VERSION=2.0.8
+EXT=tar.gz
+NAMETGZ=ffmpegthumbnailer
+WGET=http://$NAMESRC.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Générateur de miniatures pour fichiers vidéo"
 
 

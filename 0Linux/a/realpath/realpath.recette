@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-realpath}
-VERSION=${VERSION:-1.19}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-realpath}
-WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/r/$NAMESRC/${NAMESRC}_${VERSION}.$EXT}
+NAMESRC=realpath
+VERSION=1.19
+EXT=tar.gz
+NAMETGZ=realpath
+WGET=http://ftp.de.debian.org/debian/pool/main/r/$NAMESRC/${NAMESRC}_${VERSION}.$EXT
 DESC="Outil de détermination de chemins absolus canoniques"
 
 

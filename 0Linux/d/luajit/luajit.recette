@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-luajit}
-VERSION=${VERSION:-2.0.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-luajit}
-WGET=${WGET:-http://luajit.org/download/LuaJIT-$VERSION.$EXT}
+NAMESRC=luajit
+VERSION=2.0.3
+EXT=tar.gz
+NAMETGZ=luajit
+WGET=http://luajit.org/download/LuaJIT-$VERSION.$EXT
 DESC="Compilateur « juste à temps » pour Lua"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-docbook}
-VERSION=${VERSION:-4.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-docbook-dtd}
-WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/d/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT}
+NAMESRC=docbook
+VERSION=4.5
+EXT=tar.gz
+NAMETGZ=docbook-dtd
+WGET=http://ftp.de.debian.org/debian/pool/main/d/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT
 DESC="Les DTD 3.x et 4.x et catalogues pour validation docbook"
 
 

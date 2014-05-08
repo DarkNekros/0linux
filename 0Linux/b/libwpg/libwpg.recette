@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libwpg}
-VERSION=${VERSION:-0.2.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libwpg}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libwpg
+VERSION=0.2.0
+EXT=tar.gz
+NAMETGZ=libwpg
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèque pour les formats graphiques WordPerfect"
 
 

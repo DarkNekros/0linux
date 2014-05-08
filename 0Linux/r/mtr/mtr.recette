@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mtr}
-VERSION=${VERSION:-0.85}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-mtr}
-WGET=${WGET:-ftp://ftp.bitwizard.nl/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mtr
+VERSION=0.85
+EXT=tar.gz
+NAMETGZ=mtr
+WGET=ftp://ftp.bitwizard.nl/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="My Traceroute : un outil de diagnostic réseau avancé"
 
 

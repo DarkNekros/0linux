@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Text-WrapI18N}
-VERSION=${VERSION:-0.06}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-perl-text-wrapi18n}
-WGET=${WGET:-http://search.cpan.org/CPAN/authors/id/K/KU/KUBOTA/$NAMESRC-$VERSION.$EXT}
+NAMESRC=Text-WrapI18N
+VERSION=0.06
+EXT=tar.gz
+NAMETGZ=perl-text-wrapi18n
+WGET=http://search.cpan.org/CPAN/authors/id/K/KU/KUBOTA/$NAMESRC-$VERSION.$EXT
 DESC="Module Text-WrapI18N pour Perl"
 
 

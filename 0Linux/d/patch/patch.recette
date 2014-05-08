@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-patch}
-VERSION=${VERSION:-2.7.1}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-patch}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=patch
+VERSION=2.7.1
+EXT=tar.xz
+NAMETGZ=patch
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Programme d'édition de fichiers"
 
 

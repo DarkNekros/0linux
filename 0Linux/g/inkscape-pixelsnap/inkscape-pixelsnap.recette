@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pixelsnap}
-VERSION=${VERSION:-0.2.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-inkscape-pixelsnap}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pixelsnap
+VERSION=0.2.0
+EXT=tar.xz
+NAMETGZ=inkscape-pixelsnap
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Greffon d'ajustement vectoriel pour Inkscape"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xfce4-mixer}
-VERSION=${VERSION:-4.8.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xfce4-mixer}
-WGET=${WGET:-http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xfce4-mixer
+VERSION=4.8.0
+EXT=tar.bz2
+NAMETGZ=xfce4-mixer
+WGET=http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Greffon de surveillance disque pour Xfce"
 
 

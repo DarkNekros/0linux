@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libid3tag}
-VERSION=${VERSION:-0.15.1b}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libid3tag}
-WGET=${WGET:-http://prdownloads.sourceforge.net/mad/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libid3tag
+VERSION=0.15.1b
+EXT=tar.gz
+NAMETGZ=libid3tag
+WGET=http://prdownloads.sourceforge.net/mad/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de manipulation de tags ID3"
 
 

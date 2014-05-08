@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ORBit2}
-VERSION=${VERSION:-2.14.19}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-orbit2}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ORBit2
+VERSION=2.14.19
+EXT=tar.bz2
+NAMETGZ=orbit2
+WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques CORBA"
 
 

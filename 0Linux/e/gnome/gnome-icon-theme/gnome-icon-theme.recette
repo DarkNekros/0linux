@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnome-icon-theme}
-VERSION=${VERSION:-3.7.4}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-icon-theme}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnome-icon-theme
+VERSION=3.7.4
+EXT=tar.xz
+NAMETGZ=gnome-icon-theme
+WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Thème d'icônes standard pour GTK+"
 
 

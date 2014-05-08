@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-sysklogd}
-VERSION=${VERSION:-1.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-sysklogd}
-WGET=${WGET:-http://www.infodrom.org/projects/$NAMESRC/download/$NAMESRC-$VERSION.$EXT}
+NAMESRC=sysklogd
+VERSION=1.5
+EXT=tar.gz
+NAMETGZ=sysklogd
+WGET=http://www.infodrom.org/projects/$NAMESRC/download/$NAMESRC-$VERSION.$EXT
 DESC="Outils de traçage des évènements système"
 
 

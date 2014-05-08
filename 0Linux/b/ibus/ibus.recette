@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ibus}
-VERSION=${VERSION:-1.5.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-ibus}
-WGET=${WGET:-http://ibus.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ibus
+VERSION=1.5.5
+EXT=tar.gz
+NAMETGZ=ibus
+WGET=http://ibus.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Bus de traitement des entrées pour Linux"
 
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-3.3.0_2+dep}
-WGET=${WGET:-http://www.codesynthesis.com/download/xsd/3.3/xsd-$(echo $VERSION | sed 's/_/\-/').tar.bz2}
+VERSION=3.3.0_2+dep
+WGET=http://www.codesynthesis.com/download/xsd/3.3/xsd-$(echo $VERSION | sed 's/_/\-/').tar.bz2
 DESC="Compilateur pour modèle XML pour le C++"
 
 

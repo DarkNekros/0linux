@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-sed}
-VERSION=${VERSION:-4.2.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-sed}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=sed
+VERSION=4.2.2
+EXT=tar.bz2
+NAMETGZ=sed
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Éditeur de flux en ligne de commande"
 
 

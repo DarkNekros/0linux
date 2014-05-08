@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-eawpats}
-VERSION=${VERSION:-12}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-eawpats}
-WGET=${WGET:-http://www.george.ca/interests/${NAMESRC}${VERSION}_full.$EXT}
+NAMESRC=eawpats
+VERSION=12
+EXT=tar.gz
+NAMETGZ=eawpats
+WGET=http://www.george.ca/interests/${NAMESRC}${VERSION}_full.$EXT
 DESC="L'ensemble de « patches » MIDI 'eawpats'"
 
 

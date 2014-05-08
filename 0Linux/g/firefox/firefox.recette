@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-firefox}
-VERSION=${VERSION:-29.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-firefox}
+NAMESRC=firefox
+VERSION=29.0
+EXT=tar.bz2
+NAMETGZ=firefox
 cflags
-WGET=${WGET:-http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.$EXT}
+WGET=http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.$EXT
 DESC="Navigateur Web de la fondation Mozilla"
 
 telecharger_sources

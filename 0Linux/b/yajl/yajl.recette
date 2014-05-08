@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-yajl}
-VERSION=${VERSION:-2.0.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-yajl}
-WGET=${WGET:-http://github.com/lloyd/yajl/tarball/$VERSION/lloyd-$NAMESRC-$VERSION-0-gf4b2b1a.$EXT} # Nom et version différents !
+NAMESRC=yajl
+VERSION=2.0.1
+EXT=tar.gz
+NAMETGZ=yajl
+WGET=http://github.com/lloyd/yajl/tarball/$VERSION/lloyd-$NAMESRC-$VERSION-0-gf4b2b1a.$EXT} # Nom et version différents !
 DESC="Bibliothèques JSON"
 
 

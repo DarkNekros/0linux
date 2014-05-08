@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libXfont}
-VERSION=${VERSION:-1.4.7}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libxfont}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libXfont
+VERSION=1.4.7
+EXT=tar.bz2
+NAMETGZ=libxfont
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques natives de X11"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-krecipes}
-VERSION=${VERSION:-2.0_beta2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-krecipes}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/\-/').$EXT}
+NAMESRC=krecipes
+VERSION=2.0_beta2
+EXT=tar.gz
+NAMETGZ=krecipes
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/\-/').$EXT
 DESC="Gestionnaire de recettes de cuisine"
 ########################################
 

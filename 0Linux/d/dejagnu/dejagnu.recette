@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-dejagnu}
-VERSION=${VERSION:-1.5.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-dejagnu}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=dejagnu
+VERSION=1.5.1
+EXT=tar.gz
+NAMETGZ=dejagnu
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de tests de programmes"
 
 

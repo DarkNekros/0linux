@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-virtuoso}
-VERSION=${VERSION:-7.1.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-virtuoso}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-opensource-$VERSION.$EXT}
+NAMESRC=virtuoso
+VERSION=7.1.0
+EXT=tar.gz
+NAMETGZ=virtuoso
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-opensource-$VERSION.$EXT
 DESC="Système d'indexation de fichiers"
 ########################################
 

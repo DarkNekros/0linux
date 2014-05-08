@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Imaging}
-VERSION=${VERSION:-1.1.7}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-pil}
-WGET=${WGET:-http://effbot.org/downloads/$NAMESRC-$VERSION.$EXT}
+NAMESRC=Imaging
+VERSION=1.1.7
+EXT=tar.gz
+NAMETGZ=pil
+WGET=http://effbot.org/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques Python de traitement des images"
 
 

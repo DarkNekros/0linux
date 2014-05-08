@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-jdk}
-VERSION=${VERSION:-7u55}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-jdk}
+NAMESRC=jdk
+VERSION=7u55
+EXT=tar.gz
+NAMETGZ=jdk
 
 cflags # Pour définir de suite $PKGARCH
 
@@ -18,7 +18,7 @@ elif [ "${PKGARCH}" = "x86_64" ]; then
 	LIB_ARCH="amd64"
 fi
 
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION-linux-$SUBARCH.$EXT}
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION-linux-$SUBARCH.$EXT
 DESC="Environnement de développement et machine virtuelle pour Java"
 
 telecharger_sources

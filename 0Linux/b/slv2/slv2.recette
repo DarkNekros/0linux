@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-slv2}
-VERSION=${VERSION:-0.6.6}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-slv2}
-WGET=${WGET:-http://download.drobilla.net/$NAMESRC-$VERSION.$EXT}
+NAMESRC=slv2
+VERSION=0.6.6
+EXT=tar.bz2
+NAMETGZ=slv2
+WGET=http://download.drobilla.net/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour greffons audio LV2"
 
 

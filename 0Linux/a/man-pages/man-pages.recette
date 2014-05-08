@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-man-pages}
-VERSION=${VERSION:-3.64}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-man-pages}
-WGET=${WGET:-http://www.kernel.org/pub/linux/docs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=man-pages
+VERSION=3.64
+EXT=tar.xz
+NAMETGZ=man-pages
+WGET=http://www.kernel.org/pub/linux/docs/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Manuels du système Linux"
 EXTRADEPS="man-db"
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libva-intel-driver}
-VERSION=${VERSION:-1.0.19}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libva-intel-driver}
-WGET=${WGET:-http://www.freedesktop.org/software/vaapi/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libva-intel-driver
+VERSION=1.0.19
+EXT=tar.bz2
+NAMETGZ=libva-intel-driver
+WGET=http://www.freedesktop.org/software/vaapi/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage Intel pour l'API VA"
 
 

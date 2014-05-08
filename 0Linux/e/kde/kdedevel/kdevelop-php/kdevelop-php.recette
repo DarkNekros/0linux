@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kdevelop-php}
-VERSION=${VERSION:-1.6.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kdevelop-php}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kdevelop-php
+VERSION=1.6.0
+EXT=tar.xz
+NAMETGZ=kdevelop-php
+WGET=ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.$EXT
 DESC="Plugins pour la programmation PHP avec KDevelop"
 EXTRADEPS="kdevelop"
 

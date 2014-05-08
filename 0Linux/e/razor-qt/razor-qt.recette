@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-razorqt}
-VERSION=${VERSION:-0.5.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-razor-qt}
-WGET=${WGET:-http://razor-qt.org/downloads/$NAMESRC-$VERSION.$EXT}
+NAMESRC=razorqt
+VERSION=0.5.2
+EXT=tar.bz2
+NAMETGZ=razor-qt
+WGET=http://razor-qt.org/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Environnement de bureau très léger basé sur Qt"
 ########################################
 

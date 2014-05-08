@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-SoQt}
-VERSION=${VERSION:-1.5.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-soqt}
-WGET=${WGET:-https://bitbucket.org/Coin3D/coin/downloads/$NAMESRC-$VERSION.$EXT}
+NAMESRC=SoQt
+VERSION=1.5.0
+EXT=tar.gz
+NAMETGZ=soqt
+WGET=https://bitbucket.org/Coin3D/coin/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèque de liaison entre Qt et Coin"
 
 

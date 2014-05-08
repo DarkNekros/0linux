@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pm-utils}
-VERSION=${VERSION:-1.4.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-pm-utils}
+NAMESRC=pm-utils
+VERSION=1.4.1
+EXT=tar.gz
+NAMETGZ=pm-utils
 WGET=(http://pm-utils.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
       http://pm-utils.freedesktop.org/releases/pm-quirks-20100619.$EXT
      )

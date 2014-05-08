@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pth}
-VERSION=${VERSION:-2.0.7}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-pth}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pth
+VERSION=2.0.7
+EXT=tar.gz
+NAMETGZ=pth
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques portables GNU de gestion des threads"
 
 

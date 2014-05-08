@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libcdio}
-VERSION=${VERSION:-0.83}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libcdio}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libcdio
+VERSION=0.83
+EXT=tar.gz
+NAMETGZ=libcdio
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'accès aux CD-ROM et images CD"
 
 

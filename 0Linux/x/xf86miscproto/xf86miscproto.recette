@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xf86miscproto}
-VERSION=${VERSION:-0.9.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xf86miscproto}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xf86miscproto
+VERSION=0.9.3
+EXT=tar.bz2
+NAMETGZ=xf86miscproto
+WGET=http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers d'en-têtes de protocole pour X11"
 
 

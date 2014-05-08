@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-1.1}
-WGET=${WGET:-http://www.recherche.enac.fr/log/facile/distrib/facile-$VERSION.tar.gz}
+VERSION=1.1
+WGET=http://www.recherche.enac.fr/log/facile/distrib/facile-$VERSION.tar.gz
 DESC="Résolveur d'équation"
 
 telecharger_sources

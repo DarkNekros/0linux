@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libxslt}
-VERSION=${VERSION:-1.1.28}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libxslt}
-WGET=${WGET:-ftp://xmlsoft.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libxslt
+VERSION=1.1.28
+EXT=tar.gz
+NAMETGZ=libxslt
+WGET=ftp://xmlsoft.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de transformation XSLT"
 
 

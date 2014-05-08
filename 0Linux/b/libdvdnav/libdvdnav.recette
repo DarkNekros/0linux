@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libdvdnav}
-VERSION=${VERSION:-4.2.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libdvdnav}
-WGET=${WGET:-http://dvdnav.mplayerhq.hu/releases/${NAMESRC}-$VERSION.$EXT}
+NAMESRC=libdvdnav
+VERSION=4.2.0
+EXT=tar.bz2
+NAMETGZ=libdvdnav
+WGET=http://dvdnav.mplayerhq.hu/releases/${NAMESRC}-$VERSION.$EXT
 DESC="Bibliothèques de navigation DVD"
 
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-3.5.0}
-WGET=${WGET:-http://download.kde.org/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+VERSION=3.5.0
+WGET=http://download.kde.org/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire avancé de photos et outils de retouche pour KDE"
 EXTRADEPS="kde-runtime"
 

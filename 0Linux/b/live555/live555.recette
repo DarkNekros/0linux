@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-live}
-VERSION=${VERSION:-2013.03.07}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-live555}
-WGET=${WGET:-http://www.live555.com/liveMedia/public/${NAMESRC}.${VERSION}.$EXT}
+NAMESRC=live
+VERSION=2013.03.07
+EXT=tar.gz
+NAMETGZ=live555
+WGET=http://www.live555.com/liveMedia/public/${NAMESRC}.${VERSION}.$EXT
 DESC="Outils et bibliothèque pour flux en streaming"
 
 

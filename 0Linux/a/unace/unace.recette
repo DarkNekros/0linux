@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-unace-nonfree}
-VERSION=${VERSION:-2.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-unace}
-WGET=${WGET:-http://ftp.debian.org/debian/pool/non-free/u/$NAMESRC/${NAMESRC}_$VERSION.orig.$EXT}
+NAMESRC=unace-nonfree
+VERSION=2.5
+EXT=tar.gz
+NAMETGZ=unace
+WGET=http://ftp.debian.org/debian/pool/non-free/u/$NAMESRC/${NAMESRC}_$VERSION.orig.$EXT
 DESC="Décompression des archives au format ACE"
 
 

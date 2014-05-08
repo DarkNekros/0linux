@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libmicrohttpd}
-VERSION=${VERSION:-0.9.27}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libmicrohttpd}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libmicrohttpd
+VERSION=0.9.27
+EXT=tar.gz
+NAMETGZ=libmicrohttpd
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour embarquer les fonctions d'un serveur HTTP"
 
 

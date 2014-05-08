@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-llvm}
-VERSION=${VERSION:-3.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-llvm}
-WGET=(http://llvm.org/releases/${VERSION}/${NAMESRC}-${VERSION}.src.${EXT}
+NAMESRC=llvm
+VERSION=3.3
+EXT=tar.gz
+NAMETGZ=llvm
+WGET=(http://llvm.org/releases/${VERSION}/${NAMESRC}-${VERSION}.src.${EXT
       http://llvm.org/releases/${VERSION}/cfe-${VERSION}.src.${EXT}
       http://llvm.org/releases/${VERSION}/compiler-rt-${VERSION}.src.${EXT}
      )

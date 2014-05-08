@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xlsatoms}
-VERSION=${VERSION:-1.1.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xlsatoms}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xlsatoms
+VERSION=1.1.1
+EXT=tar.bz2
+NAMETGZ=xlsatoms
+WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT
 DESC="Applications natives de X11"
 
 

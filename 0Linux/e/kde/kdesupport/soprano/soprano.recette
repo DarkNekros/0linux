@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-2.9.4}
-WGET=${WGET:-http://prdownloads.sourceforge.net/project/soprano/Soprano/$VERSION/soprano-$VERSION.tar.bz2}
+VERSION=2.9.4
+WGET=http://prdownloads.sourceforge.net/project/soprano/Soprano/$VERSION/soprano-$VERSION.tar.bz2
 DESC="Bibliothèques de haut niveau de traitement de données RDF"
 
 

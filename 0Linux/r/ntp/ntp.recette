@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-4.2.6p5}
-WGET=${WGET:-http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz}
+VERSION=4.2.6p5
+WGET=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz
 DESC="Service permettant de synchroniser l'heure avec des serveurs de temps"
 
 telecharger_sources

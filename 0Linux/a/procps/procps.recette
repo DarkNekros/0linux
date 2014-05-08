@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-procps-ng}
-VERSION=${VERSION:-3.3.8}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-procps}
-WGET=${WGET:-http://gitorious.org/procps/procps/archive-tarball/v${VERSION}}
+NAMESRC=procps-ng
+VERSION=3.3.8
+EXT=tar.gz
+NAMETGZ=procps
+WGET=http://gitorious.org/procps/procps/archive-tarball/v${VERSION}
 DESC="Outils de surveillance des processus"
 
 

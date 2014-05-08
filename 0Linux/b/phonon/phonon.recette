@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-phonon}
-VERSION=${VERSION:-4.7.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-phonon}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
+NAMESRC=phonon
+VERSION=4.7.0
+EXT=tar.xz
+NAMETGZ=phonon
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Couche d'abstraction et bibliothèques multimédia pour Qt"
 
  

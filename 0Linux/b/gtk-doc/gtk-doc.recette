@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-1.20}
-WGET=${WGET:-http://ftp.gnome.org/pub/gnome/sources/gtk-doc/gtk-doc/gtk-doc-$VERSION.tar.xz}
+VERSION=1.20
+WGET=http://ftp.gnome.org/pub/gnome/sources/gtk-doc/gtk-doc/gtk-doc-$VERSION.tar.xz
 DESC="Système de documentation"
 
 

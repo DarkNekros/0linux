@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kdegraphics-thumbnailers}
-VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kdegraphics-thumbnailers}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kdegraphics-thumbnailers
+VERSION=4.13.0
+EXT=tar.xz
+NAMETGZ=kdegraphics-thumbnailers
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Extension pour la création de vignettes supplémentaires dans KDE"
 EXTRADEPS="kde-baseapps"
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libdmapsharing}
-VERSION=${VERSION:-2.9.24}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libdmapsharing}
-WGET=${WGET:-http://www.flyn.org/projects/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libdmapsharing
+VERSION=2.9.24
+EXT=tar.gz
+NAMETGZ=libdmapsharing
+WGET=http://www.flyn.org/projects/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour protocoles DMAP (DAAP et DPAP)"
 
 

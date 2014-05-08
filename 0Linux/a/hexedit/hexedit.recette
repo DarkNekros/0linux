@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-hexedit}
-VERSION=${VERSION:-1.2.13}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-hexedit}
-WGET=${WGET:-http://rigaux.org/$NAMESRC-${VERSION}.src.${EXT}}
+NAMESRC=hexedit
+VERSION=1.2.13
+EXT=tgz
+NAMETGZ=hexedit
+WGET=http://rigaux.org/$NAMESRC-${VERSION}.src.${EXT}
 DESC="Éditeur hexadécimal pour Linux"
 
 

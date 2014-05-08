@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libcddb}
-VERSION=${VERSION:-1.3.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libcddb}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libcddb
+VERSION=1.3.2
+EXT=tar.bz2
+NAMETGZ=libcddb
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'accès aux serveurs CDDB"
 
 

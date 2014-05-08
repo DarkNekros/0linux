@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-dmidecode}
-VERSION=${VERSION:-2.11}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-dmidecode}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=dmidecode
+VERSION=2.11
+EXT=tar.bz2
+NAMETGZ=dmidecode
+WGET=http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de lecture d'informations matérielles"
 
 

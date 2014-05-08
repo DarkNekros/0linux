@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cdrdao}
-VERSION=${VERSION:-1.2.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-cdrdao}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=cdrdao
+VERSION=1.2.3
+EXT=tar.bz2
+NAMETGZ=cdrdao
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil de gravure en mode « disk-at-once »"
 
 

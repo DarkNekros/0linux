@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-hplip}
-VERSION=${VERSION:-3.13.10}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-hplip}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=hplip
+VERSION=3.13.10
+EXT=tar.gz
+NAMETGZ=hplip
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble d'outils et de pilotes pour périphériques HP"
 
 

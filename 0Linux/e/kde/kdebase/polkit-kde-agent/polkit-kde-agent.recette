@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-polkit-kde-agent-1}
-VERSION=${VERSION:-0.99.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-polkit-kde-agent}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/apps/KDE4.x/admin/$NAMESRC-$VERSION.$EXT}
+NAMESRC=polkit-kde-agent-1
+VERSION=0.99.0
+EXT=tar.bz2
+NAMETGZ=polkit-kde-agent
+WGET=ftp://ftp.kde.org/pub/kde/stable/apps/KDE4.x/admin/$NAMESRC-$VERSION.$EXT
 DESC="Authentification à chaud sous KDE"
 EXTRADEPS="kde-runtime"
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-dolphin-plugins}
-VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-dolphin-plugins}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=dolphin-plugins
+VERSION=4.13.0
+EXT=tar.xz
+NAMETGZ=dolphin-plugins
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Plugins pour l'intégration des systèmes de contrôle de révision dans Dolphin"
 EXTRADEPS="kde-baseapps kde-dev-scripts kde-dev-utils poxml"
 

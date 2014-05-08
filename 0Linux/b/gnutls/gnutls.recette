@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnutls}
-VERSION=${VERSION:-3.2.12}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnutls}
-WGET=${WGET:-ftp://ftp.gnutls.org/gcrypt/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnutls
+VERSION=3.2.12
+EXT=tar.xz
+NAMETGZ=gnutls
+WGET=ftp://ftp.gnutls.org/gcrypt/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques de communication sécurisée"
 
 

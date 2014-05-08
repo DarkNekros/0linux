@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Thunar}
-VERSION=${VERSION:-1.6.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-thunar}
-WGET=${WGET:-http://archive.xfce.org/src/xfce/thunar/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=Thunar
+VERSION=1.6.3
+EXT=tar.bz2
+NAMETGZ=thunar
+WGET=http://archive.xfce.org/src/xfce/thunar/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de fichiers d'Xfce"
 
 

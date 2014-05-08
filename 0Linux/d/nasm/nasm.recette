@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-nasm}
-VERSION=${VERSION:-2.10.07}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-nasm}
-WGET=${WGET:-http://www.nasm.us/pub/$NAMESRC/releasebuilds/$VERSION/$NAMESRC-$VERSION.$EXT}
+NAMESRC=nasm
+VERSION=2.10.07
+EXT=tar.xz
+NAMETGZ=nasm
+WGET=http://www.nasm.us/pub/$NAMESRC/releasebuilds/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Les assembleur et désassembleur pour x86 NASM et NDISASM"
 
 

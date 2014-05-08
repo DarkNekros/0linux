@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-chrpath}
-VERSION=${VERSION:-0.13}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-chrpath}
-WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/c/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT}
+NAMESRC=chrpath
+VERSION=0.13
+EXT=tar.gz
+NAMETGZ=chrpath
+WGET=http://ftp.de.debian.org/debian/pool/main/c/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT
 DESC="Outil de modification des chemins codés dans les exécutables"
 
 

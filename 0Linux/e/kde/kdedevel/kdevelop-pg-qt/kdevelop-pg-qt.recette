@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kdevelop-pg-qt}
-VERSION=${VERSION:-1.0.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-kdevelop-pg-qt}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kdevelop-pg-qt
+VERSION=1.0.0
+EXT=tar.bz2
+NAMETGZ=kdevelop-pg-qt
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Générateur de code d'analyse pour KDevelop"
 EXTRADEPS="kdevelop"
 

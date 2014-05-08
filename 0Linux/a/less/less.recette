@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-less}
-VERSION=${VERSION:-458}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-less}
-WGET=${WGET:-http://www.greenwoodsoftware.com/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=less
+VERSION=458
+EXT=tar.gz
+NAMETGZ=less
+WGET=http://www.greenwoodsoftware.com/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Visionneuse de fichiers texte"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libxkbfile}
-VERSION=${VERSION:-1.0.8}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libxkbfile}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libxkbfile
+VERSION=1.0.8
+EXT=tar.bz2
+NAMETGZ=libxkbfile
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques natives de X11"
 
 

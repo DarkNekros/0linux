@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libraw1394}
-VERSION=${VERSION:-2.0.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libraw1394}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libraw1394
+VERSION=2.0.5
+EXT=tar.gz
+NAMETGZ=libraw1394
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'accès aux bus IEEE1394"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-colord}
-VERSION=${VERSION:-1.0.3} # Les versions suivantes dépendent de systemd... Au secours !
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-colord}
-WGET=${WGET:-http://www.freedesktop.org/software/colord/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=colord
+VERSION=1.0.3} # Les versions suivantes dépendent de systemd... Au secours !
+EXT=tar.xz
+NAMETGZ=colord
+WGET=http://www.freedesktop.org/software/colord/releases/$NAMESRC-$VERSION.$EXT
 DESC="Démon commun de colorimétrie"
 
 

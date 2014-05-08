@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xextproto}
-VERSION=${VERSION:-7.3.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xextproto}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xextproto
+VERSION=7.3.0
+EXT=tar.bz2
+NAMETGZ=xextproto
+WGET=http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers d'en-têtes de protocole pour X11"
 
 

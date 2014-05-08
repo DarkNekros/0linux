@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-schroedinger}
-VERSION=${VERSION:-1.0.11}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-schroedinger}
-WGET=${WGET:-http://diracvideo.org/download/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=schroedinger
+VERSION=1.0.11
+EXT=tar.gz
+NAMETGZ=schroedinger
+WGET=http://diracvideo.org/download/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Format de compression vidéo"
 
 

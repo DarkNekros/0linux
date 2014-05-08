@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-krusader}
-VERSION=${VERSION:-2.4.0_beta3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-krusader}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT}
+NAMESRC=krusader
+VERSION=2.4.0_beta3
+EXT=tar.bz2
+NAMETGZ=krusader
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT
 DESC="Un gestionnaire de fichiers avancé pour KDE, dans le style de « mc »"
 ########################################
 

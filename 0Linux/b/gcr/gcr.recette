@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gcr}
-VERSION=${VERSION:-3.12.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gcr}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gcr
+VERSION=3.12.0
+EXT=tar.xz
+NAMETGZ=gcr
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'analyse et d'interfaçage aux outils de cryptage"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-orc}
-VERSION=${VERSION:-0.4.17}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-orc}
-WGET=${WGET:-http://code.entropywave.com/download/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=orc
+VERSION=0.4.17
+EXT=tar.gz
+NAMETGZ=orc
+WGET=http://code.entropywave.com/download/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Compilateur et outils pour Oil"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pkg-config}
-VERSION=${VERSION:-0.28}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-pkg-config}
-WGET=${WGET:-http://pkgconfig.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pkg-config
+VERSION=0.28
+EXT=tar.gz
+NAMETGZ=pkg-config
+WGET=http://pkgconfig.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de bibliothèques pour la compilation"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libmcs}
-VERSION=${VERSION:-0.7.2}
-EXT=${EXT:-tbz2}
-NAMETGZ=${NAMETGZ:-libmcs}
-WGET=${WGET:-http://distfiles.atheme.org/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libmcs
+VERSION=0.7.2
+EXT=tbz2
+NAMETGZ=libmcs
+WGET=http://distfiles.atheme.org/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour le stockage de préférences"
 
 

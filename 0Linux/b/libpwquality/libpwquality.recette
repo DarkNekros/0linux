@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libpwquality}
-VERSION=${VERSION:-1.2.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libpwquality}
-WGET=${WGET:-https://fedorahosted.org/releases/l/i/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libpwquality
+VERSION=1.2.2
+EXT=tar.bz2
+NAMETGZ=libpwquality
+WGET=https://fedorahosted.org/releases/l/i/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'évaluation de mots de passe aléatoires"
 
 

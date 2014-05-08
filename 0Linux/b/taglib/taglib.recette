@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-taglib}
-VERSION=${VERSION:-1.8}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-taglib}
-WGET=${WGET:-https://github.com/downloads/$NAMESRC/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=taglib
+VERSION=1.8
+EXT=tar.gz
+NAMETGZ=taglib
+WGET=https://github.com/downloads/$NAMESRC/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de manipulation de tags ID3 (v1 et v2)"
 
 

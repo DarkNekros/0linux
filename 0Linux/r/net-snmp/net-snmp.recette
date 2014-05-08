@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-net-snmp}
-VERSION=${VERSION:-5.7.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-net-snmp}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=net-snmp
+VERSION=5.7.2
+EXT=tar.gz
+NAMETGZ=net-snmp
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques réseau pour le protocle SNMP"
 
 

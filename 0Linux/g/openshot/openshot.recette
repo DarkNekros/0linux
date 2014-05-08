@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-openshot}
-VERSION=${VERSION:-1.4.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-openshot}
-WGET=${WGET:-http://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/+download//$NAMESRC-$VERSION.$EXT}
+NAMESRC=openshot
+VERSION=1.4.2
+EXT=tar.gz
+NAMETGZ=openshot
+WGET=http://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/+download//$NAMESRC-$VERSION.$EXT
 DESC="Éditeur vidéo non-linéaire"
 
 

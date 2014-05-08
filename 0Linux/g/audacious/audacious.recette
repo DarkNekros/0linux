@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-audacious}
-VERSION=${VERSION:-3.2.4}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-audacious}
-WGET=${WGET:-http://distfiles.audacious-media-player.org/$NAMESRC-$VERSION.$EXT}
+NAMESRC=audacious
+VERSION=3.2.4
+EXT=tar.bz2
+NAMETGZ=audacious
+WGET=http://distfiles.audacious-media-player.org/$NAMESRC-$VERSION.$EXT
 DESC="Lecteur multimédia basé sur Beep/XMMS"
 EXTRADEPS="libmcs"
 

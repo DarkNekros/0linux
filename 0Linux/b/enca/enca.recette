@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-enca}
-VERSION=${VERSION:-1.14}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-enca}
-WGET=${WGET:-http://dl.cihar.com/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=enca
+VERSION=1.14
+EXT=tar.bz2
+NAMETGZ=enca
+WGET=http://dl.cihar.com/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Convertisseur et détecteur d'encodages"
 
 

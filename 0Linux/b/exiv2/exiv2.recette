@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-exiv2}
-VERSION=${VERSION:-0.24}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-exiv2}
-WGET=${WGET:-http://www.exiv2.org/$NAMESRC-$VERSION.$EXT}
+NAMESRC=exiv2
+VERSION=0.24
+EXT=tar.gz
+NAMETGZ=exiv2
+WGET=http://www.exiv2.org/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèque de gestion des informations EXIF pour les images"
 
 

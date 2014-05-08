@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-q4wine}
-VERSION=${VERSION:-1.1_r2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-q4wine}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed "s/_/-/").$EXT}
+NAMESRC=q4wine
+VERSION=1.1_r2
+EXT=tar.gz
+NAMETGZ=q4wine
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed "s/_/-/").$EXT
 DESC="Interface de gestion en Qt pour Wine"
 ########################################
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-squashfs}
-VERSION=${VERSION:-4.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-squashfs}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}${VERSION}.$EXT}
+NAMESRC=squashfs
+VERSION=4.2
+EXT=tar.gz
+NAMETGZ=squashfs
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}${VERSION}.$EXT
 DESC="Outils pour le système de fichiers  squashfs"
 
 

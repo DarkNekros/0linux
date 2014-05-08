@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-polkit-qt-1}
-VERSION=${VERSION:-0.103.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-polkit-qt}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/apps/KDE4.x/admin/$NAMESRC-$VERSION.$EXT}
+NAMESRC=polkit-qt-1
+VERSION=0.103.0
+EXT=tar.bz2
+NAMETGZ=polkit-qt
+WGET=ftp://ftp.kde.org/pub/kde/stable/apps/KDE4.x/admin/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage PolKit pour Qt"
 
 

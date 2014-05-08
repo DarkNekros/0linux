@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libmsn}
-VERSION=${VERSION:-4.2.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libmsn}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libmsn
+VERSION=4.2.1
+EXT=tar.bz2
+NAMETGZ=libmsn
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques permettant d'utiliser le protocole MSN/Live de Microsoft"
 
 

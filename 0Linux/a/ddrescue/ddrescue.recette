@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ddrescue}
-VERSION=${VERSION:-1.17}
-EXT=${EXT:-tar.lz}
-NAMETGZ=${NAMETGZ:-ddrescue}
-WGET=${WGET:-http://ftp.gnu.org/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ddrescue
+VERSION=1.17
+EXT=tar.lz
+NAMETGZ=ddrescue
+WGET=http://ftp.gnu.org/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Génération d'images pour disques durs endommagés"
 
 

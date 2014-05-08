@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gajim}
-VERSION=${VERSION:-0.14.4}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gajim}
-WGET=${WGET:-http://gajim.org/downloads/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gajim
+VERSION=0.14.4
+EXT=tar.bz2
+NAMETGZ=gajim
+WGET=http://gajim.org/downloads/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Client de messagerie instantanée Jabber"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ktsuss}
-VERSION=${VERSION:-2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-ktsuss}
-WGET=${WGET:-http://ktsuss.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ktsuss
+VERSION=2
+EXT=tar.gz
+NAMETGZ=ktsuss
+WGET=http://ktsuss.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Accès au programme 'su' en mode graphique"
 
 

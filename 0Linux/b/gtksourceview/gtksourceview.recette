@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gtksourceview}
-VERSION=${VERSION:-3.10.2}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gtksourceview}
+NAMESRC=gtksourceview
+VERSION=3.10.2
+EXT=tar.xz
+NAMETGZ=gtksourceview
 WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.10/$NAMESRC-2.10.5.tar.bz2
       http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
      )

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pstoedit}
-VERSION=${VERSION:-3.61}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-pstoedit}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pstoedit
+VERSION=3.61
+EXT=tar.gz
+NAMETGZ=pstoedit
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de conversion PostScript et PDF"
 
 

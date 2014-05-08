@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gmic}
-VERSION=${VERSION:-1.5.0.9}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-gmic}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_${VERSION}.$EXT}
+NAMESRC=gmic
+VERSION=1.5.0.9
+EXT=tar.gz
+NAMETGZ=gmic
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_${VERSION}.$EXT
 DESC="Framework de traitement de l'image"
 
 

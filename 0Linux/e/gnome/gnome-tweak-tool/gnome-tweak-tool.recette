@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnome-tweak-tool}
-VERSION=${VERSION:-3.10.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-tweak-tool}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnome-tweak-tool
+VERSION=3.10.0
+EXT=tar.xz
+NAMETGZ=gnome-tweak-tool
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Outil de personnalistaion avancée de GNOME"
 
 

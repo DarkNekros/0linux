@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ModemManager}
-VERSION=${VERSION:-1.2.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-modemmanager}
-WGET=${WGET:-http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ModemManager
+VERSION=1.2.0
+EXT=tar.xz
+NAMETGZ=modemmanager
+WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Service de gestion de connexions réseau par modem"
 EXTRADEPS="libmbim libqmi"
 

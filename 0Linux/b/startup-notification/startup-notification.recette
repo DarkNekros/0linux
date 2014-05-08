@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-startup-notification}
-VERSION=${VERSION:-0.12}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-startup-notification}
-WGET=${WGET:-http://www.freedesktop.org/software/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=startup-notification
+VERSION=0.12
+EXT=tar.gz
+NAMETGZ=startup-notification
+WGET=http://www.freedesktop.org/software/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de notification de chargement"
 
 

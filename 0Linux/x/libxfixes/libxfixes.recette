@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libXfixes}
-VERSION=${VERSION:-5.0.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libxfixes}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libXfixes
+VERSION=5.0.1
+EXT=tar.bz2
+NAMETGZ=libxfixes
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques natives de X11"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libiodbc}
-VERSION=${VERSION:-3.52.9}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libiodbc}
-WGET=${WGET:-http://prdownloads.sourceforge.net/iodbc/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libiodbc
+VERSION=3.52.9
+EXT=tar.gz
+NAMETGZ=libiodbc
+WGET=http://prdownloads.sourceforge.net/iodbc/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de base de données ODBC"
 
 

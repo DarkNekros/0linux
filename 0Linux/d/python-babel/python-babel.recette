@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Babel}
-VERSION=${VERSION:-0.9.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-python-babel}
-WGET=${WGET:-http://ftp.edgewall.com/pub/babel/$NAMESRC-$VERSION.$EXT}
+NAMESRC=Babel
+VERSION=0.9.6
+EXT=tar.gz
+NAMETGZ=python-babel
+WGET=http://ftp.edgewall.com/pub/babel/$NAMESRC-$VERSION.$EXT
 DESC="Outils d'internationalisation pour Python"
 
 

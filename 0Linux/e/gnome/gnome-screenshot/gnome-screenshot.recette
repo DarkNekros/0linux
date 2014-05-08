@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnome-screenshot}
-VERSION=${VERSION:-3.10.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-screenshot}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnome-screenshot
+VERSION=3.10.0
+EXT=tar.xz
+NAMETGZ=gnome-screenshot
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Outils de capture d'écran pour GNOME"
 
 

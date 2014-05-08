@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-totem}
-VERSION=${VERSION:-3.12.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-totem}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=totem
+VERSION=3.12.0
+EXT=tar.xz
+NAMETGZ=totem
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Lecteur multimédia pour GNOME"
 
 

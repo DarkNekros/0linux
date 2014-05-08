@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-chmlib}
-VERSION=${VERSION:-0.40}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-chmlib}
-WGET=${WGET:-http://www.jedrea.com//$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=chmlib
+VERSION=0.40
+EXT=tar.bz2
+NAMETGZ=chmlib
+WGET=http://www.jedrea.com//$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour le format CHM de Microsoft"
 
 

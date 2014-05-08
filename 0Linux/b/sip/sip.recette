@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-sip}
-VERSION=${VERSION:-4.15.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-sip}
-WGET=${WGET:-http://prdownloads.sourceforge.net/pyqt/$NAMESRC-$VERSION.$EXT}
+NAMESRC=sip
+VERSION=4.15.2
+EXT=tar.gz
+NAMETGZ=sip
+WGET=http://prdownloads.sourceforge.net/pyqt/$NAMESRC-$VERSION.$EXT
 DESC="Outils d'interfaçage pour Python"
 
 

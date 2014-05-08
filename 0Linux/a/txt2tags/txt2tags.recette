@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-txt2tags}
-VERSION=${VERSION:-2.6}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-txt2tags}
-WGET=${WGET:-http://txt2tags.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=txt2tags
+VERSION=2.6
+EXT=tgz
+NAMETGZ=txt2tags
+WGET=http://txt2tags.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Outil syntaxique de conversion multi-formats"
 
 

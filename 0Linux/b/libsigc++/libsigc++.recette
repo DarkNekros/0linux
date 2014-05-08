@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libsigc++}
-VERSION=${VERSION:-2.3.1}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-libsigc++}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libsigc++
+VERSION=2.3.1
+EXT=tar.xz
+NAMETGZ=libsigc++
+WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Système d'appels et de fonctions pour C++"
 
 

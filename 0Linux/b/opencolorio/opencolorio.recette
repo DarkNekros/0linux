@@ -1,22 +1,18 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-1.0.9}
-WGET=${WGET:-http://github.com/imageworks/OpenColorIO/tarball/v$VERSION}
-DESC="Bibliothèque de gestion de couleurs avancée"
-
+VERSION=1.0.9
+WGET= https://github.com//imageworks/OpenColorIO/archive/$VERSION.tar.gz
+DESC="Bibliothèques de gestion de couleurs avancée"
 
 telecharger_sources
-
-# L'absence d'extention pose problème
-WGET=${WGET}.tar.gz
-mv $PKGSOURCES/$NAMESRC/v$VERSION{,.tar.gz}
-
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compilation :
+# On doit compiler dans un répertoire dédié :
 mkdir -p build && cd build
+
+# Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
@@ -36,9 +32,9 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
 
-# Les libs sont mal placés :
-if [ $LIBDIRSUFFIX ] ; then
-	mv $PKG/usr/lib{,$LIBDIRSUFFIX}
+# Les libs sont mal placées :
+if [ ! "${LIBDIRSUFFIX}" = "" ] ; then
+	mv ${PKG}/usr/lib{,${LIBDIRSUFFIX}}
 fi
 
 installer_doc

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kdevelop}
-VERSION=${VERSION:-4.6.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kdevelop}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kdevelop
+VERSION=4.6.0
+EXT=tar.xz
+NAMETGZ=kdevelop
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Un Environement de Développement Intégré multilangage pour KDE"
 ########################################
 

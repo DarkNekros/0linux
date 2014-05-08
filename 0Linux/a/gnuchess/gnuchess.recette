@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnuchess}
-VERSION=${VERSION:-6.1.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-gnuchess}
-WGET=${WGET:-http://ftp.gnu.org/pub/gnu/chess/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnuchess
+VERSION=6.1.1
+EXT=tar.gz
+NAMETGZ=gnuchess
+WGET=http://ftp.gnu.org/pub/gnu/chess/$NAMESRC-$VERSION.$EXT
 DESC="Jeu d'échec"
 
 

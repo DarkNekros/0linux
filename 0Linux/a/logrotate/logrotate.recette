@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-logrotate}
-VERSION=${VERSION:-3.7.8}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-logrotate}
-WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/l/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT}
+NAMESRC=logrotate
+VERSION=3.7.8
+EXT=tar.gz
+NAMETGZ=logrotate
+WGET=http://ftp.de.debian.org/debian/pool/main/l/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT
 DESC="Programme de renvouellement des fichiers journaux"
 
 

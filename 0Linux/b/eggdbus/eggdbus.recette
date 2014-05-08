@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-eggdbus}
-VERSION=${VERSION:-0.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-eggdbus}
-WGET=${WGET:-http://hal.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=eggdbus
+VERSION=0.6
+EXT=tar.gz
+NAMETGZ=eggdbus
+WGET=http://hal.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage GObject pour D-Bus"
 
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-0.105}
-WGET=${WGET:-http://ftp.gnome.org/pub/gnome/sources/$NAMESRC/$VERSION/$NAMESRC-$VERSION.tar.xz}
+VERSION=0.105
+WGET=http://ftp.gnome.org/pub/gnome/sources/$NAMESRC/$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Authentification en GTK+ pour Polkit"
 
 telecharger_sources

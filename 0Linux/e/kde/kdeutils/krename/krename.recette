@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-krename}
-VERSION=${VERSION:-4.0.9}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-krename}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=krename
+VERSION=4.0.9
+EXT=tar.bz2
+NAMETGZ=krename
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil KDE de renommage de masse"
 ########################################
 

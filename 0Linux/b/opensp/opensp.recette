@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-OpenSP}
-VERSION=${VERSION:-1.5.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-opensp}
-WGET=${WGET:-http://prdownloads.sourceforge.net/openjade/$NAMESRC-$VERSION.$EXT}
+NAMESRC=OpenSP
+VERSION=1.5.2
+EXT=tar.gz
+NAMETGZ=opensp
+WGET=http://prdownloads.sourceforge.net/openjade/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'analyse et de validation SGML et XML"
 
 

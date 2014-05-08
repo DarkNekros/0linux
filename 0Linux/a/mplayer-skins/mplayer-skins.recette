@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mplayer-skins}
-VERSION=${VERSION:-14092012}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-mplayer-skins}
-WGET=(http://www.mplayerhq.hu/MPlayer/skins/Abyss-1.7.${EXT}
+NAMESRC=mplayer-skins
+VERSION=14092012
+EXT=tar.bz2
+NAMETGZ=mplayer-skins
+WGET=(http://www.mplayerhq.hu/MPlayer/skins/Abyss-1.7.${EXT
       http://www.mplayerhq.hu/MPlayer/skins/AlienMind-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/Ater-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/Blue-1.8.${EXT}
@@ -76,7 +76,7 @@ WGET=(http://www.mplayerhq.hu/MPlayer/skins/Abyss-1.7.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/xine-lcd-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/xmmplayer-1.5.${EXT}
      )
-WGET=${WGET:-http://www.mplayerhq.hu/MPlayer/skins/}
+WGET=http://www.mplayerhq.hu/MPlayer/skins/
 DESC="Ensemble d'habillages visuels pour MPlayer"
 
 

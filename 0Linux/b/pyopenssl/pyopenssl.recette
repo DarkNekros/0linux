@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pyOpenSSL}
-VERSION=${VERSION:-0.13}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-pyopenssl}
-WGET=${WGET:-http://pypi.python.org/packages/source/p/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pyOpenSSL
+VERSION=0.13
+EXT=tar.gz
+NAMETGZ=pyopenssl
+WGET=http://pypi.python.org/packages/source/p/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage Python pour OpenSSL"
 
 

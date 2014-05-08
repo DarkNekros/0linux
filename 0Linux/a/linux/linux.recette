@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-linux}
-VERSION=${VERSION:-3.14}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-linux}
+NAMESRC=linux
+VERSION=3.14
+EXT=tar.xz
+NAMETGZ=linux
 # Le nommage des versions « .0 » est incohérent :
 if [ "$(echo $VERSION | cut -d'.' -f3)" = "" ]; then
 	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2).$EXT}

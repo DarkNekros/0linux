@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mariadb}
-VERSION=${VERSION:-5.5.36}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-mariadb}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/$NAMESRC/$NAMESRC-$VERSION/kvm-tarbake-jaunty-x86/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mariadb
+VERSION=5.5.36
+EXT=tar.gz
+NAMETGZ=mariadb
+WGET=http://ftp.igh.cnrs.fr/pub/$NAMESRC/$NAMESRC-$VERSION/kvm-tarbake-jaunty-x86/$NAMESRC-$VERSION.$EXT
 DESC="Le serveur de bases de données MariaDB, remplaçant libre de MySQL"
 
 

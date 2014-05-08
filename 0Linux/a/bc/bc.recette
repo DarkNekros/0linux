@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-bc}
-VERSION=${VERSION:-1.06.95}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-bc}
-WGET=${WGET:-http://alpha.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=bc
+VERSION=1.06.95
+EXT=tar.bz2
+NAMETGZ=bc
+WGET=http://alpha.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Langage de calcul à la précision arbitraire"
 
 

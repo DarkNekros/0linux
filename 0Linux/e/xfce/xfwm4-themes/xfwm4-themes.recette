@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xfwm4-themes}
-VERSION=${VERSION:-4.6.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xfwm4-themes}
-WGET=${WGET:-http://archive.xfce.org/src/art/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xfwm4-themes
+VERSION=4.6.0
+EXT=tar.bz2
+NAMETGZ=xfwm4-themes
+WGET=http://archive.xfce.org/src/art/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Thèmes pour Xfce"
 
 

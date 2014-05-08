@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-yaml-cpp}
-VERSION=${VERSION:-0.3.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-yaml-cpp}
-WGET=${WGET:-http://yaml-cpp.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=yaml-cpp
+VERSION=0.3.0
+EXT=tar.gz
+NAMETGZ=yaml-cpp
+WGET=http://yaml-cpp.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Bindings C++ pour Yaml"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-grisbi}
-VERSION=${VERSION:-1.0.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-grisbi}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=grisbi
+VERSION=1.0.0
+EXT=tar.bz2
+NAMETGZ=grisbi
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de comptabilité personnelles"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-m4}
-VERSION=${VERSION:-1.4.17}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-m4}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=m4
+VERSION=1.4.17
+EXT=tar.xz
+NAMETGZ=m4
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Implémentation GNU du processeur de macros d'UNIX"
 
 

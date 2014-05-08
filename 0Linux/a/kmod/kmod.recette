@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kmod}
-VERSION=${VERSION:-14}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kmod}
-WGET=${WGET:-http://www.kernel.org/pub/linux/utils/kernel/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kmod
+VERSION=14
+EXT=tar.xz
+NAMETGZ=kmod
+WGET=http://www.kernel.org/pub/linux/utils/kernel/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de gestion des modules noyau"
 
 

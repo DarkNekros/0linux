@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-optipng}
-VERSION=${VERSION:-0.7.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-optipng}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=optipng
+VERSION=0.7.5
+EXT=tar.gz
+NAMETGZ=optipng
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Compresse les fichiers PNG vers une taille plus petite, sans perte"
 
 

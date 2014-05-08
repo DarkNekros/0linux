@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ImageMagick}
-VERSION=${VERSION:-6.8.8_10}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-imagemagick}
-WGET=${WGET:-http://mirror.checkdomain.de/imagemagick/$NAMESRC-$(echo $VERSION | tr '_' '-').$EXT}
+NAMESRC=ImageMagick
+VERSION=6.8.8_10
+EXT=tar.xz
+NAMETGZ=imagemagick
+WGET=http://mirror.checkdomain.de/imagemagick/$NAMESRC-$(echo $VERSION | tr '_' '-').$EXT
 DESC="Outils de manipulation de fichiers graphiques"
 
 

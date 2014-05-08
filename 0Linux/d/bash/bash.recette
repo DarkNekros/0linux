@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-bash}
-VERSION=${VERSION:-4.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-bash}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=bash
+VERSION=4.2
+EXT=tar.gz
+NAMETGZ=bash
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Interpréteur (shell) compatible sh"
 
 

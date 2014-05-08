@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-scribus}
-VERSION=${VERSION:-1.4.3}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-scribus}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=scribus
+VERSION=1.4.3
+EXT=tar.xz
+NAMETGZ=scribus
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Éditeur pour la Publication Assistée par Ordinateur (PAO)"
 
 

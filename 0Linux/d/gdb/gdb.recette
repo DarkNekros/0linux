@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gdb}
-VERSION=${VERSION:-7.6.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gdb}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gdb
+VERSION=7.6.2
+EXT=tar.bz2
+NAMETGZ=gdb
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Le débogueur de GNU"
 
 

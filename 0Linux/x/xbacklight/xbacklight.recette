@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xbacklight}
-VERSION=${VERSION:-1.2.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xbacklight}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xbacklight
+VERSION=1.2.1
+EXT=tar.bz2
+NAMETGZ=xbacklight
+WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT
 DESC="Applications natives de X11"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gts}
-VERSION=${VERSION:-0.7.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-gts}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gts
+VERSION=0.7.6
+EXT=tar.gz
+NAMETGZ=gts
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de triangularisation de surfaces pour la 3D"
 
 

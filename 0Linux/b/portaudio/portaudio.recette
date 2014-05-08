@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-portaudio}
-VERSION=${VERSION:-19_20111121}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-portaudio}
-WGET=${WGET:-http://www.portaudio.com/archives/pa_stable_v${VERSION}.$EXT}
+NAMESRC=portaudio
+VERSION=19_20111121
+EXT=tgz
+NAMETGZ=portaudio
+WGET=http://www.portaudio.com/archives/pa_stable_v${VERSION}.$EXT
 DESC="Outils et bibliothèques audio"
 
 

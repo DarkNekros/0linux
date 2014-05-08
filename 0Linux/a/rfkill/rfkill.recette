@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-rfkill}
-VERSION=${VERSION:-0.5}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-rfkill}
-WGET=${WGET:-https://www.kernel.org/pub/software/network/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=rfkill
+VERSION=0.5
+EXT=tar.xz
+NAMETGZ=rfkill
+WGET=https://www.kernel.org/pub/software/network/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'activation matérielle de périphériques"
 
 

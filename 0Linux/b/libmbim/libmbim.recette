@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libmbim}
-VERSION=${VERSION:-1.8.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-libmbim}
-WGET=${WGET:-http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libmbim
+VERSION=1.8.0
+EXT=tar.xz
+NAMETGZ=libmbim
+WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour le protocole de communication MBIM"
 
 

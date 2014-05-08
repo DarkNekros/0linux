@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-glamor-egl}
-VERSION=${VERSION:-0.6.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-glamor-egl}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT}
+NAMESRC=glamor-egl
+VERSION=0.6.0
+EXT=tar.bz2
+NAMETGZ=glamor-egl
+WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques graphiques accéléréees OpenGL pour X11"
 
 

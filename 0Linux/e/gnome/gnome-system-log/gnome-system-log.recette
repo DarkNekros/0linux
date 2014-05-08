@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnome-system-log}
-VERSION=${VERSION:-3.9.90}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-system-log}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnome-system-log
+VERSION=3.9.90
+EXT=tar.xz
+NAMETGZ=gnome-system-log
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="OUtil de gestion des journaux système pour GNOME"
 
 

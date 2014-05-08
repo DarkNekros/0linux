@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libXi}
-VERSION=${VERSION:-1.7.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libxi}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libXi
+VERSION=1.7.2
+EXT=tar.bz2
+NAMETGZ=libxi
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques natives de X11"
 
 

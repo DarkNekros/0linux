@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-audacity}
-VERSION=${VERSION:-2.0.5}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-audacity}
-WGET=${WGET:-http://audacity.googlecode.com/files/$NAMESRC-minsrc-$VERSION.$EXT}
+NAMESRC=audacity
+VERSION=2.0.5
+EXT=tar.xz
+NAMETGZ=audacity
+WGET=http://audacity.googlecode.com/files/$NAMESRC-minsrc-$VERSION.$EXT
 DESC="Éditeur audio"
 
 

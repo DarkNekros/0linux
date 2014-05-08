@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-attica}
-VERSION=${VERSION:-0.4.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-attica}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=attica
+VERSION=0.4.2
+EXT=tar.bz2
+NAMETGZ=attica
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Services Ouverts de Collaboration pour Qt et KDE"
 ########################################
 

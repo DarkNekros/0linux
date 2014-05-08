@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kvirc}
-VERSION=${VERSION:-4.3.1_r6296}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-kvirc}
-WGET=${WGET:-ftp://ftp.kvirc.de/pub/$NAMESRC/snapshots/source/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT}
+NAMESRC=kvirc
+VERSION=4.3.1_r6296
+EXT=tar.bz2
+NAMETGZ=kvirc
+WGET=ftp://ftp.kvirc.de/pub/$NAMESRC/snapshots/source/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT
 DESC="KVIRC : un puissant client IRC pour KDE"
 ########################################
 

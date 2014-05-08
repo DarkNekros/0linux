@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gpm}
-VERSION=${VERSION:-1.20.7}
-EXT=${EXT:-tar.lzma}
-NAMETGZ=${NAMETGZ:-gpm}
-WGET=${WGET:-http://www.nico.schottelius.org/software/$NAMESRC/archives/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gpm
+VERSION=1.20.7
+EXT=tar.lzma
+NAMETGZ=gpm
+WGET=http://www.nico.schottelius.org/software/$NAMESRC/archives/$NAMESRC-$VERSION.$EXT
 DESC="Serveur de pointage"
 
 

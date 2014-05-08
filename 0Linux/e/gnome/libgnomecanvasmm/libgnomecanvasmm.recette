@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libgnomecanvasmm}
-VERSION=${VERSION:-2.26.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libgnomecanvasmm}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libgnomecanvasmm
+VERSION=2.26.0
+EXT=tar.bz2
+NAMETGZ=libgnomecanvasmm
+WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage C++ pour structures graphiques"
 
 

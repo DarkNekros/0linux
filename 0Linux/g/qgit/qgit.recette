@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-qgit}
-VERSION=${VERSION:-2.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-qgit}
-WGET=${WGET:-http://libre.tibirna.org/attachments/download/9/$NAMESRC-$VERSION.$EXT}
+NAMESRC=qgit
+VERSION=2.5
+EXT=tar.gz
+NAMETGZ=qgit
+WGET=http://libre.tibirna.org/attachments/download/9/$NAMESRC-$VERSION.$EXT
 DESC="Interface Qt pour naviguer dans un dépot Git"
 
 

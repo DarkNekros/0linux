@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ktorrent}
-VERSION=${VERSION:-4.3.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-ktorrent}
-WGET=${WGET:-http://ktorrent.org/downloads/$VERSION/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ktorrent
+VERSION=4.3.1
+EXT=tar.bz2
+NAMETGZ=ktorrent
+WGET=http://ktorrent.org/downloads/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Un puissant client BitTorrent pour KDE"
 ########################################
 

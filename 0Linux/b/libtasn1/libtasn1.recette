@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libtasn1}
-VERSION=${VERSION:-2.14}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libtasn1}
-WGET=${WGET:-ftp://ftp.gnu.org/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libtasn1
+VERSION=2.14
+EXT=tar.gz
+NAMETGZ=libtasn1
+WGET=ftp://ftp.gnu.org/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques cryptographiques ASN.1"
 
 

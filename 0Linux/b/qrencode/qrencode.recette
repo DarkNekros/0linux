@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-qrencode}
-VERSION=${VERSION:-3.4.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-qrencode}
-WGET=${WGET:-http://fukuchi.org/works/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=qrencode
+VERSION=3.4.3
+EXT=tar.bz2
+NAMETGZ=qrencode
+WGET=http://fukuchi.org/works/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques QR Code (codes-barres carrés)"
 
 

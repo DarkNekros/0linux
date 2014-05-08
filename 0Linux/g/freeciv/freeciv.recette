@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-freeciv}
-VERSION=${VERSION:-2.4.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-freeciv}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=freeciv
+VERSION=2.4.2
+EXT=tar.bz2
+NAMETGZ=freeciv
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Jeu dans lequel vous devrez créer une civilisation et la faire évoluer"
 
 

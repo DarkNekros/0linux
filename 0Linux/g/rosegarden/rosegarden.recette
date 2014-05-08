@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-rosegarden}
-VERSION=${VERSION:-12.04}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-rosegarden}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=rosegarden
+VERSION=12.04
+EXT=tar.bz2
+NAMETGZ=rosegarden
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Environnement de composition audio et MIDI"
 
 

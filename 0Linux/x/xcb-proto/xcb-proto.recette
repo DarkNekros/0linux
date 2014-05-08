@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xcb-proto}
-VERSION=${VERSION:-1.9}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xcb-proto}
-WGET=${WGET:-http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xcb-proto
+VERSION=1.9
+EXT=tar.bz2
+NAMETGZ=xcb-proto
+WGET=http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'interfaçage de protocole pour X11"
 
 

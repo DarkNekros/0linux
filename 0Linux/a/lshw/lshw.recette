@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-lshw}
-VERSION=${VERSION:-B.02.17}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-lshw}
-WGET=${WGET:-http://ezix.org/software/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=lshw
+VERSION=B.02.17
+EXT=tar.gz
+NAMETGZ=lshw
+WGET=http://ezix.org/software/files/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'exploration des informations sur le matériel "
 
 

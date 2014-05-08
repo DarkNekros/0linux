@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-NVIDIA}
-VERSION=${VERSION:-334.21}
-EXT=${EXT:-run}
-NAMETGZ=${NAMETGZ:-nvidia}
+NAMESRC=NVIDIA
+VERSION=334.21
+EXT=run
+NAMETGZ=nvidia
 cflags
 if [ "${PKGARCH}" = "i686" ]; then
 	SUBARCH="x86"
 elif [ "${PKGARCH}" = "x86_64" ]; then
 	SUBARCH="x86_64"
 fi
-WGET=${WGET:-ftp://download.nvidia.com/XFree86/Linux-$SUBARCH/$VERSION/$NAMESRC-Linux-$SUBARCH-$VERSION.$EXT}
+WGET=ftp://download.nvidia.com/XFree86/Linux-$SUBARCH/$VERSION/$NAMESRC-Linux-$SUBARCH-$VERSION.$EXT
 DESC="Pilotes et bibliothèques graphiques fermés de Nvidia"
 
 telecharger_sources

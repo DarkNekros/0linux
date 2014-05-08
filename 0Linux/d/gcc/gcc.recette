@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gcc}
-VERSION=${VERSION:-4.8.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gcc}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gcc
+VERSION=4.8.2
+EXT=tar.bz2
+NAMETGZ=gcc
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="La suite de compilateurs de GNU"
 
 

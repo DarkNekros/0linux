@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-MPlayer}
-VERSION=${VERSION:-1.1.1}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-mplayer}
-WGET=${WGET:-http://www.mplayerhq.hu/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=MPlayer
+VERSION=1.1.1
+EXT=tar.xz
+NAMETGZ=mplayer
+WGET=http://www.mplayerhq.hu/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT
 DESC="Le lecteur multimédia MPlayer"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-slang}
-VERSION=${VERSION:-2.2.4}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-slang}
-WGET=${WGET:-ftp://space.mit.edu/pub/davis/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=slang
+VERSION=2.2.4
+EXT=tar.bz2
+NAMETGZ=slang
+WGET=ftp://space.mit.edu/pub/davis/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques multi-plateforme"
 
 

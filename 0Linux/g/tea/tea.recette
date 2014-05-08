@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-tea}
-VERSION=${VERSION:-37.1.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-tea}
-WGET=${WGET:-http://semiletov.org/tea/dloads/$NAMESRC-$VERSION.$EXT}
+NAMESRC=tea
+VERSION=37.1.0
+EXT=tar.bz2
+NAMETGZ=tea
+WGET=http://semiletov.org/tea/dloads/$NAMESRC-$VERSION.$EXT
 DESC="Éditeur de texte léger et puissant en Qt"
 
 

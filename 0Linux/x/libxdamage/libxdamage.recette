@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libXdamage}
-VERSION=${VERSION:-1.1.4}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libxdamage}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libXdamage
+VERSION=1.1.4
+EXT=tar.bz2
+NAMETGZ=libxdamage
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques natives de X11"
 
 

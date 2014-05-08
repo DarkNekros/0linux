@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-alsa-lib}
-VERSION=${VERSION:-1.0.27.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-alsa-lib}
-WGET=${WGET:-ftp://ftp.alsa-project.org/pub/lib/$NAMESRC-$VERSION.$EXT}
+NAMESRC=alsa-lib
+VERSION=1.0.27.2
+EXT=tar.bz2
+NAMETGZ=alsa-lib
+WGET=ftp://ftp.alsa-project.org/pub/lib/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques audio « Advanced Linux Sound Architecture »"
 
 

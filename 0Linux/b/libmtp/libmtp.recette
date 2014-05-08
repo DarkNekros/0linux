@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libmtp}
-VERSION=${VERSION:-1.1.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libmtp}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libmtp
+VERSION=1.1.5
+EXT=tar.gz
+NAMETGZ=libmtp
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèque pour la prise en charge des lecteurs audio portatifs"
 
 

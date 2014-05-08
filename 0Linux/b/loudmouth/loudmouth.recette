@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-loudmouth}
-VERSION=${VERSION:-1.4.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-loudmouth}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=loudmouth
+VERSION=1.4.3
+EXT=tar.bz2
+NAMETGZ=loudmouth
+WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques clientes pour Jabber"
 
 

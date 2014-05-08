@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-itstool}
-VERSION=${VERSION:-1.2.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-itstool}
-WGET=${WGET:-http://files.itstool.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=itstool
+VERSION=1.2.0
+EXT=tar.bz2
+NAMETGZ=itstool
+WGET=http://files.itstool.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Convertisseur XML-PO"
 
 

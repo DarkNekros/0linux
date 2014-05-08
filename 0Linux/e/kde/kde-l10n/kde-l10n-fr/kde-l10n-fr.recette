@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kde-l10n-fr}
-VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-kde-l10n-fr}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/kde-l10n/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kde-l10n-fr
+VERSION=4.13.0
+EXT=tar.xz
+NAMETGZ=kde-l10n-fr
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/kde-l10n/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers de localisation en français de KDE"
 EXTRADEPS="kdelibs aspell-fr"
 

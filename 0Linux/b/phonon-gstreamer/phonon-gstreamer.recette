@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-phonon-backend-gstreamer}
-VERSION=${VERSION:-4.7.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-phonon-gstreamer}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/phonon/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=phonon-backend-gstreamer
+VERSION=4.7.0
+EXT=tar.xz
+NAMETGZ=phonon-gstreamer
+WGET=ftp://ftp.kde.org/pub/kde/stable/phonon/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Intefaçage GStreamer pour Phonon"
 
  

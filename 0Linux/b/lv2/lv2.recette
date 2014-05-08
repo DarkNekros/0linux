@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-lv2}
-VERSION=${VERSION:-1.2.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-lv2}
-WGET=${WGET:-http://lv2plug.in/spec/$NAMESRC-$VERSION.$EXT}
+NAMESRC=lv2
+VERSION=1.2.0
+EXT=tar.bz2
+NAMETGZ=lv2
+WGET=http://lv2plug.in/spec/$NAMESRC-$VERSION.$EXT
 DESC="Spécification pour greffons audio, succédant à LADSPA"
 
 

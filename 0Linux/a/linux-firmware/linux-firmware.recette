@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-dec41bce44}
-WGET=${WGET:-git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git}
+VERSION=dec41bce44
+WGET=git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
 DESC="Firmwares et microcodes matériels spécifiques pour le noyau Linux"
 
 

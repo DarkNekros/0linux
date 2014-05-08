@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-graphite2}
-VERSION=${VERSION:-1.2.4}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-graphite}
-WGET=${WGET:-http://downloads.sourceforge.net/project/silgraphite/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=graphite2
+VERSION=1.2.4
+EXT=tgz
+NAMETGZ=graphite
+WGET=http://downloads.sourceforge.net/project/silgraphite/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'analyse textuelle"
 
 

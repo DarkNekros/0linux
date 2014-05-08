@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ksnapshot}
-VERSION=${VERSION:-4.13.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-ksnapshot}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ksnapshot
+VERSION=4.13.0
+EXT=tar.xz
+NAMETGZ=ksnapshot
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
 ##### |-Ne-pas-dépasser-cette-règle-pour-la-description---------------------------|
 DESC="Outil de capture d'écran pour KDE"
 ########################################

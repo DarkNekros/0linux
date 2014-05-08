@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libgpod}
-VERSION=${VERSION:-0.8.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libgpod}
-WGET=${WGET:-http://prdownloads.sourceforge.net/gtkpod/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libgpod
+VERSION=0.8.2
+EXT=tar.bz2
+NAMETGZ=libgpod
+WGET=http://prdownloads.sourceforge.net/gtkpod/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'accès aux appareils de type iPod"
 
 

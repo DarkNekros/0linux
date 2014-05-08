@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xfce4-netload-plugin}
-VERSION=${VERSION:-1.1.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xfce4-netload-plugin}
-WGET=${WGET:-http://archive.xfce.org/src/panel-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xfce4-netload-plugin
+VERSION=1.1.0
+EXT=tar.bz2
+NAMETGZ=xfce4-netload-plugin
+WGET=http://archive.xfce.org/src/panel-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Greffon de témoin de charge réseau pour Xfce"
 
 

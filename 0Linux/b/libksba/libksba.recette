@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libksba}
-VERSION=${VERSION:-1.2.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libksba}
-WGET=${WGET:-ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libksba
+VERSION=1.2.0
+EXT=tar.bz2
+NAMETGZ=libksba
+WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de manipulation de certificats X.509"
 
 

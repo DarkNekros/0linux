@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-sozi}
-VERSION=${VERSION:-11.10}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-inkscape-sozi}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=sozi
+VERSION=11.10
+EXT=tar.xz
+NAMETGZ=inkscape-sozi
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Greffon de présentations animées pour Inkscape"
 
 

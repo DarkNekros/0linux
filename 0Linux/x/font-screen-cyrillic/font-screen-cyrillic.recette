@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-font-screen-cyrillic}
-VERSION=${VERSION:-1.0.4}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-font-screen-cyrillic}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/font/$NAMESRC-$VERSION.$EXT}
+NAMESRC=font-screen-cyrillic
+VERSION=1.0.4
+EXT=tar.bz2
+NAMETGZ=font-screen-cyrillic
+WGET=http://xorg.freedesktop.org/releases/individual/font/$NAMESRC-$VERSION.$EXT
 DESC="Polices de caractères de X11"
 
 

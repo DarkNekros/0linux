@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-0-art}
-VERSION=${VERSION:-25102012}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-0-art}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=0-art
+VERSION=25102012
+EXT=tar.xz
+NAMETGZ=0-art
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Créations originales de gentils contributeurs pour 0"
 
 

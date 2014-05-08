@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cabextract}
-VERSION=${VERSION:-1.4}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-cabextract}
-WGET=${WGET:-http://www.cabextract.org.uk/$NAMESRC-$VERSION.$EXT}
+NAMESRC=cabextract
+VERSION=1.4
+EXT=tar.gz
+NAMETGZ=cabextract
+WGET=http://www.cabextract.org.uk/$NAMESRC-$VERSION.$EXT
 DESC="Outils d'extraction des archives « cabinets » de Microsoft"
 
 

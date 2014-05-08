@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-webkitgtk}
-VERSION=${VERSION:-2.2.5}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-webkit-gtk+}
+NAMESRC=webkitgtk
+VERSION=2.2.5
+EXT=tar.xz
+NAMETGZ=webkit-gtk+
 WGET=(
       http://webkitgtk.org/releases/$NAMESRC-$VERSION.$EXT
       http://webkitgtk.org/releases/$NAMESRC-1.10.2.$EXT

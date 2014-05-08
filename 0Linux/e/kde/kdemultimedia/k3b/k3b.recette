@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-k3b}
-VERSION=${VERSION:-2.0.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-k3b}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=k3b
+VERSION=2.0.2
+EXT=tar.bz2
+NAMETGZ=k3b
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Le couteau suisse pour graver ou extraire des CD, DVD ou Blu-Ray"
 extradeps="cdparanoia dvd+rw-tools growisofs transcode vcdimager emovix"
 

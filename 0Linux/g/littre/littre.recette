@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Littre}
-VERSION=${VERSION:-2.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-littre}
-WGET=${WGET:-https://dictionnaire-le-littre.googlecode.com/files/$NAMESRC-source-$VERSION.$EXT}
+NAMESRC=Littre
+VERSION=2.0
+EXT=tar.bz2
+NAMETGZ=littre
+WGET=https://dictionnaire-le-littre.googlecode.com/files/$NAMESRC-source-$VERSION.$EXT
 DESC="Client Qt pour le dictionnaire « Le Littré »."
 
 

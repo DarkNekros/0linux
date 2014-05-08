@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-neon}
-VERSION=${VERSION:-0.29.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-neon}
-WGET=${WGET:-http://www.webdav.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=neon
+VERSION=0.29.6
+EXT=tar.gz
+NAMETGZ=neon
+WGET=http://www.webdav.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques HTTP et WebDAV pour C"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-apache-log4cxx}
-VERSION=${VERSION:-0.10.0}
-EXT=${EXT:-tar.gz} 
-NAMETGZ=${NAMETGZ:-log4cxx}
-WGET=${WGET:-http://apache.cict.fr/logging/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT}
+NAMESRC=apache-log4cxx
+VERSION=0.10.0
+EXT=tar.gz} 
+NAMETGZ=log4cxx
+WGET=http://apache.cict.fr/logging/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de journalisation avancée pour C++"
 
 

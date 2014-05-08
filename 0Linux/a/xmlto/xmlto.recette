@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xmlto}
-VERSION=${VERSION:-0.0.25}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xmlto}
-WGET=${WGET:-https://fedorahosted.org/releases/x/m/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xmlto
+VERSION=0.0.25
+EXT=tar.bz2
+NAMETGZ=xmlto
+WGET=https://fedorahosted.org/releases/x/m/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil de conversion XML"
 
 

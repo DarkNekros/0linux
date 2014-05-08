@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-testdisk}
-VERSION=${VERSION:-6.14}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-testdisk}
-WGET=${WGET:-http://www.cgsecurity.org/$NAMESRC-$VERSION.$EXT}
+NAMESRC=testdisk
+VERSION=6.14
+EXT=tar.bz2
+NAMETGZ=testdisk
+WGET=http://www.cgsecurity.org/$NAMESRC-$VERSION.$EXT
 DESC="Récupération de partitions, boot, systèmes de fichiers endommagés / effacés"
 
 

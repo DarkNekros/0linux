@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ftgl}
-VERSION=${VERSION:-2.1.3_rc5}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-ftgl}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT}
+NAMESRC=ftgl
+VERSION=2.1.3_rc5
+EXT=tar.bz2
+NAMETGZ=ftgl
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT
 DESC="Bibliothèques de rendu 3D sur polices de caractères"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cloog}
-VERSION=${VERSION:-0.18.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-cloog}
-WGET=${WGET:-ftp://gcc.gnu.org/pub/gcc/infrastructure/${NAMESRC}-${VERSION}.$EXT}
+NAMESRC=cloog
+VERSION=0.18.0
+EXT=tar.gz
+NAMETGZ=cloog
+WGET=ftp://gcc.gnu.org/pub/gcc/infrastructure/${NAMESRC}-${VERSION}.$EXT
 DESC="Bibliothèques d'analyse et de génération de boucles optimisées"
 
 

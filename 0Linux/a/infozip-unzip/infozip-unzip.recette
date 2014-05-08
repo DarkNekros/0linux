@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-unzip}
-VERSION=${VERSION:-6.0}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-infozip-unzip}
-WGET=${WGET:-ftp://ftp.info-zip.org/pub/infozip/src/${NAMESRC}$(echo $VERSION | tr -d '.').tgz}
+NAMESRC=unzip
+VERSION=6.0
+EXT=tgz
+NAMETGZ=infozip-unzip
+WGET=ftp://ftp.info-zip.org/pub/infozip/src/${NAMESRC}$(echo $VERSION | tr -d '.').tgz
 DESC="Outil de décompression 'unzip'"
 
 

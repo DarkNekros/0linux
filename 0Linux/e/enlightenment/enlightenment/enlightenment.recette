@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-enlightenment}
-VERSION=${VERSION:-0.18.7}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-enlightenment}
-WGET=${WGET:-http://download.enlightenment.org/rel/apps/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=enlightenment
+VERSION=0.18.7
+EXT=tar.bz2
+NAMETGZ=enlightenment
+WGET=http://download.enlightenment.org/rel/apps/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="L'environnement graphique Enlightenment ou « E »"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libao}
-VERSION=${VERSION:-1.1.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libao}
-WGET=${WGET:-http://downloads.xiph.org/releases/ao/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libao
+VERSION=1.1.0
+EXT=tar.gz
+NAMETGZ=libao
+WGET=http://downloads.xiph.org/releases/ao/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques audio"
 
 

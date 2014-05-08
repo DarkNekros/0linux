@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libbluedevil}
-VERSION=${VERSION:-1.9.4}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-libbluedevil}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libbluedevil
+VERSION=1.9.4
+EXT=tar.xz
+NAMETGZ=libbluedevil
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour l'utilisation de périphériques Bluetooth"
 ########################################
 

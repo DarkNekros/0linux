@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-speech-dispatcher}
-VERSION=${VERSION:-0.7.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-speechd}
-WGET=${WGET:-http://devel.freebsoft.org/pub/projects/speechd/$NAMESRC-$VERSION.$EXT}
+NAMESRC=speech-dispatcher
+VERSION=0.7.1
+EXT=tar.gz
+NAMETGZ=speechd
+WGET=http://devel.freebsoft.org/pub/projects/speechd/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de synthèse vocale"
 
 

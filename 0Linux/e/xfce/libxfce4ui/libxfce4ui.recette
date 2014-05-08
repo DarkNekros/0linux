@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libxfce4ui}
-VERSION=${VERSION:-4.10.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libxfce4ui}
-WGET=${WGET:-http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libxfce4ui
+VERSION=4.10.0
+EXT=tar.bz2
+NAMETGZ=libxfce4ui
+WGET=http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques graphiques natives d'Xfce"
 
 

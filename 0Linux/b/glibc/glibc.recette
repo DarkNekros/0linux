@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-glibc}
-VERSION=${VERSION:-2.19}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-glibc}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=glibc
+VERSION=2.19
+EXT=tar.xz
+NAMETGZ=glibc
+WGET=http://ftp.gnu.org/gnu/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques système vitales"
 
 

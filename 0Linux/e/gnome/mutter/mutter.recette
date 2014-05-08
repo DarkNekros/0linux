@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mutter}
-VERSION=${VERSION:-3.12.1}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-mutter}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mutter
+VERSION=3.12.1
+EXT=tar.xz
+NAMETGZ=mutter
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de fenêtres de GNOME"
 
 

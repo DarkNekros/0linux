@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-numlockx}
-VERSION=${VERSION:-1.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-numlockx}
-WGET=${WGET:-http://pkgs.fedoraproject.org/repo/pkgs/$NAMESRC/$NAMESRC-$VERSION.$EXT/be9109370447eae23f6f3f8527bb1a67/$NAMESRC-$VERSION.$EXT}
+NAMESRC=numlockx
+VERSION=1.2
+EXT=tar.gz
+NAMETGZ=numlockx
+WGET=http://pkgs.fedoraproject.org/repo/pkgs/$NAMESRC/$NAMESRC-$VERSION.$EXT/be9109370447eae23f6f3f8527bb1a67/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'activation du pavé numérique sous X"
 
 

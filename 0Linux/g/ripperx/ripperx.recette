@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ripperX}
-VERSION=${VERSION:-2.7.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-ripperx}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ripperX
+VERSION=2.7.3
+EXT=tar.gz
+NAMETGZ=ripperx
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'extraction de CD audio (ou « rip ») vers Ogg, MP3 ou FLAC"
 
 

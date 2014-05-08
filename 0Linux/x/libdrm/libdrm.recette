@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libdrm}
-VERSION=${VERSION:-2.4.53}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libdrm}
-WGET=${WGET:-http://dri.freedesktop.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libdrm
+VERSION=2.4.53
+EXT=tar.bz2
+NAMETGZ=libdrm
+WGET=http://dri.freedesktop.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques graphiques de rendu"
 
 

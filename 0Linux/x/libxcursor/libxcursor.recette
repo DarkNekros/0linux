@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libXcursor}
-VERSION=${VERSION:-1.1.14}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libxcursor}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libXcursor
+VERSION=1.1.14
+EXT=tar.bz2
+NAMETGZ=libxcursor
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques natives de X11"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-TermReadKey}
-VERSION=${VERSION:-2.30.02}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-perl-termreadkey}
-WGET=${WGET:-http://search.cpan.org/CPAN/authors/id/S/ST/STSI/$NAMESRC-$VERSION.$EXT}
+NAMESRC=TermReadKey
+VERSION=2.30.02
+EXT=tar.gz
+NAMETGZ=perl-termreadkey
+WGET=http://search.cpan.org/CPAN/authors/id/S/ST/STSI/$NAMESRC-$VERSION.$EXT
 DESC="Module TermReadkey pour Perl"
 
 

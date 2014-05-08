@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-4.13.0}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/pykde4-$VERSION.tar.xz}
+VERSION=4.13.0
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/pykde4-$VERSION.tar.xz
 DESC="Interface Python pour les bibliothèques de KDE"
 
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=${NAMETGZ:-kfilemetadata}
-VERSION=${VERSION:-4.13.0}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMETGZ-$VERSION.tar.xz}
+NAMETGZ=kfilemetadata
+VERSION=4.13.0
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMETGZ-$VERSION.tar.xz
 DESC="Bibliothèque d'extraction de méta-donnée des fichiers"
 
 

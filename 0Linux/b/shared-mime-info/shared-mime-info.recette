@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-shared-mime-info}
-VERSION=${VERSION:-1.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-shared-mime-info}
-WGET=${WGET:-http://people.freedesktop.org/~hadess/$NAMESRC-$VERSION.$EXT}
+NAMESRC=shared-mime-info
+VERSION=1.0
+EXT=tar.xz
+NAMETGZ=shared-mime-info
+WGET=http://people.freedesktop.org/~hadess/$NAMESRC-$VERSION.$EXT
 DESC="Base de données des types MIME"
 
 

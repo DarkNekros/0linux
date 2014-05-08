@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-twolame}
-VERSION=${VERSION:-0.3.13}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-twolame}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=twolame
+VERSION=0.3.13
+EXT=tar.gz
+NAMETGZ=twolame
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques optimisées pur le format audio MPEG2"
 
 

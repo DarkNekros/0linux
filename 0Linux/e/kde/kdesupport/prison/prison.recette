@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-prison}
-VERSION=${VERSION:-1.1.1}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-prison}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=prison
+VERSION=1.1.1
+EXT=tar.xz
+NAMETGZ=prison
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Services de gestion des codes-barres pour KDE"
 ########################################
 

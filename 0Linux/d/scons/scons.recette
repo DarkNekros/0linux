@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-scons}
-VERSION=${VERSION:-2.2.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-scons}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=scons
+VERSION=2.2.0
+EXT=tar.gz
+NAMETGZ=scons
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Système de compilation en Python"
 
 

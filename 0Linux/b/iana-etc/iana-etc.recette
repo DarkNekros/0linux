@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-iana-etc}
-VERSION=${VERSION:-2.30}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-iana-etc}
-WGET=${WGET:-http://sethwklein.net/$NAMESRC-$VERSION.$EXT}
+NAMESRC=iana-etc
+VERSION=2.30
+EXT=tar.bz2
+NAMETGZ=iana-etc
+WGET=http://sethwklein.net/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers de définitions réseau de l'IANA"
 
 

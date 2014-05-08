@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libsgmls-perl}
-VERSION=${VERSION:-1.03ii}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-perl-libsgmls}
-WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/libs/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT}
+NAMESRC=libsgmls-perl
+VERSION=1.03ii
+EXT=tar.gz
+NAMETGZ=perl-libsgmls
+WGET=http://ftp.de.debian.org/debian/pool/main/libs/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT
 DESC="Module SGMLS pour Perl"
 
 

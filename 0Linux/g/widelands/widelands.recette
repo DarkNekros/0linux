@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-widelands}
-VERSION=${VERSION:-18}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-widelands}
-WGET=${WGET:-https://launchpad.net/$NAMESRC/build$VERSION/build-$VERSION/+download/$NAMESRC-build$VERSION-src.$EXT}
+NAMESRC=widelands
+VERSION=18
+EXT=tar.bz2
+NAMETGZ=widelands
+WGET=https://launchpad.net/$NAMESRC/build$VERSION/build-$VERSION/+download/$NAMESRC-build$VERSION-src.$EXT
 DESC="Jeu mêlant stratégie et rôle dans un contexte médiéval"
 ########################################
 

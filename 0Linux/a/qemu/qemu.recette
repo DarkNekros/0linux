@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-qemu}
-VERSION=${VERSION:-2.0.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-qemu}
-WGET=${WGET:-http://wiki.qemu-project.org/download/$NAMESRC-$VERSION.$EXT}
+NAMESRC=qemu
+VERSION=2.0.0
+EXT=tar.bz2
+NAMETGZ=qemu
+WGET=http://wiki.qemu-project.org/download/$NAMESRC-$VERSION.$EXT
 DESC="Émulateur de processeurs et systèmes multiples"
 
 

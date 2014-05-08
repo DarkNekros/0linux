@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-sudo}
-VERSION=${VERSION:-1.8.7}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-sudo}
-WGET=${WGET:-http://www.sudo.ws/$NAMESRC/dist/$NAMESRC-$VERSION.$EXT}
+NAMESRC=sudo
+VERSION=1.8.7
+EXT=tar.gz
+NAMETGZ=sudo
+WGET=http://www.sudo.ws/$NAMESRC/dist/$NAMESRC-$VERSION.$EXT
 DESC="Outil de gestion de privilèges utilisateurs"
 
 

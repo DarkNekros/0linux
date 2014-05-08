@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-skrooge}
-VERSION=${VERSION:-1.8.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-skrooge}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=skrooge
+VERSION=1.8.0
+EXT=tar.bz2
+NAMETGZ=skrooge
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de finances personnelles pour KDE"
 ########################################
 

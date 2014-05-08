@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-file}
-VERSION=${VERSION:-5.18}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-file}
-WGET=${WGET:-ftp://ftp.astron.com/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=file
+VERSION=5.18
+EXT=tar.gz
+NAMETGZ=file
+WGET=ftp://ftp.astron.com/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil de détermination des types de fichier"
 
 

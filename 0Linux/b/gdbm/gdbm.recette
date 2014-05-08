@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gdbm}
-VERSION=${VERSION:-1.8.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-gdbm}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gdbm
+VERSION=1.8.3
+EXT=tar.gz
+NAMETGZ=gdbm
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de bases de données GNU"
 
 

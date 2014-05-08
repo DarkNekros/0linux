@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-dosbox}
-VERSION=${VERSION:-0.74}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-dosbox}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=dosbox
+VERSION=0.74
+EXT=tar.gz
+NAMETGZ=dosbox
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Émulateur pour le système d'exploitation DOS"
 
 

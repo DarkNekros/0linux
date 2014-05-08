@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kbd}
-VERSION=${VERSION:-1.15.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-kbd}
-WGET=${WGET:-http://ftp.altlinux.com/pub/people/legion/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kbd
+VERSION=1.15.3
+EXT=tar.gz
+NAMETGZ=kbd
+WGET=http://ftp.altlinux.com/pub/people/legion/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Dispositions pour claviers et polices pour console"
 
 

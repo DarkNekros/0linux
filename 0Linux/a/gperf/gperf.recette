@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gperf}
-VERSION=${VERSION:-3.0.4}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-gperf}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gperf
+VERSION=3.0.4
+EXT=tar.gz
+NAMETGZ=gperf
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Générateur de fonctions de hashage"
 
 

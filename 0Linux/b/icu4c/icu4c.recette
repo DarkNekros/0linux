@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-icu4c}
-VERSION=${VERSION:-50.1.2}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-icu4c}
-WGET=${WGET:-http://download.icu-project.org/files/$NAMESRC/$VERSION/${NAMESRC}-$(echo $VERSION | tr '.' '_')-src.${EXT}}
+NAMESRC=icu4c
+VERSION=50.1.2
+EXT=tgz
+NAMETGZ=icu4c
+WGET=http://download.icu-project.org/files/$NAMESRC/$VERSION/${NAMESRC}-$(echo $VERSION | tr '.' '_')-src.${EXT}
 DESC="Bibliothèques de composants Unicode pour C et Java"
 
 

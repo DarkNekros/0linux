@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-thunderbird}
-VERSION=${VERSION:-24.5.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-thunderbird}
+NAMESRC=thunderbird
+VERSION=24.5.0
+EXT=tar.bz2
+NAMETGZ=thunderbird
 cflags
-WGET=${WGET:-http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.$EXT}
+WGET=http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.$EXT
 DESC="Client de messagerie électronique de la fondation Mozilla"
 
 telecharger_sources

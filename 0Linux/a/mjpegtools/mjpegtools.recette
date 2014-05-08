@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mjpegtools}
-VERSION=${VERSION:-2.0.1RC1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-mjpegtools}
-WGET=${WGET:-http://prdownloads.sourceforge.net/mjpeg/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mjpegtools
+VERSION=2.0.1RC1
+EXT=tar.gz
+NAMETGZ=mjpegtools
+WGET=http://prdownloads.sourceforge.net/mjpeg/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble d'outils d'exploitation du format MPEG"
 
 

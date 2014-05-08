@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Python}
-VERSION=${VERSION:-2.7.5}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-python}
+NAMESRC=Python
+VERSION=2.7.5
+EXT=tar.xz
+NAMETGZ=python
 WGET=(http://www.python.org/ftp/python/3.3.4/$NAMESRC-3.3.4.$EXT
       http://docs.python.org/ftp/python/doc/3.3.4/python-3.3.4-docs-html.tar.bz2
       http://docs.python.org/ftp/python/doc/3.3.4/python-3.3.4-docs-text.tar.bz2

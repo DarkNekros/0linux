@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-busybox}
-VERSION=${VERSION:-1.22.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-busybox}
-WGET=${WGET:-http://busybox.net/downloads/$NAMESRC-$VERSION.$EXT}
+NAMESRC=busybox
+VERSION=1.22.0
+EXT=tar.bz2
+NAMETGZ=busybox
+WGET=http://busybox.net/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Le « couteau suisse » pour Linux et systèmes embarqués"
 
 

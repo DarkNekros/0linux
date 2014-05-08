@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-curl}
-VERSION=${VERSION:-7.36.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-curl}
-WGET=${WGET:-http://curl.haxx.se/download/$NAMESRC-$VERSION.$EXT}
+NAMESRC=curl
+VERSION=7.36.0
+EXT=tar.bz2
+NAMETGZ=curl
+WGET=http://curl.haxx.se/download/$NAMESRC-$VERSION.$EXT
 DESC="Outil de téléchargement en ligne de commande"
 
 

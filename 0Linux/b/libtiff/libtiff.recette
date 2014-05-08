@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-tiff}
-VERSION=${VERSION:-4.0.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libtiff}
-WGET=${WGET:-ftp://ftp.remotesensing.org/pub/libtiff/$NAMESRC-$VERSION.$EXT}
+NAMESRC=tiff
+VERSION=4.0.3
+EXT=tar.gz
+NAMETGZ=libtiff
+WGET=ftp://ftp.remotesensing.org/pub/libtiff/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques pour le format TIFF"
 
 

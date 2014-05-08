@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-wireless_tools}
-VERSION=${VERSION:-29}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-wireless-tools}
-WGET=${WGET:-http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/${NAMESRC}.${VERSION}.$EXT}
+NAMESRC=wireless_tools
+VERSION=29
+EXT=tar.gz
+NAMETGZ=wireless-tools
+WGET=http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/${NAMESRC}.${VERSION}.$EXT
 DESC="Outils pour réseaux sans fil"
 
 

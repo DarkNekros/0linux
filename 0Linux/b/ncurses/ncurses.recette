@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ncurses}
-VERSION=${VERSION:-5.9}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-ncurses}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ncurses
+VERSION=5.9
+EXT=tar.gz
+NAMETGZ=ncurses
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'affichage « new curses »"
 
 

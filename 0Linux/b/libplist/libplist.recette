@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libplist}
-VERSION=${VERSION:-1.10}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libplist}
-WGET=${WGET:-http://www.libimobiledevice.org/downloads/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libplist
+VERSION=1.10
+EXT=tar.bz2
+NAMETGZ=libplist
+WGET=http://www.libimobiledevice.org/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de prise en charge du format APL d'Apple"
 
  

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-dssi}
-VERSION=${VERSION:-1.1.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-dssi}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=dssi
+VERSION=1.1.1
+EXT=tar.gz
+NAMETGZ=dssi
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour greffons de traitement audio"
 
 

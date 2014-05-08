@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-font-adobe-100dpi}
-VERSION=${VERSION:-1.0.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-font-adobe-100dpi}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/font/$NAMESRC-$VERSION.$EXT}
+NAMESRC=font-adobe-100dpi
+VERSION=1.0.3
+EXT=tar.bz2
+NAMETGZ=font-adobe-100dpi
+WGET=http://xorg.freedesktop.org/releases/individual/font/$NAMESRC-$VERSION.$EXT
 DESC="Polices de caractères de X11"
 
 

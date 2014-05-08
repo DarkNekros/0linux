@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-rsync}
-VERSION=${VERSION:-3.1.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-rsync}
-WGET=${WGET:-http://samba.anu.edu.au/ftp/$NAMESRC/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=rsync
+VERSION=3.1.0
+EXT=tar.gz
+NAMETGZ=rsync
+WGET=http://samba.anu.edu.au/ftp/$NAMESRC/src/$NAMESRC-$VERSION.$EXT
 DESC="Outil de synchronisation à distance"
 
 

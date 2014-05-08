@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-util-linux}
-VERSION=${VERSION:-2.24}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-util-linux}
-WGET=${WGET:-http://www.kernel.org/pub/linux/utils/$NAMESRC/v$(echo ${VERSION} | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=util-linux
+VERSION=2.24
+EXT=tar.xz
+NAMETGZ=util-linux
+WGET=http://www.kernel.org/pub/linux/utils/$NAMESRC/v$(echo ${VERSION} | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble d'outils système vitaux"
 
 

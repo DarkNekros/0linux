@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-foomatic-filters}
-VERSION=${VERSION:-4.0.17}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-foomatic}
-WGET=${WGET:-http://www.openprinting.org/download/foomatic/$NAMESRC-$VERSION.$EXT}
+NAMESRC=foomatic-filters
+VERSION=4.0.17
+EXT=tar.gz
+NAMETGZ=foomatic
+WGET=http://www.openprinting.org/download/foomatic/$NAMESRC-$VERSION.$EXT
 DESC="Système de filtrage universel pour l'impression"
 
 

@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-0.7.3}
-WGET=${WGET:-http://code.compeng.uni-frankfurt.de/attachments/download/174/Vc-$VERSION.tar.gz}
+VERSION=0.7.3
+WGET=http://code.compeng.uni-frankfurt.de/attachments/download/174/Vc-$VERSION.tar.gz
 DESC="Bibliothèques de manipulation d'objets vectoriels"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

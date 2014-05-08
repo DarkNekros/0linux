@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xchat}
-VERSION=${VERSION:-2.8.8}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-xchat}
-WGET=${WGET:-http://xchat.org/files/source/2.8/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xchat
+VERSION=2.8.8
+EXT=tar.xz
+NAMETGZ=xchat
+WGET=http://xchat.org/files/source/2.8/$NAMESRC-$VERSION.$EXT
 DESC="Client de discussion IRC"
 
 

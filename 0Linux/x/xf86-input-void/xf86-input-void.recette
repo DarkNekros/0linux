@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xf86-input-void}
-VERSION=${VERSION:-1.4.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xf86-input-void}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xf86-input-void
+VERSION=1.4.0
+EXT=tar.bz2
+NAMETGZ=xf86-input-void
+WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT
 DESC="Pilotes graphiques pour X11"
 
 

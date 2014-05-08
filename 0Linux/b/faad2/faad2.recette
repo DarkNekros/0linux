@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-faad2}
-VERSION=${VERSION:-2.7}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-faad2}
-WGET=${WGET:-http://prdownloads.sourceforge.net/faac/$NAMESRC-$VERSION.$EXT}
+NAMESRC=faad2
+VERSION=2.7
+EXT=tar.bz2
+NAMETGZ=faad2
+WGET=http://prdownloads.sourceforge.net/faac/$NAMESRC-$VERSION.$EXT
 DESC="Décodeur AAC"
 
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-2.5.0}
-WGET=${WGET:-http://protobuf.googlecode.com/files/$NAMESRC-$VERSION.tar.bz2}
+VERSION=2.5.0
+WGET=http://protobuf.googlecode.com/files/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques de stockage de données structurées"
 
 telecharger_sources

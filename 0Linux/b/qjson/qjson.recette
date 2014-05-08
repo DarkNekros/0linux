@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-qjson}
-VERSION=${VERSION:-0.8.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-qjson}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=qjson
+VERSION=0.8.1
+EXT=tar.bz2
+NAMETGZ=qjson
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Compilateur de méta-objets pour Qt et C++"
 
  

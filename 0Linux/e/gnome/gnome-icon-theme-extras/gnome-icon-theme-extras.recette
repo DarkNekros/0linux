@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnome-icon-theme-extras}
-VERSION=${VERSION:-3.6.2}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-icon-theme-extras}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnome-icon-theme-extras
+VERSION=3.6.2
+EXT=tar.xz
+NAMETGZ=gnome-icon-theme-extras
+WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Thème d'icônes supplémentaires pour GTK+"
 
 

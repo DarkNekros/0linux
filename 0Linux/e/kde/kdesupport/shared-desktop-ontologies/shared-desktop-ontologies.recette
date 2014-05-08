@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-shared-desktop-ontologies}
-VERSION=${VERSION:-0.11.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-shared-desktop-ontologies}
-WGET=${WGET:-http://prdownloads.sourceforge.net/oscaf/$NAMESRC-$VERSION.$EXT}
+NAMESRC=shared-desktop-ontologies
+VERSION=0.11.0
+EXT=tar.bz2
+NAMETGZ=shared-desktop-ontologies
+WGET=http://prdownloads.sourceforge.net/oscaf/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de ressources pour le bureau sémantique Népomuk"
 ########################################
 

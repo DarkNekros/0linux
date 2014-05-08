@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnome-doc-utils}
-VERSION=${VERSION:-0.20.10}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-doc-utils}
-WGET=${WGET:-ftp://ftp.gnome.org/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnome-doc-utils
+VERSION=0.20.10
+EXT=tar.xz
+NAMETGZ=gnome-doc-utils
+WGET=ftp://ftp.gnome.org/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Outils de documentation"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-redland}
-VERSION=${VERSION:-1.0.16}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-redland}
-WGET=${WGET:-http://download.librdf.org/source/$NAMESRC-$VERSION.$EXT}
+NAMESRC=redland
+VERSION=1.0.16
+EXT=tar.gz
+NAMETGZ=redland
+WGET=http://download.librdf.org/source/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'interfaçage RDF"
 
 

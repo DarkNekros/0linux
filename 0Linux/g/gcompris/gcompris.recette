@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gcompris}
-VERSION=${VERSION:-13.11}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gcompris}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gcompris
+VERSION=13.11
+EXT=tar.bz2
+NAMETGZ=gcompris
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Une riche suite éducative pour enfants de 2 à 10 ans"
 
 

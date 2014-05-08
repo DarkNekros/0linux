@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-zlib}
-VERSION=${VERSION:-1.2.8}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-zlib}
-WGET=${WGET:-http://www.zlib.net/$NAMESRC-$VERSION.$EXT}
+NAMESRC=zlib
+VERSION=1.2.8
+EXT=tar.gz
+NAMETGZ=zlib
+WGET=http://www.zlib.net/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de compression"
 
 

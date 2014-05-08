@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libevent}
-VERSION=${VERSION:-2.0.21}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libevent}
-WGET=${WGET:-https://github.com/downloads/$NAMESRC/$NAMESRC/${NAMESRC}-${VERSION}-stable.${EXT}}
+NAMESRC=libevent
+VERSION=2.0.21
+EXT=tar.gz
+NAMETGZ=libevent
+WGET=https://github.com/downloads/$NAMESRC/$NAMESRC/${NAMESRC}-${VERSION}-stable.${EXT}
 DESC="Bibliothèques de notifications d'événements"
 
 

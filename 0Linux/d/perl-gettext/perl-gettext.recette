@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gettext}
-VERSION=${VERSION:-1.05}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-perl-gettext}
-WGET=${WGET:-http://search.cpan.org/CPAN/authors/id/P/PV/PVANDRY/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gettext
+VERSION=1.05
+EXT=tar.gz
+NAMETGZ=perl-gettext
+WGET=http://search.cpan.org/CPAN/authors/id/P/PV/PVANDRY/$NAMESRC-$VERSION.$EXT
 DESC="Module gettext pour Perl"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-tzdata}
-VERSION=${VERSION:-2014b}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-tzdata}
-WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${EXT}
+NAMESRC=tzdata
+VERSION=2014b
+EXT=tar.gz
+NAMETGZ=tzdata
+WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${EXT
 	  http://www.iana.org/time-zones/repository/releases/tzcode${VERSION}.${EXT}
 	 )
 DESC="Outils et données chronologiques pour l'horloge système et fuseaux horaires"

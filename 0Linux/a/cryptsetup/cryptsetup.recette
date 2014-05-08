@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cryptsetup}
-VERSION=${VERSION:-1.6.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-cryptsetup}
-WGET=${WGET:-http://cryptsetup.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=cryptsetup
+VERSION=1.6.0
+EXT=tar.bz2
+NAMETGZ=cryptsetup
+WGET=http://cryptsetup.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Outils de chiffrement des périphériques de type bloc"
 
 

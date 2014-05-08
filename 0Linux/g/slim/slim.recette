@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-slim}
-VERSION=${VERSION:-1.3.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-slim}
-WGET=${WGET:-http://download.berlios.de/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=slim
+VERSION=1.3.6
+EXT=tar.gz
+NAMETGZ=slim
+WGET=http://download.berlios.de/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de connexion graphique simple et indépendant"
 
 

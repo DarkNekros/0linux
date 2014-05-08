@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-sharutils}
-VERSION=${VERSION:-4.14}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-sharutils}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=sharutils
+VERSION=4.14
+EXT=tar.xz
+NAMETGZ=sharutils
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils pour archives auto-extractibles"
 
 

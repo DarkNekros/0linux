@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pinentry}
-VERSION=${VERSION:-0.8.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-pinentry}
-WGET=${WGET:-ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pinentry
+VERSION=0.8.3
+EXT=tar.bz2
+NAMETGZ=pinentry
+WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Boîtes de dialogues pour la saisie de mots de passe et codes PIN"
 
 

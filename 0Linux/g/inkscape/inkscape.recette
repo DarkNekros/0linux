@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-inkscape}
-VERSION=${VERSION:-0.48.4}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-inkscape}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=inkscape
+VERSION=0.48.4
+EXT=tar.bz2
+NAMETGZ=inkscape
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Éditeur de graphismes vectoriels SVG"
 
 

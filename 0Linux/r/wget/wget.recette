@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-wget}
-VERSION=${VERSION:-1.15}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-wget}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=wget
+VERSION=1.15
+EXT=tar.xz
+NAMETGZ=wget
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil de téléchargement en ligne de commande"
 
 

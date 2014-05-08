@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-FreeRDP}
-VERSION=${VERSION:-1.1.0beta_20130710}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-freerdp}
-WGET=${WGET:-https://github.com/$NAMESRC/$NAMESRC/archive/780d451afad21a22d2af6bd030ee71311856f038.$EXT}
+NAMESRC=FreeRDP
+VERSION=1.1.0beta_20130710
+EXT=tar.gz
+NAMETGZ=freerdp
+WGET=https://github.com/$NAMESRC/$NAMESRC/archive/780d451afad21a22d2af6bd030ee71311856f038.$EXT
 DESC="Un client RDP pour l'accès aux bureaux à distance"
 
 

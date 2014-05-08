@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-bridge-utils}
-VERSION=${VERSION:-1.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-bridge-utils}
-WGET=${WGET:-http://prdownloads.sourceforge.net/bridge/$NAMESRC-$VERSION.$EXT}
+NAMESRC=bridge-utils
+VERSION=1.5
+EXT=tar.gz
+NAMETGZ=bridge-utils
+WGET=http://prdownloads.sourceforge.net/bridge/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques pour ponts réseau (ou « bridging »)"
 
 

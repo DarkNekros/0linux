@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-aubio}
-VERSION=${VERSION:-0.3.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-aubio}
-WGET=${WGET:-http://aubio.org/pub/$NAMESRC-$VERSION.$EXT}
+NAMESRC=aubio
+VERSION=0.3.2
+EXT=tar.gz
+NAMETGZ=aubio
+WGET=http://aubio.org/pub/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de traitement audio"
 
 

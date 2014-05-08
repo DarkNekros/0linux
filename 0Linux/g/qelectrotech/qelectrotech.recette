@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-qelectrotech}
-VERSION=${VERSION:-0.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-qelectrotech}
-WGET=${WGET:-http://download.tuxfamily.org/qet/tags/20130928/$NAMESRC-$VERSION-src.$EXT}
+NAMESRC=qelectrotech
+VERSION=0.3
+EXT=tar.gz
+NAMETGZ=qelectrotech
+WGET=http://download.tuxfamily.org/qet/tags/20130928/$NAMESRC-$VERSION-src.$EXT
 DESC="Logiciel permettant de réaliser des schémas électriques"
 
 

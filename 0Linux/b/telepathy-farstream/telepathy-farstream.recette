@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-telepathy-farstream}
-VERSION=${VERSION:-0.6.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-telepathy-farstream}
-WGET=${WGET:-http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=telepathy-farstream
+VERSION=0.6.0
+EXT=tar.gz
+NAMETGZ=telepathy-farstream
+WGET=http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de liaison audio/vidéo pour Telepathy"
 
 

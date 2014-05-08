@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mlt}
-VERSION=${VERSION:-0.9.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-mlt}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mlt
+VERSION=0.9.0
+EXT=tar.gz
+NAMETGZ=mlt
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Framework multimédia"
 
 

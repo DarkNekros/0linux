@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Ardour3}
-VERSION=${VERSION:-3.5.357}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-ardour}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=Ardour3
+VERSION=3.5.357
+EXT=tar.bz2
+NAMETGZ=ardour
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Studio de production audio"
 
 

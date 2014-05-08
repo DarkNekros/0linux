@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libkfbapi}
-VERSION=${VERSION:-1.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libkfbapi}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libkfbapi
+VERSION=1.0
+EXT=tar.bz2
+NAMETGZ=libkfbapi
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèque permettant l'accès aux ressources Facebook"
 ########################################
 

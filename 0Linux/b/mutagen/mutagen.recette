@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mutagen}
-VERSION=${VERSION:-1.21}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-mutagen}
-WGET=${WGET:-http://mutagen.googlecode.com/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mutagen
+VERSION=1.21
+EXT=tar.gz
+NAMETGZ=mutagen
+WGET=http://mutagen.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Module Python de gestion des méta-données audio"
 
 

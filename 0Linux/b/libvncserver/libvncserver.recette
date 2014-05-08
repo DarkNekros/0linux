@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-LibVNCServer}
-VERSION=${VERSION:-0.9.9}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libvncserver}
-WGET=${WGET:-http://prdownloads.sourceforge.net/libvncserver/$NAMESRC-$VERSION.$EXT}
+NAMESRC=LibVNCServer
+VERSION=0.9.9
+EXT=tar.gz
+NAMETGZ=libvncserver
+WGET=http://prdownloads.sourceforge.net/libvncserver/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour l''implémentation de serveurs VNC"
 
 

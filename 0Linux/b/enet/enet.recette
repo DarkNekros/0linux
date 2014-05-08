@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-enet}
-VERSION=${VERSION:-1.3.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-enet}
-WGET=${WGET:-http://enet.bespin.org/download/$NAMESRC-$VERSION.$EXT}
+NAMESRC=enet
+VERSION=1.3.6
+EXT=tar.gz
+NAMETGZ=enet
+WGET=http://enet.bespin.org/download/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques réseau UDP"
 
 

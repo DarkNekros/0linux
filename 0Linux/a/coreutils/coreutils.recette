@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-coreutils}
-VERSION=${VERSION:-8.22}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-coreutils}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=coreutils
+VERSION=8.22
+EXT=tar.xz
+NAMETGZ=coreutils
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils système vitaux GNU"
 
 

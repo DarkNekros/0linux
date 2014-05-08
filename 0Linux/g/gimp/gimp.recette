@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gimp}
-VERSION=${VERSION:-2.8.10}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gimp}
-WGET=${WGET:-ftp://ftp.gimp.org/pub/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gimp
+VERSION=2.8.10
+EXT=tar.bz2
+NAMETGZ=gimp
+WGET=ftp://ftp.gimp.org/pub/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Le programme de manipulation et de retouche d'images GIMP"
 
 

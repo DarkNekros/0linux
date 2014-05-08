@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-suitesparseconfig}
-VERSION=${VERSION:-4.0.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-suitesparseconfig}
-WGET=${WGET:-http://dev.gentoo.org/~bicatali/distfiles/$NAMESRC-$VERSION.$EXT}
+NAMESRC=suitesparseconfig
+VERSION=4.0.2
+EXT=tar.gz
+NAMETGZ=suitesparseconfig
+WGET=http://dev.gentoo.org/~bicatali/distfiles/$NAMESRC-$VERSION.$EXT
 DESC="Coufiguration pour un système algorithmique complexe"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-lzo}
-VERSION=${VERSION:-2.06}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-lzo}
-WGET=${WGET:-http://www.oberhumer.com/opensource/$NAMESRC/download/$NAMESRC-$VERSION.$EXT}
+NAMESRC=lzo
+VERSION=2.06
+EXT=tar.gz
+NAMETGZ=lzo
+WGET=http://www.oberhumer.com/opensource/$NAMESRC/download/$NAMESRC-$VERSION.$EXT
 DESC="Format de compression sans perte"
 
 

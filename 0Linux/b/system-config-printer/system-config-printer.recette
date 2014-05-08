@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-system-config-printer}
-VERSION=${VERSION:-1.3.12}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-system-config-printer}
-WGET=${WGET:-http://cyberelk.net/tim/data/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=system-config-printer
+VERSION=1.3.12
+EXT=tar.xz
+NAMETGZ=system-config-printer
+WGET=http://cyberelk.net/tim/data/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'administration du serveur d'impression CUPS"
 
 

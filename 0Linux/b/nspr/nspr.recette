@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-nspr}
-VERSION=${VERSION:-4.10.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-nspr}
-WGET=${WGET:-ftp://ftp.mozilla.org/pub/mozilla.org/$NAMESRC/releases/v$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=nspr
+VERSION=4.10.1
+EXT=tar.gz
+NAMETGZ=nspr
+WGET=ftp://ftp.mozilla.org/pub/mozilla.org/$NAMESRC/releases/v$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques système multi-plateformes de Mozilla"
 
 

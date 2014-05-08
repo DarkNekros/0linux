@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-bluedevil}
-VERSION=${VERSION:-1.3.2}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-bluedevil}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=bluedevil
+VERSION=1.3.2
+EXT=tar.xz
+NAMETGZ=bluedevil
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Application de gestion des périphériques Bluetooth"
 EXTRADEPS="kde-runtime"
 

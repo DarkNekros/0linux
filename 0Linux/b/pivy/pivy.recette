@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pivy}
-VERSION=${VERSION:-20101207}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-pivy}
-WGET=${WGET:-http://www.nielshorn.net/_download/slackware/source/Pivy-hg_${VERSION}.${EXT}}
+NAMESRC=pivy
+VERSION=20101207
+EXT=tar.bz2
+NAMETGZ=pivy
+WGET=http://www.nielshorn.net/_download/slackware/source/Pivy-hg_${VERSION}.${EXT}
 DESC="Bibliothèques de liaison Python pour Coin3D et SoQt"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-colamd}
-VERSION=${VERSION:-2.8.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-colamd}
-WGET=${WGET:-http://dev.gentoo.org/~bicatali/distfiles/$NAMESRC-$VERSION.$EXT}
+NAMESRC=colamd
+VERSION=2.8.0
+EXT=tar.gz
+NAMETGZ=colamd
+WGET=http://dev.gentoo.org/~bicatali/distfiles/$NAMESRC-$VERSION.$EXT
 DESC="Algorithme de gestion de colonnes"
 
 

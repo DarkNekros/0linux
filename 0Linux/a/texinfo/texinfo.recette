@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-texinfo}
-VERSION=${VERSION:-4.13a}
-EXT=${EXT:-tar.lzma}
-NAMETGZ=${NAMETGZ:-texinfo}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=texinfo
+VERSION=4.13a
+EXT=tar.lzma
+NAMETGZ=texinfo
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Système de documentation GNU"
 
 

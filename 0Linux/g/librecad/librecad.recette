@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-LibreCAD}
-VERSION=${VERSION:-2.0.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-librecad}
-WGET=${WGET:-https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.$EXT}
+NAMESRC=LibreCAD
+VERSION=2.0.2
+EXT=tar.gz
+NAMETGZ=librecad
+WGET=https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.$EXT
 DESC="Logiciel de CAO/DAO complet"
 
 

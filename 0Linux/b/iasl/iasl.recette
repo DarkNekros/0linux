@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-acpica-unix}
-VERSION=${VERSION:-20121018}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-iasl}
-WGET=${WGET:-http://acpica.org/download/$NAMESRC-$VERSION.$EXT}
+NAMESRC=acpica-unix
+VERSION=20121018
+EXT=tar.gz
+NAMETGZ=iasl
+WGET=http://acpica.org/download/$NAMESRC-$VERSION.$EXT
 DESC="Compilateur ACPI"
 
 

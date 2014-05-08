@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libdvdread}
-VERSION=${VERSION:-4.2.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libdvdread}
-WGET=${WGET:-http://dvdnav.mplayerhq.hu/releases/${NAMESRC}-$VERSION.$EXT}
+NAMESRC=libdvdread
+VERSION=4.2.0
+EXT=tar.bz2
+NAMETGZ=libdvdread
+WGET=http://dvdnav.mplayerhq.hu/releases/${NAMESRC}-$VERSION.$EXT
 DESC="Bibliothèques de lecture DVD"
 
 

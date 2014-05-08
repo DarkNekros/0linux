@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-python-rdflib}
-VERSION=${VERSION:-3.2.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-python-rdflib}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=python-rdflib
+VERSION=3.2.1
+EXT=tar.gz
+NAMETGZ=python-rdflib
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de réprésentation RDF pour Python"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gthumb}
-VERSION=${VERSION:-3.2.7}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gthumb}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gthumb
+VERSION=3.2.7
+EXT=tar.xz
+NAMETGZ=gthumb
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Navigateur et visionneuse de fichiers graphiques pour GNOME"
 
 

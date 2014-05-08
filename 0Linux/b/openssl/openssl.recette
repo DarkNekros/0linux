@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-openssl}
-VERSION=${VERSION:-1.0.1g}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-openssl}
-WGET=${WGET:-http://www.openssl.org/source/$NAMESRC-$VERSION.$EXT}
+NAMESRC=openssl
+VERSION=1.0.1g
+EXT=tar.gz
+NAMETGZ=openssl
+WGET=http://www.openssl.org/source/$NAMESRC-$VERSION.$EXT
 DESC="Protocoles et algorithmes OpenSSL"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cpufrequtils}
-VERSION=${VERSION:-008}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-cpufrequtils}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT}
+NAMESRC=cpufrequtils
+VERSION=008
+EXT=tar.bz2
+NAMETGZ=cpufrequtils
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques pour le contrôle de fréquence processeur"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libburn}
-VERSION=${VERSION:-1.2.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libburn}
-WGET=${WGET:-http://files.libburnia-project.org/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libburn
+VERSION=1.2.6
+EXT=tar.gz
+NAMETGZ=libburn
+WGET=http://files.libburnia-project.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de lecture-écriture sur disques optiques"
 
 

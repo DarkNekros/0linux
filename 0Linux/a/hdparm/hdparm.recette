@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-hdparm}
-VERSION=${VERSION:-9.43}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-hdparm}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=hdparm
+VERSION=9.43
+EXT=tar.gz
+NAMETGZ=hdparm
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Contrôle des paramètres ATA/SATA des disques durs"
 
 

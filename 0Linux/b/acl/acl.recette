@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-acl}
-VERSION=${VERSION:-2.2.52}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-acl}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.src.$EXT}
+NAMESRC=acl
+VERSION=2.2.52
+EXT=tar.gz
+NAMETGZ=acl
+WGET=http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.src.$EXT
 DESC="Gestion des listes de contrôle d'accès aux fichiers"
 
 

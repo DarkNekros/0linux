@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libva}
-VERSION=${VERSION:-1.1.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libva}
-WGET=${WGET:-http://cgit.freedesktop.org/libva/snapshot/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libva
+VERSION=1.1.0
+EXT=tar.bz2
+NAMETGZ=libva
+WGET=http://cgit.freedesktop.org/libva/snapshot/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques vidéo avec accélération matérielle"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mypaint}
-VERSION=${VERSION:-1.0.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-mypaint}
-WGET=${WGET:-http://download.gna.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mypaint
+VERSION=1.0.0
+EXT=tar.xz
+NAMETGZ=mypaint
+WGET=http://download.gna.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Logiciel de peinture numérique"
 
 

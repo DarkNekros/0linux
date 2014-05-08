@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-atkmm}
-VERSION=${VERSION:-2.22.6}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-atkmm}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=atkmm
+VERSION=2.22.6
+EXT=tar.xz
+NAMETGZ=atkmm
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage C++ pour ATK"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gl2ps}
-VERSION=${VERSION:-1.3.8}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-gl2ps}
-WGET=${WGET:-http://www.geuz.org/$NAMESRC/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gl2ps
+VERSION=1.3.8
+EXT=tgz
+NAMETGZ=gl2ps
+WGET=http://www.geuz.org/$NAMESRC/src/$NAMESRC-$VERSION.$EXT
 DESC="Convertisseur OpenGL vers PostScript"
 ########################################
 

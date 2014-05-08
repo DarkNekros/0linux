@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pycups}
-VERSION=${VERSION:-1.9.62}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-pycups}
-WGET=${WGET:-http://cyberelk.net/tim/data/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pycups
+VERSION=1.9.62
+EXT=tar.bz2
+NAMETGZ=pycups
+WGET=http://cyberelk.net/tim/data/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage Python de l'API du serveur d'impression CUPS"
 
 

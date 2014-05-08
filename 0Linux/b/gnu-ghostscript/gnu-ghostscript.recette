@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ghostscript}
-VERSION=${VERSION:-9.14}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gnu-ghostscript}
+NAMESRC=ghostscript
+VERSION=9.14
+EXT=tar.bz2
+NAMETGZ=gnu-ghostscript
 WGET=(http://downloads.ghostscript.com/public/$NAMESRC-$VERSION.$EXT
       http://prdownloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz
       http://ftp.gnu.org/pub/gnu/ghostscript/gnu-gs-fonts-other-6.0.tar.gz

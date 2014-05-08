@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cpio}
-VERSION=${VERSION:-2.11}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-cpio}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=cpio
+VERSION=2.11
+EXT=tar.bz2
+NAMETGZ=cpio
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'archivage et de sauvegarde"
 
 

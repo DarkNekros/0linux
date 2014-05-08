@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xsetroot}
-VERSION=${VERSION:-1.1.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xsetroot}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xsetroot
+VERSION=1.1.1
+EXT=tar.bz2
+NAMETGZ=xsetroot
+WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT
 DESC="Applications natives de X11"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-make}
-VERSION=${VERSION:-4.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-make}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=make
+VERSION=4.0
+EXT=tar.bz2
+NAMETGZ=make
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil GNU pour la maintenance de programmes"
 
 

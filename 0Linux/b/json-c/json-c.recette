@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-json-c}
-VERSION=${VERSION:-0.11}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-json-c}
-WGET=${WGET:-https://s3.amazonaws.com/${NAMESRC}_releases/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=json-c
+VERSION=0.11
+EXT=tar.gz
+NAMETGZ=json-c
+WGET=https://s3.amazonaws.com/${NAMESRC}_releases/releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques JSON implémentées en C"
 
 

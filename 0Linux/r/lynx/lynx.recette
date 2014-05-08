@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-lynx}
-VERSION=${VERSION:-2.8.8}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-lynx}
-WGET=${WGET:-http://lynx.isc.org/$NAMESRC$VERSION/$NAMESRC$VERSION.$EXT}
+NAMESRC=lynx
+VERSION=2.8.8
+EXT=tar.bz2
+NAMETGZ=lynx
+WGET=http://lynx.isc.org/$NAMESRC$VERSION/$NAMESRC$VERSION.$EXT
 DESC="Navigateur Web en mode texte"
 
 

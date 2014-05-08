@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-exo}
-VERSION=${VERSION:-0.10.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-exo}
-WGET=${WGET:-http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=exo
+VERSION=0.10.2
+EXT=tar.bz2
+NAMETGZ=exo
+WGET=http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'extension à Xfce"
 
 

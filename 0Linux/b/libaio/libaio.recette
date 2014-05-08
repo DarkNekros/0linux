@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libaio}
-VERSION=${VERSION:-0.3.109}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libaio}
-WGET=${WGET:-http://ftp.de.debian.org/debian/pool/main/liba/$NAMESRC/${NAMESRC}_${VERSION}.orig.${EXT}}
+NAMESRC=libaio
+VERSION=0.3.109
+EXT=tar.gz
+NAMETGZ=libaio
+WGET=http://ftp.de.debian.org/debian/pool/main/liba/$NAMESRC/${NAMESRC}_${VERSION}.orig.${EXT}
 DESC="Bibliothèques pour la gestion asynchrone des entrées-sorties"
 
 

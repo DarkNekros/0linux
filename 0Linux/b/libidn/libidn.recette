@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libidn}
-VERSION=${VERSION:-1.27}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libidn}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libidn
+VERSION=1.27
+EXT=tar.gz
+NAMETGZ=libidn
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour noms de domaine internationalisés"
 
 

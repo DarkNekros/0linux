@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-lftp}
-VERSION=${VERSION:-4.4.15}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-lftp}
-WGET=${WGET:-http://lftp.cybermirror.org/$NAMESRC-$VERSION.$EXT}
+NAMESRC=lftp
+VERSION=4.4.15
+EXT=tar.xz
+NAMETGZ=lftp
+WGET=http://lftp.cybermirror.org/$NAMESRC-$VERSION.$EXT
 DESC="Client HTTP et FTP en ligne de commande"
 
 

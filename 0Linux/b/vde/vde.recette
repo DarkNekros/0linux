@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-vde2}
-VERSION=${VERSION:-2.3.2}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-vde}
-WGET=${WGET:-http://prdownloads.sourceforge.net/vde/$NAMESRC-$VERSION.$EXT}
+NAMESRC=vde2
+VERSION=2.3.2
+EXT=tar.bz2
+NAMETGZ=vde
+WGET=http://prdownloads.sourceforge.net/vde/$NAMESRC-$VERSION.$EXT
 DESC="Distributeur Ethernet pour machines virtuelles"
 
 

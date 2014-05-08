@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-nss}
-VERSION=${VERSION:-3.16.1}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-nss}
-WGET=${WGET:-ftp://ftp.mozilla.org/pub/mozilla.org/security/$NAMESRC/releases/NSS_$(echo $VERSION | sed 's/\./_/g')_RTM/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=nss
+VERSION=3.16.1
+EXT=tar.gz
+NAMETGZ=nss
+WGET=ftp://ftp.mozilla.org/pub/mozilla.org/security/$NAMESRC/releases/NSS_$(echo $VERSION | sed 's/\./_/g')_RTM/src/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de sécurité multi-plateformes de Mozilla"
 
 

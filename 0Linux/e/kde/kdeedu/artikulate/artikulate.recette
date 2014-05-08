@@ -1,9 +1,9 @@
 !/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=${NAMETGZ:-artikulate}
-VERSION=${VERSION:-4.13.0}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMETGZ-$VERSION.tar.xz}
+NAMETGZ=artikulate
+VERSION=4.13.0
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMETGZ-$VERSION.tar.xz
 DESC="Exercices de prononciation pour l'apprentissage de nouvelles langues"
 
 

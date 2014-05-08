@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-279}
-NAMETGZ=${NAMETGZ:-xterm}
-WGET=${WGET:-ftp://invisible-island.net/$NAMESRC/$NAMESRC-$VERSION.tgz}
+VERSION=279
+NAMETGZ=xterm
+WGET=ftp://invisible-island.net/$NAMESRC/$NAMESRC-$VERSION.tgz
 DESC="Émulateur de terminal pour X11"
 
 telecharger_sources

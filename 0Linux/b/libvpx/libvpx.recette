@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libvpx}
-VERSION=${VERSION:-1.1.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libvpx}
-WGET=${WGET:-http://webm.googlecode.com/files/${NAMESRC}-v${VERSION}.$EXT}
+NAMESRC=libvpx
+VERSION=1.1.0
+EXT=tar.bz2
+NAMETGZ=libvpx
+WGET=http://webm.googlecode.com/files/${NAMESRC}-v${VERSION}.$EXT
 DESC="Le codec vidéo libre VP8/WebM"
 
 

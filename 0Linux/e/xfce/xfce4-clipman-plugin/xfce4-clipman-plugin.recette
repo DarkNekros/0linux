@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xfce4-clipman-plugin}
-VERSION=${VERSION:-1.2.5}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xfce4-clipman-plugin}
-WGET=${WGET:-http://archive.xfce.org/src/panel-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xfce4-clipman-plugin
+VERSION=1.2.5
+EXT=tar.bz2
+NAMETGZ=xfce4-clipman-plugin
+WGET=http://archive.xfce.org/src/panel-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Greffon de gestion de presse-papier pour Xfce"
 
 

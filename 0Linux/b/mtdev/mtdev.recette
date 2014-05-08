@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-mtdev}
-VERSION=${VERSION:-1.1.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-mtdev}
-WGET=${WGET:-http://bitmath.org/code/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=mtdev
+VERSION=1.1.3
+EXT=tar.bz2
+NAMETGZ=mtdev
+WGET=http://bitmath.org/code/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour le protocole « Multitouch »"
 
 

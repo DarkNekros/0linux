@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gst-python}
-VERSION=${VERSION:-0.10.22}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gst-python}
-WGET=${WGET:-http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gst-python
+VERSION=0.10.22
+EXT=tar.bz2
+NAMETGZ=gst-python
+WGET=http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage Python pour GStreamer"
 
 

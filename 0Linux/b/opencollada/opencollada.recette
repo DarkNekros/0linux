@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-opencollada}
-VERSION=${VERSION:-15062013}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-opencollada}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC/${NAMESRC}-${VERSION}.${EXT}}
+NAMESRC=opencollada
+VERSION=15062013
+EXT=tar.xz
+NAMETGZ=opencollada
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMESRC/${NAMESRC}-${VERSION}.${EXT}
 DESC="Bibliothèques de décodage des fichiers « 3D Studio » et « Maya »"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ConsoleKit}
-VERSION=${VERSION:-0.4.5}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-consolekit}
-WGET=${WGET:-http://www.freedesktop.org/software/$NAMESRC/dist/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ConsoleKit
+VERSION=0.4.5
+EXT=tar.bz2
+NAMETGZ=consolekit
+WGET=http://www.freedesktop.org/software/$NAMESRC/dist/$NAMESRC-$VERSION.$EXT
 DESC="Service système de gestion de sessions"
 
 

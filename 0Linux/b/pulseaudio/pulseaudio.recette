@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pulseaudio}
-VERSION=${VERSION:-4.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-pulseaudio}
-WGET=${WGET:-http://freedesktop.org/software/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pulseaudio
+VERSION=4.0
+EXT=tar.xz
+NAMETGZ=pulseaudio
+WGET=http://freedesktop.org/software/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT
 DESC="Serveur audio avec fonctionnalités réseau"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-grilo}
-VERSION=${VERSION:-0.2.10}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-grilo}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=grilo
+VERSION=0.2.10
+EXT=tar.xz
+NAMETGZ=grilo
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'accès aux différentes sources de contenu multimédia"
 
 

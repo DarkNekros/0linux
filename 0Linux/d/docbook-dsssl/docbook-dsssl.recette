@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-docbook-dsssl}
-VERSION=${VERSION:-1.79}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-docbook-dsssl}
-WGET=${WGET:-http://prdownloads.sourceforge.net/docbook/$NAMESRC-$VERSION.$EXT}
+NAMESRC=docbook-dsssl
+VERSION=1.79
+EXT=tar.bz2
+NAMETGZ=docbook-dsssl
+WGET=http://prdownloads.sourceforge.net/docbook/$NAMESRC-$VERSION.$EXT
 DESC="Feuilles de style DSSSL pour Docbook"
 
 

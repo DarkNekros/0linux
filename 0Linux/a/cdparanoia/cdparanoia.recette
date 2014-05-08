@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-cdparanoia}
-VERSION=${VERSION:-10.2}
-EXT=${EXT:-tgz}
-NAMETGZ=${NAMETGZ:-cdparanoia}
-WGET=${WGET:-http://downloads.xiph.org/releases/$NAMESRC/${NAMESRC}-III-${VERSION}.src.$EXT}
+NAMESRC=cdparanoia
+VERSION=10.2
+EXT=tgz
+NAMETGZ=cdparanoia
+WGET=http://downloads.xiph.org/releases/$NAMESRC/${NAMESRC}-III-${VERSION}.src.$EXT
 DESC="Outils d'extraction de pistes de CD audio"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-lha}
-VERSION=${VERSION:-1.14i}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-lha}
-WGET=${WGET:-ftp://ftp.freebsd.org/pub/FreeBSD/distfiles/$NAMESRC-$(echo $VERSION | sed 's/\.//').$EXT}
+NAMESRC=lha
+VERSION=1.14i
+EXT=tar.gz
+NAMETGZ=lha
+WGET=ftp://ftp.freebsd.org/pub/FreeBSD/distfiles/$NAMESRC-$(echo $VERSION | sed 's/\.//').$EXT
 DESC="Gestion des archives au format LHA"
 
 

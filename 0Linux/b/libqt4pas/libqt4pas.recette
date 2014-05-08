@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-qt4pas}
-VERSION=${VERSION:-2.5}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libqt4pas}
-WGET=${WGET:-http://users.telenet.be/Jan.Van.hijfte/qtforfpc/V$VERSION/$NAMESRC-V${VERSION}_Qt4.5.3.tar.gz}
+NAMESRC=qt4pas
+VERSION=2.5
+EXT=tar.gz
+NAMETGZ=libqt4pas
+WGET=http://users.telenet.be/Jan.Van.hijfte/qtforfpc/V$VERSION/$NAMESRC-V${VERSION}_Qt4.5.3.tar.gz
 DESC="Bibliothèque permettant d'utiliser Qt avec le langage Pascal"
 
 

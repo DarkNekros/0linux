@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-1.12.1}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/akonadi/src/akonadi-$VERSION.tar.bz2}
+VERSION=1.12.1
+WGET=ftp://ftp.kde.org/pub/kde/stable/akonadi/src/akonadi-$VERSION.tar.bz2
 DESC="Services de gestion des informations personnelles"
 
 

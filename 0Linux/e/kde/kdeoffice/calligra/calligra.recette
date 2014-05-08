@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-calligra}
-VERSION=${VERSION:-2.8.2}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-calligra}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.$EXT}
+VERSION=2.8.2
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Calligra : la suite bureautique et artistique complète pour KDE"
 EXTRADEPS="openimageio vc kde-runtime"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

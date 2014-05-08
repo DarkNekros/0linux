@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-which}
-VERSION=${VERSION:-2.20}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-which}
-WGET=${WGET:-http://www.xs4all.nl/~carlo17/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=which
+VERSION=2.20
+EXT=tar.gz
+NAMETGZ=which
+WGET=http://www.xs4all.nl/~carlo17/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Affiche le chemin complet d'exécutables"
 
 

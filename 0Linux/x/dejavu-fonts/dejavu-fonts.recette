@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-dejavu-fonts-ttf}
-VERSION=${VERSION:-2.33}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-dejavu-fonts}
-WGET=${WGET:-http://prdownloads.sourceforge.net/dejavu/$NAMESRC-$VERSION.$EXT}
+NAMESRC=dejavu-fonts-ttf
+VERSION=2.33
+EXT=tar.bz2
+NAMETGZ=dejavu-fonts
+WGET=http://prdownloads.sourceforge.net/dejavu/$NAMESRC-$VERSION.$EXT
 DESC="Polices TrueType pour X"
 
 

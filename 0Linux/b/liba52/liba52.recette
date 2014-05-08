@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-a52dec}
-VERSION=${VERSION:-0.7.4}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-liba52}
-WGET=${WGET:-http://liba52.sourceforge.net/files/$NAMESRC-$VERSION.$EXT}
+NAMESRC=a52dec
+VERSION=0.7.4
+EXT=tar.gz
+NAMETGZ=liba52
+WGET=http://liba52.sourceforge.net/files/$NAMESRC-$VERSION.$EXT
 DESC="Décodeur de flux ATSC A/52 (« AC-3 »)"
 
 

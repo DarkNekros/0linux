@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-opera}
-VERSION=${VERSION:-12.16_1860}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-opera}
+NAMESRC=opera
+VERSION=12.16_1860
+EXT=tar.xz
+NAMETGZ=opera
 cflags
 if  [ "${PKGARCH}" = "x86_64" ]; then
 	SUBARCH="x86_64"
 else
 	SUBARCH="i386"
 fi
-WGET=${WGET:-ftp://ftp.opera.com/pub/opera/linux/$(echo $VERSION | cut -d'_' -f1 | tr -d '.')/$NAMESRC-$(echo $VERSION | sed 's/_/-/').${SUBARCH}.linux.$EXT}
+WGET=ftp://ftp.opera.com/pub/opera/linux/$(echo $VERSION | cut -d'_' -f1 | tr -d '.')/$NAMESRC-$(echo $VERSION | sed 's/_/-/').${SUBARCH}.linux.$EXT
 DESC="Le navigateur Web Opera"
 
 telecharger_sources

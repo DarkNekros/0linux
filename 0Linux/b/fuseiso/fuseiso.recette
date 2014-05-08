@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-fuseiso}
-VERSION=${VERSION:-20070708}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-fuseiso}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=fuseiso
+VERSION=20070708
+EXT=tar.bz2
+NAMETGZ=fuseiso
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Permet de monter des images iso sans droit d'administration"
 
 

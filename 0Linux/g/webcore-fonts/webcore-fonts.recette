@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-webcore-fonts}
-VERSION=${VERSION:-3.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-webcore-fonts}
-WGET=${WGET:-http://avi.alkalay.net/software/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=webcore-fonts
+VERSION=3.0
+EXT=tar.gz
+NAMETGZ=webcore-fonts
+WGET=http://avi.alkalay.net/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de polices TrueType standards pour le Web"
 
 

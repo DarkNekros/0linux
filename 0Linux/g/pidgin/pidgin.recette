@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-pidgin}
-VERSION=${VERSION:-2.10.8}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-pidgin}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=pidgin
+VERSION=2.10.8
+EXT=tar.bz2
+NAMETGZ=pidgin
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Client de messagerie instantanée multi-protocole"
 
 

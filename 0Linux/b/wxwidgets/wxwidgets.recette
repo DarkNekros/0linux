@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-wxWidgets}
-VERSION=${VERSION:-2.8.12}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-wxwidgets}
-WGET=${WGET:-http://prdownloads.sourceforge.net/wxwindows/${NAMESRC}-${VERSION}.$EXT}
+NAMESRC=wxWidgets
+VERSION=2.8.12
+EXT=tar.bz2
+NAMETGZ=wxwidgets
+WGET=http://prdownloads.sourceforge.net/wxwindows/${NAMESRC}-${VERSION}.$EXT
 DESC="Outils et bibliothèques C++ de création d'interfaces graphiques"
 
 

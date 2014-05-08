@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-warmux}
-VERSION=${VERSION:-11.04.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-warmux}
-WGET=${WGET:-http://download.gna.org/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=warmux
+VERSION=11.04.1
+EXT=tar.bz2
+NAMETGZ=warmux
+WGET=http://download.gna.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Jeu d'artillerie à la Worms"
 
 

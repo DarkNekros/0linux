@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-sord}
-VERSION=${VERSION:-0.10.4}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-sord}
-WGET=${WGET:-http://download.drobilla.net/$NAMESRC-$VERSION.$EXT}
+NAMESRC=sord
+VERSION=0.10.4
+EXT=tar.bz2
+NAMETGZ=sord
+WGET=http://download.drobilla.net/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de manipulation RDF"
 
 

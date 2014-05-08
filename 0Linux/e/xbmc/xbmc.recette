@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xbmc}
-VERSION=${VERSION:-12.3}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-xbmc}
+NAMESRC=xbmc
+VERSION=12.3
+EXT=tar.gz
+NAMETGZ=xbmc
 WGET=(http://mirrors.xbmc.org/releases/source/$NAMESRC-$VERSION.$EXT
       https://github.com/opdenkamp/xbmc-pvr-addons/archive/12.0-Frodo.$EXT
      )

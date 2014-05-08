@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-popt}
-VERSION=${VERSION:-1.16}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-popt}
-WGET=${WGET:-http://rpm5.org/files/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=popt
+VERSION=1.16
+EXT=tar.gz
+NAMETGZ=popt
+WGET=http://rpm5.org/files/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèque d'analyse de la ligne de commande"
 
 

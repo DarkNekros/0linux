@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-unrarsrc}
-VERSION=${VERSION:-5.1.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-unrar}
-WGET=${WGET:-http://www.rarlab.com/rar/$NAMESRC-$VERSION.$EXT}
+NAMESRC=unrarsrc
+VERSION=5.1.2
+EXT=tar.gz
+NAMETGZ=unrar
+WGET=http://www.rarlab.com/rar/$NAMESRC-$VERSION.$EXT
 DESC="Décompresseur d'archives RAR"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libmygpo-qt}
-VERSION=${VERSION:-1.0.7}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libmygpo-qt}
-WGET=${WGET:-http://stefan.derkits.at/files/$NAMESRC/$NAMESRC.$VERSION.$EXT}
+NAMESRC=libmygpo-qt
+VERSION=1.0.7
+EXT=tar.gz
+NAMETGZ=libmygpo-qt
+WGET=http://stefan.derkits.at/files/$NAMESRC/$NAMESRC.$VERSION.$EXT
 DESC="Bibliothèque permettant d'interagir avec le site last.fm"
 
 

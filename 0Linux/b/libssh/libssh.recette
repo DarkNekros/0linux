@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-0.6.3}
+VERSION=0.6.3
 WGET=(https://red.libssh.org/attachments/download/87/$NAMESRC-$VERSION.tar.xz
       http://www.libssh2.org/download/libssh2-1.4.3.tar.gz
      )

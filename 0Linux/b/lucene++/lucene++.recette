@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-rel}
-VERSION=${VERSION:-3.0.4}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-lucene++}
-WGET=${WGET:-https://github.com/luceneplusplus/LucenePlusPlus/archive/${NAMESRC}_${VERSION}.$EXT}
+NAMESRC=rel
+VERSION=3.0.4
+EXT=tar.gz
+NAMETGZ=lucene++
+WGET=https://github.com/luceneplusplus/LucenePlusPlus/archive/${NAMESRC}_${VERSION}.$EXT
 DESC="Port C++ des bibliothèques Java Lucene"
 
 

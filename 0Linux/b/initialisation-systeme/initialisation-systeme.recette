@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-0.9.7}
-NAMETGZ=${NAMETGZ:-initialisation-systeme}
+VERSION=0.9.7
+NAMETGZ=initialisation-systeme
 DESC="Fichiers d'initialisation système et services de 0Linux"
 
 

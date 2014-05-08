@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xf86dgaproto}
-VERSION=${VERSION:-2.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xf86dgaproto}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xf86dgaproto
+VERSION=2.1
+EXT=tar.bz2
+NAMETGZ=xf86dgaproto
+WGET=http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers d'en-têtes de protocole pour X11"
 
 

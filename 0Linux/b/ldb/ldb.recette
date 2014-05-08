@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ldb}
-VERSION=${VERSION:-1.1.15}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-ldb}
-WGET=${WGET:-http://www.samba.org/ftp/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ldb
+VERSION=1.1.15
+EXT=tar.gz
+NAMETGZ=ldb
+WGET=http://www.samba.org/ftp/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'annuaire pour Samba"
 
 

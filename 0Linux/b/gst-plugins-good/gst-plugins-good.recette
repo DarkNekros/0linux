@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gst-plugins-good}
-VERSION=${VERSION:-1.2.3}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gst-plugins-good}
+NAMESRC=gst-plugins-good
+VERSION=1.2.3
+EXT=tar.xz
+NAMETGZ=gst-plugins-good
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.31.$EXT
       http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
      )

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-font-util}
-VERSION=${VERSION:-1.3.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-font-util}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/font/$NAMESRC-$VERSION.$EXT}
+NAMESRC=font-util
+VERSION=1.3.0
+EXT=tar.bz2
+NAMETGZ=font-util
+WGET=http://xorg.freedesktop.org/releases/individual/font/$NAMESRC-$VERSION.$EXT
 DESC="Outils pour polices de caractères sous X11"
 
 

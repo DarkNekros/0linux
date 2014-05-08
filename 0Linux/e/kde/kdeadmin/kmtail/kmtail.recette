@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-kmtail}
-VERSION=${VERSION:-1.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-kmtail}
-WGET=${WGET:-http://www.binro.org/$NAMESRC-$VERSION.$EXT}
+NAMESRC=kmtail
+VERSION=1.0
+EXT=tar.bz2
+NAMETGZ=kmtail
+WGET=http://www.binro.org/$NAMESRC-$VERSION.$EXT
 DESC="Outils permettant de monitorer en temps réel les journaux du système"
 ########################################
 

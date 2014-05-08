@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-imake}
-VERSION=${VERSION:-1.0.6}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-imake}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/util/$NAMESRC-$VERSION.$EXT}
+NAMESRC=imake
+VERSION=1.0.6
+EXT=tar.bz2
+NAMETGZ=imake
+WGET=http://xorg.freedesktop.org/releases/individual/util/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers de configuration de X11"
 
 

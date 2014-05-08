@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-1.1.6}
-WGET=${WGET:-ftp://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-$VERSION.tar.bz2}
+VERSION=1.1.6
+WGET=ftp://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-$VERSION.tar.bz2
 DESC="Enregistreur de session utilisateur pour les terminaux graphiques"
 
 

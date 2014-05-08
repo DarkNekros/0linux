@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-GConf}
-VERSION=${VERSION:-2.32.4}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gconf}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=GConf
+VERSION=2.32.4
+EXT=tar.bz2
+NAMETGZ=gconf
+WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Système de stockage de préférences utilisateur"
 
 

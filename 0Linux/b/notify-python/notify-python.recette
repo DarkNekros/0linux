@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-notify-python}
-VERSION=${VERSION:-0.1.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-notify-python}
-WGET=${WGET:-http://www.galago-project.org/files/releases/source/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=notify-python
+VERSION=0.1.1
+EXT=tar.bz2
+NAMETGZ=notify-python
+WGET=http://www.galago-project.org/files/releases/source/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage Python pour 'libnotify'"
 
 

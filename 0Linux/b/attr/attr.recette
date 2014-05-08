@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-attr}
-VERSION=${VERSION:-2.4.47}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-attr}
-WGET=${WGET:-http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.src.$EXT}
+NAMESRC=attr
+VERSION=2.4.47
+EXT=tar.gz
+NAMETGZ=attr
+WGET=http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.src.$EXT
 DESC="Outils de gestion des attributs de fichiers"
 
 

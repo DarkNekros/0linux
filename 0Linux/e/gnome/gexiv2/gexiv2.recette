@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gexiv2}
-VERSION=${VERSION:-0.10.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gexiv2}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gexiv2
+VERSION=0.10.0
+EXT=tar.xz
+NAMETGZ=gexiv2
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage GObject des bibliothèques exiv2"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-nmap}
-VERSION=${VERSION:-6.45}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-nmap}
-WGET=${WGET:-http://nmap.org/dist/$NAMESRC-$VERSION.$EXT}
+NAMESRC=nmap
+VERSION=6.45
+EXT=tar.bz2
+NAMETGZ=nmap
+WGET=http://nmap.org/dist/$NAMESRC-$VERSION.$EXT
 DESC="Outil de découverte réseau et d'audit de la sécurité"
 
 

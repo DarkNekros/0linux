@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-findutils}
-VERSION=${VERSION:-4.4.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-findutils}
-WGET=${WGET:-http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=findutils
+VERSION=4.4.2
+EXT=tar.gz
+NAMETGZ=findutils
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de programmes de recherche de fichiers"
 
 

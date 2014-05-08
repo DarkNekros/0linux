@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-telepathy-logger}
-VERSION=${VERSION:-0.8.0}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-telepathy-logger}
-WGET=${WGET:-http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=telepathy-logger
+VERSION=0.8.0
+EXT=tar.bz2
+NAMETGZ=telepathy-logger
+WGET=http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de journalisation pour Telepathy"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-apr-util}
-VERSION=${VERSION:-1.5.1}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-apr-util}
-WGET=${WGET:-http://apache.crihan.fr/dist/apr/$NAMESRC-$VERSION.$EXT}
+NAMESRC=apr-util
+VERSION=1.5.1
+EXT=tar.bz2
+NAMETGZ=apr-util
+WGET=http://apache.crihan.fr/dist/apr/$NAMESRC-$VERSION.$EXT
 DESC="Outils pour APR"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libdvdcss}
-VERSION=${VERSION:-1.2.12}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libdvdcss}
-WGET=${WGET:-http://download.videolan.org/pub/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libdvdcss
+VERSION=1.2.12
+EXT=tar.bz2
+NAMETGZ=libdvdcss
+WGET=http://download.videolan.org/pub/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de décryptage DVD"
 
 

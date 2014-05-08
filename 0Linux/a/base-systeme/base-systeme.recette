@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=${VERSION:-5.1.4}
+VERSION=5.1.4
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
 

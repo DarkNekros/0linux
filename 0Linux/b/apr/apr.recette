@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-apr}
-VERSION=${VERSION:-1.4.6}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-apr}
-WGET=${WGET:-ftp://mirrors.ircam.fr/pub/apache/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=apr
+VERSION=1.4.6
+EXT=tar.bz2
+NAMETGZ=apr
+WGET=ftp://mirrors.ircam.fr/pub/apache/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques réseau « Apache Portable Runtime »"
 
 

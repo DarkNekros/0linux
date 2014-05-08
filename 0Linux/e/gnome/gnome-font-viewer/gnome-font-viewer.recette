@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnome-font-viewer}
-VERSION=${VERSION:-3.10.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-font-viewer}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnome-font-viewer
+VERSION=3.10.0
+EXT=tar.xz
+NAMETGZ=gnome-font-viewer
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Visionneuse de polices de caractères pour GNOME"
 
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-evas_generic_loaders}
-VERSION=${VERSION:-1.9.0}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-evas_generic_loaders}
-WGET=${WGET:-http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=evas_generic_loaders
+VERSION=1.9.0
+EXT=tar.gz
+NAMETGZ=evas_generic_loaders
+WGET=http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques supplémentaires de rendu graphique pour E"
 
 

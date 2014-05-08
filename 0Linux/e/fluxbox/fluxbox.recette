@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-fluxbox}
-VERSION=${VERSION:-1.3.5}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-fluxbox}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=fluxbox
+VERSION=1.3.5
+EXT=tar.bz2
+NAMETGZ=fluxbox
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Le gestionnaire de fenêtres Fluxbox"
 
 

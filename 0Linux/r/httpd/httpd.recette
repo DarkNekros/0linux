@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-httpd}
-VERSION=${VERSION:-2.4.9}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-httpd}
-WGET=${WGET:-http://mirrors.ircam.fr/pub/apache/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=httpd
+VERSION=2.4.9
+EXT=tar.bz2
+NAMETGZ=httpd
+WGET=http://mirrors.ircam.fr/pub/apache/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Le serveur HTTP de la fondation Apache"
 
 

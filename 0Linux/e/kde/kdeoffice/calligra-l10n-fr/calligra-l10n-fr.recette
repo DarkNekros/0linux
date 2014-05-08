@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-calligra-l10n-fr}
-VERSION=${VERSION:-2.8.1}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-calligra-l10n-fr}
-WGET=${WGET:-ftp://ftp.kde.org/pub/kde/stable/calligra-$VERSION/calligra-l10n/$NAMESRC-$VERSION.$EXT}
+NAMESRC=calligra-l10n-fr
+VERSION=2.8.1
+EXT=tar.xz
+NAMETGZ=calligra-l10n-fr
+WGET=ftp://ftp.kde.org/pub/kde/stable/calligra-$VERSION/calligra-l10n/$NAMESRC-$VERSION.$EXT
 DESC="Calligra: la suite bureautique et artistique complète pour KDE"
 ########################################
 

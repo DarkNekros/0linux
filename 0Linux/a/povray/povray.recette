@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-povray}
-VERSION=${VERSION:-3.7.0.RC7}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-povray}
-WGET=${WGET:-http://www.povray.org/beta/source/$NAMESRC-$VERSION.$EXT}
+NAMESRC=povray
+VERSION=3.7.0.RC7
+EXT=tar.bz2
+NAMETGZ=povray
+WGET=http://www.povray.org/beta/source/$NAMESRC-$VERSION.$EXT
 DESC="Persistance of Vision Raytracer, un lanceur de rayons ultra-puissant pour la création 3D."
 
 

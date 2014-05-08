@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-giflib}
-VERSION=${VERSION:-4.1.6}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-giflib}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=giflib
+VERSION=4.1.6
+EXT=tar.bz2
+NAMETGZ=giflib
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques de manipulation d'images au format GIF"
 
 

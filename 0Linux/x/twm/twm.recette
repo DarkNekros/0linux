@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-twm}
-VERSION=${VERSION:-1.0.8}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-twm}
-WGET=${WGET:-http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT}
+NAMESRC=twm
+VERSION=1.0.8
+EXT=tar.bz2
+NAMETGZ=twm
+WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de fenêtres natif de de X11"
 
 

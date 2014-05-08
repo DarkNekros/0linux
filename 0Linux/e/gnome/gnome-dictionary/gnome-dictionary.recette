@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnome-dictionary}
-VERSION=${VERSION:-3.10.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-dictionary}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnome-dictionary
+VERSION=3.10.0
+EXT=tar.xz
+NAMETGZ=gnome-dictionary
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Dictionnaire pour le bureau GNOME"
 
 

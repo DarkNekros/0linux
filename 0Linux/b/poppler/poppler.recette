@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-poppler}
-VERSION=${VERSION:-0.24.5}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-poppler}
+NAMESRC=poppler
+VERSION=0.24.5
+EXT=tar.xz
+NAMETGZ=poppler
 WGET=(http://poppler.freedesktop.org/$NAMESRC-$VERSION.$EXT
       http://poppler.freedesktop.org/poppler-data-0.4.6.tar.gz
      )

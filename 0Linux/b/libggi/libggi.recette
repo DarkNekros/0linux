@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libggi}
-VERSION=${VERSION:-2.2.2}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libggi}
-WGET=${WGET:-http://prdownloads.sourceforge.net/ggi/$NAMESRC-$VERSION.src.$EXT}
+NAMESRC=libggi
+VERSION=2.2.2
+EXT=tar.gz
+NAMETGZ=libggi
+WGET=http://prdownloads.sourceforge.net/ggi/$NAMESRC-$VERSION.src.$EXT
 DESC="Bibliothèques « General Graphics Interface »"
 
 

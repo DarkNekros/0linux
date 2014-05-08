@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-yakuake}
-VERSION=${VERSION:-2.9.9}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-yakuake}
-WGET=${WGET:-http://download.kde.org/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT}
+NAMESRC=yakuake
+VERSION=2.9.9
+EXT=tar.xz
+NAMETGZ=yakuake
+WGET=http://download.kde.org/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
 DESC="Terminal déroulant pour KDE dans l'esprit de celui du jeu Quake"
 EXTRADEPS="kde-runtime konsole"
 

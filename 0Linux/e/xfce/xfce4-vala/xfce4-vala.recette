@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-xfce4-vala}
-VERSION=${VERSION:-4.10.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-xfce4-vala}
-WGET=${WGET:-http://archive.xfce.org/src/bindings/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=xfce4-vala
+VERSION=4.10.3
+EXT=tar.bz2
+NAMETGZ=xfce4-vala
+WGET=http://archive.xfce.org/src/bindings/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage Vala pour Xfce"
 
 

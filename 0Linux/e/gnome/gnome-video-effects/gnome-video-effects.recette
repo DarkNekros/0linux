@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnome-video-effects}
-VERSION=${VERSION:-0.4.0}
-EXT=${EXT:-tar.xz}
-NAMETGZ=${NAMETGZ:-gnome-video-effects}
-WGET=${WGET:-http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnome-video-effects
+VERSION=0.4.0
+EXT=tar.xz
+NAMETGZ=gnome-video-effects
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Collection d'effets pour GStreamer"
 
 

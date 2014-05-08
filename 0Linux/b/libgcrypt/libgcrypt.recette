@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libgcrypt}
-VERSION=${VERSION:-1.5.3}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-libgcrypt}
-WGET=${WGET:-ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libgcrypt
+VERSION=1.5.3
+EXT=tar.bz2
+NAMETGZ=libgcrypt
+WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques GNU pour la cryptographie"
 
 

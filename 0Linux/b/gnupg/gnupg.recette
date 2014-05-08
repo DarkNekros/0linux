@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-gnupg}
-VERSION=${VERSION:-2.0.22}
-EXT=${EXT:-tar.bz2}
-NAMETGZ=${NAMETGZ:-gnupg}
-WGET=${WGET:-ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=gnupg
+VERSION=2.0.22
+EXT=tar.bz2
+NAMETGZ=gnupg
+WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils OpenPGP de chiffrement et de signature"
 
 

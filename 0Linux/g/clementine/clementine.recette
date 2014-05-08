@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-Clementine}
-VERSION=${VERSION:-1.2.3}
-WGET=${WGET:-https://github.com/clementine-player/$NAMESRC/archive/$VERSION.tar.gz}
+NAMESRC=Clementine
+VERSION=1.2.3
+WGET=https://github.com/clementine-player/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Un lecteur audio moderne avec gestion d'audiothèque"
 
 telecharger_sources

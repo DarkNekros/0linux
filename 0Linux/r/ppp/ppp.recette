@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-ppp}
-VERSION=${VERSION:-2.4.6}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-ppp}
-WGET=${WGET:-http://samba.org/ftp/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=ppp
+VERSION=2.4.6
+EXT=tar.gz
+NAMETGZ=ppp
+WGET=http://samba.org/ftp/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Protocole réseau « Point-to-Point Protocol »"
 
 

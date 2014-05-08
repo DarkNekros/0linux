@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=${NAMESRC:-libavc1394}
-VERSION=${VERSION:-0.5.4}
-EXT=${EXT:-tar.gz}
-NAMETGZ=${NAMETGZ:-libavc1394}
-WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
+NAMESRC=libavc1394
+VERSION=0.5.4
+EXT=tar.gz
+NAMETGZ=libavc1394
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour flux audio/vidéo via IEE1394"
 
 
