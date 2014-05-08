@@ -32,12 +32,15 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--datarootdir=/usr/share \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--datarootdir=/usr/share \
 	--enable-BLAS-shlib \
 	--enable-R-shlib \
 	--enable-byte-compiled-packages \
 	  rdocdir=/usr/doc/${NAMETGZ}-${VERSION}/ \
+	  rincludedir=/usr/include/R/ \
+	  rsharedir=/usr/share/R/ \
 	--with-blas \
 	--with-lapack \
 	--with-x \
@@ -58,7 +61,7 @@ fakeroot make -C src/nmath/standalone install DESTDIR=${PKG}
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libR.pc << "EOF"
 rhome=/usr/libARCH/R
 rlibdir=${rhome}/lib
-rincludedir=${rhome}/include
+rincludedir=/usr/include/R
 
 Name: libR
 Description: Bibliothèques R
@@ -86,6 +89,41 @@ EOF
 
 # On corrige pour prendre en charge notre suffixe et la version :
 sed -i -e "s@ARCH@${LIBDIRSUFFIX}@g" -e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libRmath.pc
+
+# On place le raccourci bureau et l'icône :
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+
+cat > ${PKG}/usr/share/applications/r.desktop << EOF
+[Desktop Entry]
+Name=R
+GenericName=Environment for statistical computing
+GenericName[fr]=R, langage de programmation et environnement statistique
+Comment=Language and environment for statistical computing and graphics
+Comment[fr]=R, langage de programmation et environnement statistique
+Exec=R
+Icon=/usr/share/pixmaps/r.png
+DocPath=/usr/doc/$NAMETGZ-$VERSION/html/index.html
+StartupNotify=true
+Terminal=true
+Type=Application
+Categories=Science;
+
+EOF
+
+cp -a ${CWD}/r.png ${PKG}/usr/share/pixmaps/
+
+# On déplace la configuration dans '/etc' et crée des liens symboliques  :
+mkdir -p ${PKG}/etc/R
+for i in ${PKG}/usr/lib${LIBDIRSUFFIX}/R/etc/*; do 
+	mv -f ${i} ${PKG}/etc/R/
+	ln -sf ../../../../etc/R/$(basename ${i}) ${i}
+done
+
+# On crée un fichier pour permettre l'édition de liens :
+mkdir -p ${PKG}/etc/ld.so.conf.d
+echo "/usr/lib${LIBDIRSUFFIX}/R/lib" > ${PKG}/etc/ld.so.conf.d/R.conf
+
+# Ouf !
 
 installer_doc
 creer_post_installation
