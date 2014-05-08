@@ -17,6 +17,10 @@ else
 	VC_OPT="ON"
 fi
 
+# Corrige la détection d'openjpeg :
+sed -i "s:/usr/include/openjpeg:/usr/include/openjpeg-1.5:" \
+	cmake/modules/FindOpenJPEG.cmake
+
 # Compilation :
 mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

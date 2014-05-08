@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=calligra-l10n-fr
-VERSION=2.8.1
-EXT=tar.xz
-NAMETGZ=calligra-l10n-fr
-WGET=ftp://ftp.kde.org/pub/kde/stable/calligra-$VERSION/calligra-l10n/$NAMESRC-$VERSION.$EXT
+VERSION=2.8.2
+WGET=ftp://ftp.kde.org/pub/kde/stable/calligra-$VERSION/calligra-l10n/caligra-$VERSION.tar.xz
 DESC="Calligra: la suite bureautique et artistique complète pour KDE"
-########################################
 
 
 telecharger_sources
