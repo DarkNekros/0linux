@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # On nettoie  :
-unset BOOTERINST BLAHH PARTTABLE BOOTDEVICE WINBOOT WHICHDISK WINDISK
+unset BOOTERINST BLAHH PARTTABLE BOOTDEVICE BOOTPTTYPE MBRBIN WINBOOT WHICHDISK WINDISK
 
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
@@ -42,16 +42,16 @@ while [ 0 ]; do
 		echo -e "\033[1;32mInformations pour la configuration de l'amorçage de 0Linux.\033[0;0m"
 		echo ""
 		echo "Voici les informations qui vous permettront de configurer d'autres chargeurs"
-		echo "d'amorçage (GRUB, GRUB2, LILO, etc.) pour pouvoir amorcer 0Linux :"
+		echo "d'amorçage (GRUB, LILO, etc.) pour pouvoir amorcer 0Linux :"
 		echo ""
-		echo "Votre installation de 0Linux se trouve sur la partition $(cat $TMP/partition_racine)."
+		echo "Votre installation de 0Linux se trouve sur la partition '$(cat $TMP/partition_racine)'."
 		echo ""
 		echo "Le noyau par défaut de 0Linux est le fichier '/boot/noyau-$(uname -r)'."
 		echo "Vous pouvez spécifier le lien générique '/boot/vmlinuz' mais vérifiez"
 		echo "qu'il pointe bien sur le noyau de 0Linux."
 		echo ""
-		echo "Le système doit être lancé en lecture seule (read-only, ro, etc.) et aucun"
-		echo "« initrd » n'est nécessaire."
+		echo "Le système doit être lancé de préférence en lecture seule (read-only, ro, etc.)"
+		echo "et aucun « initrd » n'est nécessaire au démarrage."
 		echo ""
 		echo "Notez ces informations et appuyez sur ENTRÉE pour continuer."
 		read BLAHH;
@@ -62,23 +62,34 @@ while [ 0 ]; do
 		if [ "${INSTALLDEBUG}" = "" ]; then
 			clear
 		fi
-		echo -e "\033[1;32mÉcrasement du bloc d'amorçage principal (MBR).\033[0;0m"
+		echo -e "\033[1;32mÉcrasement du bloc d'amorçage principal.\033[0;0m"
 		echo ""
-		echo "Voulez-vous écraser le bloc d'amorçage principal (ou « MBR »)"
-		echo "de votre premier disque dur afin qu'Extlinux prenne en charge"
-		echo "vos différents systèmes ? Entrez « oui » pour confirmer."
-		echo "N.B.: ceci écrasera votre ancien MBR de façon irréversible !"
-		echo ""
-		echo "Appuyez sur ENTRÉE pour ignorer cette étape."
+		echo "Voulez-vous écraser le bloc d'amorçage principal du disque dur"
+		echo "contenant 0Linux afin qu'Extlinux prenne en charge vos différents"
+		echo "systèmes ?"
+		echo "N.B. : ceci écrasera votre ancienne amorce de façon irréversible !"
+		echo "N.B. : la partition à démarrer doit être marquée comme amorçable !"
+		echo "Entrez « oui » pour confirmer l'écrasement ou bien appuyez sur"
+		echo "ENTRÉE pour ignorer cette étape."
 		echo ""
 		echo -n "Votre choix (oui/non/ENTRÉE) : "
 		read MBRINSTALL;
 		if [ ! "${MBRINSTALL}" = "oui" ]; then
 			break
 		else
-			# On écrase le MBR sans aucun scrupule :
+			# Le périphérique à amorcer : :
 			BOOTDEVICE="$(cat $TMP/partition_racine | crunch | tr -d [0-9])"
-			cat /usr/share/syslinux/mbr.bin > ${BOOTDEVICE}
+			
+			# Le type de la table de partition :
+			BOOTPTTYPE=$(blkid -p -s PTTYPE -o value ${BOOTDEVICE})
+			
+			# On écrase le MBR sans aucun scrupule, selon la table de partitions trouvé :
+			if [ "${BOOTPTTYPE}" = "gpt" ]; then
+				MBRBIN=gptmbr.bin
+			else
+				MBRBIN=mbr.bin
+			fi
+			cat /usr/share/syslinux/${MBRBIN} > ${BOOTDEVICE}
 			
 			# Si le MBR est occupé par Extlinux, alors on en profite pour ajouter d'autres « OS » :
 			

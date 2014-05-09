@@ -601,6 +601,31 @@ empaqueter() {
 		ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
 	fi
 	
+	# On définit le compteur de compilations $BUILD en se basant sur l'éventuel
+	# paquet déjà installé dans le système. On laisse néanmoins la possibilité de
+	# spécifier $BUILD sur la ligne de commande (qui reste prioritaire) :
+	if [ -z "${BUILD}" ]; then
+		
+		# On le définit à 1 par défaut :
+		BUILD=1
+		
+		# On scanne les paquets installés :
+		for paquetinstalle in $(find /var/log/packages -type f -name "${NAMETGZ}-*" 2>/dev/null); do
+		
+			# Si on trouve le même paquet déjà installé avec le même $NAMETGZ :
+			if [ "$(echo $(basename ${paquetinstalle}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)" = "${NAMETGZ}" ]; then
+				
+				# Si on trouve un paquet avec la même $VERSION, on ajoute 1
+				# à son compteur $BUILD pour permettre la mise à niveau :
+				if [ "$(echo $(basename ${paquetinstalle}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\2/p' -n)" = "${VERSION}" ]; then
+					OLDBUILD="$(echo $(basename ${paquetinstalle}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n)"
+					BUILD=$(( ${OLDBUILD} +1 ))
+					break
+				fi
+			fi
+		done
+	fi
+	
 	# On extrait les dépendances dynamiques (fichiers) grâce à '0ldd_clean', basé sur '0dep' :
 	0ldd_clean ${PKG}/* > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log
 	
@@ -656,31 +681,6 @@ empaqueter() {
 			find ${PKG}/${d} -type f -name "*.ko"     -exec xz       {} \;
 		fi
 	done
-	
-	# On définit le compteur de compilations $BUILD en se basant sur l'éventuel
-	# paquet déjà installé dans le système. On laisse néanmoins la possibilité de
-	# spécifier $BUILD sur la ligne de commande (qui reste prioritaire) :
-	if [ -z "${BUILD}" ]; then
-		
-		# On le définit à 1 par défaut :
-		BUILD=1
-		
-		# On scanne les paquets installés :
-		for paquetinstalle in $(find /var/log/packages -type f -name "${NAMETGZ}-*" 2>/dev/null); do
-		
-			# Si on trouve le même paquet déjà installé avec le même $NAMETGZ :
-			if [ "$(echo $(basename ${paquetinstalle}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)" = "${NAMETGZ}" ]; then
-				
-				# Si on trouve un paquet avec la même $VERSION, on ajoute 1
-				# à son compteur $BUILD pour permettre la mise à niveau :
-				if [ "$(echo $(basename ${paquetinstalle}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\2/p' -n)" = "${VERSION}" ]; then
-					OLDBUILD="$(echo $(basename ${paquetinstalle}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n)"
-					BUILD=$(( ${OLDBUILD} +1 ))
-					break
-				fi
-			fi
-		done
-	fi
 	
 	# On place le journal - en ajoutant la version - dans la doc sous forme compressée
 	# et on supprime le journal, signe que la compilation s'est bien passée :

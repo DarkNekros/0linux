@@ -58,32 +58,63 @@ aisé de gérer un système partitionné de la facon suivante  :
 Faire une partition séparée pour /home est optionnel mais recommandé,
 celle-ci contenant entre autres les préférences des utilisateurs.
 
-Le partitionnement s'effectue avec un outil de partitionnement tel que 
-le programme 'cfdisk', ou bien avec sa version plus « vieille école », 
-'fdisk'. Les deux programmes font le même travail. 'parted' est également 
-disponible.
+Les disques durs ont 2 types de tables de partitions : la traditionnelle, dite
+« MBR », et une plus récente, nommée « GPT ». 
 
-Vous allez avoir besoin d'une partition de type 83 (type Linux par défaut) 
-et optionnellement une de type 82 (la partition d'échange ou « swap »)
-afin que l'installateur reconnaisse vos partitions comme exploitables.
+Pour savoir quel type de disque dur vous possédez, invoquez (remplacez « X »
+par la lettre de votre lecteur) :
 
-	a) Si vous choisissez 'cfdisk', les menus vous guideront.
+	# gdisk -l /dev/sdX
 
-	b) Si vous choisissez 'fdisk', utilisez la commande 't' pour choisir 
-	   le type des partitions puis finissez par 'w' pour écrire la
-	   nouvelle table de partitions avant de quitter.
+Cette ligne montrera un disque GPT : 
 
-Par défaut, 'fdisk' et 'cfdisk' sélectionneront le premier lecteur de
-disque dur de votre machine, '/dev/sda'. 
-Pour partitionner des disque durs supplémentaires, il faut les indiquer. 
+	GPT: present
 
-Pour consulter la liste des disques détectés, tapez : 
+Cette ligne montrera en revanche un disque MBR : 
+
+	GPT: not present
+
+Le partitionnement s'effectue avec un outil de partitionnement adapté à votre
+disque dur.
+
+Pour les disques MBR classiques, partitionnez avec le programme 'cfdisk', ou
+bien avec sa version plus « vieille école », 'fdisk'. Les deux programmes
+font le même travail. 
+
+Pour les disques GPT plus récents, partitionnez avec le programme 'cgdisk', ou
+bien sa version plus « vieille école », 'gdisk'. Les deux programmes
+font le même travail. 
+
+Globalement, les outils 'cfdisk' et 'cgdisk' sont plus faciles à utiliser car
+ils sont administrables via des menus « graphiques ».
+
+Par défaut, 'fdisk'/'gdisk' et 'cfdisk'/'cgdisk' sélectionnent le premier
+lecteur de disque dur de votre machine, '/dev/sda'. 
+Pour partitionner des disque durs supplémentaires, il faut les indiquer.
+
+Pour consulter la liste des disques détectés ou la liste des partitions d'un
+disque spécifique, tapez, au choix (remplacez « X » par la lettre de votre
+lecteur) : 
 
 	# fdisk -l
+	# gdisk -l /dev/sdX
+	# parted --list
 
-Par exemple, pour partitionner le second disque dur avec 'cfdisk', tapez :
+Par exemple, pour partitionner le second disque dur, tapez, au choix :
 
 	# cfdisk /dev/sdb
+	# cgdisk /dev/sdb
+
+Vous allez avoir besoin d'au moins une partition de type 83 (type Linux par
+défaut) et optionnellement une de type 82 (la partition d'échange ou « swap »)
+afin que l'installateur reconnaisse vos partitions comme exploitables.
+
+	a) Si vous choisissez 'cfdisk' ou 'cgdisk', les menus vous guideront.
+
+	b) Si vous choisissez 'fdisk' ou 'gdisk', utilisez la commande 't' pour
+	   choisir le type des partitions puis finissez par 'w' pour écrire la
+	   nouvelle table de partitions avant de quitter (les commandes peuvent
+	   changer selon le programme choisi).
 
 2- Lancement de l'installateur
 
@@ -96,12 +127,17 @@ ce qui est inscrit à l'écran et tout devrait bien se passer.
 Si vous faites une erreur de saisie, appuyez sur RETOUR ARRIÈRE/BACKSPACE pour
 corriger : la touche SUPPR. ne fonctionnera pas !
 
+En cas de coup dur ou si vous vous trompez, vous pouvez quitter n'importe quel
+programme ou écran à tout moment en tapant la combinaison CTRL+C.
+
 Quand l'installation et la configuration sont terminées, quittez le 
-programme d'installation pour redémarrer sous votre nouveau système Linux.
+programme d'installation pour redémarrer sous votre nouveau système Linux. Si
+un problème survient au redémarrage, vous pouvez redémarrer sur le média
+d'installation et « entrer » dans votre système 0Linux fraîchement installé
+pour en faire la maintenance grâce à la commande dédiée '0chroot'.
 
 Pour toute remarque sur cet installateur, écrivez à appzer0@0linux.org ou 
-consultez le site officiel http://0linux.org, des forums y sont cobnsultables
-ainsi une liste de diffusion par e-mail, un wiki et d'autres canaux de 
-communication.
+consultez le site officiel http://0linux.org, des forums y sont consultables,
+un wiki et d'autres canaux de communication.
 
 Appuyez sur Q pour quitter cette aide et revenir à l'installateur.
