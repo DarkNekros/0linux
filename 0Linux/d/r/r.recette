@@ -9,20 +9,14 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Au cas où TeX ferait son apparition dans 0Linux, on corrige le répertoire 'texmf' :
+# On corrige le répertoire 'texmf' :
 sed -i 's@$(rsharedir)/texmf@${datarootdir}/texmf@' share/Makefile.in
 
 # On corrige la prise en charge de la parallélisation :
 sed -i 's@install: installdirs install-intl@install: $(OBJ_HEADERS) installdirs install-intl@' src/include/Makefile.in
 
-# On ajoute des LDFLAGS manquants pour la libnmath ::
-sed -i 's@libRmath_la_LDFLAGS = @libRmath_la_LDFLAGS = -Wl,-soname=libRmath.so@' src/nmath/standalone/Makefile.in
-sed -i '/libRmath_la_LDFLAGS = -Wl,-soname=libRmath.so/a \
-libRmath_la_LIBADD = $(LIBM)' src/nmath/standalone/Makefile.in
-sed -i 's|$(DYLIB_LINK) -o $@ $(libRmath_la_LDFLAGS) $(libRmath_la_OBJECTS) $(LIBM)|$(DYLIB_LINK) $(libRmath_la_LDFLAGS) $(libRmath_la_OBJECTS) $(libRmath_la_LIBADD) -o $@|' \
-	src/nmath/standalone/Makefile.in
-
 # Compilation :
+LIBnn=lib${LIBDIRSUFFIX} \
 F77=gfortran \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -34,13 +28,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--datarootdir=/usr/share \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--datarootdir=/usr/share \
-	--enable-BLAS-shlib \
+	  rdocdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	  rincludedir=/usr/include/R \
+	  rsharedir=/usr/share/R \
 	--enable-R-shlib \
-	--enable-byte-compiled-packages \
-	  rdocdir=/usr/doc/${NAMETGZ}-${VERSION}/ \
-	  rincludedir=/usr/include/R/ \
-	  rsharedir=/usr/share/R/ \
 	--with-blas \
 	--with-lapack \
 	--with-x \
@@ -122,6 +113,11 @@ done
 # On crée un fichier pour permettre l'édition de liens :
 mkdir -p ${PKG}/etc/ld.so.conf.d
 echo "/usr/lib${LIBDIRSUFFIX}/R/lib" > ${PKG}/etc/ld.so.conf.d/R.conf
+
+# On corrige et on recrée le binaire :
+sed -i "s@${PKG} @@" ${PKG}/usr/bin/R
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/R/bin/R
+ln -sf ../../../bin/R ${PKG}/usr/lib${LIBDIRSUFFIX}/R/bin/
 
 # Ouf !
 

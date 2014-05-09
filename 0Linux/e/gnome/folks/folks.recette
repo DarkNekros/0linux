@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=folks
-VERSION=0.9.5
-EXT=tar.xz
-NAMETGZ=folks
-WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=0.9.7
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques sociales pour GNOME"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Compilation :
+NOCONFIGURE=1 ./autogen.sh
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -26,6 +23,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-fatal-warnings \
 	--disable-libsocialweb-backend \
+	--disable-schemas-compile \
 	--enable-tracker-backend \
 	--build=${PKGARCH}-0linux-linux-gnu
 
