@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=obsolete-abonnement
-VERSION=7
+VERSION=8
 DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
 
 
@@ -56,7 +56,8 @@ cat >> ${PKG}/post-install.sh << "EOF"
 	syslog-ng \
 	systemd \
 	terminal \
-	udisks2
+	udisks2 \
+	kdnssd
 
 EOF
 
