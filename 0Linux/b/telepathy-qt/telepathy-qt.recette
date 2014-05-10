@@ -1,26 +1,30 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.6.0
+VERSION=0.9.3
 WGET=http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
-DESC="Bibliothèques de liaison audio/vidéo pour Telepathy"
+DESC="Bibliothèques d'interfaçage Qt pour Telepathy"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige la détection de 'farstream' :
+sed -i 's@farstream-0\.1@farstream-0.2@g' cmake/modules/FindFarstream.cmake
+
+# On corrige la compilation avec les derniers 'cmake' :
+cat $CWD/cmake.patch | patch -p1
+
+# On compile dans un répertoire dédié :
+mkdir build
+cd build
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/telepathy \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
+cmake \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DENABLE_TESTS=OFF
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}

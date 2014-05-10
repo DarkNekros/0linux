@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.6.0
+VERSION=5.16.1
 WGET=http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
-DESC="Bibliothèques de liaison audio/vidéo pour Telepathy"
+DESC="Couche d'abstraction réseau pour Telepathy"
+EXTRADEPS="networkmanager"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -20,6 +21,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-schemas-compile \
+	--disable-upower \
+	--enable-gtk-doc \
+	--with-connectivity=nm \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

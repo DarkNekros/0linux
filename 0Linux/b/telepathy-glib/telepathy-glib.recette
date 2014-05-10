@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=telepathy-glib
 VERSION=0.20.1
-EXT=tar.gz
-NAMETGZ=telepathy-glib
-WGET=http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de gestion de messagerie instantanée"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -20,7 +16,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/telepathy \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
