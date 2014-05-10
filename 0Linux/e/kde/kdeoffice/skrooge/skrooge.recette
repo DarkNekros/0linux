@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=skrooge
-VERSION=1.8.0
-EXT=tar.bz2
-NAMETGZ=skrooge
-WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.9.0
+WGET=ftp://ftp.kde.org/pub/kde/stable/skrooge/skrooge-$VERSION.tar.bz2
 DESC="Gestionnaire de finances personnelles pour KDE"
-########################################
 
 
 telecharger_sources
