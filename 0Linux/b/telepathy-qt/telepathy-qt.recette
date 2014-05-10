@@ -24,7 +24,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DENABLE_TESTS=OFF
+	-DENABLE_TESTS=OFF \
+	./ ../
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
