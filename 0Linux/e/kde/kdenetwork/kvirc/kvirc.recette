@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=kvirc
 VERSION=4.3.1_r6296
-EXT=tar.bz2
-NAMETGZ=kvirc
-WGET=ftp://ftp.kvirc.de/pub/$NAMESRC/snapshots/source/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT
+WGET=ftp://ftp.kvirc.de/pub/kvirc/snapshots/source/kvirc-$(echo $VERSION | sed 's/_/-/').tar.bz2
 DESC="KVIRC : un puissant client IRC pour KDE"
-########################################
 
 
 telecharger_sources
@@ -38,6 +34,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D WANT_PERL=ON \
 	-D WANT_PYTHON=ON \
 	-D WANT_DCC_VIDEO=ON \
+	-D WANT_DCC_VOICE=ON \
 	./ ../
 
 make -j${JOBS} || make
