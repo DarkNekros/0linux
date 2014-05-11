@@ -4,7 +4,7 @@
 VERSION=4.11.9
 WGET=ftp://ftp.kde.org/pub/kde/stable/4.12.5/src/$NAMESRC-$VERSION.tar.xz
 DESC="Espace de travail Plasma de KDE"
-EXTRADEPS="kde-runtime about-distro konsole kde-base-artwork kde-base-apps bluedevil marble"
+EXTRADEPS="kde-runtime about-distro konsole kde-base-artwork kde-baseapps bluedevil marble"
 
 
 telecharger_sources
