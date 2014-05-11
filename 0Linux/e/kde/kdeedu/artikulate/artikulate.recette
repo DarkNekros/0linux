@@ -1,4 +1,4 @@
-!/usr/bin/env bash
+#!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=artikulate
