@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=openimageio
-VERSION=1.2
-EXT=tar.xz
-NAMETGZ=openimageio
-WGET=http://0linux.geoffray-levasseur.org/src/${NAMESRC}-${VERSION}.${EXT}
+VERSION=1.3.13
+WGET=https://github.com/OpenImageIO/oiio/archive/Release-${VERSION}.tar.gz
 DESC="Bibliothèques de lecture et écriture d'images par plug-in"
 
 
@@ -19,8 +16,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D LIB_INSTALL_DIR=lib${LIBDIRSUFFIX} \
-	./ ../src
+	-DPYLIB_INSTALL_DIR=lib$LIBDIRSUFFIX/python2.7/site-packages \
+	-DUSE_EXTERNAL_TBB=ON \
+	-DOIIO_BUILD_TESTS=OFF \
+	./ ../
 
 make -j${JOBS} && make
 fakeroot make install DESTDIR=${PKG}

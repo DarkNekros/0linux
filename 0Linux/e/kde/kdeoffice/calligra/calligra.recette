@@ -4,7 +4,7 @@
 VERSION=2.8.2
 WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Calligra : la suite bureautique et artistique complète pour KDE"
-EXTRADEPS="openimageio vc kde-runtime"
+EXTRADEPS="openimageio vc kde-runtime libspnav libqtgtl libetonyek"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
