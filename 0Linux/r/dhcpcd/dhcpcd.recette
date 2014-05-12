@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=dhcpcd
-VERSION=6.2.1
-EXT=tar.bz2
-NAMETGZ=dhcpcd
-WGET=http://roy.marples.name/downloads/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=6.3.2
+WGET=http://roy.marples.name/downloads/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Client DHCP"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige de nombreux problèmes dans le 'configure' avec ces correctifs de Gentoo :
+cat $CWD/dhcpcd.dlopen.patch | patch -p0
+cat $CWD/dhcpcd.cc.patch | patch -p0
+cat $CWD/dhcpcd.host.patch | patch -p0
+
 # Compilation :
+CC=gcc CXX=g++ \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -29,7 +31,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On veille à ne rien écraser :
+# On ajoute l'option « noarp » qui accélère la connexion et on veille à ne rien écraser :
+echo "noarp" >> ${PKG}/etc/dhcpcd.conf
 mv ${PKG}/etc/dhcpcd.conf{,.0nouveau}
 
 installer_doc
