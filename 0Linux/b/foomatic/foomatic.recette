@@ -7,6 +7,7 @@ WGET=(http://www.openprinting.org/download/$NAMESRC/$NAMESRC-db-engine-4.0-$VERS
       http://www.openprinting.org/download/$NAMESRC/$NAMESRC-db-nonfree-$VERSION.tar.gz
      )
 DESC="Bases de données de pilotes universels pour l'impression"
+EXTRADEPS="cups-filters"
 
 telecharger_sources
 
