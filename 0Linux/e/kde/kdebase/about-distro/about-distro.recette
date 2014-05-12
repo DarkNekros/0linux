@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=about-distro
 VERSION=1.0.1
-EXT=tar.xz
-NAMETGZ=about-distro
-WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.tar.xz
 DESC="Affiche des informations sur la distribution utilisé"
-########################################
 
 
 telecharger_sources

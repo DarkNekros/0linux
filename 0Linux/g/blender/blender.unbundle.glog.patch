@@ -27,20 +27,21 @@ diff --git a/extern/libmv/CMakeLists.txt b/extern/libmv/CMakeLists.txt
 index 2c9a219..7061e04 100644
 --- a/extern/libmv/CMakeLists.txt
 +++ b/extern/libmv/CMakeLists.txt
-@@ -88,9 +88,6 @@ if(WITH_LIBMV)
- 		third_party/fast/fast_9.c
- 		third_party/fast/fast.c
- 		third_party/fast/nonmax.c
+@@ -87,10 +87,6 @@
+ 		libmv/tracking/track_region.cc
+ 		libmv/tracking/trklt_region_tracker.cc
+ 
 -		third_party/gflags/gflags.cc
 -		third_party/gflags/gflags_completions.cc
 -		third_party/gflags/gflags_reporting.cc
- 
+-
  		libmv/base/id_generator.h
  		libmv/base/scoped_ptr.h
-@@ -141,12 +138,6 @@ if(WITH_LIBMV)
+ 		libmv/base/vector.h
+@@ -140,12 +136,6 @@
+ 		libmv/tracking/track_region.h
  		libmv/tracking/trklt_region_tracker.h
  
- 		third_party/fast/fast.h
 -		third_party/gflags/config.h
 -		third_party/gflags/gflags/gflags_completions.h
 -		third_party/gflags/gflags/gflags_declare.h
@@ -50,7 +51,7 @@ index 2c9a219..7061e04 100644
  		third_party/msinttypes/inttypes.h
  		third_party/msinttypes/stdint.h
  	)
-@@ -187,42 +178,6 @@ if(WITH_LIBMV)
+@@ -186,42 +176,6 @@
  				third_party/msinttypes
  			)
  		endif()
@@ -91,9 +92,9 @@ index 2c9a219..7061e04 100644
 -			third_party/glog/src
 -		)
  	endif()
- 
- 	add_definitions(
-@@ -234,7 +189,9 @@ else()
+ else()
+ 	list(APPEND SRC
+@@ -229,7 +183,9 @@
  	)
  endif()
  

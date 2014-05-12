@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=blender
-VERSION=2.69
-EXT=tar.gz
-NAMETGZ=blender
-WGET=http://download.blender.org/source/$NAMESRC-$VERSION.$EXT
+VERSION=2.70a
+WGET=http://download.blender.org/source/blender-$VERSION.tar.gz
 DESC="Modéliseur 3D avancé de référence"
-########################################
 
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# Enlève une référence a un programme Windows :
+cat $CWD/blender.remove_hcc.exe.patch |patch -p1
 
 # On utilise le colamd installé :
 cat $CWD/blender.unbundle.colamd.patch | patch -p1
@@ -37,7 +36,7 @@ rm -r extern/Eigen3 \
 	extern/glew \
 	extern/colamd \
 	extern/binreloc \
-	extern/libmv/third_party/{ldl,glog,gflags}
+	extern/libmv/third_party/{glog,gflags}
 
 # Binreloc pose plein de problème :
 sed -i -e 's#set(WITH_BINRELOC ON)#set(WITH_BINRELOC OFF)#' CMakeLists.txt
@@ -79,6 +78,18 @@ fakeroot make install DESTDIR=${PKG}
 cd ../
 
 installer_doc
+
+# Génération de la documentation C/C++ :
+cd doc/doxygen
+doxygen -u Doxyfile
+doxygen
+cp -a html $PKG/usr/doc/$NAMETGZ-$VERSION/
+cd -
+
+# Génération de la doc pour Python :
+$PKG/usr/bin/blender --background --python doc/python_api/sphinx_doc_gen.py -noaudio
+cp -a doc/python_api $PKG/usr/doc/$NAMETGZ-$VERSION/
+
 creer_post_installation
 stripper
 empaqueter
