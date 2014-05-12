@@ -94,7 +94,8 @@ mirror () {
     #lftp -c "open $FTP $user && mirror -ReN"$1" -X*~ -X*.dep . ." || exit 1
     
     ## Méthode rsync :
-    RSYNC_PASSWORD="${CREDRSYNC}" rsync -aP --delete --exclude "*~" * rsync://${LOGINRSYNC}@ftp.igh.cnrs.fr/0linuxadmin/
+    find /tmp/ -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
+    RSYNC_PASSWORD="${CREDRSYNC}" rsync -aP --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@ftp.igh.cnrs.fr/0linuxadmin/
 }
 
 # === Main =====================================================================
