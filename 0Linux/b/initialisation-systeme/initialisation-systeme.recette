@@ -1,24 +1,19 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.7
-NAMETGZ=initialisation-systeme
-DESC="Fichiers d'initialisation système et services de 0Linux"
-
+VERSION=0.9.9
+DESC="Fichiers d'initialisation du système et des services de 0Linux"
 
 cflags
 
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/etc/rc.d
 
-# On installe les scripts d'initialisation de 0linux :
-for script in rc.{4,6,K,M,S,reseau}; do
-	cp -a $CWD/${script} ${PKG}/etc/rc.d/
+# On installe les scripts d'initialisation de 0Linux :
+for script in rc.{4,6,K,M,S,locale,modules,reseau}; do
+	cp -a ${CWD}/${script} ${PKG}/etc/rc.d/
 	chmod 755 ${PKG}/etc/rc.d/${script}
 done
-
-# On place les chargements des modules du réseau sans écraser quoi que ce soit :
-cp -a $CWD/rc.modules ${PKG}/etc/rc.d/rc.modules.0nouveau
 
 # On prend garde à ne pas écraser la config' locale :
 cp -a $CWD/rc.local ${PKG}/etc/rc.d/rc.local.0nouveau

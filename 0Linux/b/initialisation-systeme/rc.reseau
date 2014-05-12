@@ -10,6 +10,7 @@ lancer_reseau() {
 		
 		# Si l'interface loopback n'est pas active, on réveille 'lo' :
 		if [ "$(ifconfig | grep -E 'Local Loopback|Boucle locale')" = "" ]; then
+			echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de l'interface réseau 'lo'..."
 			ifconfig lo 127.0.0.1
 			route add -net 127.0.0.0 netmask 255.0.0.0 lo
 		fi
@@ -33,6 +34,7 @@ lancer_reseau() {
 			
 			# Si l'interface Ethernet concernée n'est pas active, on la réveille :
 			if [ "$(ifconfig | grep 'inet addr')" = "" ]; then
+				echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de l'interface réseau 'eth${i}'..."
 				ifconfig eth${i}
 				route add -net 127.0.0.0 netmask 255.0.0.0 lo
 				fi
@@ -78,13 +80,12 @@ stopper_reseau() {
 			
 			# Si l'interface Ethernet concernée est active, on la stoppe :
 			if [ ! "$(ifconfig eth${i} | grep 'inet addr')" = "" ]; then
+				echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de l'interface réseau 'eth${i}'..."
 				dhcpcd -k -d eth${1} 2> /dev/null || ifconfig eth${i} down
-				
 			fi
 		fi
 	done
 }
-
 
 case "$1" in
 	'start')

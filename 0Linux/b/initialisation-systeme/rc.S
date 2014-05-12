@@ -18,6 +18,7 @@ export ANSI_COLOR="${ANSI_COLOR}"
 
 # On dit bonjour :
 echo -e "\033[${ANSI_COLOR}m${PRETTY_NAME}\033[0;0m ${VERSION} vous souhaite la bienvenue !"
+echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Initialisation du système..."
 
 # '/dev' est censé être déjà monté en devtmpfs par le noyau.
 # On monte les systèmes de fichiers virtuels sur notre système en lecture seule
@@ -26,11 +27,21 @@ mount -v -n -t proc   proc   /proc
 mount -v -n -t sysfs  sysfs  /sys
 mount -v -n -t tmpfs  tmpfs  /run
 
+# Chargement de la police console en premier lieu :
+if [ -x /etc/rc.d/rc.police ]; then
+	/etc/rc.d/rc.police start
+fi
+
+# Chargement de la locale :
+if [ -x /etc/rc.d/rc.locale ]; then
+	/etc/rc.d/rc.locale start
+fi
+
 # Mode débogage :
 DEBUGBOOTLINE="$(cat /proc/cmdline | grep '0linuxdebug')"
 
 if [ ! "${DEBUGBOOTLINE}" = "" ]; then
-	echo "--- MODE DÉBOGAGE ---"
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] --- MODE DÉBOGAGE ---"
 	
 	# Mode lent avec pause entre chaque étape :
 	if [ ! "$(echo "${DEBUGBOOTLINE}" | grep '0linuxdebug lent')" = "" ]; then
@@ -44,17 +55,7 @@ if [ ! "${DEBUGBOOTLINE}" = "" ]; then
 fi
 
 # On lance très tôt le module 'loop' :
-modprobe loop 2>/dev/null
-
-# Chargement de la police console en premier lieu :
-if [ -x /etc/rc.d/rc.police ]; then
-	/etc/rc.d/rc.police start
-fi
-
-# Chargement de la locale :
-if [ -x /etc/rc.d/rc.locale ]; then
-	/etc/rc.d/rc.locale start
-fi
+modprobe -v loop 2>/dev/null
 
 # On lance Udev :
 if [ -x /etc/rc.d/rc.udev ]; then
@@ -62,7 +63,7 @@ if [ -x /etc/rc.d/rc.udev ]; then
 fi
 
 # On active la partition d'échange (« swap ») :
-swapon -a
+swapon -av
 
 # On règle l'horloge système selon l'horloge matérielle :
 if [ -x /sbin/hwclock ]; then
@@ -73,92 +74,90 @@ if [ -x /sbin/hwclock ]; then
 	fi
 fi
 
-# La racine doit être montée en lecture seule :
-LECTURESEULE=oui
-if touch /fichier_test 2>/dev/null; then
-	rm -f /fichier_test
-	LECTURESEULE=non
-fi
-
 # Chargement de la disposition des touches du clavier :
 if [ -x /etc/rc.d/rc.clavier ]; then
 	/etc/rc.d/rc.clavier start
 fi
 
-# On voit si une vérification forcée n'a pas eu lieu la dernière fois :
-if [ -r /etc/forcefsck ]; then
-	FORCEFSCK="-f"
-fi
-
-# On vérifie le système de fichiers racine :
-if [ ! $LECTURESEULE = non ]; then
-	VALEURRETOUR=0
-	if [ ! -r /etc/fastboot ]; then
-		echo "Vérification du système de fichiers de la racine..."
-		fsck -V $FORCEFSCK -C -a /
-		VALEURRETOUR=$?
-	fi
+# On vérifie si la racine est montée en lecture seule ou non :
+if touch /fichier_test 2>/dev/null; then
 	
-	# Une valeur de retour supérieure à 2 nécessite un redémarrage. Ue valeur 
-	# supérieure à 4 nécessite des opérations manuelles :
-	if [ $VALEURRETOUR -ge 2 ]; then
-		if [ $VALEURRETOUR -ge 4 ]; then
-			echo "IMPORTANT : Une erreur est survenue lors de la vérification de"
-			echo "votre système de fichiers racine (voir ci-dessus). Veuillez régler"
-			echo "le problème à l'aide du système autonome."
-			echo -n "Appuyez sur ENTRÉE pour redémarrer maintenant."
-			read BLAH;
+	# DÉMARRAGE EN LECTURE-ÉCRITURE SANS VÉRIF DE LA RACINE :
+	rm -f /fichier_test
+else
+	
+	# DÉMARRAGE EN LECTURE SEULE AVEC VÉRIF DE LA RACINE:
+	if [ ! -r /etc/fastboot ]; then
 		
-		else
-			echo "Le système de fichiers racine a été modifié."
-			echo "Le système va donc redémarrer maintenant."
-			echo ""
+		# On vérifie si on a demandé une vérification forcée :
+		if [ -r /etc/forcefsck ]; then
+			FORCEFSCK="-f"
 		fi
 		
-		# On démonte tout et on redémarre :
-		echo "Démontage des systèmes de fichiers..."
-		umount -v -a -r
-		mount -v -n -o remount,ro /
-		echo "Redémarrage du système."
-		reboot -f
+		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Vérification du système de fichiers de la racine..."
+		fsck -V $FORCEFSCK -C -a /
+		VALEURRETOUR=$?
+		
+		# Une valeur de retour supérieure à 2 nécessite un redémarrage. Une valeur 
+		# supérieure à 4 nécessite des opérations manuelles :
+		if [ $VALEURRETOUR -ge 2 ]; then
+			if [ $VALEURRETOUR -ge 4 ]; then
+				echo "IMPORTANT : Une erreur est survenue lors de la vérification de"
+				echo "votre système de fichiers racine (voir ci-dessus). Veuillez régler"
+				echo "le problème en démarrant sur le système autonome."
+				echo -n "Appuyez sur ENTRÉE pour redémarrer maintenant."
+				read BLAH;
+			else
+				echo "Le système de fichiers racine a été modifié."
+				echo "Le système va donc redémarrer dans 3 secondes..."
+				sleep 3
+			fi
+			
+			# On démonte tout et on redémarre :
+			echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démontage des systèmes de fichiers..."
+			umount -v -a -r
+			mount -v -n -o remount,ro /
+			echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Redémarrage du système."
+			reboot -f
+		fi
 	fi
-
-	# On remonte le système de fichiers racine en lecture-écriture :
-	echo "Remontage du système de fichiers racine en mode lecture-écriture."
+	
+	# On remonte silencieusement le système de fichiers racine en lecture-écriture :
 	mount -v -n -w -o remount /
-else
-	echo "Évaluation du système de fichiers racine : lecture-écriture."
-	echo ""
-	echo "IMPORTANT : La partition racine est déjà montée en lecture-écriture."
-	echo "Il m'est donc impossible de la vérifier avec 'fsck' !"
-	echo ""
-	echo "Pour que la vérification de votre système de fichiers racine soit"
-	echo "possible, celui-ci doit être initialement monté en lecture seule."
-	echo "Veuillez modifier vos paramètres d'amorçage pour obliger"
-	echo "le chargeur d'amorçage à amorcer votre système en lecture seule"
-	echo "(mots-clés « read-only », « ro », etc.)."
-	echo ""
-	echo -n "Appuyez sur ENTRÉE pour continuer le démarrage."
-	read blabla;
 fi
 
-# On remonte la partition racine pour générer un nouveau fichier /etc/mtab :
-rm -f /etc/mtab /etc/mtab~ /etc/mtab.tmp && touch /etc/mtab
-mount -v -f -w  /
+# On est maintenant en lecture-écriture, mais '/etc/mtab' est vide ou erroné. On nettoie :
+rm -f /etc/mtab /etc/mtab~ /etc/mtab.tmp
+touch /etc/mtab
 
-# Ces répertoires viennent souvent à manquer, on s'assure qu'ils sont bien là :
-mkdir -p /dev/{pts,shm}
+# On remonte normalement la partition racine pour écrire dans le nouveau fichier '/etc/mtab' :
+echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Remontage de la racine en lecture-écriture..."
+mount -v -f -w /
 
-# On remonte normalement les systèmes de fivchiers virtuels pour les ajouter à
+# On remonte normalement les systèmes de fichiers virtuels pour les ajouter à
 # '/etc/mtab' :
 mount -v -o remount /proc
 mount -v -o remount /sys
 mount -v -o remount /run
+
+# Ces répertoires viennent souvent à manquer, on s'assure qu'ils sont bien là :
+mkdir -p /dev/{pts,shm}
+
 mount -v /dev/pts
 mount -v /dev/shm
 
-# On active les espaces d'échange (« swap »), qui peuvent être des fichiers :
-swapon -a
+# On monte maintenant les « control groups » :
+if grep -wq cgroup /proc/filesystems ; then
+	if [ -d /sys/fs/cgroup ]; then
+		mount -t cgroup cgroup /sys/fs/cgroup
+	else
+		mkdir -p /dev/cgroup
+		mount -t cgroup cgroup /dev/cgroup
+	fi
+fi
+
+# On active à nouveau les espaces d'échange (« swap »), qui peuvent être des fichiers :
+swapon -av
 
 # Un peu de nettoyage :
 rm -f /etc/nologin /etc/forcefsck /etc/fastboot /tmp/.Xauth* 1>/dev/null 2>/dev/null
@@ -188,22 +187,20 @@ if [ -x /etc/rc.d/rc.modules ]; then
 fi
 
 # On paramètre le noyau si le fichier existe :
-if [ -x /sbin/sysctl -a -r /etc/sysctl.conf ]; then
+if [ -x /usr/sbin/sysctl -a -r /etc/sysctl.conf ]; then
 	sysctl -e -p /etc/sysctl.conf
 fi
 
-# On démarre FUSE :
-if [ -x /etc/rc.d/rc.fuse ]; then
-	/etc/rc.d/rc.fuse start
-fi
+# On charge le module FUSE :
+modprobe -v fuse
 
 # On vérifie tous les systèmes de fichiers hors racine :
-echo "Vérification des systèmes de fichiers..."
+echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Vérification des systèmes de fichiers locaux..."
 fsck -V $FORCEFSCK -C -R -A -a
 
 # On monte tous les systèmes de fichiers locaux et non distants (le réseau
 # n'est pas encore activé à ce stade). devpts, sysfs et proc sont déjà montés :
-echo "Montage des sytèmes de fichiers locaux..."
+echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Montage des sytèmes de fichiers locaux..."
 mount -v -a -F -t nonfs,nonnfs,nonnfs3,nonnfs4,nosmbfs,nocifs,noproc,nosysfs,nodevpts
 
 # Si random-seed est présent, on « crée du hasard » :
@@ -215,4 +212,4 @@ fi
 dd if=/dev/urandom of=/etc/random-seed count=1 bs=$(cat /proc/sys/kernel/random/poolsize) 2> /dev/null
 chmod 600 /etc/random-seed
 
-# C'est fini !
+# C'est fini.

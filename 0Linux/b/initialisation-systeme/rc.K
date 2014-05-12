@@ -38,4 +38,4 @@ sleep 1
 echo "Passage en mode mono-utilisateur..."
 telinit 1
 
-# C'est fini !
+# C'est fini.

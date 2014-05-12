@@ -61,6 +61,7 @@ compiler_installer() {
 		# On désinstalle au préalable ces paquets récalcitrants en attendant mieux :
 		for paquet_recalcitrant in evolution-data-server \
 		gnome-shell \
+		mlt \
 		nspr \
 		nss \
 		samba \

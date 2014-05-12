@@ -9,11 +9,13 @@ source /etc/os-release
 # On exporte la variable pour la couleur des messages, utilisée par les '/etc/rc.d.rc*' :
 export ANSI_COLOR="${ANSI_COLOR}"
 
+echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du mode multi-utilisateur..."
+
 # Mode débogage :
 DEBUGBOOTLINE="$(cat /proc/cmdline | grep '0linuxdebug')"
 
 if [ ! "${DEBUGBOOTLINE}" = "" ]; then
-	echo "--- MODE DÉBOGAGE ---"
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] --- MODE DÉBOGAGE ---"
 	
 	# Mode lent avec pause entre chaque étape :
 	if [ ! "$(echo "${DEBUGBOOTLINE}" | grep '0linuxdebug lent')" = "" ]; then
@@ -184,4 +186,4 @@ if [ -x /etc/rc.d/rc.local ]; then
 	/etc/rc.d/rc.local
 fi
 
-# C'est fini !
+# C'est fini.
