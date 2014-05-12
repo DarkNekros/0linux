@@ -70,6 +70,27 @@ else
 fi
 
 telecharger_sources() {
+	# Inutile de continuer si des dépendances erronées sont indiquées :
+	if [ -n ${EXTRADEPS} ]; then
+		for dep in ${EXTRADEPS}; do
+			for f in $(find /var/log/packages -type f -name "${dep}*"); do
+				if [ $(basename ${f} | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) = "${dep}" ]; then
+					# OK, on a trouvé la dépendance installée :
+					OKDEP=1
+					break
+				else
+					# Toujours rien ? On continue :
+					OKDEP=0
+				fi
+			done
+			
+			# On n'a rien trouvé, les EXTRADEPS sont erronées, on quitte :
+			if [ ${OKDEP} -eq 0 ]; then
+				argh "La variable EXTRADEPS est erronée, certaines dépendances sont absentes du système."
+			fi
+		done
+	fi
+	
 	# On peut ajouter une option à 'wget' en paramètre en cas de besoin (notamment --referer) :
 	# Ex. : 'telecharger_sources --referer=http://www.bla.fr?click=ok'
 	WGETEXTRAOPTION=${1}
@@ -504,6 +525,27 @@ stripper() {
 }
 
 empaqueter() {
+	# Inutile de continuer si des dépendances erronées sont indiquées :
+	if [ -n ${EXTRADEPS} ]; then
+		for dep in ${EXTRADEPS}; do
+			for f in $(find /var/log/packages -type f -name "${dep}*"); do
+				if [ $(basename ${f} | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) = "${dep}" ]; then
+					# OK, on a trouvé la dépendance installée :
+					OKDEP=1
+					break
+				else
+					# Toujours rien ? On continue :
+					OKDEP=0
+				fi
+			done
+			
+			# On n'a rien trouvé, les EXTRADEPS sont erronées, on quitte :
+			if [ ${OKDEP} -eq 0 ]; then
+				argh "La variable EXTRADEPS est erronée, certaines dépendances sont absentes du système."
+			fi
+		done
+	fi
+	
 	# On peut passer des options à 'spackpkg' via par exemple :
 	# empaqueter -p -z
 	
