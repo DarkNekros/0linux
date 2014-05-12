@@ -1,22 +1,47 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=foomatic-filters
-VERSION=4.0.17
-EXT=tar.gz
-NAMETGZ=foomatic
-WGET=http://www.openprinting.org/download/foomatic/$NAMESRC-$VERSION.$EXT
-DESC="Système de filtrage universel pour l'impression"
-
+VERSION=20140512
+WGET=(http://www.openprinting.org/download/$NAMESRC/$NAMESRC-db-engine-4.0-$VERSION.tar.gz
+      http://www.openprinting.org/download/$NAMESRC/$NAMESRC-db-4.0-$VERSION.tar.gz
+      http://www.openprinting.org/download/$NAMESRC/$NAMESRC-db-nonfree-$VERSION.tar.gz
+     )
+DESC="Bases de données de pilotes universels pour l'impression"
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile d'abord 'foomatic-db-engine' :
+preparer_sources $NAMESRC-db-engine-4.0-$VERSION.tar.gz
 cflags
 
-# On corrige tous les chemins de recherche et d'installation :
-sed -i -e "s@/usr/lib/@/usr/lib${LIBDIRSUFFIX}/@g" \
-	-e "s@^LIBSEARCHPATH=@LIBSEARCHPATH=\${prefix}/usr/lib${LIBDIRSUFFIX}:@" \
-	configure
+# On force à prendre en compte nos drapeaux LDFLAGS et à compiler sur le Perl du système :
+sed -i 's@$(CC) $(CFLAGS) -o foomatic-combo-xml@$(CC) $(CFLAGS) $(LDFLAGS) -o foomatic-combo-xml@' Makefile.in
+sed -i 's@$(CC) $(CFLAGS) $(XML_CFLAGS) -o foomatic-perl-data foomatic-perl-data.c $(XML_LIBS)@$(CC) $(CFLAGS) $(LDFLAGS) -o foomatic-perl-data foomatic-perl-data.c $(XML_CFLAGS) $(XML_LIBS)@' Makefile.in
+sed -i 's|LOCAL_FOOMATIC_RIP=@LOCAL_FOOMATIC_RIP@|LOCAL_FOOMATIC_RIP=@FOOMATIC_RIP@|' Makefile.in
+
+# Compilation :
+export LIB_CUPS="/usr/lib${LIBDIRSUFFIX}/cups"
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sbindir=/usr/bin \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-db-engine
+
+# On compile 'foomatic-db' :
+preparer_sources $NAMESRC-db-4.0-$VERSION.tar.gz
+cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -33,8 +58,27 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On prend garde à ne rien écraser :
-mv ${PKG}/etc/foomatic/filter.conf{,.0nouveau}
+# On compile enfin 'foomatic-db-nonfree' :
+preparer_sources $NAMESRC-db-nonfree-$VERSION.tar.gz
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-db-nonfree
 
 installer_doc
 creer_post_installation
