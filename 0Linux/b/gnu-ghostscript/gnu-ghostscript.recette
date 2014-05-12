@@ -6,11 +6,10 @@ VERSION=9.14
 EXT=tar.bz2
 NAMETGZ=gnu-ghostscript
 WGET=(http://downloads.ghostscript.com/public/$NAMESRC-$VERSION.$EXT
-      http://prdownloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz
+      http://prdownloads.sourceforge.net/gs-fonts/$NAMESRC-fonts-std-8.11.tar.gz
       http://ftp.gnu.org/pub/gnu/ghostscript/gnu-gs-fonts-other-6.0.tar.gz
      )
 DESC="Bibliothèques, interpréteurs et pilotes PostScript et PDF"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -34,11 +33,45 @@ make so
 fakeroot make install DESTDIR=${PKG}
 fakeroot make soinstall DESTDIR=${PKG}
 
+# On compile également IJS :
+cd ijs
+
+# On corrige pour les systèmes de construction récents :
+sed -i "s:AM_PROG_CC_STDC:AC_PROG_CC:g" configure.ac
+
+# On régénère le système d econstruction :
+./autogen.sh
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-shared \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+cd -
+
 # On déballe les polices supplémentaires :
 tar xf ${PKGSOURCES}/${NAMETGZ}/ghostscript-fonts-std-8.11.tar.gz -C ${PKG}/usr/share/ghostscript
 tar xf ${PKGSOURCES}/${NAMETGZ}/gnu-gs-fonts-other-6.0.tar.gz -C ${PKG}/usr/share/ghostscript
 
+# En conflit avec 'cups-filters' :
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/cups/filter/{gstopxl,gstoraster}
+
 installer_doc
+
+# On complète la documentation :
+cp -a doc/{Ps2ps2.htm,gs-vms.hlp,gsdoc.el,pscet_status.txt} ${PKG}/usr/share/ghostscript/${VERSION}/doc/
+  
 creer_post_installation
 stripper
 empaqueter
