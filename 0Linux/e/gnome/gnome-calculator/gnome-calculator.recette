@@ -3,7 +3,7 @@
 
 VERSION=3.12.1
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
-DESC="Visionneuse de documents compatible PostScript et PDF"
+DESC="Calculatrice scientifique pour GNOME"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -21,14 +21,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-schemas-compile \
-	--disable-scrollkeeper \
-	--enable-comics \
-	--enable-djvu \
-	--enable-dvi \
-	--enable-introspection \
-	--enable-nautilus \
-	--enable-pdf \
-	--enable-t1lib \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

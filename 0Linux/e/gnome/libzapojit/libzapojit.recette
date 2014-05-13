@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.12.1
+VERSION=0.0.3
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
-DESC="Visionneuse de documents compatible PostScript et PDF"
+DESC="Bibliothèques GOBject d'accès aux API REST de SkyDrive et Hotmail"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -20,15 +20,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-schemas-compile \
-	--disable-scrollkeeper \
-	--enable-comics \
-	--enable-djvu \
-	--enable-dvi \
-	--enable-introspection \
-	--enable-nautilus \
-	--enable-pdf \
-	--enable-t1lib \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
