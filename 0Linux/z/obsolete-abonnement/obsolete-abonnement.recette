@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=obsolete-abonnement
-VERSION=8
-DESC="Liste de paquets marqués obsolètes avec outil de déinstallation interactif"
-
+VERSION=9
+DESC="Outil de désinstallation interactif des paquets maarqués comme obsolètes"
 
 cflags
 
@@ -13,12 +11,10 @@ mkdir -p ${PKG}/usr/sbin
 cp -a $CWD/0ex ${PKG}/usr/sbin/
 chmod 0755 ${PKG}/usr/sbin/*
 
-# On corrige la variable $SCRIPT de '0ex' pour correspondre au paquet actuel :
-sed -i "s/@PAQUET@/$NAMETGZ-$VERSION-$PKGARCH-$BUILD/" ${PKG}/usr/sbin/0ex
-
-# On complète la post-installation en demandant à désinstaller tous les paquets
-# obsolètes trouvés :
-cat >> ${PKG}/post-install.sh << "EOF"
+# On crée le script demandant à désinstaller tous les paquets obsolètes trouvés :
+mkdir -p ${PKG}/usr/bin
+cat > ${PKG}/usr/bin/0ex.sh << "EOF"
+!#/bin/sh
 # On demande à désinstaller les paquets obsolètes trouvés :
 0ex \
 	clearlooks \
@@ -60,6 +56,17 @@ cat >> ${PKG}/post-install.sh << "EOF"
 	udisks2
 
 EOF
+chmod 755 ${PKG}/usr/bin/0ex.sh
+
+# On crée la variable d'environnnement pour la désinstalation automatique :
+mkdir -p ${PKG}/etc/profile.d
+cat > ${PKG}/etc/profile.d/alt0ex.sh << "EOF"
+# Cette variable active la désinstallation automatique des paquets marqués comme
+# obsolètes, par l'abonnement 'obsolete-abonnement' :
+export ALT0EX="fonce"
+
+EOF
+chmod 755 ${PKG}/etc/profile.d/alt0ex.sh
 
 # On place la description de l'abonnement (en txt2tags) :
 cat > ${TMP}/${NAMETGZ}.t2t << EOF

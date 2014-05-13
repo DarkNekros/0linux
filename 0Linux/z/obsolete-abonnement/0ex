@@ -151,7 +151,7 @@ EOF
 export LC_ALL="C"
 unset t pkg
 LOGDIR="/var/log/packages"
-SCRIPT="/var/log/scripts/@PAQUET@"
+SCRIPT="/usr/bin/0ex.sh"
 JOURNAL="/var/log/0abonnements/obsolete-abonnement.txt"
 
 for i in $(getopt "$@"); do
