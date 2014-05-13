@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.6
-WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
+VERSION=83e7b9b4c6
+WGET=https://git.gnome.org/browse/folks/snapshot/folks-83e7b9b4c6a9ca79ba3a55f836306fb6c657a605.tar.gz
 DESC="Bibliothèques sociales pour GNOME"
 
 telecharger_sources
