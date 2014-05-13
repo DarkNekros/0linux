@@ -24,7 +24,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--disable-fatal-warnings \
 	--disable-libsocialweb-backend \
 	--disable-schemas-compile \
-	--enable-tracker-backend \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
