@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=empathy
-VERSION=3.10.1
-EXT=tar.xz
-NAMETGZ=empathy
+VERSION=3.12.1
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Interface d'échange selon divers protocoles réseau"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -24,6 +20,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-gst-1.0 \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

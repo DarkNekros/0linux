@@ -9,153 +9,44 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige les chemins codés en dur (y en a partout), merci Gentoo :
-sed -i 's@opt/schily@usr@g' $(grep -rl 'opt/schily' *)
-sed -i -e "s|\(^INSDIR=\t\t\)lib|\1${LIBDIRSUFFIX}|" $(find . -type f -name "*.mk" -o -name "Makefile*")
-sed -i "/cc-config.sh/s|\$(C_ARCH:%64=%) \$(CCOM_DEF)|${CC} ${CC}|" RULES/rules1.top
-sed -i -e "/^CC_COM_DEF=/s|gcc|${CC}|" \
-	-e "/^CC++_COM_DEF=/s|g++|${CXX}|" \
-	-e "/COPTOPT=/s|-O||" \
-	-e 's|$(GCCOPTOPT)||' \
-	RULES/cc-gcc.rul
-sed -i "s|^#\(CONFFLAGS +=\).*|\1\t-cc=${CC}|" RULES/rules.cnf
-
-
-sed -i -e "s|^\(DEFLINKMODE=\).*|\1\tdynamic|" \
-	-e "s|^\(LINUX_INCL_PATH=\).*|\1|" \
-	-e "s|^\(LDPATH=\).*|\1\t\t-L/usr/lib${LIBDIRSUFFIX}|" \
-	-e "s|^\(RUNPATH=\).*|\1|" \
-	-e "s|^\(INS_BASE=\).*|\1\t${ED}/usr|" \
-	-e "s|^\(INS_RBASE=\).*|\1\t${ED}|" \
-	-e "s|^\(DEFINSGRP=\).*|\1\t0|" \
-	DEFAULTS/Defaults.linux
-
-# On remercie Gentoo bien bas pour nous sauver la mise avec cette vieillerie :
-ac_cv_sizeof() {
-	cat <<-EOF >"${T}"/test.c
-	#include <inttypes.h>
-	#include <stddef.h>
-	#include <stdint.h>
-	#include <sys/types.h>
-	int main () {
-		static int test_array [1 - 2 * !((sizeof(TYPE)) == LEN)];
-		test_array [0] = 0;
-		return test_array [0];
-	}
-	EOF
-
-	local i=1
-	while [[ ${i} -lt 20 ]] ; do
-		if ${CC} ${CPPFLAGS} ${CFLAGS} -c "${T}"/test.c -o /dev/null -DTYPE="$1" -DLEN=$i 2>/dev/null; then
-			echo ${i}
-			return 0
-		fi
-		: $(( i += 1 ))
-	done
-	return 1
-}
-
-deftypes() {
-	local var val t types=(
-		char "short int" int "long int" "long long"
-		"unsigned char" "unsigned short int" "unsigned int"
-		"unsigned long int" "unsigned long long"
-		float double "long double" size_t ssize_t ptrdiff_t
-		mode_t uid_t gid_t pid_t dev_t time_t wchar_t
-		"char *" "unsigned char *"
-	)
-	for t in "${types[@]}" ; do
-		var="ac_cv_sizeof_${t// /_}"
-		var=${var//[*]/p}
-		val=$(ac_cv_sizeof "${t}")
-		export "${var}=${val}"
-	done
-}
-
-deftypes
-
-export ac_cv_sizeof___int64=0
-export ac_cv_sizeof_unsigned___int64=0
-export ac_cv_sizeof_major_t=${ac_cv_sizeof_dev_t}
-export ac_cv_sizeof_minor_t=${ac_cv_sizeof_dev_t}
-export ac_cv_sizeof_wchar=${ac_cv_sizeof_wchar_t}
-export ac_cv_type_prototypes="yes"
-export ac_cv_func_mlock{,all}="yes"
-export ac_cv_func_{e,f,g}cvt=glibc
-export ac_cv_func_dtoa_r="no"
-export ac_cv_func_sys_siglist{,_def}="no"
-export ac_cv_func_printf_{j,ll}="yes"
-export ac_cv_realloc_null="yes"
-export ac_cv_no_user_malloc="no"
-export ac_cv_var_timezone="yes"
-export ac_cv_var___progname{,_full}="yes"
-export ac_cv_fnmatch_igncase="yes"
-export ac_cv_file__dev_{fd_{0,1,2},null,std{err,in,out},tty,zero}="yes"
-export ac_cv_file__usr_src_linux_include="no"
-export ac_cv_func_bsd_{g,s}etpgrp="no"
-export ac_cv_hard_symlinks="yes"
-export ac_cv_link_nofollow="yes"
-export ac_cv_access_e_ok="no"
-export ac_cv_dev_minor_noncontig="yes"
-case ${ac_cv_sizeof_long_int} in
-	4)
-		export ac_cv_dev_minor_bits="32"
-	;;
-	8)
-		export ac_cv_dev_minor_bits="44"
-	;;
-esac
-cat <<-EOF >"${T}"/test.c
-struct {
-	char start[6];
-	unsigned char x1:4;
-	unsigned char x2:4;
-	char end[5];
-} a = {
-	.start = {'S', 't', 'A', 'r', 'T', '_'},
-	.x1 = 5,
-	.x2 = 4,
-	.end = {'_', 'e', 'N', 'd', 'X'},
-};
-EOF
-
-${CC} ${CPPFLAGS} ${CFLAGS} -c "${T}"/test.c -o "${T}"/test.o
-if grep -q 'StArT_E_eNdX' "${T}"/test.o ; then
-	export ac_cv_c_bitfields_htol="no"
-elif grep -q 'StArT_T_eNdX' "${T}"/test.o ; then
-	export ac_cv_c_bitfields_htol="yes"
-fi
-# OUF !
+# On corrige des chemins et l'appartenance à root :
+sed -i 's|/opt/schily|/usr|g' DEFAULTS/Defaults.linux
+sed -i 's|DEFINSGRP=.*|DEFINSGRP=root|' DEFAULTS/Defaults.linux
+sed -i 's|INSDIR=.*|INSDIR=bin|' rscsi/Makefile
 
 # Compilation sans parallélisation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-GMAKE_NOWARN=true \
-CPPOPTX="${FLAGS}" COPTX="${FLAGS}" LDOPTX="${LDFLAGS}" \
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-make i586-linux-gcc32 INS_BASE=/usr
+CC="gcc" CXX="g++" GMAKE_NOWARN="true" \
+make INS_BASE=/usr
 
 fakeroot make install INS_BASE=/usr DEST_DIR=${PKG}
 
 # On renomme un répertoire mal nommé :
-if [ ! "${LIBDIRSUFFIX}" = "" ]
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 	mv ${PKG}/usr/lib/siconv/ ${PKG}/usr/lib${LIBDIRSUFFIX}/
 fi
 
-# On supprime ce fichier malvenu :
-rm -f ${PKG}/etc/default/rscsi
-
 # Et ce répertoire... :
-if [ ! "${LIBDIRSUFFIX}" = "" ]
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 	rm -rf ${PKG}/usr/lib
 fi
 
 # On copie les manuels où il faut :
 mv ${PKG}/usr/share/man ${PKG}/usr/
 
+# On charge le module 'sg' pou 'cdrecord' :
+mkdir -p ${PKG}/etc/modprobe.d
+echo "modprobe sg" > ${PKG}/etc/modprobe.d/sg.conf
+
 # On place la documentation de 'cdda2wav' dans un répertoire dédié :
 cd cdda2wav
 installer_doc ${NAMETGZ}-${VERSION}/cdda2wav
 cd -
+
+# On crée des liens symboliques pour la compatibilité avec 'cdrkit' :
+ln -sf cdrecord ${PKG}/usr/bin/wodim
+ln -sf readcd ${PKG}/usr/bin/readom
+ln -sf mkisofs ${PKG}/usr/bin/genisoimage
+ln -sf cdda2wav ${PKG}/usr/bin/icedax
 
 installer_doc
 creer_post_installation
