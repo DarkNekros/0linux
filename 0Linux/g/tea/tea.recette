@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=tea
-VERSION=37.1.0
+VERSION=37.2.1
 EXT=tar.bz2
 NAMETGZ=tea
 WGET=http://semiletov.org/tea/dloads/$NAMESRC-$VERSION.$EXT
@@ -38,6 +38,10 @@ Icon=tea.png
 Categories=Application;Utility;TextEditor;
 
 EOF
+
+# Installation de l'icone :
+mkdir -p $PKG/usr/share/pixmaps
+cp -a icons/tea_icon_v2.png $PKG/usr/share/pixmaps/tea.png
 
 installer_doc
 creer_post_installation
