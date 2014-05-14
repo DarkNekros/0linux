@@ -87,7 +87,7 @@ compiler_installer() {
 		if [ "$(basename ${1} .recette)" = "nvidia" -o "$(basename ${1} .recette)" = "catalyst" ]; then
 			bash -ex $(basename ${1})
 		else
-			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd ${ROOTCMD} $(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/*/ -type d -name "$(basename ${1} .recette)")/*.spack
+			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd ${ROOTCMD} $(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/*/ -mindepth 1 -type d -name "$(basename ${1} .recette)")/*.spack
 		fi
 	)
 }
