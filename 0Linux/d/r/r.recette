@@ -52,25 +52,25 @@ fakeroot make -C src/nmath/standalone install DESTDIR=${PKG}
 find ${PKG}/usr -type f -name "*.pc" -delete
 
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libR.pc << "EOF"
-rhome=/usr/libARCH/R
+rhome=/usr/libLIBDIRSUFFIX/R
 rlibdir=${rhome}/lib
 rincludedir=/usr/include/R
 
 Name: libR
 Description: Bibliothèques R
 Version: VERSION
-Libs: -Wl,--export-dynamic -fopenmp  -L/usr/libARCH -L${rlibdir} -lR
+Libs: -Wl,--export-dynamic -fopenmp  -L/usr/libLIBDIRSUFFIX -L${rlibdir} -lR
 Cflags: -I${rincludedir} -I${rincludedir}
 Libs.private:
 
 EOF
 
 # On corrige pour prendre en charge notre suffixe et la version :
-sed -i -e "s@ARCH@${LIBDIRSUFFIX}@g" -e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libR.pc
+sed -i -e "s@LIBDIRSUFFIX@${LIBDIRSUFFIX}@g" -e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libR.pc
 
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libRmath.pc << "EOF"
 includedir=/usr/include
-libdir=/usr/libARCH
+libdir=/usr/libLIBDIRSUFFIX
 
 Name: libRmath
 Description: Bibliothèques Rmath
@@ -81,7 +81,7 @@ Cflags: -I${includedir}
 EOF
 
 # On corrige pour prendre en charge notre suffixe et la version :
-sed -i -e "s@ARCH@${LIBDIRSUFFIX}@g" -e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libRmath.pc
+sed -i -e "s@LIBDIRSUFFIX@${LIBDIRSUFFIX}@g" -e "s@VERSION@${VERSION}@g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libRmath.pc
 
 # On place le raccourci bureau et l'icône :
 mkdir -p ${PKG}/usr/share/{applications,pixmaps}
