@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.8.2
-WGET=ftp://ftp.kde.org/pub/kde/stable/calligra-$VERSION/calligra-l10n/caligra-$VERSION.tar.xz
+WGET=ftp://ftp.kde.org/pub/kde/stable/calligra-$VERSION/calligra-l10n/calligra-l10n-fr-$VERSION.tar.xz
 DESC="Calligra: la suite bureautique et artistique complète pour KDE"
 EXTRADEPS="calligra"
 
