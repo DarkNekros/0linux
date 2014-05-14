@@ -48,7 +48,9 @@ fakeroot make install DESTDIR=${PKG}
 make -j${JOBS} -C src/nmath/standalone shared || make -C src/nmath/standalone shared
 fakeroot make -C src/nmath/standalone install DESTDIR=${PKG}
 
-# Les fichiers '.pc' contiennent n'importe quoi, on les crée : :
+# Les fichiers '.pc' contiennent n'importe quoi, on les crée :
+find ${PKG}/usr -type f -name "*.pc" -delete
+
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/libR.pc << "EOF"
 rhome=/usr/libARCH/R
 rlibdir=${rhome}/lib
