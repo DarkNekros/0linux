@@ -25,7 +25,7 @@ else
 		LIBDIRSUFFIX="32"
 		
 		# On décompacte le tout dans $PKG :
-		tar xf ${PKGSOURCES}/${NAMETGZ}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.i386.${EXT} -C ${PKG}
+		tar xf ${PKGSOURCES}/${NAMETGZ}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.i386.tar.gz -C ${PKG}
 		
 		# On renomme le répertoire des bibliothèques...
 		mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/kde4
@@ -51,7 +51,7 @@ else
 	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 	
 	# On décompacte le tout dans $PKG :
-	tar xf ${PKGSOURCES}/${NAMETGZ}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.${FLASHARCH}.${EXT} -C ${PKG}
+	tar xf ${PKGSOURCES}/${NAMETGZ}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.${FLASHARCH}.tar.gz -C ${PKG}
 	
 	# On renomme le répertoire des bibliothèques...
 	if [ "${PKGARCH}" = "x86_64" ]; then
