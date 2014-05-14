@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=linux
 VERSION=3.14
-EXT=tar.xz
-NAMETGZ=linux
+
 # Le nommage des versions « .0 » est incohérent :
 if [ "$(echo $VERSION | cut -d'.' -f3)" = "" ]; then
-	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2).$EXT}
+	WGET=ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2).tar.xz
 	MINVERSION=".0"
 else
-	WGET=${WGET:-ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$VERSION.$EXT}
+	WGET=ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$VERSION.tar.xz
 	MINVERSION=""
 fi
+
 DESC="Le noyau Linux avec ses modules, ses firmwares, ses entêtes et son code source complet"
 EXTRADEPS="bc make"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
