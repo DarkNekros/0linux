@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=LibreOffice
-VERSION=4.2.3
+VERSION=4.2.4
 EXT=tar.gz
 NAMETGZ=libreoffice
 cflags
