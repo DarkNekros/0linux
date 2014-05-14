@@ -3,9 +3,7 @@
 
 NAMESRC=free-cad
 VERSION=0.13.1830
-EXT=tar.gz
-NAMETGZ=freecad
-WGET=https://prdownloads.sourceforge.net/$NAMESRC/$NAMETGZ-$VERSION.$EXT
+WGET=https://prdownloads.sourceforge.net/$NAMESRC/$NAMETGZ-$VERSION.tar.gz
 DESC="Modeleur 3D paramétrique pour la CAO"
 
 
