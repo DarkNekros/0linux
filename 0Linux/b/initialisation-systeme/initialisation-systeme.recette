@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.9
+VERSION=1.0.0
 DESC="Fichiers d'initialisation du système et des services de 0Linux"
 
 cflags
@@ -10,13 +10,14 @@ cflags
 mkdir -p ${PKG}/etc/rc.d
 
 # On installe les scripts d'initialisation de 0Linux :
-for script in rc.{4,6,K,M,S,locale,modules,reseau}; do
+for script in rc.{4,6,K,M,S,locale,reseau}; do
 	cp -a ${CWD}/${script} ${PKG}/etc/rc.d/
 	chmod 755 ${PKG}/etc/rc.d/${script}
 done
 
-# On prend garde à ne pas écraser la config' locale :
+# On prend garde à ne rien :
 cp -a $CWD/rc.local ${PKG}/etc/rc.d/rc.local.0nouveau
+cp -a $CWD/rc.modules ${PKG}/etc/rc.d/rc.modules.0nouveau
 
 # Installation du fichier 'inittab' :
 cp -a $CWD/inittab ${PKG}/etc/

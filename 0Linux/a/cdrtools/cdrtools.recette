@@ -33,10 +33,6 @@ fi
 # On copie les manuels où il faut :
 mv ${PKG}/usr/share/man ${PKG}/usr/
 
-# On charge le module 'sg' pou 'cdrecord' :
-mkdir -p ${PKG}/etc/modprobe.d
-echo "modprobe sg" > ${PKG}/etc/modprobe.d/sg.conf
-
 # On place la documentation de 'cdda2wav' dans un répertoire dédié :
 cd cdda2wav
 installer_doc ${NAMETGZ}-${VERSION}/cdda2wav
@@ -50,6 +46,16 @@ ln -sf cdda2wav ${PKG}/usr/bin/icedax
 
 installer_doc
 creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On charge le module 'sg' pour 'cdrecord' :
+echo "# On charge le module 'sg' pour 'cdrecord' :" >> etc/rc.d/rc.modules
+echo "modprobe sg" >> etc/rc.d/rc.modules
+
+EOF
+
 stripper
 empaqueter
 

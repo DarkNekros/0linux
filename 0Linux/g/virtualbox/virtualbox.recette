@@ -13,7 +13,6 @@ WGET=(http://download.virtualbox.org/virtualbox/$VERSION/$NAMESRC-$VERSION.$EXT
      )
 DESC="Logiciel complet de virtualisation x86"
 
-
 # On empêche le téléchargement de la doc si on trouve les bonnes versions en
 # les renommant :
 if [ -r ${PKGSOURCES}/${NAMETGZ}/UserManual-${VERSION}.pdf ]; then
@@ -34,7 +33,7 @@ mv ${PKGSOURCES}/${NAMETGZ}/UserManual{,-${VERSION}}.pdf
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/{bin,src} \
 	${PKG}/usr/{include,lib${LIBDIRSUFFIX},share}/virtualbox \
-	${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/misc \
+	${PKG}/lib/modules/$(uname -r)/misc \
 	${PKG}/usr/share/{applications,pixmaps,mime/packages} \
 	${PKG}/etc/{default,vbox}
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
@@ -137,9 +136,8 @@ cd out/linux.$BUILDDIR/release/bin/src
 fakeroot make KERN_DIR="/lib/modules/$(uname -r)/build"
 cd -
 
-# On place les modules noyau et on nettoie :
-find . -type f -name "*.ko" -exec cp -a {} ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/misc/ \;
-find . -type f -name "*.ko" -delete
+# On place les modules noyau :
+find . -type f -name "*.ko" -exec mv {} ${PKG}/lib/modules/$(uname -r)/misc/ \;
 
 # On crée un fichier de configuration qui n'écrasera rien :
 cat > ${PKG}/etc/vbox/vbox.cfg.0nouveau << EOF
