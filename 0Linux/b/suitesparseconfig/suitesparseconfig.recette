@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=suitesparseconfig
-VERSION=4.0.2
-EXT=tar.gz
-NAMETGZ=suitesparseconfig
-WGET=http://dev.gentoo.org/~bicatali/distfiles/$NAMESRC-$VERSION.$EXT
+VERSION=4.2.1
+WGET=http://www.cise.ufl.edu/research/sparse/SuiteSparse_config/SuiteSparse_config-$VERSION.tar.gz
 DESC="Coufiguration pour un système algorithmique complexe"
 
 

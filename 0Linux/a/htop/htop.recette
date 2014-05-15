@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=htop
-VERSION=1.0.2
-EXT=tar.gz
-NAMETGZ=htop
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.0.3
+WGET=http://hisham.hm/htop/releases/$VERSION/htop-$VERSION.tar.gz
 DESC="Affiche la liste des processus (alternative colorée à « top »)"
 
 
