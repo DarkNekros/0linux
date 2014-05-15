@@ -153,7 +153,7 @@ rm -f "$log" # sa présence signifie qu'il y a eu erreur.
 for arch in x86_64; do # On ne fait que x86_64 pour le moment...
     echo "   Génère    $pkgroot/$arch/paquets.db..."
     ( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
-      find * -mindepth -type f \( -name "*.spack" -o -name "*.dep" \) \
+      find * -mindepth 1 -type f \( -name "*.spack" -o -name "*.dep" \) \
           | mk0db "$log" >"./paquets.db"
     )
     if [ -f "$log" ]; then
