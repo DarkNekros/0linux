@@ -20,9 +20,9 @@ if [ ! "${DISPOCLAVIER}" = "" ]; then
 	
 	# On le met à jour selon ce qu'on y trouve :
 	if [ ! "$(grep -E '^CLAVIER=' ${KEYBOARDCONFIGFILE})" = "" ]; then
-		sed -i -e "s@^CLAVIER=.*@CLAVIER=${CHOIXCLAVIER}@" ${KEYBOARDCONFIGFILE}
+		sed -i -e "s@^CLAVIER=.*@CLAVIER=${DISPOCLAVIER}@" ${KEYBOARDCONFIGFILE}
 	else
-		echo "CLAVIER=${CHOIXCLAVIER}" >> ${KEYBOARDCONFIGFILE}
+		echo "CLAVIER=${DISPOCLAVIER}" >> ${KEYBOARDCONFIGFILE}
 	fi
 fi
 

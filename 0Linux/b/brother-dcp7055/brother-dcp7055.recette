@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.0.4_2
+SRCARCH="i386"
+WGET=(http://pub.brother.com/pub/com/bsc/linux/dlf/cupswrapperDCP7055-${VERSION/_/-}.${SRCARCH}.rpm
+      http://pub.brother.com/pub/com/bsc/linux/dlf/dcp7055lpr-2.1.0-1.${SRCARCH}.rpm
+     )
+DESC="Pilotes LPR et CUPS pour l'imprimante multifonction Brother DCP-7055"
+EXTRADEPS="cups foomatic gnu-ghostscript"
+
+telecharger_sources
+cflags
+
+# On place d'abord les pilotes pour CUPS :
+cd $TMP
+rpmunpack ${PKGSOURCES}/${NAMETGZ}/cupswrapperDCP7055-${VERSION/_/-}.${SRCARCH}.rpm
+cd cupswrapperDCP7055-${VERSION/_/-}.${SRCARCH}
+
+# On découpe pour extraire le PPD :
+mkdir -p ${PKG}/usr/share/cups/model
+sed -n '/ENDOFPPDFILE/,/ENDOFPPDFILE/p' \
+	usr/local/Brother/Printer/DCP7055/cupswrapper/cupswrapperDCP7055-$(echo $VERSION | cut -d'_' -f1) | \
+	sed '1 br; b; :r s/.*/cat <<ENDOFPPDFILE/' | \
+	bash > ${PKG}/usr/share/cups/model/DCP7055.ppd
+
+# On découpe pour extraire le filtre (au secours !) :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/cups/filter
+
+sed -n '/!ENDOFWFILTER!/,/!ENDOFWFILTER!/p' \
+	usr/local/Brother/Printer/DCP7055/cupswrapper/cupswrapperDCP7055-$(echo $VERSION | cut -d'_' -f1) | \
+	sed '1 br; b; :r s/.*/cat <<!ENDOFWFILTER!/' | \
+	bash > ${PKG}/usr/lib${LIBDIRSUFFIX}/cups/filter/brlpdwrapperDCP7055
+
+# On rend le filtre exécutable :
+chmod +x ${PKG}/usr/lib${LIBDIRSUFFIX}/cups/filter/brlpdwrapperDCP7055
+
+# On place le reste :
+find . -type f | while read file; do
+	install -DT ${file} ${PKG}/${file}
+done
+
+# On place le pilote pour LPR :
+cd $TMP
+rpmunpack ${PKGSOURCES}/${NAMETGZ}/dcp7055lpr-2.1.0-1.${SRCARCH}.rpm
+cd dcp7055lpr-2.1.0-1.${SRCARCH}
+
+# On place les fichiers :
+find . -type f | while read file; do
+	install -DT ${file} ${PKG}/${file}
+done
+
+# On ajoute les droits en écriture :
+chmod a+w ${PKG}/usr/local/Brother/Printer/DCP7055/inf/brDCP7055rc
+chmod a+w ${PKG}/usr/local/Brother/Printer/DCP7055/inf
+
+# Brother, c'est quoi ces pilotes ?!
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

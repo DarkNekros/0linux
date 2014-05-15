@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+[ "${PKGARCH}" = "x86_64" ] && SRCARCH="x86_64"
+[ "${PKGARCH}" = "i686" ] && SRCARCH="i386"
+
+NAMESRC=brscan4
+VERSION=0.4.2_1
+WGET=http://pub.brother.com/pub/com/bsc/linux/dlf/${NAMESRC}-${VERSION/_/-}.${SRCARCH}.rpm
+DESC="Pilotes SANE de Brother pour le smodèles compatibles avec brscan4"
+
+telecharger_sources
+
+# On place d'abord les pilotes pour CUPS :
+cd $TMP
+rpmunpack ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION/_/-}.${SRCARCH}.rpm
+cd ${NAMESRC}-${VERSION/_/-}.${SRCARCH}
+
+# On crée la règle pour Udev avec ce script piqué chez Archlinux (AUR) :
+mkdir -p ${PKG}/etc/udev/rules.d
+$CWD/mk-udev-rules opt/brother/scanner/brscan4/models4/*.ini > ${PKG}/etc/udev/rules.d/${NAMESRC}.rules
+
+# place le reste :
+cp -ar etc opt usr ${PKG}/
+
+# On recrée les liens symboliques correctement :
+ln -sf libsane-brother4.so.1.0.7 ${PKG}/usr/lib${LIBDIRSUFFIX}/sane/libsane-brother4.so.1
+ln -sf libsane-brother4.so.1     ${PKG}/usr/lib${LIBDIRSUFFIX}/sane/libsane-brother4.so
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
