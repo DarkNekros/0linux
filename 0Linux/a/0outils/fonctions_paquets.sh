@@ -557,13 +557,6 @@ empaqueter() {
 		rm -rf ${PKG}/usr/share/pkgconfig
 	fi
 	
-	# On corrige les chemins contenant '/lib' codés en dur dans les fichiers pour 'pkg-config' (et ils sont nombreux) :
-	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
-		grep -E -r -l '/lib$' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/*.pc 2>/dev/null | while read fichier ; do
-			sed -i "s@/lib@/lib${LIBDIRSUFFIX}@g" $fichier
-		done
-	fi
-	
 	# On affecte des permissions correctes aux bibliothèques partagées :
 	find ${PKG}/lib* ${PKG}/usr/lib* -type f \! -perm 755 -iname "*.so*" 2>/dev/null | xargs file 2>/dev/null | grep "shared object" | cut -f 1 -d : | xargs chmod 755 2>/dev/null || true
 	
