@@ -28,6 +28,10 @@ cp -ar etc opt usr ${PKG}/
 ln -sf libsane-brother4.so.1.0.7 ${PKG}/usr/lib${LIBDIRSUFFIX}/sane/libsane-brother4.so.1
 ln -sf libsane-brother4.so.1     ${PKG}/usr/lib${LIBDIRSUFFIX}/sane/libsane-brother4.so
 
+# On ajoute un fichier de configuration en veillant à ne rien écraser :
+mkdir -p ${PKG}/etc/sane.d/dll.d/
+echo "brother4" > ${PKG}/etc/sane.d/dll.d/brother4.conf.0nouveau
+
 installer_doc
 creer_post_installation
 stripper
