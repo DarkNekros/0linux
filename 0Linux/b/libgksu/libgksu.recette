@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.0.12
+WGET=http://people.debian.org/~kov/gksu/$NAMESRC-$VERSION.tar.gz
+DESC="Bibliothèques d'authentification"
+
+telecharger_sources
+preparer_sources
+cflags
+
+# On corrige cette vieillerie :
+cat $CWD/libgksu.fbsd.patch | patch -p1
+cat $CWD/libgksu.libs.patch | patch -p1
+cat $CWD/libgksu.polinguas.patch | patch -p1
+cat $CWD/libgksu.revert-forkpty.patch | patch -p1
+cat $CWD/libgksu.make.patch | patch -p0
+cat $CWD/libgksu.notests.patch | patch -p1
+cat $CWD/libgksu.automake.patch | patch -p1
+
+# On régénère le système de construction :
+touch NEWS README
+intltoolize --force --copy --automake
+autoreconf -vif
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-schemas-install \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1 DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
