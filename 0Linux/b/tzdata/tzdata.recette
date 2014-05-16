@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=tzdata
-VERSION=2014b
+VERSION=2014c
 EXT=tar.gz
 NAMETGZ=tzdata
-WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${EXT
+WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${EXT}
 	  http://www.iana.org/time-zones/repository/releases/tzcode${VERSION}.${EXT}
 	 )
 DESC="Outils et données chronologiques pour l'horloge système et fuseaux horaires"
-
 
 telecharger_sources
 cflags
