@@ -71,7 +71,7 @@ fi
 
 telecharger_sources() {
 	# Inutile de continuer si des dépendances erronées sont indiquées :
-	if [ -n ${EXTRADEPS} ]; then
+	if [ ! "${EXTRADEPS}" = "" ]; then
 		for dep in ${EXTRADEPS}; do
 			for f in $(find /var/log/packages -type f -name "${dep}*"); do
 				if [ $(basename ${f} | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) = "${dep}" ]; then

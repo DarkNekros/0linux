@@ -2,12 +2,10 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=libXfont
-VERSION=1.4.7
-EXT=tar.bz2
+VERSION=1.4.8
 NAMETGZ=libxfont
-WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques natives de X11"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
