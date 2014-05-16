@@ -27,7 +27,7 @@ fakeroot make install DESTDIR=${PKG}
 
 # On crée le fichier de démarrage automatique de 'polkit-gnome-authentication-agent-1':
 mkdir -p ${PKG}/etc/xdg/autostart/
-cat > ${PKG}/etc/xdg/autostart/polkit-gnome-authentication-agent-1 << EOF
+cat > ${PKG}/etc/xdg/autostart/polkit-gnome-authentication-agent-1.desktop << EOF
 [Desktop Entry]
 Name=PolicyKit Authentication Agent
 Name[fr]=Agent d'authentification de PolicyKit
