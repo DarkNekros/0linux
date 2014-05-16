@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=kgpg
 VERSION=4.13.0
-EXT=tar.xz
-NAMETGZ=kgpg
-WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.tar.xz
 DESC="Gérez vos clés de chiffrement sous KDE"
-########################################
 
 
 telecharger_sources
