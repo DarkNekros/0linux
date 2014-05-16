@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=wicd
 VERSION=1.7.2.4
-EXT=tar.gz
-NAMETGZ=wicd
-WGET=https://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/+download/$NAMESRC-$VERSION.$EXT
+WGET=https://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/+download/$NAMESRC-$VERSION.tar.gz
 DESC="Gestionnaire graphique de connexions réseau"
-
+EXTRADEPS="gksu"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -34,11 +31,11 @@ done
 fakeroot python setup.py install --optimize=1 --root=${PKG}
 
 # On crée le fichier de configuration en affectant d'office le client 'dhcpcd'
-# pour la connexion et 'ktsuss' pour le 'su' graphique :
+# pour la connexion et l'auto-détection pour le 'su' graphique :
 cat > ${PKG}/etc/wicd/manager-settings.conf << "EOF"
 [Settings]
 dhcp_client = 2
-sudo_app = 3
+sudo_app = 0
 
 EOF
 
