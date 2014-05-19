@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.14
+VERSION=3.14.4
 
 # Le nommage des versions « .0 » est incohérent :
 if [ "$(echo $VERSION | cut -d'.' -f3)" = "" ]; then

@@ -65,7 +65,7 @@ else
 	rm -rf   ${PKG} ${TMP}
 	mkdir -p ${PKG} ${TMP}
 	
-	# Si $NAMESRC n'est pas défini (rare), on lui affecte $NAMETGZ :
+	# Si $NAMESRC n'est pas défini, on lui affecte $NAMETGZ :
 	[ -z ${NAMESRC} ] && NAMESRC="${NAMETGZ}"
 fi
 
@@ -225,6 +225,12 @@ preparer_sources() {
 				mkdir -p ${TMP}/${CURRENTARCHIVE}
 				unzip ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -d $TMP/${CURRENTARCHIVE}
 			fi
+		;;
+		*.deb|*.DEB)
+			echo "Extraction de la sous-archive 'data.tar.lzma' venant de l'archive Debian dans :"
+			echo "	${TMP}/${CURRENTARCHIVE}/"
+			mkdir -p ${TMP}/${CURRENTARCHIVE}
+			ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.lzma | lzma -d | tar xv
 		;;
 		*)
 			echo "Format d'archive (.${EXT}) non géré pour l'instant ; elle ne sera pas vérifiée."
