@@ -68,6 +68,15 @@ compiler_installer() {
 		talloc; do
 			if [ "$(basename ${1} .recette)" = "${paquet_recalcitrant}" ]; then
 				
+				# N'oublions pas que le compteur de révisions sera forcément à 1 si le paquet est désinstallé !
+				# Récupérons-le de suite, ques DESTDIR soit spécifiée ou non :
+				for f in $(find ${DESTDIR}/var/log/paquets/* -type f -name "$(basename ${1} .recette)*"); do
+					if [ "$(echo $(basename ${f}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)" = "$(basename ${1} .recette)" ]; then
+						NOWBUILD=$(( $(echo $(basename ${f}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\4/p' -n) +1 ))
+						export BUILD=${NOWBUILD}
+					fi
+				done
+				
 				# On scanne la racine si elle est spécifiée :
 				if [ ! "${DESTDIR}" = "" ]; then
 					for f in $(find ${DESTDIR}/var/log/paquets/* -type f -name "$(basename ${1} .recette)*"); do
