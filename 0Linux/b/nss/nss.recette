@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=nss
 VERSION=3.16.1
-EXT=tar.gz
-NAMETGZ=nss
-WGET=ftp://ftp.mozilla.org/pub/mozilla.org/security/$NAMESRC/releases/NSS_$(echo $VERSION | sed 's/\./_/g')_RTM/src/$NAMESRC-$VERSION.$EXT
+WGET=ftp://ftp.mozilla.org/pub/mozilla.org/security/$NAMESRC/releases/NSS_$(echo $VERSION | sed 's/\./_/g')_RTM/src/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de sécurité multi-plateformes de Mozilla"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -28,7 +24,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# Compilation pour i686:
 	cd nss
 	
-	BUILD_OPT=1 \
+	export BUILD_OPT=1 \
 	NS_USE_GCC=1 \
 	NSDISTMODE=copy \
 	NSPR_INCLUDE_DIR=/usr/include/nspr \
@@ -37,32 +33,11 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	NSS_USE_SYSTEM_SQLITE=1 \
 	PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 \
 	PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 \
-	XCFLAGS="${FLAGS}" \
-	make -C coreconf
+	XCFLAGS="${FLAGS}"
 	
-	BUILD_OPT=1 \
-	NS_USE_GCC=1 \
-	NSDISTMODE=copy \
-	NSPR_INCLUDE_DIR=/usr/include/nspr \
-	NSPR_LIB_DIR=/usr/lib${LIBDIRSUFFIX} \
-	NSS_ENABLE_ECC=1 \
-	NSS_USE_SYSTEM_SQLITE=1 \
-	PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 \
-	PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 \
-	XCFLAGS="${FLAGS}" \
-	make -C lib/dbm
-	
-	BUILD_OPT=1 \
-	NS_USE_GCC=1 \
-	NSDISTMODE=copy \
-	NSPR_INCLUDE_DIR=/usr/include/nspr \
-	NSPR_LIB_DIR=/usr/lib${LIBDIRSUFFIX} \
-	NSS_ENABLE_ECC=1 \
-	NSS_USE_SYSTEM_SQLITE=1 \
-	PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 \
-	PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 \
-	XCFLAGS="${FLAGS}" \
-	make
+	make -j${JOBS} -C coreconf || make -C coreconf
+	make -j${JOBS} -C lib/dbm || make -C lib/dbm
+	make -j${JOBS} || make
 	
 	cd -
 	
@@ -110,7 +85,7 @@ sed -i -e 's/\$(MKSHLIB) -o/\$(MKSHLIB) \$(LDFLAGS) -o/' nss/coreconf/rules.mk
 # Compilation :
 cd nss
 
-BUILD_OPT=1 \
+export BUILD_OPT=1 \
 NS_USE_GCC=1 \
 NSDISTMODE=copy \
 NSPR_INCLUDE_DIR=/usr/include/nspr \
@@ -119,37 +94,16 @@ NSS_ENABLE_ECC=1 \
 NSS_USE_SYSTEM_SQLITE=1 \
 PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 \
 PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 \
-XCFLAGS="${FLAGS}" \
-make -C coreconf
+XCFLAGS="${FLAGS}"
 
-BUILD_OPT=1 \
-NS_USE_GCC=1 \
-NSDISTMODE=copy \
-NSPR_INCLUDE_DIR=/usr/include/nspr \
-NSPR_LIB_DIR=/usr/lib${LIBDIRSUFFIX} \
-NSS_ENABLE_ECC=1 \
-NSS_USE_SYSTEM_SQLITE=1 \
-PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 \
-PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 \
-XCFLAGS="${FLAGS}" \
-make -C lib/dbm
-
-BUILD_OPT=1 \
-NS_USE_GCC=1 \
-NSDISTMODE=copy \
-NSPR_INCLUDE_DIR=/usr/include/nspr \
-NSPR_LIB_DIR=/usr/lib${LIBDIRSUFFIX} \
-NSS_ENABLE_ECC=1 \
-NSS_USE_SYSTEM_SQLITE=1 \
-PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 \
-PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 \
-XCFLAGS="${FLAGS}" \
-make
+make -j${JOBS} -C coreconf || make -C coreconf
+make -j${JOBS} -C lib/dbm || make -C lib/dbm
+make -j${JOBS} || make
 
 cd -
 
 # 'make install' à la main !
-install -m755 dist/*.OBJ/lib/lib*3.so ${PKG}/usr/lib${LIBDIRSUFFIX}
+install -m755 dist/*.OBJ/lib/*.so ${PKG}/usr/lib${LIBDIRSUFFIX}
 install -m644 dist/*.OBJ/lib/*.a ${PKG}/usr/lib${LIBDIRSUFFIX}
 install -m644 dist/public/nss/*.h ${PKG}/usr/include/nss3
 ln -sf nss3 ${PKG}/usr/include/nss

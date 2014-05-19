@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=ca-certificates
 VERSION=20140223
-EXT=tar.xz
-NAMETGZ=ca-certificates
-WGET=http://ftp.debian.org/debian/pool/main/c/${NAMESRC}/${NAMESRC}_${VERSION}.${EXT}
+WGET=http://ftp.debian.org/debian/pool/main/c/${NAMESRC}/${NAMESRC}_${VERSION}.tar.xz
 DESC="Ensembles de certificats CA pour SSL"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -20,7 +16,13 @@ mkdir -p ${PKG}/usr/{man/man8,sbin,share/ca-certificates}
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+fakeroot make install SUBDIRS=mozilla DESTDIR=${PKG}
+
+# On injecte tous les certificats dans le fichier de configuration :
+echo "# Généré automatiquement par 'ca-certificates'." > ${PKG}/etc/ca-certificates.conf
+cd ${PKG}/usr/share/ca-certificates
+find . -name '*.crt' | sort | cut -b3- >> ${PKG}/etc/ca-certificates.conf
+cd -
 
 installer_doc
 
@@ -33,12 +35,8 @@ creer_post_installation
 # On complète la post-installation :
 cat >> ${PKG}/post-install.sh << "EOF"
 
-# On injecte tous les certificats dans le fichier de configuration :
-printf "# Généré automatiquement par ca-certificates. \n#\n" > /etc/ca-certificates.conf
-chroot . find /usr/share/ca-certificates -name '*.crt' 2>/dev/null | sort >> /etc/ca-certificates.conf
-
 # On met à jour les certificats :
-update-ca-certificates --fresh 1>/dev/null 2>/dev/null
+chroot . update-ca-certificates --fresh 1>/dev/null 2>/dev/null
 
 EOF
 

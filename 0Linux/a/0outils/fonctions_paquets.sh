@@ -229,11 +229,23 @@ preparer_sources() {
 		*.deb|*.DEB)
 			echo "Extraction de la sous-archive 'data.tar.lzma' venant de l'archive Debian dans :"
 			echo "	${TMP}/${CURRENTARCHIVE}/"
+			NAME="${CURRENTARCHIVE}"
 			mkdir -p ${TMP}/${CURRENTARCHIVE}
-			ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.lzma | lzma -d | tar xv
+			cd ${TMP}/${CURRENTARCHIVE}
+			ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.lzma | lzma -d | tar x
+			cd -
+		;;
+		*.rpm|*.RPM)
+			echo "Extraction de l'archive RPM dans :"
+			echo "	${TMP}/${CURRENTARCHIVE}/"
+			NAME="${CURRENTARCHIVE}"
+			mkdir -p ${TMP}/${CURRENTARCHIVE}
+			cd ${TMP}/${CURRENTARCHIVE}
+			rpmunpack ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE}
+			cd -
 		;;
 		*)
-			echo "Format d'archive (.${EXT}) non géré pour l'instant ; elle ne sera pas vérifiée."
+			echo "Format d'archive non géré pour l'instant ; elle ne sera pas extraite."
 			sleep 1
 		;;
 	esac
