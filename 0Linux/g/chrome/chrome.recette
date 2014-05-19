@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+cflags
+[ "${PKGARCH}" = "x86_64" ] && SRCARCH="amd64"
+[ "${PKGARCH}" = "i686" ] && SRCARCH="i686"
+
+VERSION=36.0.1976.2
+WGET=https://dl.google.com/dl/linux/direct/google-chrome-stable_current_${SRCARCH}.deb
+DESC="Chrome, le navigateur Web de Google"
+
+# On empêche le téléchargement si on trouve les bonnes versions en les renommant :
+if [ -r ${PKGSOURCES}/${NAMETGZ}/google-chrome-stable-${VERSION}_current_${SRCARCH}.deb ]; then
+	mv ${PKGSOURCES}/${NAMETGZ}/google-chrome-stable{-${VERSION},}_current_${SRCARCH}.deb
+fi
+
+telecharger_sources
+
+# On renomme en ajoutant la version à l'archive pour éviter des téléchargements redondants :
+mv ${PKGSOURCES}/${NAMETGZ}/google-chrome-stable{,-${VERSION}}_current_${SRCARCH}.deb
+
+preparer_sources google-chrome-stable-${VERSION}_current_${SRCARCH}.deb
+
+# On place tout dans $PKG ('etc/' ne contient qu'une tâche cron pour Debian et assimilées) :
+cp -ar opt usr ${PKG}/
+
+# Ce binaire doit être SUID :
+chmod 4755 ${PKG}/opt/google/chrome/chrome-sandbox
+
+# On génère un lien symbolique pour chaque bibliothèque détectée comme manquante,
+# merci à SlackBuilds.org :
+MISSING_LIBS=$(ldd opt/google/chrome/chrome | grep 'not found' | cut -d'\' -f1 | xargs)
+for MLIB in $MISSING_LIBS ; do
+	ln -sf ../../../usr/lib${LIBDIRSUFFIX}/seamonkey/${MLIB%.?d} opt/google/chrome/$MLIB
+done
+
+# Sacrilège et damnation, on lie la 'libudev.so.0' manquante à notre 'libudev.so.1'... :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+ln -sf libudev.so.1 ${PKG}/usr/lib${LIBDIRSUFFIX}/libudev.so.0
+
+# On lie toutes  les icônes au bon emplacement :
+for i in 16 22 24 32 48 64 128 256; do
+	mkdir -p ${PKG}/usr/share/icons/hicolor/${i}x${i}/apps
+	ln -sf ../../../../../../opt/google/chrome/product_logo_${i}.png ${PKG}/usr/share/icons/hicolor/${i}x${i}/apps/google-chrome.png
+done
+
+# On déplace les manuels :
+mv ${PKG}/usr/share/man ${PKG}/usr/
+
+installer_doc
+
+# On déplace la doc :
+mv ${PKG}/usr/share/doc/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+rm -rf ${PKG}/usr/share/doc
+
+# On nettoie : 
+rm -rf ${PKG}/usr/share/menu
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
