@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+NAMESRC=amd-catalyst
+VERSION=14.4
+NAMETGZ=catalyst
+WGET=http://www2.ati.com/drivers/linux/${NAMESRC}-$(echo $VERSION | tr '.' '-')-linux-x86-x86-64.zip
+DESC="Pilotes et bibliothèques graphiques fermés de AMD"
+
+# Pour commencer : AMD, FAITES QUELQUE CHOSE DE PROPRE POUR CHANGER.
+
+# Il faut un « referer » pour télécharger l'archive... :
+telecharger_sources --referer=http://support.amd.com/en-us/download/desktop?os=Linux+x86
+cflags
+
+rm -rf $TMP/* $PKG/*
+
+# On crée les répertoires d'accueil :
+mkdir -p ${PKG}/etc/X11/xorg.conf.d
+mkdir -p ${PKG}/etc/ati
+mkdir -p ${PKG}/etc/modprobe.d
+mkdir -p ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video
+mkdir -p ${PKG}/usr/include/{ATI,GL}
+mkdir -p ${PKG}/usr/{,s}bin
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/{xorg,fglrx}
+mkdir -p ${PKG}/usr/man/man8
+mkdir -p ${PKG}/usr/share/{applications,ati,icons}
+
+# On déballe :
+cd $TMP
+rm -rf ${NAMESRC}-${VERSION} fglrx-14.10.1006 # Version différente !
+echo "Extraction en cours..."
+unzip ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-$(echo $VERSION | tr '.' '-')-linux-x86-x86-64.zip
+cd fglrx-14.10.1006 # Version différente !
+sh amd-driver-installer-14.10.1006-x86.x86_64.run --extract ${TMP}/${NAMESRC}-${VERSION} # Version différente !
+cd -
+
+# On place tout de suite la doc et on nettoie :
+cp -ar fglrx-14.10.1006/doc/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/ # Version différente !
+rm -rf fglrx-14.10.1006  # Version différente !
+
+# On se place dans les sources :
+cd ${NAMESRC}-${VERSION}
+
+# On applique des correctifs que les développeurs ont eu la flemme de
+# tester à priori :
+cat $CWD/catalyst.linux-3.14-current_euid.patch | patch -p1
+
+# On vérifie les permissions des sources :
+find . \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# On place le foutoir commun où il faut :
+cp -a  common/usr/sbin/* ${PKG}/usr/sbin/
+cp -a  common/usr/share/applications/* ${PKG}/usr/share/applications/
+cp -a  common/usr/share/icons/* ${PKG}/usr/share/icons/
+cp -a  common/usr/share/man/* ${PKG}/usr/man/
+cp -ar common/usr/share/ati/* ${PKG}/usr/share/ati/
+cp -ar common/usr/share/doc ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+cp -ar common/usr/src/ati/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+cp -ar common/usr/include/* ${PKG}/usr/include/
+cp -ar common/usr/X11R6/bin/* ${PKG}/usr/bin/
+cp -a  common/etc/ati/* ${PKG}/etc/ati/
+
+# Toujours ces sous-répertoires nommés différemment selon l'architecture... :
+if [ "${PKGARCH}" = "i686" ]; then
+	MARCH="x86"
+	XARCH=""
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	MARCH="x86_64"
+    XARCH="_64a"
+fi
+
+# On place les binaires spécifiques à l'architecture :
+cp -a arch/${MARCH}/usr/bin/* ${PKG}/usr/bin/
+cp -a arch/${MARCH}/usr/X11R6/bin/* ${PKG}/usr/bin/
+cp -a arch/${MARCH}/usr/sbin/* ${PKG}/usr/sbin/
+
+# On place les bibliothèques :
+cp -ar arch/${MARCH}/usr/lib${LIBDIRSUFFIX}/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
+cp -ar arch/${MARCH}/usr/share/ati/lib${LIBDIRSUFFIX} ${PKG}/usr/share/ati/
+cp -ar arch/${MARCH}/usr/X11R6/lib${LIBDIRSUFFIX}/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
+
+# On déplace ce répertoire pour Xorg :
+cp -ar ${PKG}/usr/lib${LIBDIRSUFFIX}/modules ${PKG}/usr/lib${LIBDIRSUFFIX}/xorg/
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/modules
+
+# On finit de copier ce foutoir :
+cp -ar xpic${XARCH}/usr/X11R6/lib${LIBDIRSUFFIX}/modules/* ${PKG}/usr/lib${LIBDIRSUFFIX}/xorg/modules/
+
+# On ajoute les bibliothèques pour le multilib 32 bits sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mkdir -p ${PKG}/usr/lib/{xorg,fglrx}
+	
+	# On place les bibliothèques :
+	cp -ar arch/x86/usr/lib/* ${PKG}/usr/lib/
+	cp -ar arch/x86/usr/share/ati/lib ${PKG}/usr/share/ati/
+	cp -ar arch/x86/usr/X11R6/lib/* ${PKG}/usr/lib/
+	
+	# On déplace ce répertoire pour Xorg :
+	cp -ar ${PKG}/usr/lib/modules ${PKG}/usr/lib${LIBDIRSUFFIX}/xorg/
+	rm -rf ${PKG}/usr/lib/modules
+	
+	# On finit de copier ce foutoir :
+	cp -ar xpic/usr/X11R6/lib/modules/* ${PKG}/usr/lib${LIBDIRSUFFIX}/xorg/modules/
+fi
+
+# On crée tous les liens pour les bibliothèques et on espère chaleureusement
+# que AMD (comme Nvidia) fera un jour un effort pour sa méthode d'installation :
+for lib in $(find ${PKG} -type f -name "*.so.*"); do
+	ln -sf $(basename ${lib}) $(echo ${lib} | sed -e 's@\.so.*$@\.so@')
+done
+
+# On copie le fichier dépendant de l'architecture pour compiler le module noyau :
+cp arch/${MARCH}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
+
+# On corrige l'appel au compilateur ou 'make.sh' va planter avec ce genre
+# d'erreur « make : option invalide : -- 'bla' » : 
+cd common/lib/modules/fglrx/build_mod
+sed -i "s@CC=gcc@CC=\"${CC}\"@" make.sh
+sed -i 's@^make CC=${CC}@CC="${CC}" make@g' make.sh
+
+# On compile le module noyau :
+VERBOSE=1 V=1 fakeroot sh -x ./make.sh --uname_r=$(uname -r) 2>&1
+cd -
+
+# On place le module en le renommant :
+cp common/lib/modules/fglrx/fglrx.$(uname -r).ko ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video/fglrx.ko
+
+# On crée un fichier blacklist pour empêcher les pilotes libres de se charger :
+cat > ${PKG}/etc/modprobe.d/blacklist-ati-radeon.conf.0nouveau << "EOF"
+blacklist ati
+blacklist radeon
+blacklist radeonhd
+
+EOF
+
+# On crée une configuration pour charger le pilote dans X et on
+# prend garde à ne rien écraser :
+cat > ${PKG}/etc/X11/xorg.conf.d/catalyst.conf.0nouveau << "EOF"
+Section "Device"
+	Identifier "AMD fglrx"
+	Driver "fglrx"
+EndSection
+
+EOF
+
+installer_doc
+
+# On complète la documentation :
+cp -a $CWD/0-LISEZMOI ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+
+creer_post_installation
+
+# On complète la post-installation : :
+cat >> ${PKG}/post-install.sh << EOF
+
+chroot . depmod -a
+
+# On prévient l'utilisateur sur la nature intrusive du paquet :
+echo "***"
+echo "IMPORTANT : veuillez lire le fichier '/usr/doc/${NAMETGZ}/0-LISEZMOI'"
+echo "si vous prévoyez plus tard de désinstaller '${NAMETGZ}' !"
+echo "***"
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.
