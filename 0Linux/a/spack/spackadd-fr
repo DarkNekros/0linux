@@ -1,0 +1,461 @@
+#!/bin/sh
+#
+# SPACK(ADD|RM) - install/remove/upgrade the Spack packages.
+#
+
+# Copyright (c) 2010-2013 Sébastien Boillod <sbb at tuxfamily dot org>.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+# === Library ==================================================================
+cpiocheck () {
+    # Check the CPIO archive integrity checking size report...
+    # $f STDERR BUFFER FILE, CHECKED FILE(S)
+    local buffer="$1"; shift 1
+    awk '{E=1}/^[0-9]+/{E=0}{exit E}' "$buffer" && return 0 # we should only have size here..
+    local list="$(echo "$*" | sed 's/ /, /g;s/$/ file/;s/,\([^,]*\)$/ and\1s/')"
+    growl -1 "Le paquet est corrompu (vérifiez $list)."
+    return 1
+}
+
+dirscout () {
+    # Prevent problems with directory install.
+    # $f DRY RUN
+    local dry="$1"
+    while read d; do
+        [ -d "$d" ] && continue # directory is ok...
+        [ ! -h "$d" -a ! -e "$d" ] && continue # not exist and not a broken symlink is also ok...
+        growl 0 "\"$d\" n'est pas un répertoire comme attendu. Suppression..."
+        [ $dry -eq 0 ] && rm -f "$d"
+    done
+}
+
+eat () {
+    # Return the amount of main arguments to shift and reset the index.
+    # $f MAIN ARGUMENT INDEX
+    local r=0
+    SHIFT=$1
+    if [ $SHIFT -lt 0 ]; then
+        read NEXT && return 0 # we'll continue to read stdin...
+        r=1
+    fi
+    shift 1
+    ARGV="$*"
+    return $r
+}
+
+filecheck () {
+    # Check the file meet CPIO package specification.
+    # $f FILE
+    local spec="$(basename "$1" | awk '/[^-]+-[^-]+-[^-]+-[^-]+.spack$/{print 0;exit}{print 1}')"
+    if [ ! -f "$1" ]; then
+        growl -1 "\"$1\" n'est pas un fichier régulier."
+        return 1
+    elif [ $spec -ne 0 ]; then
+        growl -1 "\"$1\" n'est pas un paquet Spack correctement nommé."
+        return 2
+    fi
+    return 0
+}
+
+fileregister () {
+    # Make the file & directory lists attached to the package.
+    # $f PACKAGE, DIRECTORY LIST, FILE LIST, SYMLINK LIST, FORMATTED MAN LIST
+    local log="$LOGDIR/$1" dirs="$2" files="$3" cats="$4" links="$5"
+    awk -v CATS="$cats" -v DIRS="$dirs" -v FILES="$files" \
+        '(FNR == 1){if(NR>1)DELFILE=ARGV[1];STORE = 0}
+         (FILENAME == DELFILE){next}
+         (STORE < 1){if ($0 ~ /^FILE LIST:/) STORE = length(DELFILE) > 0? 1 : 2; next }
+         (STORE < 2){delete DEL[$0]; next}
+         {DEL[$0]}
+         END{ for(i in DEL){ if (i ~ /\/$/){print i>DIRS;continue}
+                            print i >FILES
+                            if(sub(/\/man.\/[^/]+$/,"///&",i) && sub(/\/\/+man/, "/cat",i)) print i >CATS
+                          }
+              close(DIRS);close(FILES);close(CATS) }' "$log" "$LOGDIR/"* "$links"
+}
+
+filescout () {
+    # Prevent problems with file install.
+    # $f DRY RUN
+    local dry="$1"
+    awk '{print; print >"/dev/stderr"}' 2>"$TMPDIR/files" | while read f; do
+        [ -d "$f" ] || continue
+        growl 0 "\"$f\" détecté comme répertoire mais attendu comme fichier. Suppression..."
+        [ $dry -eq 0 ] && rm -rf "$f"
+    done
+}
+
+growl () {
+    # Print error message on stderr and exit if a non-null code is given.
+    # $f CODE, MESSAGE
+    local code=$1; shift 1
+    if [ $code -ne 0 ]; then
+        echo "(E) $*" >&2
+        [ $code -lt 0 ] || exit $code # exit on positive codes.
+    else
+        echo "(!) $*" >&2
+    fi
+    return 0
+}
+
+linkregister () {
+    # Print the link list attached to the package, storing the others.
+    # $f PACKAGE, KEPT LINK LIST, SCRIPTS
+    local log="$POSTDIR/$1" kept="$2" post="$TMPDIR/post-install.sh"; shift 2
+    echo "LISTE DES FICHIERS :" >"$kept"
+    if [ "$1" = "$POSTDIR/*" ]; then
+        shift 1 # no more script left...
+        [ -s "$post" ] || return 1 # nothing to save...
+    elif [ ! -s "$post" ]; then
+        post="/dev/null"
+    fi
+    [ -s "$log" ] || log="/dev/null" # no valid script attached to the package...
+    awk 'BEGIN{C=0;STORE= (ARGV[1] == "/dev/null") ? 0 : 1}
+         (++C != FNR){if(STORE > 0)DELFILE=ARGV[1];C=FNR;STORE = 0}
+         (FILENAME == DELFILE){next}
+         {LINK=0}
+         /^\( *cd *[^ \t]+ *; *rm -rf *[^ \t]+ *\) *$/{$0=$3"/"$7;LINK++}
+         (LINK < 1){next}
+         (STORE > 0) {DEL[$0]; next}
+         ($0 in DEL){delete DEL[$0]; next}
+         {print $0 >"/dev/stderr"}
+         END{for(i in DEL) print i}' "$log" "$post" "$@" 2>>"$kept" | sort
+}
+
+logfmt () {
+    # Format the log of the installed package
+    # $f DRY RUN, NAME, LOCATION
+    local dry=$1 name=$2 path="$3" short="$(shorty "$3"| sed 's/+/\\+/g')" # "+" must be escaped for AWK.
+    if [ $dry -ne 0 ]; then
+        exec 4>&3
+    else
+        exec 4>"$LOGDIR/$name"
+    fi
+    ( cd "$TMPDIR"
+        echo "NOM DU PAQUET : $name" >&4
+        awk -v POST="$(du -k ./post-install.sh 2>/dev/null)" -v PRE="$(du -k ./pre-install.sh)" \
+            '(NR==1){ZSIZE=$1;}(NR==2){SIZE=$1}
+             END{RSIZE = 60 * (NR-2) / 512 # empty directory = 60bits
+                sub(/[^0-9]*$/,"",POST); sub(/[^0-9]*$/,"",PRE)
+                print "TAILLE COMPRESSÉE : " int(ZSIZE/2) " ko"
+                print "TAILLE DÉCOMPRESSÉE : " int((SIZE+RSIZE)/2-PRE+POST) " ko"}' ./zsize ./size ./dirs >&4
+        echo "EMPLACEMENT DU PAQUET : $path" >&4
+        echo "DESCRIPTION DU PAQUET :" >&4
+        [ -r ./about.txt ] && awk '(L > 10){exit}/^'"$short"':/{L++;print;next}(L>0){exit}' ./about.txt >&4
+        echo "LISTE DES FICHIERS :" >&4
+        echo "./" >&4 # meet the Slackware spec.
+        sort ./dirs ./files >&4 ) 
+    exec 4>&- 
+}
+
+pathinit () {
+    # Initialize the required paths.
+    # $f 
+    if [ "$ROOT" ]; then
+        mkdir -p "$ROOT" 2>/dev/null || growl 1 "Can't initialize the given root."
+        ROOT="$(cd "$ROOT" 2>/dev/null; pwd -P)" # the root can be relative.
+    fi
+    LOGDIR="$ROOT/var/log/packages"
+    RMLOGDIR="$ROOT/var/log/removed_packages"
+    POSTDIR="$ROOT/var/log/scripts"
+    RMPOSTDIR="$ROOT/var/log/removed_scripts"
+    mkdir -p "$LOGDIR" "$RMLOGDIR" "$POSTDIR" "$RMPOSTDIR"
+    TMPDIR="$(mktemp -d "$ROOT/tmp-$$-XXXXXX" 2>/dev/null)"
+    [ "$TMPDIR" ] || growl 1 "Impossible de créer un répertoire temporaire sécurisé."
+}
+
+pkginstall () {
+    # Install the given package(s).
+    # $f FORCE REINSTALL, DRY RUN, PACKAGE
+    local re=$1 dry=$2 name="$(basename "$3" .spack)" cpio="$3" unzip="xz -d -c"
+    filecheck "$cpio" || return 1
+    echo "================================================================================" >&3
+    echo "Installation de $name..."
+    echo "================================================================================" >&3
+    [ ! -f "$LOGDIR/$name" ] || (growl $((1 - $re)) "\"$name\" est déjà installé.") || return 2
+    local files=$(cpio --quiet -t "files.?z" <"$cpio") post="$TMPDIR/post-install.sh"
+    if [ "$files" = "files.gz" ]; then
+        unzip="gzip -d -c"
+    elif [ ! "$files" = "files.xz" ]; then
+        (growl 1 "Paquet corrompu : ni \"files.xz\" ni \"files.gz\" n'ont été trouvés.") || return 1
+    fi
+    preinstall $dry "$cpio" <"$cpio" || return 1
+    echo "  Vérification de l'archive..." >&3
+    cpio -i --to-stdout "$files" < "$cpio" 2>"$TMPDIR/zsize"| $unzip 2>/dev/null \
+                              | cpio -t 2>"$TMPDIR/size"| filescout $dry
+    cpiocheck "$TMPDIR/zsize" "$files"|| return 1 # just skip the package.
+    #[ -s "$TMPDIR/files" ] || (growl 1 "Broken package: can't get files from \"$files\".") || return 1
+    logfmt $dry "$name" "$cpio"
+    echo "  Installation des fichiers..." >&3
+    [ $dry -eq 0 ] || return 0
+    (cd "$ROOT/"; cpio --quiet -i --to-stdout "$files" | $unzip | cpio --quiet -m -i -u) < "$cpio" || return 1
+}
+
+pkgmatch () {
+    # Return the name of the packages that match the pattern.
+    # $f INSTALL MODE, UPGRADE MODE, PATTERN
+    local imode=$1 umode=$2 name="$3" pat="$(basename "$3" .spack)" skip=""
+    if [ $umode -eq 0 -a -f "$LOGDIR/$pat" ]; then
+        # true remove mode, we first test precise package.
+        echo "$pat"
+        return 0
+    elif [ $umode -ne 0 -a -f "$name" ]; then
+        # upgrade, we match installed version of the package.
+        skip="$pat" # ignore the installed package, in case of re-install.
+        pat="$(shorty "$name")"
+    fi
+    # Here pattern is interpreted as a package base name...
+    pat="$(echo "$pat" | sed 's#\([+^/*$.]\)#\\\1#g')" # escape RE-wise meaningful characters.
+    pat="$(ls -1 "$LOGDIR" | awk '/^'"$pat"'-[^-]+-[^-]+-[^-]+$/{if($0 != "'"$skip"'") print}')"
+    if [ "$pat$skip" ]; then
+        echo "$pat"
+    else
+        # We are not in "upgrade or install new" mode...
+        growl -1 "Impossible de satisfaire la requête : \"$name\" est introuvable."
+        return 1
+    fi
+    return 0
+}
+
+pkgremove () {
+    # Remove the given package(s).
+    # $f DRY RUN, UPGRADE CONTEXT, PACKAGE(S)
+    local dry=$1 up=$2  stamp=""; shift 2
+    while [ $# -gt 0 ]; do
+        echo "================================================================================" >&3
+        echo "Désinstallation de \"$1\"..."
+        echo "================================================================================" >&3
+        rm -f "$TMPDIR/files" "$TMPDIR/dirs" "$TMPDIR/symkept" "$TMPDIR/cats"
+        touch "$TMPDIR/files" "$TMPDIR/dirs" "$TMPDIR/symkept" "$TMPDIR/cats"
+        linkregister "$1" "$TMPDIR/symkept" "$POSTDIR/"* | while read -r link; do
+            if [ -h "$ROOT/$link" ]; then
+                echo "  Déréférencement de $link" >&3
+                [ $dry -gt 0 ] || rm -f "$ROOT/$link"
+            else
+                growl 0 "Impossible de déréférencer le lien \"$link\" (manquant/cassé)."
+            fi
+        done
+        fileregister "$1" "$TMPDIR/dirs" "$TMPDIR/files" "$TMPDIR/cats" "$TMPDIR/symkept"
+        sort "$TMPDIR/files" | while read -r file; do
+            if [ -f "$ROOT/$file" ]; then
+                echo "  Suppression du fichier $file" >&3
+                [ $dry -gt 0 ] || rm -f "$ROOT/$file"
+            else
+                growl 0 "Impossible de supprimer \"$file\" (manquant/non-régulier)."
+            fi
+        done
+        sort "$TMPDIR/cats" | while read -r cat; do
+            [ -f "$ROOT/$cat" ] || continue
+            echo "  Suppression du fichier $cat" >&3
+            [ $dry -gt 0 ] || rm -f "$ROOT/$cat"
+        done
+        sort -r "$TMPDIR/dirs" | while read -r dir; do
+            if [ -d "$ROOT/$dir" ]; then
+                echo "  Suppression du répertoire $dir" >&3
+                [ $dry -gt 0 ] || rmdir "$ROOT/$dir" 2>/dev/null || growl 0 "$ROOT/$dir" 2>/dev/null || growl 0 "\"$dir\" n'est pas vide. Ignoré..."
+            else
+                growl 0 "Impossible de supprimer le répertoire manquant \"$dir\"."
+            fi
+        done
+        [ $up -eq 0 ] || stamp=$(date "+-upgraded-%Y-%m-%d,%T")
+        [ $dry -gt 0 ] || mv -f "$LOGDIR/$1" "$RMLOGDIR/$1$stamp"
+        [ $dry -gt 0 -o ! -f "$POSTDIR/$1" ] || mv -f "$POSTDIR/$1" "$RMPOSTDIR/$1$stamp"
+        shift 1
+    done
+}
+
+postinstall () {
+    # Perform the post-install operations.
+    # $f DRY RUN, PACKAGE
+    local dry=$1 name="$(basename "$2" .spack)" post="$TMPDIR/post-install.sh"
+    [ -O ./sbin/ldconfig -a -x ./sbin/ldconfig ] && ./sbin/ldconfig  -r "." # use the $ROOT's ldconfig.
+    if [ -f "$post" ]; then  # ^^^ the user may not be root during tests & debugs...
+        echo "  Exécution de la post-installation..." >&3
+        [ $dry -eq 0 ] || return 0
+        sh "$post"
+        cp -f "$post" "$POSTDIR/$name"
+        chmod 755 "$POSTDIR/$name"
+    fi
+}
+
+preinstall () {
+    # Preinstall the package, initializing the tree.
+    # $f DRY RUN, PACKAGE NAME
+    local dry=$1 name="$2"
+    rm -f "$TMPDIR/"* # remove potential content of a previous install
+    ( cd "$TMPDIR"
+        cpio -i about.txt post-install.sh pre-install.sh <&0 2>./size
+        cpiocheck ./size about.txt post-install.sh pre-install.sh || return 1
+        [ -r ./about.txt ] && whatabout "$name" < ./about.txt >&3
+        echo "  Construction de l'arborescence du répertoire..." >&3
+        sed '/^mkdir/{s/^[^"]*"\?\|" *$//g;/^$/d;s/\\\\/"ESC/g;s/\([^\\]\)" "/\1\n/g;s/\\//g;s/"ESC/\\/g;p}' \
+           -n ./pre-install.sh 2>./check >./dirs  # we format the list of directories
+           if [ -s ./check ]; then
+               growl 1 "Script 'pre-install.sh' manquant ou corrompu."
+           fi) || return 1
+        ( cd "$ROOT/" 
+        dirscout $dry < "$TMPDIR/dirs"
+        [ $dry -ne 0 ] || sh "$TMPDIR/pre-install.sh" ) || return 1
+}
+
+shorty () {
+    # Return the short "soft-version" name of the package.
+    # $f NAME
+    basename "$1" .spack | sed "s/\(.*\)-[^-][^-]*-[^-][^-]*-[^-][^-]*$/\1/p" -n
+}
+
+tmpclear () {
+    # Wipe out the current and not more used temporary directories.
+    # $f DEBUG MODE
+    [ $1 -ne 0 ] || rm -rf "$TMPDIR"
+    find $ROOT/ -maxdepth 1 -type d -name "tmp-*-??????" | while read tmp; do
+        # we remove dirs without attached pid or older than 24h.
+        pid="$(basename "$tmp" | cut -f 2 -d "-")"
+        [ ! -e "/proc/$pid" -o "$(find "$tmp/" -maxdepth 0 -mtime +1)" ] || continue
+        rm -rf "$tmp"
+    done
+}
+
+digest () {
+    # Print the help digest on stdout.
+    # $f
+    cat >&1 << DIGEST
+@ADD*spackadd - installe ou met à niveau un paquet Spack.
+@ADD
+@ADDSpackadd installe ou met à niveau les paquets spécifiés, lesquels doivent
+@ADDrépondre aux spécifications de nommage originelles de Slackware :
+@ADD
+@ADD    « nom-version-architecture-décomptedesempaquetages »
+@ADD
+@ADDet porter l'extension « .spack ».
+@ADD'spackadd' tente d'abord de mettre à niveau l'installation des paquets
+@ADDspécifiés puis exécute une installation classique si aucun paquet similaire
+@ADDn'a été trouvé sur le système.
+@ADD
+@ADDUtilisation : spackadd <paquet(s)> [option(s)]
+@ADD
+@RM*spackrm - supprime un paquet du système.
+@RM
+@RM Spackrm supprime le ou les paquets spécifiés. On peut les spécifier avec
+@RM leur nom canonique : "nom-version-architecture-empaquetage",
+@RM ou leur simple nom de base, "nom".
+@RM Tous les paquets correspondants à la requête sont supprimés.
+@RM
+@RM Utilisation : spackrm <noms(s)> [option(s)]
+@RM
+    Options :
+ 
+@ADD    -a, --about    Affiche seulement la description du paquet.
+@ADD    -f, --force    Installe un paquet même s'il est déjà installé.
+@ADD                   N'a pas d'effet sur une mise à niveau.
+        -g, --debug    Ne supprime pas les fichiers de traitement.
+        -h, --help     Affiche cette aide sur la sortie et quitte.
+@ADD    -i, --install  Installe le paquet sans tenter de le mettre à niveau.
+        -q, --quiet    Mode moins verbeux.
+        --root=RÉP     Utilise la racine 'RÉP' plutôt que '/'.
+        -s, --stdin    Lit les noms de paquets sur l'entrée standard.
+@ADD    -u, --upgrade  Exécute une mise à niveau mais n'installe pas les
+@ADD                   nouveaux paquets.
+        -y, --dry-run  N'exécute pas vraiment la ligne de commande. Cette option
+                       montre ce qui devrait se passer sans toucher au système.
+
+    Rapports de bogues, suggestions, retours, questions, etc. sont à envoyer à
+    Seb (l'auteur et mainteneur ; la licence MIT/X11  se trouve en tête de
+    chaque script) à cette adresse : sbb CHEZ tuxfamily POINT org@ADD
+
+DIGEST
+}
+
+usage () {
+    # Print the help digest, then exit
+    # $f CODE, MODE
+    local code="$1" mode="$2" strip='/^@RM/d;s/^@ADD\* *//;s/^@ADD/    /'
+    [ $code -eq 0 ] || exec 1>&2
+    [ $mode -ne 0 ] || strip='/^@ADD/d;s/^@RM\* *//;s/^@RM \?/    /'
+    digest | sed "$strip"
+    exit $code
+}
+
+whatabout () {
+    # Print the "about" description of the package.
+    # $f PACKAGE NAME
+    local name="$(shorty "$1" | sed 's/+/\\+/g')"
+    awk '(sub(/^'"$name"':/,"")){BREAK = sub(/[^ \t]/, "&") ? 0 : BREAK+1;
+                if (BREAK > 1) exit 0; print "*"$0}'
+}
+
+# === Main =====================================================================
+umask 022
+export LC_ALL="C" # ensure the command outputs won't be changed by the locale.
+unset ARGV NEXT TMPDIR LOGDIR POSTDIR RMLOGDIR RMPOSTDIR ROOT
+SHIFT=0
+debug=0
+dry=0
+force=0
+info=0
+umode=$(echo "$0" | sed 's/.*rm$/0/;s/^[^0].*/1/') # tell if we are in "rm" or "add" mode.
+imode=$umode
+exec 3>&1
+for arg in "$@"; do
+    case "$umode$arg" in
+        1-a|1--about) info=1 ;;
+        1-f|1--force) force=1 ;;
+        ?-g|?--debug) debug=1 ;;
+        ?-h|?--help) usage 0 $umode ;;
+        1-i|1--install) [ $imode -lt 2 ] && imode=$(($imode + 1)) ;;
+        ?-q|?--quiet) exec 3>"/dev/null" ;;
+        ?-s|?--stdin) ARGV="-1 $ARGV" ;; # standard input is always read first.
+        1-u|1--upgrade) [ $imode -gt 0 ] && imode=$(($imode - 1)) ;;
+        ?-y|?--dry-run) dry=1 ;;
+        ?--root=?*) ROOT="$(echo "$arg" | cut -f 2- -d "=")" ;;
+        ?-*) growl 1 "\"$arg\" est une option incorrecte." ;;
+        *) ARGV="$ARGV $SHIFT"; SHIFT=0;;
+    esac
+    SHIFT=$(($SHIFT+1))
+done
+
+[ "$ARGV" ] || usage 1 $umode
+[ $info -ne 0 ] || pathinit
+[ $imode -ne 0 ] || force=0 # no sense in pure upgrade mode.
+
+arg=""
+while [ "$ARGV" ]; do
+    eat $ARGV || continue
+    if [ $SHIFT -ge 0 ]; then
+        shift $SHIFT
+        NEXT="$1"
+    fi
+    if [ $info -ne 0 ]; then
+        filecheck "$NEXT" && cpio -i --quiet --to-stdout about.txt <"$NEXT" | whatabout "$NEXT"
+        continue
+    fi
+    [ $imode -eq 2 ] || arg="$(pkgmatch $imode $umode "$NEXT")" || continue
+    if [ $umode -eq 0 ]; then
+        pkgremove "$dry" 0 $arg
+    else
+        pkginstall $force "$dry" "$NEXT" || continue
+        [ "$arg" ] && pkgremove "$dry" 1 $arg 
+    fi
+    [ $umode -eq 0 -o ! -s "$TMPDIR/post-install.sh" ] || (cd "$ROOT/" && postinstall "$dry" "$NEXT")
+done
+[ "$TMPDIR" ] && tmpclear $debug
+exec 3>&-
+
+# EoF

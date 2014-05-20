@@ -1,22 +1,18 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
-# Merci à Seb pour sa constance !
 
-NAMESRC=spack
 VERSION=3.11
-EXT=tar.gz
-NAMETGZ=spack
-WGET=http://requiescant.tuxfamily.org/files/$NAMESRC-$VERSION.$EXT
+WGET=http://requiescant.tuxfamily.org/files/$NAMESRC-$VERSION.tar.gz
 DESC="Suite d'outils et gestionnaire de paquets"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On applique les traductions françaises à 'spackadd' et 'spackpkg' ainsi que
-# la traduction et les modifications pour 0linux à 'spackdesc' :
-cat $CWD/spackadd.patch | patch -p1
+# Merci à Seb pour sa constance !
+
+# On applique les traductions françaises à 'spackpkg' ainsi que
+# la traduction et les modifications pour 0Linux à 'spackdesc' :
 cat $CWD/spackpkg.patch | patch -p1
 cat $CWD/spackdesc.patch | patch -p1
 
@@ -28,6 +24,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sbindir=/usr/sbin
 
 fakeroot make DESTDIR=${PKG}
+
+# On écrase avec notre 'spackadd' traduit et modifié pour les journaux en français :
+cat $CWD/spackadd-fr > ${PKG}/usr/sbin/spackadd
+chmod 755 ${PKG}/usr/sbin/spackadd
 
 installer_doc
 creer_post_installation
