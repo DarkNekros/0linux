@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=bluefish
-VERSION=2.2.5
-EXT=tar.bz2
-NAMETGZ=bluefish
-WGET=http://www.bennewitz.com/$NAMESRC/stable/source/$NAMESRC-$VERSION.$EXT
+VERSION=2.2.6
+WGET=http://www.bennewitz.com/$NAMESRC/stable/source/$NAMESRC-$VERSION.tar.bz2
 DESC="Éditeur de développpement intégré en GTK+"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
