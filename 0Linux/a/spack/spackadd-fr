@@ -274,7 +274,7 @@ pkgremove () {
                 growl 0 "Impossible de supprimer le répertoire manquant \"$dir\"."
             fi
         done
-        [ $up -eq 0 ] || stamp=$(date "+-upgraded-%Y-%m-%d,%T")
+        [ $up -eq 0 ] || stamp=$(date "+-misajour-le-%d-%m-%Y-a-%T")
         [ $dry -gt 0 ] || mv -f "$LOGDIR/$1" "$RMLOGDIR/$1$stamp"
         [ $dry -gt 0 -o ! -f "$POSTDIR/$1" ] || mv -f "$POSTDIR/$1" "$RMPOSTDIR/$1$stamp"
         shift 1
@@ -342,7 +342,7 @@ digest () {
 @ADDSpackadd installe ou met à niveau les paquets spécifiés, lesquels doivent
 @ADDrépondre aux spécifications de nommage originelles de Slackware :
 @ADD
-@ADD    « nom-version-architecture-décomptedesempaquetages »
+@ADD    « nom-version-architecture-révision »
 @ADD
 @ADDet porter l'extension « .spack ».
 @ADD'spackadd' tente d'abord de mettre à niveau l'installation des paquets
@@ -354,7 +354,7 @@ digest () {
 @RM*spackrm - supprime un paquet du système.
 @RM
 @RM Spackrm supprime le ou les paquets spécifiés. On peut les spécifier avec
-@RM leur nom canonique : "nom-version-architecture-empaquetage",
+@RM leur nom canonique : "nom-version-architecture-révision",
 @RM ou leur simple nom de base, "nom".
 @RM Tous les paquets correspondants à la requête sont supprimés.
 @RM

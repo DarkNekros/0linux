@@ -2,8 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=MesaLib
-VERSION=10.1.3
-WGET=ftp://ftp.freedesktop.org/pub/$NAMETGZ/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
+VERSION=10.1.4
+WGET=ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques graphiques 3D pour X11"
 
 telecharger_sources
