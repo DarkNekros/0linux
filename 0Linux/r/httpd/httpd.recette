@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=httpd
 VERSION=2.4.9
-EXT=tar.bz2
-NAMETGZ=httpd
-WGET=http://mirrors.ircam.fr/pub/apache/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://mirrors.ircam.fr/pub/apache/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Le serveur HTTP de la fondation Apache"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -47,6 +43,9 @@ EOF
 
 # On corrige le 'config.layout' pour respecter $LIBDIRSUFFIX :
 sed -i "s@lib/httpd@lib${LIBDIRSUFFIX}/httpd@g" config.layout
+
+# Le serveur httpd appartiendra à apache:apache :
+sed -i -e 's@User daemon@User apache@' -e 's@Group daemon@Group apache@' docs/conf/httpd.conf.in
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

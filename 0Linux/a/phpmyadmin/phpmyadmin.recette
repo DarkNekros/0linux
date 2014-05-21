@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=4.2.2
+WGET=http://prdownloads.sourceforge.net/phpmyadmin/phpMyAdmin-$VERSION-all-languages.tar.xz
+DESC="Interface web pour l'administration de bases de données MySQL"
+EXTRADEPS="php mariadb"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On copie le tout dans le paquet, sans la version :
+mkdir -p ${PKG}/srv/httpd/htdocs/
+cp -ar $TMP/${NAME} ${PKG}/srv/httpd/htdocs/phpmyadmin
+
+# On restreint l'accès :
+chmod 0750 ${PKG}/srv/httpd/htdocs/phpmyadmin
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On définit les permissions de 'phpmyadmin' pour le serveur HTTP Apache :
+chown -R root:apache srv/httpd/htdocs/phpmyadmin
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.
