@@ -44,9 +44,6 @@ EOF
 # On corrige le 'config.layout' pour respecter $LIBDIRSUFFIX :
 sed -i "s@lib/httpd@lib${LIBDIRSUFFIX}/httpd@g" config.layout
 
-# Le serveur httpd appartiendra à apache:apache :
-sed -i -e 's@User daemon@User apache@' -e 's@Group daemon@Group apache@' docs/conf/httpd.conf.in
-
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
