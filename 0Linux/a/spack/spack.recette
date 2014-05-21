@@ -11,8 +11,9 @@ cflags
 
 # Merci à Seb pour sa constance !
 
-# On applique les traductions françaises à 'spackpkg' ainsi que
-# la traduction et les modifications pour 0Linux à 'spackdesc' :
+# On applique les traductions françaises à 'spackadd' et 'spackpkg' ainsi que
+# la traduction et les modifications pour 0linux à 'spackdesc' :
+cat $CWD/spackadd.patch | patch -p1
 cat $CWD/spackpkg.patch | patch -p1
 cat $CWD/spackdesc.patch | patch -p1
 
@@ -24,10 +25,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sbindir=/usr/sbin
 
 fakeroot make DESTDIR=${PKG}
-
-# On écrase avec notre 'spackadd' traduit et modifié pour les journaux en français :
-cat $CWD/spackadd-fr > ${PKG}/usr/sbin/spackadd
-chmod 755 ${PKG}/usr/sbin/spackadd
 
 installer_doc
 creer_post_installation
