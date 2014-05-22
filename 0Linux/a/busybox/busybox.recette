@@ -1,23 +1,21 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=busybox
-VERSION=1.22.0
-EXT=tar.bz2
-NAMETGZ=busybox
-WGET=http://busybox.net/downloads/$NAMESRC-$VERSION.$EXT
+VERSION=1.22.1
+WGET=http://busybox.net/downloads/$NAMESRC-$VERSION.tar.bz2
 DESC="Le « couteau suisse » pour Linux et systèmes embarqués"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On ajoute une inclusion d'entête manquante :
-sed '1,1i#include <sys/resource.h>' -i include/libbb.h
+# On corrige les sources avec ces correctifs des développeurs :
+for p in $CWD/$NAMESRC-$VERSION*.patch; do
+	cat ${p} | patch -p1
+done
 
 # On place notre fichier 'config' :
-cp -a $CWD/config-busybox-${PKGARCH} .config
+cp -a $CWD/config-busybox .config
 
 # On nettoie tous les drapeaux codés en dur (merci Gentoo) :
 sed -i \
