@@ -140,6 +140,9 @@ preparer_sources() {
 	# multiples (ex. : 'preparer_sources $NAMESRC-0.10.1.tar.gz').
 	# Agit par défaut sur $WGET ou $WGET[0] (censé valoir <url>/$NAMESRC-$VERSION.$EXT).
 	
+	# On se place tout d'abord dans un endroit neutre et dédié :
+	cd $TMP
+	
 	# on nettoie si plusieurs archives doivent etre compilées :
 	if [ -n "${NAME}" ]; then
 		if [ -d $TMP/${NAME} ]; then
@@ -147,6 +150,7 @@ preparer_sources() {
 		fi
 	fi
 	
+	unset CURRENTARCHIVE NAME
 	if [ -n "$1" ]; then
 		CURRENTARCHIVE="$1"
 	else
@@ -227,12 +231,13 @@ preparer_sources() {
 			fi
 		;;
 		*.deb|*.DEB)
-			echo "Extraction de la sous-archive 'data.tar.lzma' venant de l'archive Debian dans :"
+			echo "Extraction de la sous-archive 'data.tar.lzma'/'data.tar.xz' venant de l'archive Debian dans :"
 			echo "	${TMP}/${CURRENTARCHIVE}/"
 			NAME="${CURRENTARCHIVE}"
 			mkdir -p ${TMP}/${CURRENTARCHIVE}
 			cd ${TMP}/${CURRENTARCHIVE}
-			ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.lzma | lzma -d | tar x
+			ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.lzma | lzma -d | tar x || \
+				ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.xz | xz -d | tar x
 			cd -
 		;;
 		*.rpm|*.RPM)
@@ -710,12 +715,17 @@ empaqueter() {
 	
 	# On décompresse et on recompresse en 'xz' tous les manuels :
 	if [ -d ${PKG}/usr/man ]; then
-		find ${PKG}/usr/man -type f -name "*.gz"  -exec gzip  -d {} \;
-		find ${PKG}/usr/man -type f -name "*.bz2" -exec bzip2 -d {} \;
-		find ${PKG}/usr/man -type f -name "*.*"   -exec xz       {} \;
-		for manpage in $(find ${PKG}/usr/man -type l) ; do
-			ln -s $(readlink $manpage).xz ${manpage}.xz
-			rm -f ${manpage}
+		find ${PKG}/usr/man -type f -name "*.gz"  -exec gzip  -d --force {} \;
+		find ${PKG}/usr/man -type f -name "*.bz2" -exec bzip2 -d --force {} \;
+		find ${PKG}/usr/man -type f -name "*.*"   -exec xz               {} \;
+		
+		# On renomme tous les liens comportant une extension et on renomme 
+		# la cible de chaque lien pour y mettre la bonne extension :
+		for manext in gz bz2 lzma; do
+			for manpage in $(find ${PKG}/usr/man -type l -name "*.${manext}") ; do
+				ln -sv $(echo $(readlink ${manpage} | sed "s@\.${manext}@.xz@")) $(echo ${manpage} | sed "s@\.${manext}@.xz@")
+				rm -f ${manpage}
+			done
 		done
 	fi
 	

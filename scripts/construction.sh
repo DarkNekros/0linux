@@ -58,9 +58,13 @@ compiler_installer() {
 			ROOTCMD=""
 		fi
 		
-		# On désinstalle au préalable ces paquets récalcitrants en attendant mieux :
+		# On désinstalle au préalable ces paquets récalcitrants en attendant mieux.
+		# On désinstalle aussi les pages de manuels car les paquets vérifient si des
+		# doublons existent sur le système et suprrime leurs propres manuels :
 		for paquet_recalcitrant in evolution-data-server \
 		gnome-shell \
+		man-pages \
+		man-pages-fr \
 		mlt \
 		nspr \
 		nss \

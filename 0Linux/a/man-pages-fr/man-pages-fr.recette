@@ -1,25 +1,36 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=man-pages-fr
 VERSION=3.62.1
-EXT=tar.xz
-NAMETGZ=man-pages-fr
-WGET=http://alioth.debian.org/frs/download.php/file/4021/$NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').$EXT} # Version différente !
+WGET=(
+      http://alioth.debian.org/frs/download.php/file/4021/$NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').tar.xz
+      http://ftp.fr.debian.org/debian/pool/main/m/manpages-fr-extra/manpages-fr-extra_20140506_all.deb
+     )
 DESC="Manuels francophones du système Linux"
 EXTRADEPS="man-db"
 
-
 telecharger_sources
 
-preparer_sources $NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').$EXT
+# On installe les manuels du projet Perkamon :
+preparer_sources $NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').tar.xz
 cflags
 
 # On crée le réperoire d'accueil :
 mkdir -p ${PKG}/usr/man/fr
 
-# Installation des manuels du projet Perkamon:
+# Installation des manuels du projet Perkamon :
 cp -ar man? ${PKG}/usr/man/fr
+
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/manpages-fr-extras
+
+# On installe les manuels supplémentaires de l'équipe debian-l10n-french :
+preparer_sources manpages-fr-extra_20140506_all.deb
+cflags
+
+# Installation des manuels en supprimant les manuels spécifiques à Debian :
+rm -rf debian
+cp -ar usr/share/man/* ${PKG}/usr/man/
 
 # On évite d'écraser des manuels existants certainement plus récents :
 for fichier in $(find ${PKG}/usr/man/fr -type f); do
@@ -33,6 +44,7 @@ creer_post_installation
 
 # On complète la post-installation :
 cat >> ${PKG}/post-install.sh << "EOF"
+
 # On met à jour la base de données des manuels :
 if [ -x /usr/bin/mandb ]; then
 	mandb -c --quiet 1>/dev/null 2>/dev/null &
