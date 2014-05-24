@@ -63,17 +63,17 @@ mk0db () {
                 print ""; close(p)
          }
          END{ if (E == 3) {
-                 print "(E) "$1": chemins dep/paquet contradictoires!\n" \
+                 print "(E) "$1" : chemins dep/paquet contradictoires!\n" \
                        "    => "$3"\n    => "PATH[$1] >"'"$1"'"; exit
               } else if (E) {
                 f = (E > 1) ? GOTDEP[$1] : GOTPKG[$1]
-                print "(E) "$1": duplication détectée!\n",
+                print "(E) "$1" : duplication détectée !\n",
                       "    => "p"\n    => "f >"'"$1"'"; exit
               }
               for (p in NOPKG)
                   print "(E) Aucun paquet attaché à "NOPKG[p] >"'"$1"'"
               for (p in DB) 
-                  print "(E) "p": entrée sans paquet (dans"DB[p]")" >"'"$1"'"
+                  print "(E) "p" : entrée sans paquet (dans "DB[p]")" >"'"$1"'"
               for (p in NODEP) print NODEP[p]
             }'
 }
