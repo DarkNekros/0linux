@@ -37,7 +37,7 @@ cat >> ${PKG}/post-install.sh << "EOF"
 
 # On met à jour la doc « info » du système :
 rm -f usr/info/dir
-for f $(find usr/info -type f ! -name "dir"); do
+for f in $(find usr/info -type f ! -name "dir"); do
 	install-info ${f} usr/info/dir 2>/dev/null
 done
 
