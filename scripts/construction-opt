@@ -30,6 +30,7 @@ libdvdcss
 libdvdnav
 libdvdread
 libebml
+libevdev
 libexif
 libgcrypt
 libggi
@@ -47,6 +48,7 @@ libid3tag
 libidl
 libidn
 libiec61883
+libinput
 libisofs
 libjpeg
 libkate
