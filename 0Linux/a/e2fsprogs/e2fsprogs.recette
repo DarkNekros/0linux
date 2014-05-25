@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=e2fsprogs
 VERSION=1.42.9
-EXT=tar.gz
-NAMETGZ=e2fsprogs
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Outils pour les systèmes de fichiers Ext"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On modifie le chemin des bibliothèques par défaut :
-sed -i "/libdir.*=.*\/lib/s@/lib@/usr/lib${LIBDIRSUFFIX}@g" configure
 
 # Un sous-répertoire de compilation dans les sources est recommandé :
 mkdir -p build

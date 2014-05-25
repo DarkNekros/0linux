@@ -713,11 +713,11 @@ empaqueter() {
 	# On place la description en la créant via 'spackdesc -' :
 	echo "${DESC}" | spackdesc --package="${NAMETGZ}" - > ${PKG}/about.txt
 	
-	# On décompresse et on recompresse en 'xz' tous les manuels :
+	# On décompresse et on recompresse en 'xz' tous les manuels en ignorant les liens matériels :
 	if [ -d ${PKG}/usr/man ]; then
 		find ${PKG}/usr/man -type f -name "*.gz"  -exec gzip  -d --force {} \;
 		find ${PKG}/usr/man -type f -name "*.bz2" -exec bzip2 -d --force {} \;
-		find ${PKG}/usr/man -type f -name "*.*"   -exec xz               {} \;
+		find ${PKG}/usr/man -type f -links 1 -name "*.*"   -exec xz      {} \;
 		
 		# On renomme tous les liens comportant une extension et on renomme 
 		# la cible de chaque lien pour y mettre la bonne extension :
