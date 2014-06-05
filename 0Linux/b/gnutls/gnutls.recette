@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gnutls
-VERSION=3.2.12
-EXT=tar.xz
-NAMETGZ=gnutls
-WGET=ftp://ftp.gnutls.org/gcrypt/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=3.2.15
+WGET=ftp://ftp.gnutls.org/gcrypt/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Outils et bibliothèques de communication sécurisée"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
