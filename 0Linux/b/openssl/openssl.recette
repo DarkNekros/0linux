@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=openssl
-VERSION=1.0.1g
-EXT=tar.gz
-NAMETGZ=openssl
-WGET=http://www.openssl.org/source/$NAMESRC-$VERSION.$EXT
+VERSION=1.0.1h
+WGET=http://www.openssl.org/source/$NAMESRC-$VERSION.tar.gz
 DESC="Protocoles et algorithmes OpenSSL"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -18,9 +14,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
-	
-	# On corrige la syntaxe de la doc avec les plus récents 'perl' :
-	cat $CWD/openssl.pod-syntax.patch | patch -p1
 	
 	# On corrige l'appel au compilateur :
 	sed -i 's@CC=\$\${CC:-\$(CC)}@CC="\$\${CC:-\$(CC)}"@' Makefile.org
@@ -48,9 +41,6 @@ fi
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige la syntaxe de la doc avec les plus récents 'perl' :
-cat $CWD/openssl.pod-syntax.patch | patch -p1
 
 # La code généré change selon l'architecture visée :
 if [ "${PKGARCH}" = "x86_64" ]; then
