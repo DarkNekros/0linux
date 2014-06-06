@@ -5,7 +5,7 @@ cflags
 [ "${PKGARCH}" = "x86_64" ] && SRCARCH="amd64"
 [ "${PKGARCH}" = "i686" ] && SRCARCH="i686"
 
-VERSION=36.0.1976.2
+VERSION=35.0.1916.141
 WGET=https://dl.google.com/dl/linux/direct/google-chrome-stable_current_${SRCARCH}.deb
 DESC="Chrome, le navigateur Web de Google"
 
