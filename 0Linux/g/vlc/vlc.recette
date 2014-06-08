@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=vlc
 VERSION=2.1.4
-EXT=tar.xz
-NAMETGZ=vlc
-WGET=http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT
+WGET=http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Le lecteur multimédia polyvalent VLC"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On corrige la prise en charge de 'freerdp' et des 'libva' les plus récentes :
+cat $CWD/vlc.libva.patch | patch -p1
+cat $CWD/vlc.rdp.patch | patch -p1
 
 # On corrige le répertoire standard des bibliothèques :
 sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
@@ -32,6 +32,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-debug \
 	--disable-rpath \
+	--disable-update-check \
 	--enable-a52 \
 	--enable-aa \
 	--enable-avcodec \
@@ -43,6 +44,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-flac \
 	--enable-libass \
 	--enable-libcddb \
+	--enable-libfreerdp \
 	--enable-live555 \
 	--enable-lua \
 	--enable-ncurses \
