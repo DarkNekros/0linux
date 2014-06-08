@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=glib
 VERSION=2.40.0
-EXT=tar.xz
-NAMETGZ=glib
-WGET=http://ftp.gnome.org/pub/GNOME/sources/${NAMESRC}/$(echo $VERSION | cut -d'.' -f1-2)/${NAMESRC}-$VERSION.$EXT
+WGET=http://ftp.gnome.org/pub/GNOME/sources/${NAMESRC}/$(echo $VERSION | cut -d'.' -f1-2)/${NAMESRC}-$VERSION.tar.xz
 DESC="Bibliothèques de fonctions C pour GTK+"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -18,6 +14,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
+	
+	# On corrige les drapeaux qui posent problème pour certains plugins (dont VLC) :
+	cat $CWD/glib.znodelete.patch | patch -p1
 	
 	# On régénère le système de construction, ou 'automake' va se plaindre et planter :
 	autoreconf -vif
@@ -47,6 +46,9 @@ fi
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On corrige les drapeaux qui posent problème pour certains plugins (dont VLC) :
+cat $CWD/glib.znodelete.patch | patch -p1
 
 # On régénère le système de construction, ou 'automake' va se plaindre et planter :
 autoreconf -vif
