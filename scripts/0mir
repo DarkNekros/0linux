@@ -118,8 +118,10 @@ log="/tmp/0mir-error.log"
 # On source nos données d'accès pour le login rsync :
 . ./login-0mir.sh
 
+# On se place à la racine du dépôt :
+cd "$(pwd)/../../../$ROOT" || exit 1
+
 # On génère les descriptions de chaque paquet :
-cd "../../../$ROOT" || exit 1
 pkgroot="paquets/$VERSION"
 for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 	echo "   Génère les descriptions dans $pkgroot/$arch/..."
@@ -159,8 +161,7 @@ done
 
 rm -f "$log" # sa présence signifie qu'il y a eu erreur.
 
-# On généère la base de données des paquets :
-cd "../../../$ROOT" || exit 1
+# On génère la base de données des paquets :
 for arch in x86_64; do # On ne fait que x86_64 pour le moment...
     echo "   Génère    $pkgroot/$arch/paquets.db..."
     ( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
