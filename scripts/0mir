@@ -119,7 +119,7 @@ log="/tmp/0mir-error.log"
 . ./login-0mir.sh
 
 # On génère les descriptions de chaque paquet :
-cd "$(pwd)/../../../$ROOT" || exit 1
+cd "$(dirname $0)/../../../$ROOT" || exit 1
 pkgroot="paquets/$VERSION"
 for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 	echo "   Génère les descriptions dans $pkgroot/$arch/..."
@@ -160,7 +160,7 @@ done
 rm -f "$log" # sa présence signifie qu'il y a eu erreur.
 
 # On généère la base de données des paquets :
-cd "$(pwd)/../../../$ROOT" || exit 1
+cd "$(dirname $0)/../../../$ROOT" || exit 1
 for arch in x86_64; do # On ne fait que x86_64 pour le moment...
     echo "   Génère    $pkgroot/$arch/paquets.db..."
     ( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
