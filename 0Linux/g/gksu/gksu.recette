@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.0.2
-WGET=http://people.debian.org/~kov/gksu/$NAMESRC-$VERSION.tar.gz
-DESC="Outil d'authentification graphique"
-EXTRADEPS="gnome-terminal libgksu"
+VERSION=0.0.2git
+WGET=http://ftp.igh.cnrs.frpub/os/linux/0linux/archives_sources/gksu/gksu-polkit-$VERSION.tar.xz
+DESC="Outil d'authentification graphique basé sur 'polkit'"
 
 telecharger_sources
 preparer_sources
 cflags
 
-# On corrige le raccourci pour le lier à 'gnome-terminal' :
-sed -i -e 's@/usr/bin/x-terminal-emulator@-l gnome-terminal@g' gksu.desktop
-echo "TryExec=gnome-terminal" >> gksu.desktop
+# On corrige la politique d'authentification pour que les utilisateurs
+# aient à entrer le mot de passe root plutôt que le leur... :
+cat $CWD/gksu.auth_admin.patch | patch -p1
 
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -24,10 +24,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-nautilus-extension \
+	--with-dbus-sys=/etc/dbus-1/system.d \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-make -j${JOBS} || make
+make
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc

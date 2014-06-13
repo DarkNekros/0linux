@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=poppler
-VERSION=0.24.5
+VERSION=0.26.1
 EXT=tar.xz
-NAMETGZ=poppler
-WGET=(http://poppler.freedesktop.org/$NAMESRC-$VERSION.$EXT
+WGET=(
+      http://poppler.freedesktop.org/$NAMESRC-$VERSION.$EXT
       http://poppler.freedesktop.org/poppler-data-0.4.6.tar.gz
      )
 
 DESC="Bibliothèques de rendu PDF"
-
 
 telecharger_sources
 
@@ -21,6 +19,7 @@ cflags
 # On installe :
 fakeroot make install prefix=/usr DESTDIR=${PKG}
 
+# On compile maintenant 'poppler' :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
@@ -35,7 +34,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-cairo-output \
-	--enable-compile-warnings=yes \
+	--enable-gtk-doc \
+	--enable-libcurl \
 	--enable-libjpeg \
 	--enable-poppler-glib \
 	--enable-poppler-qt4 \

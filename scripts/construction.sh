@@ -63,6 +63,7 @@ compiler_installer() {
 		# doublons existent sur le système et suprrime leurs propres manuels :
 		for paquet_recalcitrant in evolution-data-server \
 		gnome-shell \
+		lvm2 \
 		man-pages \
 		man-pages-fr \
 		mlt \

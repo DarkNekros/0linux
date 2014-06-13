@@ -1,16 +1,36 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libgee
 VERSION=0.14.0
-EXT=tar.xz
-NAMETGZ=libgee
-WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+WGET=(
+      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/0.6/$NAMESRC-0.6.8.tar.xz
+      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
+     )
 DESC="Bibliothèques pour GObject"
 
-
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-0.6.8.tar.xz
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-0.6.8
+
+preparer_sources $NAMESRC-$VERSION.tar.xz
 cflags
 
 # Compilation :

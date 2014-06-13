@@ -1,0 +1,125 @@
+#!/bin/sh
+#
+# 0MIR - gère le serveur maître de 0linux.
+#
+
+# Copyright (c) 2012, 2013, 2014 Sébastien Boillod <sbb at tuxfamily dot org>.
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+. /etc/os-release
+
+# === Library ==================================================================
+
+checknewpkg () {
+    # Vérifie que les nouveaux paquets/dbs ont été correctement poussés.
+    # $f TIMESTAMP, DBs
+    local newer="" stamp="$1"; shift 1
+    [ -f "$stamp" ] && newer="-newer $stamp"
+    find $@ -type f $newer \! -name "*.dep" \! -name "*~" | while read pkg; do
+            echo "   Contrôle  $pkg..."
+            sum="$(curl -s "$URL/$pkg" | md5sum | awk '{print $1}')"
+            check="$(md5sum "$pkg" | awk '{print $1}')"
+            [ "$check" = "$sum" ] || growl 0 "$URL/$pkg est CORROMPU!"
+    done
+    date -u '+TZ=UTC0 touch -m -t %Y%m%d%H%M.%S "$0"' >"$stamp"
+}
+
+getstuff () {
+    # Liste tout les fichiers utiles à la constitution de la base.
+    # $f
+    find * -type f -name "*.spack" -exec du -sk {} +
+    find * -type f -name "*.dep"
+}
+
+growl () {
+    # Imprime le message d'erreur et sort si un code non-nul est donné.
+    # $f CODE, MESSAGE
+    local code=$1; shift 1
+    if [ $code -ne 0 ]; then
+        echo "(E) $*" >&2
+        exit $code
+    fi
+    echo "(W) $*" >&2
+}
+
+mk0db () {
+    # Régénère la DB des paquets.
+    # $f JOURNAL DES ERREURS
+    awk -v J="$1" '(NF > 1){ s=$1; $1=$2 }
+                 { p = $3 = $1; gsub(/^.*\/|\.[^.]+$/,"",$1); $2 = $1
+                   sub(/-[^-]+-[^-]+-[^-]+$/,"", $1); sub(/[^\/]+$/,"", $3)
+                 }
+              (s){ if ($1 in DEP) {
+                     print "(E) "$1": duplication détectée!\n"\
+                       "    => "p"\n    => "DEP[$1] >J
+                     exit E=1
+                   }
+                   PATH[$1]=$3; DEP[$1] = p; DB[$2]=$0" "s; s=0; next
+                 }
+    (!($2 in DB)){ print "(E) "p": sans paquet associé." >J; exit E=1 }
+ (PATH[$1] != $3){ print "(E) "$1": chemins dep/paquet contradictoires!\n"\
+                         "    => "$3"\n    => "PATH[$1] >J; exit E=1 }
+                 { printf("%s", DB[$2]); delete DB[$2]
+                   while ((getline <p) > 0) {
+                     if (! ($0 in DEP)) {
+                       print "(E) "$0": entrée sans paquet (dans "p")" >J
+                       exit E=1
+                     }
+                     printf(" %s", $0)
+                   }
+                   print ""; close(p)
+                 }
+             END { if (!E)
+                     for (p in DB)
+                       print DB[p]
+                 }'
+}
+
+mirror () {
+    # Mets à jour le dépôt sur le serveur.
+    # $f TIMESTAMP
+    local user="${FTPUSER:+"-u $FTPUSER"}"
+    [ -f "$1" ] || TZ=UTC0 touch -t 197001010000.01 "$1"
+    lftp -c "open $FTP $user && mirror -ReN"$1" -X*~ -X*.dep . ." || exit 1
+}
+
+# === Main =====================================================================
+export LC_ALL="C"
+umask 022
+FTP="ftp://127.0.0.3:2112"
+URL="$FTP"
+FTPUSER=""
+ROOT="0"
+log="/tmp/0mir-error.log"
+
+cd "$(dirname "$0")/$ROOT" || exit 1
+pkgroot="paquets/$VERSION"
+rm -f "$log" # sa présence signifie qu'il y a eu erreur.
+for arch in i686; do
+    echo "   Génère    $pkgroot/$arch/paquets.db..."
+    ( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
+      getstuff | mk0db "$log" | sort >"./paquets.db"
+    )
+    if [ -f "$log" ]; then
+        echo "Le dépôt $arch contient des erreurs!" >&2
+        cat "$log" >&2
+        echo "Ce journal des erreurs est enregistré dans $log" >&2
+        exit 1
+    fi
+done
+
+mirror ../.timestamp
+checknewpkg ../.timestamp $pkgroot # ajouter ici les autres dossiers à vérifier.
+
+# EoF

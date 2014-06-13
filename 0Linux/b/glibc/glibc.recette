@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=glibc
 VERSION=2.19
-EXT=tar.xz
-NAMETGZ=glibc
-WGET=http://ftp.gnu.org/gnu/$NAMETGZ/$NAMESRC-$VERSION.$EXT
+WGET=http://ftp.gnu.org/gnu/$NAMETGZ/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques système vitales"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -21,6 +17,10 @@ sed -i 's/localedata timezone rt/localedata rt/' Makeconfig
 
 # On active la parallélisation :
 sed -i "s@# PARALLELMFLAGS = -j 4@PARALLELMFLAGS = -j${JOBS}@" Makefile.in
+
+# On préfère avoir des répertoires pour les définitions des locales plutôt
+# qu'une grosse archive, ça nous permettra d'alléger le live :
+sed -i 's@--alias-file=\.\./intl/locale\.alias@--alias-file=../intl/locale.alias --no-archive@' localedata/Makefile
 
 # On compile pour la prise en charge du multilib en i686 pour x86_64 uniquement :
 if [ "${PKGARCH}" = "x86_64" ]; then
