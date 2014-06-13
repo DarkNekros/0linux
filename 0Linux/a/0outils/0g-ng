@@ -2,7 +2,7 @@
 #
 # 0G - gestionnaire distant pour 0linux.
 
-# Copyright (c) 2012, 2013, 2014 S√©bastien Boillod <sbb at tuxfamily dot org>.
+# Copyright (c) 2012, 2013, 2014 SÈbastien Boillod <sbb at tuxfamily dot org>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -17,8 +17,8 @@
 # PERFORMANCE OF THIS SOFTWARE.
 
 # === Configuration ============================================================
-# Les informations sur le syst√®me et la configuration de 0g sont charg√©es en
-# tant que script shell. On le fait ici afin que ceux-ci ne puissent red√©finir
+# Les informations sur le systËme et la configuration de 0g sont chargÈes en
+# tant que script shell. On le fait ici afin que ceux-ci ne puissent redÈfinir
 # le corps du script; ils ne doivent comporter aucune erreur.
 set -e
 CONFIG="/etc/os-release"
@@ -33,10 +33,10 @@ if [ -f "$CONFIG" ]; then
 fi
 set +e
 
-# === Biblioth√®que =============================================================
+# === BibliothËque =============================================================
 
 evalpkg () {
-    # Liste les paquets qui doivent √™tre mis √† jour
+    # Liste les paquets qui doivent Ítre mis ‡ jour
     # $f MODE EXPERT, PAQUETS
     local exp="#"
     [ "$1" = "oui" ] || exp=""; shift 1
@@ -65,12 +65,12 @@ evalpkg () {
                  if (p in DB)
                     update(p)
                 else if ((GET[p] == "/") && !(p in SKIP))
-                   print "(!) "p" : paquet introuvable !">"/dev/stderr"
+                   print "(!) "p": paquet introuvable !">"/dev/stderr"
              }' $@
 }
 
 getopt () {
-    # S√©pare les options des arguments sur la ligne de commande.
+    # SÈpare les options des arguments sur la ligne de commande.
     # $f OPTIONS AVEC ARGUMENT
     local opt=$1; shift 1
     awk 'BEGIN{ for (i=x=1; i < ARGC; i++) {
@@ -96,18 +96,18 @@ getopt () {
 }
 
 growl () {
-    # Imprime le message d'erreur et sort si un code non-nul est donn√©.
+    # Imprime le message d'erreur et sort si un code non-nul est donnÈ.
     # $f CODE, MESSAGE
     local code=$1; shift 1
     if [ $code -ne 0 ]; then
         echo "(E) $*" >&2
         exit $code
     fi
-    echo "(!) $*" >&2
+    echo "(A) $*" >&2
 }
 
 humansize () {
-    # Affiche les tailles de mani√®re lisible.
+    # Affiche les tailles de maniËre lisible.
     # $f TAILLE EN KILO-OCTETS
     POSIXLY_CORRECT=Y awk 'BEGIN{split("G M K", u); x=1048576
                                  while (++i && x >= '$1')
@@ -116,8 +116,8 @@ humansize () {
 }
 
 printinfo () {
-    # Affiche le contenu des fichiers textes associ√©s aux paquets demand√©s.
-    # $f URL DU D√âP√îT
+    # Affiche le contenu des fichiers textes associÈs aux paquets demandÈs.
+    # $f URL DU D…P‘T
     local tmp="" txt=""
     while read tmp; do
         read tmp; read txt
@@ -140,8 +140,8 @@ requestinfo () {
 }
 
 requestpkg () {
-    # R√©unit les informations pour √©valuer les mises √† jour.
-    # $f DB, PAQUETS √Ä IGNORER, PAQUETS G√âR√âS MANUELLEMENT
+    # RÈunit les informations pour Èvaluer les mises ‡ jour.
+    # $f DB, PAQUETS ¿ IGNORER, PAQUETS G…R…S MANUELLEMENT
     local db="$1"; shift 1
     echo $1 # pas de guillemets car on veut tout sur une seule ligne.
     echo $2 #  "                     "                       "
@@ -151,8 +151,8 @@ requestpkg () {
 }
 
 #spackadd () {
-#    # Simule une mise √† niveau avec de faux paquets. Essentiellement
-#    # utile pour les debugs, √Ä CONSERVER EN COMMENTAIRES.
+#    # Simule une mise ‡ niveau avec de faux paquets. Essentiellement
+#    # utile pour les debugs, ¿ CONSERVER EN COMMENTAIRES.
 #    # $f RACINE, PAQUET
 #    shift 1 # on se moque de l'option racine ici.
 #    local pkg="$(basename "$1" | sed 's/-[^-]*-[^-]*-[^-]*$//')"
@@ -164,21 +164,21 @@ requestpkg () {
 #}
 
 upgrade () {
-    # T√©l√©charge et met √† niveau les paquets.
-    # $f GARDER LES PAQUETS, CACHE, DOSS. TAMPON, MODE D√âMO, URL D√âP√îT, JOURNAL
+    # TÈlÈcharge et met ‡ niveau les paquets.
+    # $f GARDER LES PAQUETS, CACHE, DOSS. TAMPON, MODE D…MO, URL D…P‘T, JOURNAL
     local save="$1" cch="$2" tmp="${3:-"/tmp"}" demo="$4" url="$5" dwl="" \
           date=$(date +%d/%m/%Y) code="" p="" size=0 total=0 c=0; shift 5
     if ! read code; then
-        echo "Le syst√®me est √† jour."
+        echo "Le systËme est ‡ jour."
         return 0
     fi
     tmp="$(mktemp -qd "$tmp/0g-XXXXXX")"
-    [ "$tmp" ] || growl 1 "Impossible d'√©tablir un dossier temporaire s√©curis√© !"
-    [ "$demo" ] && demo="[d√©mo]"
+    [ "$tmp" ] || growl 1 "Impossible d'Ètablir un dossier temporaire sÈcurisÈ !"
+    [ "$demo" ] && demo="[dÈmo]"
     exec 3>>"$1"
     while [ "$code" ]; do
         read size; read dwl; c=$((c+1)); p=$(basename "$dwl.spack")
-        echo "$demo T√©l√©chargement de $p : $(humansize $size)"
+        echo "$demo TÈlÈchargement de $p: $(humansize $size)"
         if [ "$cch" ] && [ -f "$cch/$dwl.spack" ]; then
             echo " En cache : utilisation de la copie locale..."
             [ "$demo" ] || ln -sf "$cch/$dwl.spack" "$tmp"
@@ -187,7 +187,7 @@ upgrade () {
             [ "$demo" ] || $CURL -o "$tmp/$p" "$url/$dwl.spack"
         fi
         if [ $code -ne 0 ]; then
-            growl 0 "$p est marqu√© comme sp√©cial et ne sera pas int√©gr√©."
+            growl 0 "$p est marquÈ comme spÈcial et ne sera pas intÈgrÈ."
             echo "$date ! ${p%.spack}" >&3
         elif [ ! "$demo" ]; then
             spackadd --root="$ROOT" "$tmp/$p" && echo "$date + ${p%.spack}" >&3
@@ -198,12 +198,12 @@ upgrade () {
     exec 3>&-
     if ! rmdir "$tmp" 2>/dev/null; then
         if [ "$save" = "oui" ]; then
-            echo "$demo Les paquets t√©l√©charg√©s ont √©t√© conserv√©s dans $tmp"
+            echo "$demo Les paquets tÈlÈchargÈs ont ÈtÈ conservÈs dans $tmp"
         else
-            growl 0 "$tmp n'est pas vide et ne sera donc pas d√©truit."
+            growl 0 "$tmp n'est pas vide et ne sera donc pas dÈtruit."
         fi
     fi
-    echo "$demo $c paquet(s) concern√©(s) -- $(humansize $total) t√©l√©charg√©s."
+    echo "$demo $c paquet(s) concernÈ(s) -- $(humansize $total) tÈlÈchargÈs."
 }
 
 usage () {
@@ -211,78 +211,37 @@ usage () {
     # $f CODE
     [ $1 -eq 0 ] || exec 1>&2
     cat >&1 << EOF
-       0g - gestion et mise √† niveau distante des paquets de 0Linux
+       0g - gestion et mise ‡ niveau distante des paquets de 0Linux
 
-  0g t√©l√©charge et met √† jour les paquets install√©s pour lesquels une
-  nouvelle version est disponible dans le d√©p√¥t de 0Linux. Lorsque des
-  arguments suppl√©mentaires lui sont fournis, en sus de cette op√©ration,
+  0g tÈlÈcharge et met ‡ jour les paquets installÈs pour lesquels une
+  nouvelle version est disponible dans le dÈpÙt de 0Linux. Lorsque des
+  arguments supplÈmentaires lui sont fournis, en sus de cette opÈration,
   0g cherche et installe les nouveaux paquets correspondant avec leurs
-  √©ventuelles d√©pendances.
+  Èventuelles dÈpendances.
 
   Utilisation: 0g [option] [paquet(s)]
 
   Options:
-      -A <item(s)>   ---  ajoute les items, s√©par√©s par des espaces, √† la
-                          liste des paquets ne devant pas √™tre mis √† jour
+      -A <item(s)>   ---  ajoute les items, sÈparÈs par des espaces, ‡ la
+                          liste des paquets ne devant pas Ítre mis ‡ jour
                           automatiquement.
       -C <dossier>   ---  le chemin vers le cache, contenant une copie locale
-                          du d√©p√¥t distant.
-      -E <chaine>    ---  active/d√©sactive le mode expert, qui annule la
-                          gestion des d√©pendances.
-      -G <chaine>    ---  active/d√©sactive la sauvegarde des paquets apr√®s
-                          int√©gration au syst√®me.
-      -J <fichier>   ---  donne le fichier √† utiliser pour la journalisation.
-      -L <item(s)>   ---  ajoute les items, s√©par√©s par des espaces, √† la
-                          liste des paquets ne devant pas √™tre t√©l√©charg√©s.
-      -S <chaine>    ---  red√©finit l'adresse du d√©p√¥t distant.
-      -T <chaine>    ---  red√©finit la racine du r√©pertoire s√©curis√© o√π
+                          du dÈpÙt distant.
+      -E <chaine>    ---  active/dÈsactive le mode expert, qui annule la
+                          gestion des dÈpendances.
+      -G <chaine>    ---  active/dÈsactive la sauvegarde des paquets aprËs
+                          intÈgration au systËme.
+      -J <fichier>   ---  donne le fichier ‡ utiliser pour la journalisation.
+      -L <item(s)>   ---  ajoute les items, sÈparÈs par des espaces, ‡ la
+                          liste des paquets ne devant pas Ítre tÈlÈchargÈs.
+      -S <chaine>    ---  redÈfinit l'adresse du dÈpÙt distant.
+      -T <chaine>    ---  redÈfinit la racine du rÈpertoire sÈcurisÈ o˘
                           transiteront les paquets.
-      -d             ---  passe en mode "d√©mo", montrant ce qui sera fait,
-                          sans rien modifier au syst√®me.
-      -h             ---  imprime cette aide sur la sortie standard et sort.
-
-  Pour plus d'informations, consultez "man 8 0g" et le fichier de configuration
-  "$CONFIG".
-
-EOF
-    exit $1
-}
-usage () {
-    # Imprime l'aide et sort.
-    # $f CODE
-    [ $1 -eq 0 ] || exec 1>&2
-    cat >&1 << EOF
-       0g - gestion et mise √† niveau distante des paquets de 0Linux
-
-  0g t√©l√©charge et met √† jour les paquets install√©s pour lesquels une
-  nouvelle version est disponible dans le d√©p√¥t de 0Linux. Lorsque des
-  arguments suppl√©mentaires lui sont fournis, en sus de cette op√©ration,
-  0g cherche et installe les nouveaux paquets correspondant avec leurs
-  √©ventuelles d√©pendances.
-
-  Utilisation: 0g [option] [paquet(s)]
-
-  Options:
-      -A <item(s)>   ---  ajoute les items, s√©par√©s par des espaces, √† la
-                          liste des paquets ne devant pas √™tre mis √† jour
-                          automatiquement.
-      -C <dossier>   ---  le chemin vers le cache, contenant une copie locale
-                          du d√©p√¥t distant.
-      -E <chaine>    ---  active/d√©sactive le mode expert, qui annule la
-                          gestion des d√©pendances.
-      -G <chaine>    ---  active/d√©sactive la sauvegarde des paquets apr√®s
-                          int√©gration au syst√®me.
-      -J <fichier>   ---  donne le fichier √† utiliser pour la journalisation.
-      -L <item(s)>   ---  ajoute les items, s√©par√©s par des espaces, √† la
-                          liste des paquets ne devant pas √™tre t√©l√©charg√©s.
-      -S <chaine>    ---  red√©finit l'adresse du d√©p√¥t distant.
-      -T <chaine>    ---  red√©finit la racine du r√©pertoire s√©curis√© o√π
-                          transiteront les paquets.
-      -d             ---  passe en mode "d√©mo", montrant ce qui sera fait,
-                          sans rien modifier au syst√®me.
+      -d             ---  passe en mode "dÈmo", montrant ce qui sera fait,
+                          sans rien modifier au systËme.
       -h             ---  imprime cette aide sur la sortie standard et sort.
       -i             ---  imprime la liste des paquets disponibles, ou les
-                          informations relatives aux paquets indiqu√©s.
+                          informations relatives aux paquets indiquÈs.
 
 
   Pour plus d'informations, consultez "man 8 0g" et le fichier de configuration
@@ -291,16 +250,15 @@ usage () {
 EOF
     exit $1
 }
-
 
 # === Programme principal ======================================================
 export LC_ALL='C'
 umask 022
 unset demo info root paquets
-MASTER="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
+MASTER="ftp://127.0.0.3:2112/paquets" #"http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets/"
 ROOT="$(echo "$ROOT" | sed 's#/*$#/#')"
 LOGDIR="${ROOT}var/log/packages"
-CURL="/usr/bin/curl-statique -LRs" # curl est compil√© statiquement
+CURL="/usr/bin/curl -LRs"
 
 for i in $(getopt ACEGJLST "$@"); do
     case "$root$i" in

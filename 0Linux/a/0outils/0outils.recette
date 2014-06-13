@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=12.4.7
+VERSION=12.5.2
 DESC="Outils « maison » pour l'installation et l'administration du système 0Linux"
 EXTRADEPS="realpath"
 
@@ -17,6 +17,7 @@ for script in \
 0chroot \
 0clavier \
 0comparer_config \
+0creation_initrd \
 0creation_live \
 0g \
 0horloge \
@@ -40,6 +41,9 @@ chmod 755 ${PKG}/usr/share/0outils/*.sh
 
 # On place les fichiers du système autonome, scripts et fichiers d'amorçage :
 cp -a $CWD/installateur ${PKG}/usr/share/0outils/
+
+# On place les fichiers de création de l'initrd :
+cp -a $CWD/initrd ${PKG}/usr/share/0outils/
 
 # On place la configuration de '0g' en prenant garde à ne rien écraser :
 cp -a $CWD/0g.conf ${PKG}/etc/0outils/0g.conf.0nouveau

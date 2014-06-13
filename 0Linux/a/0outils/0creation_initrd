@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# Voyez le fichier LICENCES pour connaître la licence de ce script.
+
+set -e
+umask 022
+
+# On définit l'architecture visée :
+PKGARCH=${PKGARCH:-$(uname -m)}
+
+# On définit le suffixe du répertoire standard accueillant les bibliothèques :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	LIBDIRSUFFIX="64"
+else
+	LIBDIRSUFFIX=""
+fi
+
+# On vérifie qu'on est bien root :
+if [ ! "$(whoami)" = "root" ]; then
+	echo "Erreur : seul root peut m'exécuter !"
+	exit 1
+fi
+
+SOURCES=${SOURCES:-/usr/share/0outils/initrd}
+PAQUETS=${PAQUETS:-${1}}
+TMP=${TMP:-/usr/local/temp/initrd_temp}
+INITRD=${INITRD:-/usr/local/temp/initrd}
+
+# On traite les erreurs éventuelles :
+if [ ! -d "${PAQUETS}" ]; then
+	echo "Erreur : ${PAQUETS} n'est pas un répertoire existant !"
+	exit 1
+fi
+
+# On crée et on vide les répertoires d'accueil :
+mkdir -p ${TMP}
+rm -rf ${TMP}/*
+
+# On installe les paquets pour le système temporaire :
+echo "Installation du système minimal dans ${TMP} : "
+
+# On installe un système minimal :
+for paq in \
+busybox \
+base-systeme; do
+	spackadd --quiet --root=${TMP} $(find ${PAQUETS} -type d -name "${paq}")/*.spack
+done
+
+# On copie nos fichiers spéciaux pour l'initrd :
+echo -n "Copie des fichiers dans l'initrd... "
+cp -a ${SOURCES}/fstab ${TMP}/etc/
+cp -a ${SOURCES}/init ${TMP}/usr/sbin/
+
+# On crée le lien critique pour 'init' :
+ln -sf sbin/init ${TMP}/init
+
+# On crée le lien critique 'sh', qui se trouve dans BusyBox uniquement :
+ln -sf BusyBox/bin/sh ${TMP}/usr/bin/
+
+# On crée un fichier vide '.hushlogin' dans le répertoire de root pour éviter
+# l'affichage du « message du jour » contenu dans '/etc/motd' :
+touch ${TMP}/root/.hushlogin
+
+# On nettoie tous les fichiers '*.0nouveau' au cas où :
+for f in $(find ${TMP}/{etc,var} -type f -name "*.0nouveau" 2>/dev/null); do
+	mv ${f} $(dirname ${f})/$(basename ${f} .0nouveau) 2>/dev/null || true
+done
+
+# On crée de quoi préparer le pivot sur la racine finale :
+mkdir -p  ${TMP}/mnt/{proc,sys,run,dev}
+
+# On crée un point de montage pour y mettre l'ancienne racine :
+mkdir -p ${TMP}/mnt/oldroot
+
+# 'mdev' a besoin d'un fichier de configuration, même vide :
+touch ${TMP}/etc/mdev.conf
+
+# On crée l'initrd :
+echo -n "Création de l'initrd... "
+rm -rf ${INITRD}
+cd ${TMP}
+find . | cpio -o -H newc | xz -v --check=crc32 > ${INITRD}
+echo "Terminé."
+
+echo "L'initrd '${INITRD}' a été créé."
+echo ""
+
+exit 0
