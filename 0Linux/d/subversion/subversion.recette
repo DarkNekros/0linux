@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=subversion
-VERSION=1.8.8
-EXT=tar.bz2
-NAMETGZ=subversion
-WGET=http://apache.crihan.fr/dist/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.8.9
+WGET=http://apache.crihan.fr/dist/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Système de contrôle de versions centralisé"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
