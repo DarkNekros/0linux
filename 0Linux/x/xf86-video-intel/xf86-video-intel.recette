@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xf86-video-intel
-VERSION=2.99.911
-EXT=tar.bz2
-NAMETGZ=xf86-video-intel
-WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT
+VERSION=2.99.912
+WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.tar.bz2
 DESC="Pilotes graphiques Intel pour X11"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
