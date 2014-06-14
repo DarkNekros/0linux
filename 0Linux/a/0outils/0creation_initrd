@@ -20,6 +20,27 @@ if [ ! "$(whoami)" = "root" ]; then
 	exit 1
 fi
 
+# On analyse la ligne de commande :
+if [ ! -d "$1" -o "$1" = "" ]; then
+	echo "$(basename $0) : "
+	echo "Crée un « initrd » (ou « initramfs ») d'une mini-racine ne"
+	echo "contenant que les paquets ''busybox'' et ''base-systeme', "
+	echo "à charger en RAM avant le montage effectif de la racine système. Cela permet"
+	echo "de pouvoir amorcer une racine via son champ LABEL ou UUID et évite les"
+	echo "problèmes de renommage des périphériques ''/dev/sdX'"
+	echo "Crée un fichier '/usr/local/temp/initrd' à ajouter à la configuration du"
+	echo "chargeur d'amorçage. Le contenu de l'archive 'initrd' se trouve dans le"
+	echo "répertoire '/usr/local/temp/initrd_temp'."
+	echo ""
+	echo "L'argument obligatoire est un répertoire devant contenir les paquets à"
+	echo "installer dans l'initrd (au minimum : 'busybox' et base-systeme')."
+	echo ""
+	echo "Créer un initrd :"
+	echo "	$(basename $0) /quelque/part/paquets/"
+	echo ""
+	exit 1
+fi
+
 SOURCES=${SOURCES:-/usr/share/0outils/initrd}
 PAQUETS=${PAQUETS:-${1}}
 TMP=${TMP:-/usr/local/temp/initrd_temp}

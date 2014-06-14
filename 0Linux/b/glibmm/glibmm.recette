@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=glibmm
-VERSION=2.38.1
-EXT=tar.xz
-NAMETGZ=glibmm
-WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=2.40.0
+WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Interfaçage C++ pour glib"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# Les '#include' sont à modifier avec un 'glib' récent :
-sed -i -e 's@^#include <glib/glib.*$@#include <glib.h>@g' $(find . -type f)
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
