@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=git
-VERSION=1.9.0
+VERSION=1.9.3
 EXT=tar.gz
-NAMETGZ=git
 WGET=(http://git-core.googlecode.com/files/$NAMESRC-$VERSION.$EXT
       http://git-core.googlecode.com/files/$NAMESRC-manpages-$VERSION.$EXT
       http://git-core.googlecode.com/files/$NAMESRC-htmldocs-$VERSION.$EXT
@@ -23,10 +21,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
