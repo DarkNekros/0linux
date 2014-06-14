@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gparted
-VERSION=0.18.0
-EXT=tar.bz2
-NAMETGZ=gparted
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=0.19.0
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Interface graphique en GTK+ pour Parted"
-
+EXTRADEPS="gksu"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -28,8 +25,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# 'gparted' requiert d'être root ; on modifie donc le raccourci pour passer par 'ktsuss' :
-sed -i -e 's@^Exec=.*$@Exec= ktsuss gparted %f@' ${PKG}/usr/share/applications/gparted.desktop
+# 'gparted' requiert d'être root ; on modifie donc le raccourci pour passer par 'gksu' :
+sed -i -e 's@^Exec=.*$@Exec= gksu gparted %f@' ${PKG}/usr/share/applications/gparted.desktop
 
 installer_doc
 creer_post_installation
