@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=geoclue
-VERSION=2.1.7
+VERSION=2.1.8
 EXT=tar.xz
-NAMETGZ=geoclue
 WGET=(https://launchpad.net/$NAMESRC/trunk/$(echo $VERSION | cut -d'.' -f1-2)/+download/$NAMESRC-0.12.99.tar.gz
       http://freedesktop.org/software/$NAMESRC/releases/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
      )
 DESC="Outils et bibliothèques de géolocalisation"
-
 
 telecharger_sources
 
