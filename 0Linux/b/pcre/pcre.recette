@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=pcre
-VERSION=8.33
-EXT=tar.bz2
-NAMETGZ=pcre
-WGET=ftp://ftp.csx.cam.ac.uk/pub/software/programming/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=8.35
+WGET=ftp://ftp.csx.cam.ac.uk/pub/software/programming/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Fonctions pour expressions régulières de type Perl"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

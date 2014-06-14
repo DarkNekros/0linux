@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=mariadb
-VERSION=5.5.36
-EXT=tar.gz
-NAMETGZ=mariadb
-WGET=http://ftp.igh.cnrs.fr/pub/$NAMESRC/$NAMESRC-$VERSION/kvm-tarbake-jaunty-x86/$NAMESRC-$VERSION.$EXT
+VERSION=10.0.11
+WGET=https://downloads.mariadb.org/interstitial/$NAMESRC-$VERSION/source/$NAMESRC-$VERSION.tar.gz
 DESC="Le serveur de bases de données MariaDB, remplaçant libre de MySQL"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -25,8 +21,8 @@ cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake .. \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_C_FLAGS="-fPIC ${CFLAGS} -fno-strict-aliasing -DBIG_JOINS=1 -fomit-frame-pointer" \
-	-DCMAKE_CXX_FLAGS="-fPIC ${CXXFLAGS} -fno-strict-aliasing -DBIG_JOINS=1 -felide-constructors -fno-rtti" \
+	-DCMAKE_C_FLAGS="-fPIC ${CFLAGS} -fno-strict-aliasing -DBIG_JOINS=1 -fomit-frame-pointer -fno-delete-null-pointer-checks" \
+	-DCMAKE_CXX_FLAGS="-fPIC ${CXXFLAGS} -fno-strict-aliasing -DBIG_JOINS=1 -felide-constructors -fno-rtti -fno-delete-null-pointer-checks" \
 	-DBUILD_CONFIG=mysql_release \
 	-DDEFAULT_CHARSET=utf8 \
 	-DDEFAULT_COLLATION=utf8_general_ci \
@@ -56,11 +52,13 @@ cmake .. \
 	-DWITH_INNOBASE_STORAGE_ENGINE=1 \
 	-DWITH_MYSQLD_LDFLAGS="${LDFLAGS}" \
 	-DWITH_PARTITION_STORAGE_ENGINE=1 \
-	-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
-	-DWITHOUT_FEDERATED_STORAGE_ENGINE=1 \
+	-DWITH_PCRE=system \
 	-DWITH_READLINE=ON \
 	-DWITH_SSL=system \
-	-DWITH_ZLIB=system
+	-DWITH_TOKUDB_STORAGE_ENGINE=1 \
+	-DWITH_ZLIB=system \
+	-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
+	-DWITHOUT_FEDERATED_STORAGE_ENGINE=1
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
