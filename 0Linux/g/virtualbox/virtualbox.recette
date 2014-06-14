@@ -2,9 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=VirtualBox
-VERSION=4.3.10
+VERSION=4.3.12
 EXT=tar.bz2
-NAMETGZ=virtualbox
 WGET=(http://download.virtualbox.org/virtualbox/$VERSION/$NAMESRC-$VERSION.$EXT
       http://download.virtualbox.org/virtualbox/$VERSION/VBoxGuestAdditions_${VERSION}.iso
       http://download.virtualbox.org/virtualbox/$VERSION/Oracle_VM_VirtualBox_Extension_Pack-${VERSION}.vbox-extpack
