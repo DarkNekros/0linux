@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=transmission
-VERSION=2.82
-EXT=tar.xz
-NAMETGZ=transmission
-WGET=http://download.transmissionbt.com/files/$NAMESRC-$VERSION.$EXT
+VERSION=2.83
+WGET=http://download.transmissionbt.com/files/$NAMESRC-$VERSION.tar.xz
 DESC="Clients et démon de partage BitTorrent"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
