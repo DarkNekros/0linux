@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=mediastreamer
-VERSION=2.9.0
-EXT=tar.gz
-NAMETGZ=mediastreamer
-WGET=http://download-mirror.savannah.gnu.org/releases/linphone/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=2.10.0
+WGET=http://download-mirror.savannah.gnu.org/releases/linphone/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de gestion de flux audio et vidéo"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
