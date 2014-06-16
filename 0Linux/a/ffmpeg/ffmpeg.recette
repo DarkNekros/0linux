@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=ffmpeg
-VERSION=2.2.1
+VERSION=2.2.3
 EXT=tar.bz2
-NAMETGZ=ffmpeg
-WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.10.$EXT
+WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.13.$EXT
       http://ffmpeg.org/releases/$NAMESRC-$VERSION.$EXT
      )
 DESC="Solution de traitement de flux audio et vidéo"
 
-
 telecharger_sources
 
 # On compile FFMPEG 0.10.x pour contenter Audacity et quelques autres :
-preparer_sources $NAMESRC-0.10.10.$EXT
+preparer_sources $NAMESRC-0.10.13.$EXT
 cflags
 
 # Compilation :
@@ -65,7 +62,7 @@ mkdir -p ${PKG}/etc/ld.so.conf.d
 echo "/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/" > ${PKG}/etc/ld.so.conf.d/ffmpeg-0.x.conf
 
 # On installe la doc dans un sous-répertoire dédié :
-installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-0.10.10
+installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-0.10.13
 
 # On compile la version de la recette :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
