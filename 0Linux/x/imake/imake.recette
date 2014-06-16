@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=imake
-VERSION=1.0.6
-EXT=tar.bz2
-NAMETGZ=imake
-WGET=http://xorg.freedesktop.org/releases/individual/util/$NAMESRC-$VERSION.$EXT
-DESC="Fichiers de configuration de X11"
-
+VERSION=1.0.7
+WGET=http://xorg.freedesktop.org/releases/individual/util/$NAMESRC-$VERSION.tar.bz2
+DESC="Outils de construction de X11"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
