@@ -2,9 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=MesaLib
-VERSION=10.1.4
+VERSION=10.2.1
 WGET=ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.tar.bz2
-DESC="Bibliothèques graphiques 3D pour X11"
+DESC="Bibliothèques graphiques 3D OpenGL pour X11"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -75,15 +75,20 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-dri \
+	--enable-dri3 \
 	--enable-egl \
 	--enable-gallium-g3dvl \
 	--enable-gallium-egl \
+	--enable-gallium-gbm \
 	--enable-gallium-llvm \
 	--enable-gbm \
 	--enable-gles1 \
 	--enable-gles2 \
 	--enable-glx \
 	--enable-glx-tls \
+	--enable-omx \
+	--enable-opencl \
+	--enable-opencl-icd \
 	--enable-osmesa \
 	--enable-shared-glapi \
 	--enable-texture-float \
