@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=inputproto
-VERSION=2.3
-EXT=tar.bz2
-NAMETGZ=inputproto
-WGET=http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT
+VERSION=2.3.1
+WGET=http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.tar.bz2
 DESC="Fichiers d'en-têtes de protocole pour X11"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
