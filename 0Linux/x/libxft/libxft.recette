@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libXft
-VERSION=2.3.1
-EXT=tar.bz2
-NAMETGZ=libxft
-WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
-DESC="Bibliothèques natives de X11"
-
+VERSION=2.3.2
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.tar.bz2
+DESC="Bibliothèques de rendu de polices FreeType pour X11"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

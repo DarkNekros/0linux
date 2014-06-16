@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libdrm
-VERSION=2.4.53
-EXT=tar.bz2
-NAMETGZ=libdrm
-WGET=http://dri.freedesktop.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
-DESC="Bibliothèques graphiques de rendu"
-
+VERSION=2.4.54
+WGET=http://dri.freedesktop.org/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+DESC="Bibliothèques graphiques d'interfaçage DRM pour X11"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
