@@ -1,22 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xkeyboard-config
-VERSION=2.11
-EXT=tar.bz2
-NAMETGZ=xkeyboard-config
-WGET=http://xorg.freedesktop.org/releases/individual/data/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=2.12
+WGET=http://xorg.freedesktop.org/releases/individual/data/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Configuration de claviers pour X11"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige une bétise : le "." du pavé numérique doit afficher un "." :
-sed -i '/include "kpdl(comma)"/d' symbols/fr
-sed -i '/include "kpdl(comma)"/d' symbols/it
-sed -i '/include "kpdl(comma)"/d' symbols/nl
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
