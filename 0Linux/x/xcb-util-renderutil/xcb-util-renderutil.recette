@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xcb-util-renderutil
-VERSION=0.3.8
-EXT=tar.bz2
-NAMETGZ=xcb-util-renderutil
+VERSION=0.3.9
 WGET=http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT
-DESC="Bibliothèques d'interfaçage pour X11"
-
+DESC="Bibliothèques d'interfaçage XCB pour X11"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
