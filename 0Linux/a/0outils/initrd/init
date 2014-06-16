@@ -130,9 +130,9 @@ if [ ! -r /mnt/sbin/init ]; then
 fi
 
 # On déplace les systèmes de fichiers virtuels sur '/mnt' :
-mount -o move /proc /mnt/proc
-mount -o move /sys /mnt/sys
-mount -o move /run /mnt/run
+mount -n -o move /proc /mnt/proc
+mount -n -o move /sys /mnt/sys
+mount -n -o move /run /mnt/run
 
 # On se déplace sur la nouvelle racine, montée sur '/mnt' :
 cd /mnt
