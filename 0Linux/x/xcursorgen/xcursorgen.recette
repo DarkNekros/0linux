@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xcursorgen
-VERSION=1.0.5
-EXT=tar.bz2
-NAMETGZ=xcursorgen
+VERSION=1.0.6
 WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT
-DESC="Applications natives de X11"
-
+DESC="Outils de création de curseurs graphiques pour X11"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
