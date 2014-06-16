@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.9.3
-EXT=tar.gz
+VERSION=1.9.4
+EXT=tar.xz
 WGET=(http://git-core.googlecode.com/files/$NAMESRC-$VERSION.$EXT
       http://git-core.googlecode.com/files/$NAMESRC-manpages-$VERSION.$EXT
       http://git-core.googlecode.com/files/$NAMESRC-htmldocs-$VERSION.$EXT
      )
 DESC="Système de contrôle de versions décentralisé"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
