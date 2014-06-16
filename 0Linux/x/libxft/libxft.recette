@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
+NAMESRC=libXft
 VERSION=2.3.2
 WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques de rendu de polices FreeType pour X11"
