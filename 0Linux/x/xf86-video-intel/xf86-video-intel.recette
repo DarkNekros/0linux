@@ -9,9 +9,6 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige des régressions causant des artefacts visuels :
-cat $CWD/xf86-video-intel.discard-damage.patch | patch -p1
-
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
