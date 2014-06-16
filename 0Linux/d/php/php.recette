@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=php
 VERSION=5.5.12
-EXT=tar.bz2
-NAMETGZ=php
-WGET=http://www.php.net/distributions/$NAMESRC-$VERSION.$EXT
+WGET=http://www.php.net/distributions/$NAMESRC-$VERSION.tar.bz2
 DESC="Le langage de programmation PHP"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -21,6 +17,9 @@ cat $CWD/php.ini.patch | patch -p1
 
 # On place un 'httpd.conf' factice, réclamé par PHP :
 cp -a $CWD/httpd.conf ${PKG}/etc/httpd/
+
+# On corrige ceci, notamment pour permettre de construire 'graphviz' :
+sed '/APACHE_THREADED_MPM=/d' -i sapi/apache2handler/config.m4 -i configure
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
