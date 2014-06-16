@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xbmc
-VERSION=12.3
+VERSION=13.1
 EXT=tar.gz
-NAMETGZ=xbmc
 WGET=(http://mirrors.xbmc.org/releases/source/$NAMESRC-$VERSION.$EXT
-      https://github.com/opdenkamp/xbmc-pvr-addons/archive/12.0-Frodo.$EXT
+      https://github.com/opdenkamp/xbmc-pvr-addons/archive/13.0-Gotham.$EXT
      )
-DESC="Le centre multimédia XBMC"
-
+DESC="Le centre multimédia XBMC et ses compléments PVR"
 
 telecharger_sources
 
 # On compile les « addons » PVR :
-preparer_sources 12.0-Frodo.$EXT
+preparer_sources 13.0-Gotham.$EXT
 cflags
 
 # On lance le script 'bootstrap' permettant de générer le nécessaire à la compilation :
@@ -60,8 +57,8 @@ chmod +x bootstrap
 # On utilise notre Python 2 système :
 export PYTHON_VERSION=2
 
-# On compile avec FFMPEG 0.x en priorité :
-export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig:${PKG_CONFIG_PATH}
+# On permet la compilation avec un FFMPEG externe :
+cat $CWD/xbmc.enable-external-ffmpeg.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -75,12 +72,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-debug \
-	--disable-external-ffmpeg \
 	--disable-hal \
 	--enable-alsa \
 	--enable-avahi \
 	--enable-dvdcss \
+	--enable-external-ffmpeg \
 	--enable-external-libraries \
+	--enable-ffmpeg-libvorbis \
 	--enable-gl \
 	--enable-goom \
 	--enable-joystick \
@@ -94,6 +92,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-rtmp \
 	--enable-samba \
 	--enable-sdl \
+	--enable-texturepacker \
 	--enable-udev \
 	--enable-vaapi \
 	--enable-vdpau \
