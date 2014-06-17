@@ -86,8 +86,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-gles2 \
 	--enable-glx \
 	--enable-glx-tls \
-	--enable-opencl \
-	--enable-opencl-icd \
 	--enable-osmesa \
 	--enable-shared-glapi \
 	--enable-texture-float \

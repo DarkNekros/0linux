@@ -57,9 +57,6 @@ chmod +x bootstrap
 # On utilise notre Python 2 système :
 export PYTHON_VERSION=2
 
-# On permet la compilation avec un FFMPEG externe :
-cat $CWD/xbmc.enable-external-ffmpeg.patch | patch -p1
-
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -76,7 +73,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-alsa \
 	--enable-avahi \
 	--enable-dvdcss \
-	--enable-external-ffmpeg \
 	--enable-external-libraries \
 	--enable-ffmpeg-libvorbis \
 	--enable-gl \
@@ -100,12 +96,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-xrandr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-make -j${JOBS} || make
+make -j1
 fakeroot make install DESTDIR=${PKG}
 
 # 'lsb_release' n'existe pas sous 0Linux :
 sed -i -e 's/which lsb_release &> \/dev\/null/\[ -f \/etc\/os-release ]/g' ${PKG}/usr/bin/xbmc
 sed -i -e "s/lsb_release -a 2> \/dev\/null | sed -e 's\/\^\/    \/'/cat \/etc\/os-release/g" ${PKG}/usr/bin/xbmc
+
+# On place l'outil 'TexturePacker' :
+cp -a tools/TexturePacker/TexturePacker ${PKG}/usr/lib${LIBDIRSUFFIX}/xbmc/
+chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/xbmc/TexturePacker
 
 # On crée un fichier de démarrage pour lancer uniquement 'xbmc' en tant que « bureau » :
 mkdir -p ${PKG}/etc/X11/xinit
