@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=inkscape
 VERSION=0.48.4
-EXT=tar.bz2
-NAMETGZ=inkscape
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Éditeur de graphismes vectoriels SVG"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -15,6 +11,11 @@ cflags
 
 # Une virgule plante la compilation avec les GCC récents :
 sed -i 's@GtkWidget \*commands_toolbox,;@GtkWidget \*commands_toolbox;@' src/widgets/desktop-widget.h
+
+# On corrige la compilation avec les plus récents 'poppler', 'gc', et un comportemant problématique :
+cat $CWD/inkscape.poppler-0.26+.patch | patch -p0
+cat $CWD/inkscape.gc74.patch | patch -p1
+cat $CWD/inkscape.ime-placement.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -28,6 +29,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-lcms \
 	--enable-poppler-cairo \
+	--with-perl \
+	--with-python \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
