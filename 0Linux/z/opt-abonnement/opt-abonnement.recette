@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=opt-abonnement
-VERSION=9
+VERSION=10
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-lib                 alsa-plugins \
@@ -172,7 +172,8 @@ realpath                redland                  reiserfsprogs \
 rpcbind                 rsync                    rtmpdump \
 samba                   sane-backends            schroedinger \
 sdl                     sdl-gfx                  sdl-image \
-sdl-mixer               sdl-net                  sdl-ttf \
+sdl-mixer               sdl-net                  sdl-sound \
+sdl-ttf \
 sed                     serd                     serf \
 set_rlimits             sg3utils                 sgml-common \
 shadow                  shared-mime-info         sharutils \
@@ -201,7 +202,6 @@ wireless-tools          wpa_supplicant           wxwidgets \
 x264                    xdg-user-dirs            xdg-utils \
 xfsprogs                xmlto                    xscreensaver \
 xvidcore                xz                       zlib"
-
 
 cflags
 
