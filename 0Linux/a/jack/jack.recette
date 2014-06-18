@@ -2,15 +2,46 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=jack-audio-connection-kit
-VERSION=0.121.3
-EXT=tar.gz
-NAMETGZ=jack
-WGET=http://jackaudio.org/downloads/$NAMESRC-$VERSION.$EXT
+VERSION=1.9.9.5
+WGET=(
+      http://jackaudio.org/$NAMESRC-0.124.1.tar.gz
+      https://github.com/jackaudio/jack2/archive/$VERSION.tar.gz
+     )
 DESC="Le serveur de son « Jack Audio Connection Kit »"
 
-
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile d'abord JACK1 :
+preparer_sources $NAMESRC-0.124.1.tar.gz
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} -C libjack || make -C libjack
+	fakeroot make install-pkgconfigDATA DESTDIR=${PKG}
+	fakeroot make -C libjack install DESTDIR=${PKG}
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources $NAMESRC-0.124.1.tar.gz
 cflags
 
 # Compilation :
@@ -28,6 +59,65 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+# On compile ensuite JACK2 :
+preparer_sources $VERSION.tar.gz
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On NE PASSE PAS en 32 bits, JACK2 prévoit déjà un mode hybride :
+	cflags
+	
+	# On fait en sorte d epouvoir compiler uniquement la libjack2 avec ces
+	# modifications d'Archlinux :
+	sed -i -e '/serverlib/,/clientlib/{/clientlib/!d}' \
+		-e '/clientlib32bit/i\\tclientlib.posted = True' \
+		-e '1,/clientlib32bit/!d' \
+		common/wscript
+	
+	# Inutile de tirer ces dépendances en 32 bits :
+	sed -i 's/, "CELT", "OPUS"//' common/wscript
+	
+	# Compilation pour i686 (donc 'lib' tout court) :
+	python waf configure \
+		--prefix=/usr \
+		--libdir=/usr/lib \
+		--mixed
+	
+	cd common
+	python ../waf build ${JOBS} || python ../waf build
+	cd -
+	
+	# On installe la bibliothèque manuellement dans '/usr/lib' et on lie :
+	mkdir -p ${PKG}/usr/lib
+	cp -a build/common/libjack.so ${PKG}/usr/lib/libjack.so.0.1.0
+	ln -sf libjack.so.0.1.0 ${PKG}/usr/lib/libjack.so.0
+	ln -sf libjack.so.0.1.0 ${PKG}/usr/lib/libjack.so
+fi
+
+# On refait la préparation des sources, il peut rester des déchets de la
+# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
+preparer_sources $VERSION.tar.gz
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+python waf configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--alsa \
+	--classic \
+	--firewire \
+	--profile
+
+python waf build ${JOBS} || python waf build
+fakeroot python waf install --destdir=${PKG}
+
+# On déplace ces mnauels :
+cp -ar ${PKG}/usr/share/man/*  ${PKG}/usr/man/
+rm -rf ${PKG}/usr/share/man
 
 installer_doc
 creer_post_installation
