@@ -2,12 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=Ardour3
-VERSION=3.5.357
-EXT=tar.bz2
-NAMETGZ=ardour
-WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
+VERSION=3.5.380
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.tar.bz2
 DESC="Studio de production audio"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -25,8 +22,7 @@ python waf configure \
 	--mandir=/usr/man \
 	--noconfirm \
 	--optimize \
-	--use-external-libs \
-	--windows-vst
+	--use-external-libs
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" python waf build -j${JOBS} || python waf build
 python waf i18n -j${JOBS} || python waf i18n
