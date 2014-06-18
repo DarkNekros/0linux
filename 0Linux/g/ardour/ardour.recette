@@ -21,8 +21,7 @@ python waf configure \
 	--lv2 \
 	--mandir=/usr/man \
 	--noconfirm \
-	--optimize \
-	--use-external-libs
+	--optimize
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" python waf build -j${JOBS} || python waf build
 python waf i18n -j${JOBS} || python waf i18n
