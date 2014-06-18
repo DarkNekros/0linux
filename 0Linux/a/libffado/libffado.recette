@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.1.0
+WGET=http://www.ffado.org/files/$NAMESRC-$VERSION.tgz
+DESC="Pilote pour interface audio Firewire"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On actve les optimisations uniquement pour x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	OPTIM="True"
+else
+	OPTIM="False"
+fi
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+scons DEBUG=False \
+	PREFIX=/usr \
+	LIBDIR=/usr/lib${LIBDIRSUFFIX} \
+	MANDIR=/usr/man \
+	UDEVDIR=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
+	COMPILE_FLAGS="${FLAGS}" \
+	ENABLE_OPTIMIZATIONS="${OPTIM}"
+
+fakeroot scons install WILL_DEAL_WITH_XDG_MYSELF="True" DESTDIR=${PKG}
+
+# On place raccourci bureau et icône :
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+cp support/xdg/ffado.org-ffadomixer.desktop ${PKG}/usr/share/applications/ffadomixer.desktop
+cp support/xdg/hi64-apps-ffado.png ${PKG}/usr/share/pixmaps/ffado.png
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
