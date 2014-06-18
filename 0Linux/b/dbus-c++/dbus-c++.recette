@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=0.9.0
+WGET=http://downloads.sourceforge.net/project/dbus-cplusplus/dbus-c%2B%2B/$VERSION/libdbus-c%2B%2B-$VERSION.tar.gz
+DESC="Interfaçage C++ pour dbus"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige la compilation avec GCC 4.7+ :
+sed -i '/#include <fcntl.h>/ a\
+#include <unistd.h>' src/eventloop-integration.cpp
+
+# Compilation avec ajout de drapeaux manquants :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+LDFLAGS+=" -lexpat -lpthread" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-glib \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
