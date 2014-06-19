@@ -35,7 +35,6 @@ LDDAWK="$(makeldd)" || exit 1
 # On déduit ensuite le paquet à recompiler en fouillant dans les logs, dont on va
 # ignorer les paquets binaires (par exemple, LibreOffice reste lié à de vieilles
 # libs de KDE3).
-
 findelves "$@" 2>&1 | grep 'cannot open shared object file: No such file or directory' | \
 	while read missinglib; do
 		egrep -q "$(echo ${missinglib} | cut -d':' -f3 | tr -d '[[:blank:]]')\$" /var/log/paquets/* || \
@@ -43,4 +42,4 @@ findelves "$@" 2>&1 | grep 'cannot open shared object file: No such file or dire
 		cut -d':' -f1 | \
 		xargs basename -a | \
 		sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n
-	done | egrep -v '\(catalyst|chrome|firefox|flashplayer|jdk|libreoffice|nvidia|opera|skype|steam|thunderbird\)' | sort -u
+	done | egrep -v '\(ardour|catalyst|chrome|firefox|flashplayer|jdk|libreoffice|nvidia|opera|skype|steam|thunderbird\)' | sort -u
