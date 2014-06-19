@@ -28,6 +28,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--disable-avcodec \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
