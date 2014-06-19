@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+NAMETGZ=gnome-abonnement
+VERSION=1
+DESC="L'environnement de bureau GNOME complet et ses applications"
+EXTRADEPS="accountsservice \
+gsettings-desktop-schemas \
+gjs \
+gnome-desktop \
+libpeas \
+gmime \
+totem-pl-parser \
+gnome-video-effects \
+yelp \
+cogl \
+clutter \
+clutter-gst \
+clutter-gtk \
+mutter \
+gnome-common \
+gnome-menus \
+gnome-online-accounts \
+geocode-glib \
+gnome-settings-daemon \
+gnome-session \
+nautilus \
+brasero \
+libgnomekbd \
+gnome-terminal \
+epiphany \
+libgee \
+libgsf \
+gnome-mime-data \
+gnome-vfs \
+caribou \
+libgweather \
+evolution-data-server \
+gnome-shell \
+gnome-shell-extensions \
+gnome-control-center \
+cheese \
+cups-pk-helper \
+empathy \
+grilo \
+grilo-plugins \
+eog \
+eog-plugins \
+evince \
+gexiv2 \
+gtkhtml \
+evolution \
+tracker \
+file-roller \
+folks \
+gedit \
+gedit-plugins \
+gnome-backgrounds \
+gnome-clocks \
+gnome-color-manager \
+gnome-dictionary \
+gnome-font-viewer \
+gnome-power-manager \
+gnome-games \
+gnome-screenshot \
+gnome-search-tool \
+gnome-system-log \
+gnome-system-monitor \
+gnome-tweak-tool \
+gnome-weather \
+shotwell \
+vino \
+seahorse \
+totem \
+gthumb \
+gnome-contacts \
+libzapojit \
+gfbgraph \
+gnome-online-miners \
+gnome-documents \
+gnome-user-docs \
+gnome-music \
+gnome-calculator \
+gnome-photos \
+gtk-vnc \
+vinagre"
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Juin 2014
+
+= L'environnement de bureau GNOME et ses applications =
+
+GNOME est un envirtonnement de bureau très complet, moderne, attractif et intuitif en GTK+.
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient l'environnemnt de bureau GNOME complet ainsi que sa documentation et une collection de logiciels et greffons supplémentaires.
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.
