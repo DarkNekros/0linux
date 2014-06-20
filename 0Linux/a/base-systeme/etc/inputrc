@@ -5,11 +5,12 @@
 # La cloche système... Options disponible : « none », « visible » ou « audible ».
 #set bell-style none
 
-# Configuration de l'entrée et séquences d'échappement pour les consoles linux, xterm et bsd :
-set meta-flag On
-set input-meta On
-set convert-meta Off
-set output-meta On
+# Configuration de l'entrée et séquences d'échappement pour les consoles linux/xterm :
+set meta-flag on
+set input-meta on
+set convert-meta off
+set output-meta on
+
 "\eOd": backward-word
 "\eOc": forward-word
 "\e[1~": beginning-of-line
@@ -20,5 +21,11 @@ set output-meta On
 "\e[2~": quoted-insert
 "\eOH": beginning-of-line
 "\eOF": end-of-line
+
+# bsd :
 "\e[H": beginning-of-line
 "\e[F": end-of-line
+
+# rxvt :
+"\e[8~": end-of-line
+
