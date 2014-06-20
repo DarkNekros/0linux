@@ -2,9 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=LibreOffice
-VERSION=4.2.4
+VERSION=4.2.5
 EXT=tar.gz
-NAMETGZ=libreoffice
 cflags
 if [ "${PKGARCH}" = "i686" ]; then
 	SUBARCH="x86"
