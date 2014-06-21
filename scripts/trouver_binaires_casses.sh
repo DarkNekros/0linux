@@ -42,4 +42,4 @@ findelves "$@" 2>&1 | grep 'cannot open shared object file: No such file or dire
 		cut -d':' -f1 | \
 		xargs basename -a | \
 		sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n
-	done | egrep -v '\(ardour|catalyst|chrome|firefox|flashplayer|jdk|libreoffice|nvidia|opera|skype|steam|thunderbird\)' | sort -u
+	done | grep -E -v '\(ardour|catalyst|chrome|firefox|flashplayer|jdk|libreoffice|nvidia|opera|skype|steam|thunderbird\)' | sort -u
