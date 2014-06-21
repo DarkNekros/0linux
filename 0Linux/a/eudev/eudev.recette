@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=eudev
-VERSION=1.6
-EXT=tar.gz
-NAMETGZ=eudev
-WGET=https://github.com/gentoo/$NAMESRC/archive/v${VERSION}.$EXT
+VERSION=1.8
+WGET=https://github.com/gentoo/$NAMESRC/archive/v${VERSION}.tar.gz
 DESC="Système de noeuds de périphériques dynamiques"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -23,14 +19,16 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits :
 	cflags i686
 	
+	# On corrige un chemin pour respecter notre répertoire de bibliothèques.
+	# Cf. https://github.com/gentoo/eudev/issues/93 :
+	sed -i 's@rootprefix}/lib/udev@rootprefix}/${libdir}/udev@' configure.ac
+	
 	# Compilation pour i686 :
 	./autogen.sh
 	
-	# On force notre suffixe de bibliothèques :
-	sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@g" configure
-	
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
+		--exec-prefix=/ \
 		--prefix=/usr \
 		--sysconfdir=/etc \
 		--localstatedir=/var \
@@ -45,11 +43,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--enable-rule-generator \
 		--enable-static \
 		--with-firmware-path=/usr/lib${LIBDIRSUFFIX}/firmware/updates:/usr/lib${LIBDIRSUFFIX}/firmware \
-		--with-rootlibdir=/usr/lib${LIBDIRSUFFIX} \
+		--with-rootprefix=/ \
 		--build=${PKGARCH}-0linux-linux-gnu
-	
-	# On corrige les fichiers pour 'pkg-config'... :
-	sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@" $(find . -type f -name "*.pc*")
 	
 	make -j${JOBS} || make
 	fakeroot make install DESTDIR=${PKG}
@@ -60,22 +55,20 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige les fichiers pour 'pkg-config' :
-sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@" $(find . -type f -name "*.pc*")
+# On corrige un chemin pour respecter notre répertoire de bibliothèques.
+# Cf. https://github.com/gentoo/eudev/issues/93 :
+sed -i 's@rootprefix}/lib/udev@rootprefix}/${libdir}/udev@' configure.ac
 
 # Compilation :
 ./autogen.sh
 
-# On force notre suffixe de bibliothèques :
-sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@g" configure
-
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
+	--exec-prefix=/ \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
@@ -87,16 +80,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-rule-generator \
 	--enable-static \
 	--with-firmware-path=/usr/lib${LIBDIRSUFFIX}/firmware/updates:/usr/lib${LIBDIRSUFFIX}/firmware \
-	--with-rootlibdir=/usr/lib${LIBDIRSUFFIX} \
+	--with-rootprefix=/ \
 	--build=${PKGARCH}-0linux-linux-gnu
-
-# On corrige les fichiers pour 'pkg-config' :
-sed -i "s@lib/udev@lib${LIBDIRSUFFIX}/udev@" $(find . -type f -name "*.pc*")
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On crée un lien standard pour contenter tout le monde :
+# On crée un lien standard pour contenter tout le monde (c'est codé en dur dans de nombreux paquets) :
 if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 	if [ "${PKGARCH}" = "x86_64" ]; then
 		rm -rf ${PKG}/usr/lib/udev
