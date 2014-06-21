@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xchat
 VERSION=2.8.8
-EXT=tar.xz
-NAMETGZ=xchat
-WGET=http://xchat.org/files/source/2.8/$NAMESRC-$VERSION.$EXT
-DESC="Client de discussion IRC"
-
+WGET=http://xchat.org/files/source/2.8/$NAMESRC-$VERSION.tar.xz
+DESC="Client de discussion IRC en GTK+"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige les entêtes pour les plus récents Glib :
+# On corrige les entêtes pour les plus récents 'glib', on adapte pour 'libnotify'
+# 0.7+ et on force à lier 'libnotify' de façon plus classique :
 cat $CWD/xchat.glib.patch | patch -p1
+cat $CWD/xchat.libnotify-0.7+.patch | patch -p1
+cat $CWD/xchat.libnotify.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+LIBS+="-lgmodule-2.0" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -27,7 +27,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-tcl=/usr/lib${LIBDIRSUFFIX} \
+	--enable-dbus \
 	--enable-ipv6 \
+	--enable-openssl \
+	--enable-shm \
+	--enable-spell=static \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
