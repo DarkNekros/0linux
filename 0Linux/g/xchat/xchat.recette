@@ -15,6 +15,9 @@ cat $CWD/xchat.glib.patch | patch -p1
 cat $CWD/xchat.libnotify-0.7+.patch | patch -p1
 cat $CWD/xchat.libnotify.patch | patch -p1
 
+# On rend les liens cliquables sans la touche CTRL :
+sed -i 's@prefs\.gui_url_mod = 4.*@prefs.gui_url_mod = 0;  /* plain left-click */@' src/common/cfgfiles.c
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 LIBS+="-lgmodule-2.0" \
