@@ -98,27 +98,31 @@ while [ 0 ]; do
 		break
 	;;
 	"3")
-		XINITRC="xinitrc.kde"
+		XINITRC="xinitrc.gnome"
 		break
 	;;
 	"4")
-		XINITRC="xinitrc.razor-qt"
+		XINITRC="xinitrc.kde"
 		break
 	;;
 	"5")
-		XINITRC="xinitrc.twm"
+		XINITRC="xinitrc.razor-qt"
 		break
 	;;
 	"6")
-		XINITRC="xinitrc.xbmc"
+		XINITRC="xinitrc.twm"
 		break
 	;;
 	"7")
+		XINITRC="xinitrc.xbmc"
+		break
+	;;
+	"8")
 		XINITRC="xinitrc.xfce"
 		break
 	;;
 	*)
-		echo "Veuillez entrer un numéro valide (entre 1 et 7) ou appuyez"
+		echo "Veuillez entrer un numéro valide (entre 1 et 8) ou appuyez"
 		echo "sur ENTRÉE."
 		sleep 2
 		unset XDE

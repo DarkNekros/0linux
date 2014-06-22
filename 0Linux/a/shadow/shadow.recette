@@ -1,38 +1,26 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=shadow
-VERSION=4.1.5
-EXT=tar.bz2
-NAMETGZ=shadow
-WGET=http://pkg-shadow.alioth.debian.org/releases/$NAMESRC-$VERSION.$EXT
+VERSION=4.2.1
+WGET=http://pkg-shadow.alioth.debian.org/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Gestion de mots de passe"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On ajoute un entête manquant et on supprime des messages d'avertissement
-# lors de l'ajout d'utilisateur si 'nscd' n'est pas lancé. On corrige également
-# les messages de crypt() qui peuvent surgir à la connexion :
-cat $CWD/shadow.crypt.patch | patch -p1
-cat $CWD/shadow.copydir.patch | patch -p1
-cat $CWD/shadow.erreur-nscd.patch | patch -p1
-
 # On empêche l'installation de 'groups', 'coreutils' en fournit déjà une version :
 sed -i 's/groups$(EXEEXT) //' src/Makefile.in
 find man -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;
 
-# /var/mail doit être utilisé. On remplace aussi l'algorithme DES par MD5 :
+# '/var/mail' doit être utilisé. On remplace aussi l'algorithme DES par MD5 :
 sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD MD5@' \
-	-e 's@/var/spool/mail@/var/mail@' etc/login.defs
-
-# Les manuels chinois et coréen cassent l'affichage de Man-DB :
-sed -i -e 's/ ko//' -e 's/ zh_CN zh_TW//' man/Makefile.in
+	-e 's@/var/spool/mail@/var/mail@' \
+	etc/login.defs
 
 # Compilation avec 32 caractères max pour les noms des groupes, merci à myou :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+LIBS="-lcrypt" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
