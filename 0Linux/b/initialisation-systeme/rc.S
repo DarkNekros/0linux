@@ -27,7 +27,7 @@ mount -v -n -t proc   proc   /proc
 mount -v -n -t sysfs  sysfs  /sys
 mount -v -n -t tmpfs  tmpfs  /run
 
-# On tente de démonter l'ancienne racine mais on ignore toute erreur :
+# On tente de démonter l'ancienne racine de l'initrd mais on ignore toute erreur :
 umount -n -f /oldroot/dev 2>/dev/null || true
 umount -n -f /oldroot/run 2>/dev/null || true
 umount -n -f /oldroot/proc 2>/dev/null || true
