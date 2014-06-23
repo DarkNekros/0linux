@@ -129,11 +129,6 @@ if [ ! -r /mnt/sbin/init ]; then
 	/bin/sh
 fi
 
-# On déplace les systèmes de fichiers virtuels sur '/mnt' :
-mount -n -o move /proc /mnt/proc
-mount -n -o move /sys /mnt/sys
-mount -n -o move /run /mnt/run
-
 # On se déplace sur la nouvelle racine, montée sur '/mnt' :
 cd /mnt
 
@@ -141,10 +136,6 @@ cd /mnt
 # On appelle 'pivot_root', plaçant l'ancienne racine dans un point de montage de 
 # la nouvelle racine (remarquez l'absence de slash devant 'oldroot') :
 pivot_root . oldroot
-
-# On tente de démonter l'ancienne racine avec son '/dev' mais on ignore toute erreur :
-umount -n -f /oldroot/dev 2>/dev/null || true
-umount -n -f /oldroot 2>/dev/null || true
 
 # On 'chroot' sur la nouvelle racine et on lance 'init', on peut enfin démarrer.
 exec chroot . /sbin/init

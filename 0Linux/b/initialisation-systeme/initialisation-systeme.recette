@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.0
+VERSION=1.0.1
 DESC="Fichiers d'initialisation du système et des services de 0Linux"
 
 cflags

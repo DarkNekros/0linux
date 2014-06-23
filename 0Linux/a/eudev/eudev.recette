@@ -28,8 +28,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
+		--bindir=/usr/bin \
 		--exec-prefix=/ \
 		--prefix=/usr \
+		--sbindir=/usr/sbin \
 		--sysconfdir=/etc \
 		--localstatedir=/var \
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -64,8 +66,10 @@ sed -i 's@rootprefix}/lib/udev@rootprefix}/${libdir}/udev@' configure.ac
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
+	--bindir=/usr/bin \
 	--exec-prefix=/ \
 	--prefix=/usr \
+	--sbindir=/usr/sbin \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
