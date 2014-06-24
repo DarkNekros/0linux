@@ -289,9 +289,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 fi
 
 # On supprime toutes les définitions de locales non francophones mais on garde l'anglais US :
-find ${LIVEOS}/usr/lib${LIBDIRSUFFIX}/locale -mindepth 0 -maxdepth 0 -type d \! -name "fr_*" -a \! -name "*_FR"  -a \! -name "en_US"  -exec rm -rf {} \; 
-find ${LIVEOS}/usr/share/i18n/locales        -mindepth 0 -maxdepth 0 -type f \! -name "fr_*" -a \! -name "*_FR*" -a \! -name "en_US*" -exec rm -rf {} \; 
-find ${LIVEOS}/usr/share/locale/             -mindepth 0 -maxdepth 0 -type d \! -name "fr*"  -a \! -name "en*"   -a \! -name "us*"    -exec rm -rf {} \; 
+find ${LIVEOS}/usr/lib${LIBDIRSUFFIX}/locale/* -mindepth 0 -maxdepth 0 -type d \! -name "fr_*" -a \! -name "*_FR"  -a \! -name "en_US"  -exec rm -rf {} \; 
+find ${LIVEOS}/usr/share/i18n/locales/*        -mindepth 0 -maxdepth 0 -type f \! -name "fr_*" -a \! -name "*_FR*" -a \! -name "en_US*" -exec rm -rf {} \; 
+find ${LIVEOS}/usr/share/locale/*              -mindepth 0 -maxdepth 0 -type d \! -name "fr*"  -a \! -name "en*"   -a \! -name "us*"    -exec rm -rf {} \; 
 
 # On ramène les bibliothèques :
 cp -a ${LIVEOS}/conserver/usr/lib${LIBDIRSUFFIX}/* ${LIVEOS}/usr/lib${LIBDIRSUFFIX}/
