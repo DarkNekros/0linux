@@ -64,14 +64,16 @@ Faire une partition séparée pour /home est optionnel mais recommandé,
 celle-ci contenant entre autres les préférences des utilisateurs.
 
 Les disques durs ont 2 types de tables de partitions : la traditionnelle, dite
-« MBR », et une plus récente, nommée « GPT ». 
+« MBR », et une plus récente, nommée « GPT ». SI vous prévoyez d'installer le
+chargeur d'amorçage de 0Linux, Syslinux, préférez le MBR pour le moment. GPT
+sera bientôt pris en charge.
 
 Pour savoir quel type de disque dur vous possédez, invoquez (remplacez « X »
 par la lettre de votre lecteur) :
 
 	# gdisk -l /dev/sdX
 
-Cette ligne inqique que le disque est de type GPT : 
+Cette ligne indique que le disque est de type GPT : 
 
 	GPT: present
 
@@ -110,12 +112,13 @@ Par exemple, pour partitionner le second disque dur, tapez, au choix :
 	# cfdisk /dev/sdb
 	# cgdisk /dev/sdb
 
-Vous allez avoir besoin d'au moins une partition de type 83 (type Linux par
-défaut) et optionnellement une de type 82 (la partition d'échange ou « swap »)
-afin que l'installateur reconnaisse vos partitions comme exploitables.
+Vous allez avoir besoin d'au moins une partition de type 83 ou 8300 (type Linux
+par défaut) et optionnellement une de type 82 ou 8200 (la partition d'échange
+ou « swap ») afin que l'installateur reconnaisse vos partitions comme
+exploitables.
 
 	a) Si vous choisissez 'cfdisk' ou 'cgdisk', les menus vous guideront.
-
+	
 	b) Si vous choisissez 'fdisk' ou 'gdisk', utilisez la commande 't' pour
 	   choisir le type des partitions puis finissez par 'w' pour écrire la
 	   nouvelle table de partitions avant de quitter (les commandes peuvent
@@ -141,10 +144,12 @@ programme d'installation pour redémarrer sous votre nouveau système Linux.
 Problèmes connus, dysfontionnements possibles
 ---------------------------------------------
 
-Si un problème survient au redémarrage, vous pouvez redémarrer sur le média
-d'installation et « entrer » dans votre système 0Linux fraîchement installé
-pour en faire la maintenance grâce à la commande dédiée '0chroot'. Inutile de 
-réinstaller complètement 0Linux.
+Dans tous les cas, si un problème survient au redémarrage, vous pouvez
+redémarrer sur le média d'installation et « entrer » dans votre système 0Linux
+fraîchement installé pour en faire la maintenance grâce à la commande dédiée
+'0chroot', laquelle va se charger de monter tous les systèmes de fichiers
+virtuels sous '/mnt/0linux' pour vous permettre de l'utiliser comme si vous
+aviez démarré correctement. Inutile de réinstaller complètement 0Linux.
 
 ---
 

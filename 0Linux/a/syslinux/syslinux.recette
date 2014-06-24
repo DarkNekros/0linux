@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=syslinux
-VERSION=5.10
-EXT=tar.xz
-NAMETGZ=syslinux
-WGET=http://www.kernel.org/pub/linux/utils/boot/syslinux/$NAMESRC-$VERSION.$EXT
+VERSION=6.02
+WGET=http://www.kernel.org/pub/linux/utils/boot/syslinux/$NAMESRC-$VERSION.tar.xz
 DESC="La collection de chargeurs d'amorçage Syslinux"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -30,8 +26,8 @@ chmod 755 ${PKG}/usr/bin/syslinux-nomtools
 # On copie la configuration d'extlinux et les modules servant à amorcer le système :
 mkdir ${PKG}/boot
 cp -ra $CWD/extlinux ${PKG}/boot/
-cp -a ${PKG}/usr/share/syslinux/*.c32 ${PKG}/boot/extlinux/
-chmod +x ${PKG}/boot/extlinux/*.c32
+cp -a ${PKG}/usr/share/syslinux/{bios,efi32,efi64} ${PKG}/boot/extlinux/
+chmod +x ${PKG}/boot/extlinux/*/*.c32
 
 # On convertit l'encodage de 'extlinux.conf'
 iconv -f UTF-8 -t CP850 ${PKG}/boot/extlinux/extlinux.conf > ${PKG}/boot/extlinux/extlinux.conf-cp850
