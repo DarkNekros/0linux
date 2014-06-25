@@ -580,6 +580,16 @@ empaqueter() {
 		rm -rf ${PKG}/usr/share/pkgconfig
 	fi
 	
+	# On déplace toute arborescence à la racine ('/lib', '/bin', '/sbin'...) vers
+	# '/usr' pour éviter un éventuel écrasement des liens symboliques vers '/usr' :
+	for rootdir in bin lib lib${LIBDIRSUFFIX} sbin; do
+		if [ -d ${PKG}/${rootdir} ]; then
+			mkdir -p ${PKG}/usr/${rootdir}
+			cp -ar ${PKG}/${rootdir}/* ${PKG}/usr/${rootdir}/
+			rm -rf ${PKG}/${rootdir}
+		fi
+	done
+	
 	# On affecte des permissions correctes aux bibliothèques partagées :
 	find ${PKG}/lib* ${PKG}/usr/lib* -type f \! -perm 755 -iname "*.so*" 2>/dev/null | xargs file 2>/dev/null | grep "shared object" | cut -f 1 -d : | xargs chmod 755 2>/dev/null || true
 	
