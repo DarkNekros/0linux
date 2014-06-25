@@ -133,11 +133,11 @@ if [ ! -r /mnt/sbin/init ]; then
 fi
 
 # On déplace les systèmes de fichiers virtuels sur la racine finale :
-mount -o move /proc /mnt/proc
-mount -o move /sys /mnt/sys
-mount -o move /run /mnt/run
-mount -o move /dev /mnt/dev
+mount -o move /proc /mnt/proc 2>/dev/null
+mount -o move /sys /mnt/sys   2>/dev/null
+mount -o move /run /mnt/run   2>/dev/null
+mount -o move /dev /mnt/dev   2>/dev/null
 
 # On va utiliser 'switch_root', inclus dans BusyBox, pour entrer et amorcer
 # '/mnt' qui contient la racine finale ; on peut enfin démarrer :
-exec switch_root /sbin/init $RUNLEVEL
+exec switch_root /mnt /sbin/init $RUNLEVEL

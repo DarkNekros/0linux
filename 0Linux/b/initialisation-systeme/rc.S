@@ -22,17 +22,10 @@ echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Initialisation du systè
 
 # '/dev' est censé être déjà monté en devtmpfs par le noyau.
 # On monte les systèmes de fichiers virtuels sur notre système en lecture seule
-# (donc, pas de '/etc/mtab' rempli) :
-mount -v -n -t proc   proc   /proc
-mount -v -n -t sysfs  sysfs  /sys
-mount -v -n -t tmpfs  tmpfs  /run
-
-# On tente de démonter l'ancienne racine de l'initrd mais on ignore toute erreur :
-umount -n -f /oldroot/dev 2>/dev/null || true
-umount -n -f /oldroot/run 2>/dev/null || true
-umount -n -f /oldroot/proc 2>/dev/null || true
-umount -n -f /oldroot/sys 2>/dev/null || true
-umount -n -f /oldroot 2>/dev/null || true
+# (donc, pas de '/etc/mtab' rempli) s'ils sont absents (l'initrd les monte) :
+mount -v -n -t proc   proc   /proc 2>/dev/null
+mount -v -n -t sysfs  sysfs  /sys  2>/dev/null
+mount -v -n -t tmpfs  tmpfs  /run  2>/dev/null
 
 # Chargement de la police console en premier lieu :
 if [ -x /etc/rc.d/rc.police ]; then
