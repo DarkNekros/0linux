@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=cups
-VERSION=1.7.1
-EXT=tar.bz2
-NAMETGZ=cups
+VERSION=1.7.3
 WGET=http://www.cups.org/software/$VERSION/$NAMESRC-$VERSION-source.$EXT
 DESC="Le système d'impression « Common Unix Printing System »"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -19,7 +15,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On corrige un chmein codé en dur :
+	# On corrige un chemin codé en dur :
 	sed -i 's@$exec_prefix/lib/cups@$libdir/cups@g' configure
 	
 	# Compilation pour i686 :
@@ -54,7 +50,7 @@ rm -rf  ${PKG}/usr/lib${LIBDIRSUFFIX}/cups
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige un chmein codé en dur :
+# On corrige un chemin codé en dur :
 sed -i 's@$exec_prefix/lib/cups@$libdir/cups@g' configure
 
 # Compilation :
@@ -64,6 +60,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/cups \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
@@ -75,8 +72,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-threads \
 	--with-docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-logdir=/var/log/cups \
-	--without-php \
 	--with-optim="${FLAGS}" \
+	--with-php=/usr/bin/php-cgi \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
