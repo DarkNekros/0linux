@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=3.0v
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_${VERSION}.orig.tar.gz
+DESC="Bibliothèques de construction d'applications UEFI"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On corrige une bétise :
+cat $CWD/gnu-efi.revert-makefile.patch | patch -p1 -R
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} apps all || make apps all
+
+fakeroot make install PREFIX=/usr LIBDIR=/usr/lib${LIBDIRSUFFIX} INSTALLROOT=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
