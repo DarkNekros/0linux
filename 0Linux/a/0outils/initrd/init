@@ -29,6 +29,9 @@ mount -n -t tmpfs tmpfs /run
 # On analyse la ligne "boot:"
 for ARG in $(cat /proc/cmdline); do
 	case $ARG in
+		0|1|2|3|4|5|6|S|s|single)
+			RUNLEVEL=$ARG
+		;;
 		ro)
 			RORW="ro"
 		;;
@@ -129,13 +132,12 @@ if [ ! -r /mnt/sbin/init ]; then
 	/bin/sh
 fi
 
-# On se déplace sur la nouvelle racine, montée sur '/mnt' :
-cd /mnt
+# On déplace les systèmes de fichiers virtuels sur la racine finale :
+mount -o move /proc /mnt/proc
+mount -o move /sys /mnt/sys
+mount -o move /run /mnt/run
+mount -o move /dev /mnt/dev
 
-# 'switch_root' est obsolète, on va utiliser 'pivot_root', inclus dans BusyBox.
-# On appelle 'pivot_root', plaçant l'ancienne racine dans un point de montage de 
-# la nouvelle racine (remarquez l'absence de slash devant 'oldroot') :
-pivot_root . oldroot
-
-# On 'chroot' sur la nouvelle racine et on lance 'init', on peut enfin démarrer.
-exec chroot . /sbin/init
+# On va utiliser 'switch_root', inclus dans BusyBox, pour entrer et amorcer
+# '/mnt' qui contient la racine finale ; on peut enfin démarrer :
+exec switch_root /sbin/init $RUNLEVEL
