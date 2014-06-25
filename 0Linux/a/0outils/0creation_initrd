@@ -67,8 +67,6 @@ base-systeme; do
 done
 
 # On copie nos fichiers spéciaux pour l'initrd :
-echo -n "Copie des fichiers dans l'initrd... "
-cp -a ${SOURCES}/fstab ${TMP}/etc/
 cp -a ${SOURCES}/init ${TMP}/usr/sbin/
 
 # On crée le lien critique pour 'init' :

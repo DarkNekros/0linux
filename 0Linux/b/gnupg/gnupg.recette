@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gnupg
-VERSION=2.0.22
-EXT=tar.bz2
-NAMETGZ=gnupg
-WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=2.0.24
+WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils OpenPGP de chiffrement et de signature"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

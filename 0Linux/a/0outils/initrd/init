@@ -25,6 +25,8 @@ busybox --install -s
 mount -n -t proc  proc  /proc
 mount -n -t sysfs sysfs /sys
 mount -n -t tmpfs tmpfs /run
+mkdir -p /dev/pts
+mount -n -t devpts devpts /dev/pts
 
 # On analyse la ligne "boot:"
 for ARG in $(cat /proc/cmdline); do
@@ -75,6 +77,12 @@ fi
 # pour peupler '/dev' :
 mknod /dev/null c 1 3
 mknod /dev/tty c 5 0
+mknod /dev/console c 5 1
+mknod /dev/zero c 1 5
+mknod /dev/ptmx c 5 2
+mknod /dev/random c 1 8
+mknod /dev/urandom c 1 9
+chown root:tty /dev/{console,ptmx,tty}
 mdev -s
 
 # On applique le délai spécifié sur la ligne de commande :
@@ -132,12 +140,20 @@ if [ ! -r /mnt/sbin/init ]; then
 	/bin/sh
 fi
 
-# On déplace les systèmes de fichiers virtuels sur la racine finale :
-mount -o move /proc /mnt/proc 2>/dev/null
-mount -o move /sys /mnt/sys   2>/dev/null
-mount -o move /run /mnt/run   2>/dev/null
-mount -o move /dev /mnt/dev   2>/dev/null
+# On se déplace sur la nouvelle racine, montée sur '/mnt' :
+cd /mnt
 
-# On va utiliser 'switch_root', inclus dans BusyBox, pour entrer et amorcer
-# '/mnt' qui contient la racine finale ; on peut enfin démarrer :
-exec switch_root /mnt /sbin/init $RUNLEVEL
+# 'switch_root' est obsolète, on va utiliser 'pivot_root', inclus dans BusyBox.
+# On appelle 'pivot_root', plaçant l'ancienne racine dans un point de montage de 
+# la nouvelle racine (remarquez l'absence de slash devant 'oldroot') :
+pivot_root . oldroot
+
+# On déplace les systèmes de fichiers virtuels sur la nouvelle racine :
+mount -n -o move ./oldroot/sys  ./sys      
+mount -n -o move ./oldroot/proc ./proc
+mount -t devtmpfs none ./dev
+mount -n -o move ./oldroot/dev/pts ./dev/pts          
+mount -n -o move ./oldroot/run     ./run
+
+# On 'chroot' sur la nouvelle racine et on lance 'init', on peut enfin démarrer.
+exec chroot . /sbin/init </dev/console 2>/dev/console 2>&1

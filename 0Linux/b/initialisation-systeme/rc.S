@@ -20,7 +20,7 @@ export ANSI_COLOR="${ANSI_COLOR}"
 echo -e "\033[${ANSI_COLOR}m${PRETTY_NAME}\033[0;0m ${VERSION} vous souhaite la bienvenue !"
 echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Initialisation du système..."
 
-# '/dev' est censé être déjà monté en devtmpfs par le noyau.
+# '/dev' est censé être déjà monté en devtmpfs par le noyau (ou l'initrd).
 # On monte les systèmes de fichiers virtuels sur notre système en lecture seule
 # (donc, pas de '/etc/mtab' rempli) s'ils sont absents (l'initrd les monte) :
 mount -v -n -t proc   proc   /proc 2>/dev/null
@@ -155,6 +155,14 @@ if grep -wq cgroup /proc/filesystems ; then
 		mount -t cgroup cgroup /dev/cgroup
 	fi
 fi
+
+# On tente de démonter l'ancienne racine de l'initrd mais on ignore toute erreur :
+umount -n -f /oldroot/dev/pts 2>/dev/null
+umount -n -f /oldroot/dev  2>/dev/null
+umount -n -f /oldroot/run  2>/dev/null
+umount -n -f /oldroot/proc 2>/dev/null
+umount -n -f /oldroot/sys  2>/dev/null
+umount -n -f /oldroot      2>/dev/null
 
 # On active à nouveau les espaces d'échange (« swap »), qui peuvent être des fichiers :
 swapon -av
