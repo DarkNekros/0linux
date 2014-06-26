@@ -21,21 +21,10 @@ echo -e "\033[${ANSI_COLOR}m${PRETTY_NAME}\033[0;0m ${VERSION} vous souhaite la 
 echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Initialisation du système..."
 
 # '/dev' est censé être déjà monté en devtmpfs par le noyau (ou l'initrd).
-# On monte les systèmes de fichiers virtuels sur notre système en lecture seule
-# (donc, pas de '/etc/mtab' rempli) s'ils sont absents (l'initrd les monte) :
+# On monte les systèmes de fichiers virtuels. On conserve l'option '-n' au cas
+# où '/etc/mtab' serait toujours un fichier (on est peut-être en lecture seule)
+# et non un lien qymbolique vers '/proc/mounts'. D'abord '/proc' :
 mount -v -n -t proc   proc   /proc 2>/dev/null
-mount -v -n -t sysfs  sysfs  /sys  2>/dev/null
-mount -v -n -t tmpfs  tmpfs  /run  2>/dev/null
-
-# Chargement de la police console en premier lieu :
-if [ -x /etc/rc.d/rc.police ]; then
-	/etc/rc.d/rc.police start
-fi
-
-# Chargement de la locale :
-if [ -x /etc/rc.d/rc.locale ]; then
-	/etc/rc.d/rc.locale start
-fi
 
 # Mode débogage :
 DEBUGBOOTLINE="$(cat /proc/cmdline | grep '0linuxdebug')"
@@ -52,6 +41,20 @@ if [ ! "${DEBUGBOOTLINE}" = "" ]; then
 	else
 		set -x
 	fi
+fi
+
+# Puis '/sys' et '/run' :
+mount -v -n -t sysfs  sysfs  /sys  2>/dev/null
+mount -v -n -t tmpfs  tmpfs  /run  2>/dev/null
+
+# Chargement de la police console en premier lieu :
+if [ -x /etc/rc.d/rc.police ]; then
+	/etc/rc.d/rc.police start
+fi
+
+# Chargement de la locale :
+if [ -x /etc/rc.d/rc.locale ]; then
+	/etc/rc.d/rc.locale start
 fi
 
 # On lance très tôt le module 'loop' :
@@ -126,23 +129,25 @@ else
 	mount -v -n -w -o remount /
 fi
 
-# On est maintenant en lecture-écriture, mais '/etc/mtab' est vide ou erroné. On nettoie :
-rm -f /etc/mtab /etc/mtab~ /etc/mtab.tmp
-touch /etc/mtab
+# On est maintenant en lecture-écriture, mais '/etc/mtab' est vide ou erroné si
+# c'est encore un fichier régulier et non un lien :
+if [ -f /etc/mtab ]; then
+	rm -f /etc/mtab /etc/mtab~ /etc/mtab.tmp
+	touch /etc/mtab
+fi
 
 # On remonte normalement la partition racine pour écrire dans le nouveau fichier '/etc/mtab' :
 echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Remontage de la racine en lecture-écriture..."
 mount -v -f -w /
+
+# Ces répertoires viennent souvent à manquer, on s'assure qu'ils sont bien là :
+mkdir -p /dev/{pts,shm}
 
 # On remonte normalement les systèmes de fichiers virtuels pour les ajouter à
 # '/etc/mtab' :
 mount -v -o remount /proc
 mount -v -o remount /sys
 mount -v -o remount /run
-
-# Ces répertoires viennent souvent à manquer, on s'assure qu'ils sont bien là :
-mkdir -p /dev/{pts,shm}
-
 mount -v /dev/pts
 mount -v /dev/shm
 
@@ -160,8 +165,8 @@ fi
 umount -n -f /oldroot/dev/pts 2>/dev/null
 umount -n -f /oldroot/dev  2>/dev/null
 umount -n -f /oldroot/run  2>/dev/null
-umount -n -f /oldroot/proc 2>/dev/null
 umount -n -f /oldroot/sys  2>/dev/null
+umount -n -f /oldroot/proc 2>/dev/null
 umount -n -f /oldroot      2>/dev/null
 
 # On active à nouveau les espaces d'échange (« swap »), qui peuvent être des fichiers :
