@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.1.5
+VERSION=5.2
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
 
@@ -80,6 +80,9 @@ ln -sf ../man  ${PKG}/usr/share/man
 ln -sf ../run ${PKG}/var/
 ln -sf ../run/lock ${PKG}/var/
 
+# On crée le lien symbolique 'mtab' vers '/proc/mounts' :
+ln -sf ../proc/mounts ${PKG}/etc/mtab
+
 # On copie tous les fichiers de configuration en veillant à ne rien écraser :
 for configuration in $CWD/etc/*; do
 	cp -a ${configuration} ${PKG}/etc/$(basename ${configuration}).0nouveau
@@ -109,9 +112,6 @@ cp -ra $CWD/skel ${PKG}/etc/
 # On garde un '/etc/HOSTNAME' en majuscules pour maximiser la compatibilité :
 ln -sf hostname ${PKG}/etc/HOSTNAME
 
-# On crée un 'mtab' vide :
-touch ${PKG}/etc/mtab
-
 # On place les fichiers journaux en veillant à ne rien écraser :
 touch     ${PKG}/var/log/{wtmp,lastlog}.0nouveau
 chmod 664 ${PKG}/var/log/wtmp.0nouveau
@@ -124,6 +124,7 @@ chmod 664 ${PKG}/var/run/utmp.0nouveau
 chmod 640 ${PKG}/etc/{,g}shadow.0nouveau
 
 # On compile et on place le manuel de 0linux :
+mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 txt2tags -t html -o ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux.html $CWD/0linux-man.t2t
 txt2tags -t man  -o ${PKG}/usr/man/man7/0linux.7                     $CWD/0linux-man.t2t
 
