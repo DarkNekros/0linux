@@ -147,7 +147,7 @@ mount -t devtmpfs none ./dev
 
 # On change de racine et on place l'ancienne racine dans un sous-répertoire de
 # la nouvelle racine (notez l'absence de slash devant 'oldroot') :
-pivot_root . oldroot
+pivot_root . oldroot 2>/dev/null
 
 # On 'chroot' sur la nouvelle racine et on lance 'init', on peut enfin démarrer.
 exec chroot . /sbin/init </dev/console 2>/dev/console 2>&1
