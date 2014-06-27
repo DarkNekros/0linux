@@ -135,6 +135,12 @@ exploitables.
 	   nouvelle table de partitions avant de quitter (les commandes peuvent
 	   changer selon le programme choisi).
 
+N'oubliez pas de rendre amorçable la partition destinée à accueillir 0Linux !
+Pour les disques GPT, il vous faudra invoquer la commande suivante, ici pour le
+disque '/dev/sda', afin d'activer la fonctionnalité « Legacy BIOS bootable » :
+
+	# sgdisk /dev/sda --attributes=1:set:2
+
 
 3- Lancement de l'installateur
 
@@ -152,6 +158,7 @@ programme ou écran à tout moment en tapant la combinaison CTRL+C.
 
 Quand l'installation et la configuration sont terminées, quittez le 
 programme d'installation pour redémarrer sous votre nouveau système Linux. 
+
 
 Problèmes connus, dysfontionnements possibles
 ---------------------------------------------

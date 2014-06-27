@@ -106,7 +106,7 @@ while [ 0 ]; do
 				sleep 2
 				unset PARTNAME
 				continue
-			esac
+			fi
 		done
 
 		# On demande si l'on doit écraser le MBR :
@@ -120,6 +120,9 @@ while [ 0 ]; do
 		echo "systèmes ?"
 		echo "N.B. : ceci écrasera votre ancienne amorce de façon irréversible !"
 		echo "N.B. : la partition à démarrer doit être marquée comme amorçable !"
+		echo "       Pour les disques GPT, il faudra invoquer, pour le disque'/dev/sda' :"
+		echo "       	sgdisk /dev/sda --attributes=1:set:2"
+		echo ""
 		echo "Entrez « oui » pour confirmer l'écrasement ou bien appuyez sur"
 		echo "ENTRÉE pour ignorer cette étape."
 		echo ""
