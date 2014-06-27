@@ -29,6 +29,9 @@ cp -ra $CWD/extlinux ${PKG}/boot/
 cp -ar ${PKG}/usr/share/syslinux/{*.c32,efi32,efi64} ${PKG}/boot/extlinux/
 chmod +x $(find ${PKG}/boot/extlinux -type f -name "*.c32")
 
+# On copie l'initrd dans '/boot' pour pouvoir démarrer via un LABEL ou un UUID:
+cp $CWD/initrd ${PKG}/boot/
+
 # On convertit l'encodage de 'extlinux.conf'
 iconv -f UTF-8 -t CP850 ${PKG}/boot/extlinux/extlinux.conf > ${PKG}/boot/extlinux/extlinux.conf-cp850
 mv ${PKG}/boot/extlinux/extlinux.conf{-cp850,}
