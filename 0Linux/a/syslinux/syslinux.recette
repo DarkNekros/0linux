@@ -16,7 +16,7 @@ rm -f gethostip
 sed -i "s@^CC.*= gcc@CC       = ${CC}@g" mk/syslinux.mk
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" make -j${JOBS} || make
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" make -j${JOBS} bios efi32 efi64 installer || make bios efi32 efi64 installer
 fakeroot make install INSTALLROOT=${PKG}
 
 # On copie le binaire bien pratique 'syslinux-nomtools' :
