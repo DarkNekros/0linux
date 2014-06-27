@@ -36,9 +36,9 @@ else
 		echo "déterminer vos partitions Linux existantes :"
 		echo ""
 		echo "		# cfdisk"
+		echo "		# cgdisk"
 		echo "		# fdisk -l"
 		echo "		# lsblk -f"
-		echo "		# blkid"
 		echo ""
 		echo "Entrez la partition qui va servir de racine (« / ») pour accueillir"
 		echo "votre installation de Linux. Exemples : /dev/sda1 ; /dev/hda3 ; etc."
@@ -112,7 +112,6 @@ else
 	if [ ! "${ROOTFORMAT}" = "" ]; then
 		echo "${ROOTFORMAT}" > $TMP/formatages
 	fi
-
 fi
 
 # C'est fini !

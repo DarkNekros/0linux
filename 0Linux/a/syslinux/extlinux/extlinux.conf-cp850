@@ -33,7 +33,7 @@ MENU BACKGROUND syslinux.png
 FONT lat9w16.psf
 
 # Titre du menu :
-MENU TITLE Systäme 0 Linux
+MENU TITLE Systäme 0Linux
 
 # On remplace le message anglophone "Press [tab] to edit options."
 MENU TABMSG Appuyez sur TAB pour Çditer les options de dÇmarrage

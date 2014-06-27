@@ -39,7 +39,18 @@ messages lors du demarrage, lesquels défilent souvent trop rapidement
 Déroulement de l'installation
 -----------------------------
 
-1- Préparer son ou ses disques durs
+1- Préparer l'amorçage
+
+0Linux s'amorce de façon traditionnelle, via un BIOS. Si votre machine est
+assez récente et qu'elle contient un EFI et non un BIOS, 0Linux ne sera pas
+amorçable à moins d'activer l'option de compatibilité avec les BIOS, présente
+dans la plupart des EFI et souvent nommée « Legacy BIOS » ou « Legacy Boot ».
+Veillez également à désactiver le « Secure Boot » afin de permettre à 0Linux
+de s'amorcer.
+La compatibilité avec UEFI sera implémentée dans de futures versions de 0Linux.
+
+
+2- Préparer son ou ses disques durs
 
 Vous devez vous assurer que vos disques durs ont été préparés pour
 accueillir un système Linux. L'installateur ne le fera pas pour vous !
@@ -124,7 +135,8 @@ exploitables.
 	   nouvelle table de partitions avant de quitter (les commandes peuvent
 	   changer selon le programme choisi).
 
-2- Lancement de l'installateur
+
+3- Lancement de l'installateur
 
 Après avoir tapé 'installateur', suivez simplement les rubriques à l'écran,
 les unes après les autres.

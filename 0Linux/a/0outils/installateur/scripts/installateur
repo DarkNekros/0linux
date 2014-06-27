@@ -26,7 +26,7 @@ if [ "${INSTALLDEBUG}" = "" ]; then
 	clear
 fi
 echo "--------------------------------------"
-echo -e "       \033[1;32mSystème autonome 0 Linux\033[0;0m"
+echo -e "       \033[1;32mSystème autonome 0Linux\033[0;0m"
 echo "--------------------------------------"
 echo ""
 echo "Bonjour ! Bienvenue dans l'installateur de 0Linux."
@@ -57,6 +57,8 @@ echo ""
 echo "Pour cela, passez sur la console n°2 et invoquez 'cfdisk' pour afficher"
 echo "et partitionner vos disques durs. Les outils de partitionnement 'fdisk'"
 echo "et 'parted' sont également disponibles."
+echo "Note : Les disques durs plus récents de type GPT sont manipulables avec"
+echo "les outils 'cgdisk', 'gdisk' et 'parted'."
 echo ""
 echo "Consultez l'aide dans le menu qui va suivre pour en savoir plus."
 echo ""

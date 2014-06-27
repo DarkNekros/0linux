@@ -12,9 +12,6 @@ crunch() {
 # La partition racine :
 DAROOTPART=$(cat $TMP/partition_racine)
 
-# On remplace d'office le marqueur « ROOTPART » dans 'extlinux.conf' par la racine  :
-sed -i "s@ROOTPART@${DAROOTPART}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
-
 # Boucle d'affichage pour l'installation du chargeur d'amorçage :
 while [ 0 ]; do
 	if [ "${INSTALLDEBUG}" = "" ]; then
@@ -58,6 +55,60 @@ while [ 0 ]; do
 		continue
 	elif [ "$BOOTERINST" = "1" ]; then
 		
+		# Boucle d'affichage du choix du LABEL / UUID :
+		while [ 0 ]; do
+			if [ "${INSTALLDEBUG}" = "" ]; then
+				clear
+			fi
+			echo -e "\033[1;32mNommage de la partition ${DAROOTPART}.\033[0;0m"
+			echo ""
+			echo "Votre partition peut changer de nom selon les circonstances. Il vous faut"
+			echo "donc la nommer à votre guise ou bien utiliser son identifiant unique UUID"
+			echo "pour s'assurer qu'elle sera bien identifiée par le chargeur d'amorçage."
+			echo "Entrez ci-dessous la méthode de nommage désirée pour nommer votre partition"
+			echo "de façon persistante ou bien entrez directement le nom désiré de la"
+			echo "partition racine après le mot-clé « LABEL= ». Contraintes : 16 caractères"
+			echo "maximum, évitez les espaces, accents et caractères spéciaux. "
+			echo "Exemples de noms : LABEL=0LINUXRACINE ; LABEL=0linux ; LABEL=systeme0"
+			echo ""
+			echo "Au choix :"
+			echo "UUID                  : utiliser l'UUID de la partition (recommandé)"
+			echo "LABEL=nomdevotrechoix : assigner un nom persistant"
+			echo ""
+			echo "Appuyez sur ENTRÉE pour ignorer cette étape et utiliser '${DAROOTPART}'."
+			echo ""
+			echo -n "Votre choix (UUID/LABEL=xxx/ENTRÉE): "
+			read PARTNAMEID;
+			if [ "${PARTNAME}" = "UUID" ]; then
+				ROOTFSUUID=$(blkid -p -s UUID -o value ${DAROOTPART})
+				
+				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par l'UUID :
+				sed -i "s@ROOTPART@UUID=${ROOTFSUUID}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+				break
+				
+			elif [ ! "$(echo ${PARTNAME} | grep -E '^LABEL=')" = "" ]; then
+				
+				# On affecte le LABEL à la partition :
+				tune2fs -L ${PARTNAME} ${DAROOTPART}
+				
+				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par le LABEL  :
+				sed -i "s@ROOTPART@${PARTNAME}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+				break
+			elif [ "${PARTNAME}" = "" ]; then
+				
+				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par la racine  :
+				sed -i "s@ROOTPART@${DAROOTPART}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+				break
+			else
+				echo "Veuillez soit entrer « UUID », « LABEL=nomdevotrechoix », soit"
+				echo "appuyer sur ENTRÉE."
+				echo ""
+				sleep 2
+				unset PARTNAME
+				continue
+			esac
+		done
+
 		# On demande si l'on doit écraser le MBR :
 		if [ "${INSTALLDEBUG}" = "" ]; then
 			clear
@@ -77,6 +128,7 @@ while [ 0 ]; do
 		if [ ! "${MBRINSTALL}" = "oui" ]; then
 			break
 		else
+			
 			# Le périphérique à amorcer : :
 			BOOTDEVICE="$(cat $TMP/partition_racine | crunch | tr -d [0-9])"
 			
@@ -107,6 +159,7 @@ while [ 0 ]; do
 				echo "souhaitée figurant dans la liste suivante ou appuyez sur ENTRÉE pour ignorer :"
 				echo "Exemples : /dev/sda2 ; /dev/sdb4 : /dev/sdf5 ; etc."
 				echo ""
+				
 				# On affiche les partitions FAT/NTFS sauf l'éventuelle clé USB montée pour
 				# l'installation :
 				fdisk -l | grep -i -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | crunch | cut -d' ' -f1 | grep -v $(cat $TMP/choix_media) 2>/dev/null
@@ -114,9 +167,11 @@ while [ 0 ]; do
 				echo -n "Votre choix : "
 				read WINBOOT;
 				if [ "${WINBOOT}" = "" ]; then
-					# On ne fait rien
+					
+					# On ne fait rien :
 					break
 				else
+					
 					# On fait confiance à la réponse de l'utilisateur et on détecte quel disque est
 					# utilisé. On en teste 6 :
 					WHICHDISK="$(echo ${WINBOOT} | crunch | tr -d '/dev/sd' | tr -d [0-9])"
@@ -157,6 +212,7 @@ while [ 0 ]; do
 			echo "	extlinux --install ${SETUPROOT}/boot/extlinux"
 			extlinux --install ${SETUPROOT}/boot/extlinux
 			sleep 2
+			
 			# Vraiment pour être sûr... :) :
 			extlinux --install ${SETUPROOT}/boot/extlinux
 			break

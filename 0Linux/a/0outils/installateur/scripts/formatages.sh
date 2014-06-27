@@ -34,10 +34,12 @@ while [ 0 ]; do
 	if [ "$FORMATALL" = "" ]; then
 		break
 	elif [ "$FORMATALL" = "oui" ]; then
+		
 		# On a confirmation du formatage :
 		sync
 		chmod +x $TMP/formatages
 		echo -n "Formatages en cours... "
+		
 		# On lance tous les formatages présents dans le fichier temporaire :
 		sh $TMP/formatages
 		echo "Terminés."
