@@ -32,10 +32,10 @@ mv ${PKGSOURCES}/${NAMETGZ}/UserManual{,-${VERSION}}.pdf
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/{bin,src} \
 	${PKG}/usr/{include,lib${LIBDIRSUFFIX},share}/virtualbox \
-	${PKG}/lib/modules/$(uname -r)/misc \
+	${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/misc \
 	${PKG}/usr/share/{applications,pixmaps,mime/packages} \
-	${PKG}/etc/{default,vbox}
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
+	${PKG}/etc/{default,vbox} \
+	${PKG}/usr/lib${LIBDIRSUFFIX}/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
 
 # Un répertoire change selon l'architecture :
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -132,11 +132,11 @@ cd -
 
 # On compile maintenant les modules noyau :
 cd out/linux.$BUILDDIR/release/bin/src
-fakeroot make KERN_DIR="/lib/modules/$(uname -r)/build"
+fakeroot make KERN_DIR="/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/build"
 cd -
 
 # On place les modules noyau :
-find . -type f -name "*.ko" -exec mv {} ${PKG}/lib/modules/$(uname -r)/misc/ \;
+find . -type f -name "*.ko" -exec mv {} ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/misc/ \;
 
 # On crée un fichier de configuration qui n'écrasera rien :
 cat > ${PKG}/etc/vbox/vbox.cfg.0nouveau << EOF
