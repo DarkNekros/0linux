@@ -84,6 +84,9 @@ while [ 0 ]; do
 				
 				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par l'UUID :
 				sed -i "s@ROOTPART@UUID=${ROOTFSUUID}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+				
+				# On remplace donc la racine par son UUID dans 'fstab' :
+				sed -i "s@^${DAROOTPART}@UUID=${ROOTFSUUID}@" ${SETUPROOT}/etc/fstab
 				break
 				
 			elif [ ! "$(echo ${PARTNAME} | grep -E '^LABEL=')" = "" ]; then
@@ -93,12 +96,19 @@ while [ 0 ]; do
 				
 				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par le LABEL  :
 				sed -i "s@ROOTPART@${PARTNAME}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+				
+				# On remplace donc la racine par son LABEL dans 'fstab' :
+				sed -i "s@^${DAROOTPART}@LABEL=${PARTNAME}@" ${SETUPROOT}/etc/fstab
 				break
+				
 			elif [ "${PARTNAME}" = "" ]; then
 				
 				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par la racine  :
 				sed -i "s@ROOTPART@${DAROOTPART}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+				
+				# Et on laisse 'fstab' tel quel.
 				break
+				
 			else
 				echo "Veuillez soit entrer « UUID », « LABEL=nomdevotrechoix », soit"
 				echo "appuyer sur ENTRÉE."

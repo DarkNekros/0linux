@@ -56,6 +56,18 @@ ln -sf config-${VERSION} ${PKG}/boot/config
 # On compile et installe maintenant les modules noyau :
 make -j${JOBS} modules_install INSTALL_MOD_PATH=${PKG} || make modules_install INSTALL_MOD_PATH=${PKG}
 
+# On déplace les modules et on crée un lien symbolique standard :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+cp -ar ${PKG}/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
+rm -rf ${PKG}/lib
+
+# On crée des liens génériques pour x86_64 multilib :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mkdir -p ${PKG}/usr/lib
+	ln -sf ../lib${LIBDIRSUFFIX}/firmware ${PKG}/usr/lib/
+	ln -sf ../lib${LIBDIRSUFFIX}/modules  ${PKG}/usr/lib/
+fi
+
 # On copie les fichiers nécessaires à certains paquets :
 mkdir -p ${PKG}/usr/src/${NAMESRC}-${VERSION}
 cp Module.symvers ${PKG}/usr/src/${NAMESRC}-${VERSION}
@@ -72,10 +84,10 @@ chmod og-w -R ${PKG}/usr/src/${NAMESRC}-${VERSION}/scripts
 mkdir -p ${PKG}/usr/src/${NAMESRC}-${VERSION}/.tmp_versions
 
 # On relie enfin les répertoires 'build' et 'source' des modules aux sources du noyau :
-rm -rf ${PKG}/lib/modules/${VERSION}${MINVERSION}/build
-rm -rf ${PKG}/lib/modules/${VERSION}${MINVERSION}/source
-ln -sf ../../../../usr/src/${NAMESRC}-${VERSION} ${PKG}/lib/modules/${VERSION}${MINVERSION}/build
-ln -sf ../../../../usr/src/${NAMESRC}-${VERSION} ${PKG}/lib/modules/${VERSION}${MINVERSION}/source
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/build
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/source
+ln -sf ../src/${NAMESRC}-${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/build
+ln -sf ../src/${NAMESRC}-${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/source
 
 # Installation de la documentation (on crée simplement un lien) :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}

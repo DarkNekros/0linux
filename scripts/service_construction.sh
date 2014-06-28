@@ -20,6 +20,9 @@ echo "$$" > ${PIDFILE}
 # On s'assure que l'environnement est correctement configuré :
 source /etc/profile
 
+# On identifie la version du système :
+source /etc/os-release
+
 # La fonction de traitement de la file d'attente :
 traiter_filedattente() {
 	# On s'assure que la file d'attente existe :
@@ -58,6 +61,12 @@ if [ ! $OLD_HEAD = $NEW_HEAD ]; then
 		xargs basename -a | \
 		grep -E '\.recette' | \
 		sed -e 's@\.recette@@' -e '/^$/d' -e '/[[:space:]]/d' >> ${FILEDATTENTE}
+	
+	# Si l'installateur a changé, on va devoir régénérer une image ISO :
+	unset ISOGEN
+	if [ ! "$(git --no-pager diff --name-only $OLD_HEAD $NEW_HEAD | grep installateur)" = "" ]; then
+		ISOGEN="oui"
+	fi
 fi
 
 ### Étape 2 : on compile/installe le contenu de la file d'attente :
@@ -80,6 +89,23 @@ if [ "${CHECKBINAIRES}" = "oui" ]; then
 	
 	# On traite à nouveau la file d'attente pour la vider :
 	traiter_filedattente
+fi
+
+# Si l'on doit régénérer une image ISO :
+if [ "${ISOGEN}" = "oui" ]; then
+	
+	# On nettoie et on génère l'iso dans '/usr/local/temp' (par défaut, mais sait-on jamais) :
+	rm -rf /usr/local/temp/iso
+	TMP=/usr/local/temp 0creation_live --mini $(pwd)/../../../pub/${VERSION}/$(uname -m)/
+	
+	# On déduit le nome de l'image ISO :
+	NOMISO=$(ls -1 /usr/local/temp/iso/)
+	
+	# On copie l'image et on génère la somme de contrôle MD5 :
+	cp /usr/local/temp/iso/${NOMISO} $(pwd)/../../../pub/iso/
+	cd $(pwd)/../../../pub/iso/
+	md5sum ${NOMISO} > ${NOMISO}.md5
+	cd -
 fi
 
 ### Étape 3 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :

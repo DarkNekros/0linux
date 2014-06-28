@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.7.3
-WGET=http://www.cups.org/software/$VERSION/$NAMESRC-$VERSION-source.$EXT
+WGET=http://www.cups.org/software/$VERSION/$NAMESRC-$VERSION-source.tar.bz2
 DESC="Le système d'impression « Common Unix Printing System »"
 
 telecharger_sources
