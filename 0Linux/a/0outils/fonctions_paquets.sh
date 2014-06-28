@@ -585,7 +585,7 @@ empaqueter() {
 	for rootdir in bin lib lib${LIBDIRSUFFIX} sbin; do
 		if [ -d ${PKG}/${rootdir} ]; then
 			mkdir -p ${PKG}/usr/${rootdir}
-			cp -ar ${PKG}/${rootdir}/* ${PKG}/usr/${rootdir}/
+			cp -ar ${PKG}/${rootdir}/* ${PKG}/usr/${rootdir}/ || true
 			rm -rf ${PKG}/${rootdir}
 		fi
 	done
