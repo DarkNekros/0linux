@@ -28,6 +28,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-dhcpcd=/usr/sbin/dhcpcd \
 	--with-modem-manager-1 \
 	--with-pppg-plugin-dir="$(basename $(find /usr/lib${LIBDIRSUFFIX}/pppd -maxdepth 1 -mindepth 1 -type d))" \
+	--with-udev-dir=/usr/lib${LIBDIRSUFFIX}/udev \
 	--without-resolvconf \
 	--build=${PKGARCH}-0linux-linux-gnu
 
