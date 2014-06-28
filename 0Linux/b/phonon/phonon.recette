@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=phonon
-VERSION=4.7.0
-EXT=tar.xz
-NAMETGZ=phonon
-WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT
+VERSION=4.7.2
+WGET=ftp://ftp.kde.org/pub/kde/stable/phonon/$VERSION/phonon-$VERSION.tar.xz
 DESC="Couche d'abstraction et bibliothèques multimédia pour Qt"
 
  

@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=phonon-backend-vlc
-VERSION=0.7.0
-EXT=tar.xz
-NAMETGZ=phonon-vlc
-WGET=ftp://ftp.kde.org/pub/kde/stable/phonon/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.$EXT
+VERSION=0.7.2
+WGET=ftp://ftp.kde.org/pub/kde/stable/phonon/phonon-backend-vlc/$VERSION/src/phonon-backend-vlc-$VERSION.tar.xz
 DESC="Interfaçage VLC pour Phonon"
 
  
