@@ -25,6 +25,7 @@ cmake \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DENABLE_TESTS=OFF \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
 	./ ../
 
 make -j${JOBS} || make

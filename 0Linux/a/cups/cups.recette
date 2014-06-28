@@ -34,7 +34,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--disable-dnssd \
 		--disable-gnutls \
 		--disable-gssapi \
+		--disable-pam \
 		--enable-libusb=no \
+		--enable-ssl=no \
+		--enable-threads \
 		--with-optim="${FLAGS}" \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
