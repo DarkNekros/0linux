@@ -86,8 +86,8 @@ mkdir -p ${PKG}/usr/src/${NAMESRC}-${VERSION}/.tmp_versions
 # On relie enfin les répertoires 'build' et 'source' des modules aux sources du noyau :
 rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/build
 rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/source
-ln -sf ../src/${NAMESRC}-${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/build
-ln -sf ../src/${NAMESRC}-${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/source
+ln -sf ../../../../../src/${NAMESRC}-${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/build
+ln -sf ../../../../../src/${NAMESRC}-${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/${VERSION}${MINVERSION}/source
 
 # Installation de la documentation (on crée simplement un lien) :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
