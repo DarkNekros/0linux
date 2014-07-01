@@ -102,13 +102,13 @@ creer_post_installation
 # On ajoute la préparation des sources au script de post-installation :
 cat >> ${PKG}/post-install.sh << EOF
 
-# On prépare les sources du noyau :
-cat boot/config-${VERSION} > usr/src/${NAMESRC}-${VERSION}/.config
-chroot . make -C usr/src/${NAMESRC}-${VERSION} clean oldconfig prepare scripts 2>/dev/null
-rm -f usr/src/${NAMESRC}-${VERSION}/.version
-
 # On actualise les dépendances des modules du noyau :
 chroot . depmod -a ${VERSION}${MINVERSION} 2>/dev/null
+
+# On prépare les sources du noyau :
+cat boot/config-${VERSION} > usr/src/${NAMESRC}-${VERSION}/.config
+chroot . make -C usr/src/${NAMESRC}-${VERSION} clean oldconfig prepare scripts &>/dev/null 2>&1
+rm -f usr/src/${NAMESRC}-${VERSION}/.version
 
 EOF
 

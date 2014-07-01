@@ -2,7 +2,7 @@
 
 # On nettoie avant tout :
 rm -f $TMP/choix_media
-unset MEDIA REPONSEREZO
+unset MEDIA REPONSEREZO REPONSEDEPOT
 
 # Boucle pour l'affichage du menu :
 while [ 0 ]; do
@@ -51,22 +51,7 @@ while [ 0 ]; do
 		fi
 	;;
 	"3")
-		if [ "${INSTALLDEBUG}" = "" ]; then
-			clear
-		fi
-		echo -e "\033[1;32mInstallation via le réseau.\033[0;0m"
-		echo ""
-		echo "Une connexion filaire de type Ethernet avec une IP attribuée automatiquement"
-		echo "par DHCP a déjà été tentée au démarrage du système."
-		echo "Vous pouvez tenter de vous connecter manuellement via un autre"
-		echo "terminal à l'aide des commandes 'ifconfig', 'dhcpcd', 'iwconfig', etc. si"
-		echo "vous avez une connexion différente."
-		echo ""
-		echo "Appuyez sur ENTRÉE une fois votre réseau configuré (l'installateur ne testera"
-		echo "pas la connexion)."
-		read REPONSEREZO;
-		echo "http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets" > $TMP/choix_media
-		break
+		. reseau.sh
 	;;
 	"4")
 		. repertoire.sh

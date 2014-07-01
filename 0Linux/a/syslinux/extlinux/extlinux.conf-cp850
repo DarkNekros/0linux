@@ -43,7 +43,7 @@ MENU AUTOBOOT Lancement automatique dans # seconde{,s}...
 
 # 0 Linux :
 LABEL 0
-	MENU LABEL 0 Linux
+	MENU LABEL 0Linux
 	LINUX ../vmlinuz
 	APPEND ro initrd=../initrd root=ROOTPART
 
