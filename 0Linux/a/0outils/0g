@@ -297,7 +297,8 @@ EOF
 export LC_ALL='C'
 umask 022
 unset demo info root paquets
-MASTER="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
+MASTER="http://download.tuxfamily.org/0linux/pub/paquets"
+#MASTER="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
 ROOT="$(echo "$ROOT" | sed 's#/*$#/#')"
 LOGDIR="${ROOT}var/log/packages"
 CURL="/usr/bin/curl-statique -LRs" # curl est compilé statiquement
