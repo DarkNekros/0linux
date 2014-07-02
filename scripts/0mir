@@ -92,30 +92,32 @@ mirror () {
     local user="${FTPUSER:+"-u $FTPUSER"}"
     # 'set net:limit-total-rate' : limitation de la bande passante
     # 'lftp mirror -R' : mode inversé (duplication du local vers le distant)
-    # On ignore les 'include' et les sauvegardes vim en *~
+    # On ignore les sauvegardes vim en *~
     
     # Ne prend en compte que les paquets manquants :
-    #lftp -v 1 -c "set net:limit-total-rate 800000,90000 && open $FTP $user && mirror -R -e --only-missing -X *~ -X include . ." || exit 1
-    
+    #lftp -v 1 -c "set net:limit-total-rate 800000,90000 && open $FTP -u ${user},${CREDFTP} && mirror -R -e --only-missing -X *~ . ." || exit 1
+        
     # Ne gère que les timestamps :
-    #[ -f "$1" ] || TZ=UTC0 touch -t 197001010000.01 "$1"
-    #lftp -c "open $FTP $user && mirror -ReN"$1" -X*~ -X*.dep . ." || exit 1
+    [ -f "$1" ] || TZ=UTC0 touch -t 197001010000.01 "$1"
+    lftp -c "open ${user},${CREDFTP} $FTP && mirror -ReN"$1" -X*~ -Xarchives_sources/* -X0linux*maxi* -X0linux-zeta* -X0linux*i686*.iso* -Xzeta -Xi686 -Xarm. ." || exit 1
     
     ## Méthode rsync :
-    find /tmp/ -mindepth 1 -maxdepth 1 -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
-    RSYNC_PASSWORD="${CREDRSYNC}" rsync -aP --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@ftp.igh.cnrs.fr/0linuxadmin/
+    #find /tmp/ -mindepth 1 -maxdepth 1 -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
+    #RSYNC_PASSWORD="${CREDRSYNC}" rsync -aP --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@ftp.igh.cnrs.fr/0linuxadmin/
 }
 
 # === Main =====================================================================
 export LC_ALL="C"
 umask 022
-FTP="ftp://ftp.igh.cnrs.fr"
-URL="http://ftp.igh.cnrs.fr/pub/os/linux/0linux"
+#FTP="ftp://ftp.igh.cnrs.fr"
+FTP="ftp://ftp.tuxfamily.org/0linux/0linux-repository/pub"
+#URL="http://ftp.igh.cnrs.fr/pub/os/linux/0linux"
+URL="http://download.tuxfamily.org/0linux/pub"
 FTPUSER="appzer0"
-ROOT="pub"
+ROOT="pub" # La racine LOCALE et non la racine distante !
 log="/tmp/0mir-error.log"
 
-# On source nos données d'accès pour le login rsync :
+# On source nos données d'accès pour le login rsync/ftp :
 . ./login-0mir.sh
 
 # On se place à la racine du dépôt :
@@ -137,7 +139,7 @@ for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 				
 				# Si la description du paquet est absente, on nettoie et on la crée :
 				if [ ! -r $(echo $paquet | sed 's@\.spack@\.txt@') ]; then
-					rm -f $(dirname $paquet)/*.txt # les restes d'une autre version
+					rm -f $(dirname $paquet)/*.txt # les restes d'une autre version ou nom différent
 					/usr/sbin/spackadd --about $paquet > $(echo $paquet | sed 's@\.spack@\.txt@')
 				fi
 			done
@@ -154,7 +156,11 @@ for arch in x86_64; do # On ne fait que x86_64 pour le moment...
 			[ "$categorie" = "r" ] && catdesc="r : Réseau. Clients, serveurs gérant ou utilisant le réseau en console."
 			[ "$categorie" = "x" ] && catdesc="x : X.org, l'implémentation libre et distribution officielle de X11"
 			[ "$categorie" = "z" ] && catdesc="z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
-			echo "$catdesc" > ${categorie}/${categorie}.txt
+			
+			# Si le contenu est différent de la description, on met à jour, sinon on ignore :
+			if [ ! "$(cat ${categorie}/${categorie}.txt)" = "${catdesc}" ]; then
+				echo "$catdesc" > ${categorie}/${categorie}.txt
+			fi
 		done
 	)
 done
@@ -175,8 +181,8 @@ for arch in x86_64; do # On ne fait que x86_64 pour le moment...
     fi
 done
 
-# mirror ../.timestamp             # Méthode lftp avec timestamps uniquement
-mirror                             # Méthode rsync
+mirror ../.timestamp               # Méthode lftp avec timestamps uniquement
+#mirror                             # Méthode rsync/ftp sans timestamps
 checknewpkg ../.timestamp $pkgroot # ajouter ici les autres dossiers à vérifier.
 
 # EoF

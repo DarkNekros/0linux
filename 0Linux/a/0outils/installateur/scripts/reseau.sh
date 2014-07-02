@@ -35,6 +35,8 @@ while [ ! -r $TMP/choix_media ]; do
 	echo "Cette URL doit pointer sur le répertoire contenant la version de 0Linux"
 	echo "visée (« epsilon », « eta », etc.). Il est appelé traditionnellement"
 	echo "« paquets » sur les dépôts officiels."
+	echo "Consultez le page des téléchargements sur le site de 0Linux afin de savoir"
+	echo "si des restrictions s'appliquent à certains serveurs."
 	echo "Appuyez sur ENTRÉE pour ignorer cette étape."
 	echo ""
 	echo "1 : IGH/CNRS  - http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
@@ -54,6 +56,7 @@ while [ ! -r $TMP/choix_media ]; do
 	;;
 	"")
 		break
+	;;
 	*)
 		if [ "$(echo ${REPONSEDEPOT} | grep -E '^ftp:|^http:')" = "" ]; then
 			echo "Veuillez entrer une URL valide (« ftp:// » ou « http:// »)."
