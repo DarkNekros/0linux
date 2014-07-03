@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # On nettoie :
-unset BLURB BLURB2 BLURB3 BLURB4 BLURB5 CHOIXMENUABO BUROABO
+unset BLURB BLURB2 BLURB3 BLURB4 CHOIXMENUABO BUROABO
 
 # Confirmation :
 if [ "${INSTALLDEBUG}" = "" ]; then
@@ -49,15 +49,14 @@ else
 	echo "ROOT=\"${SETUPROOT}\""                 >> /etc/0outils/0g.conf
 	
 	# On installe avec '0g' :
-	0g \
-		busybox \
-		base-systeme \
-		glibc \
-		ncurses \
-		readline \
-		bash \
-		sgml-common \
-		0outils
+	0g busybox
+	0g base-systeme
+	0g glibc
+	0g ncurses
+	0g readline
+	0g bash
+	0g sgml-common
+	0g 0outils
 	
 	# La config' de 0g sur $SETUPROOT n'a pas besoin de "ROOT=" :
 	echo "Source=\"${PROTOCOLE}${MEDIACHOISI}\"" >> ${SETUPROOT}/etc/0outils/0g.conf
@@ -81,29 +80,6 @@ else
 	# On réinstalle 'base-systeme' par sécurité (utilisateurs/groupes possiblement manquants) :
 	spackadd -f --root=${SETUPROOT} /var/cache/0g/${VERSION}/$(uname -m)/a/base-systeme/*.spack 2>/dev/null 1>/dev/null || true
 	
-	# On invite l'utilistaeur à se débrouiller avec '0g' :
-	if [ "${INSTALLDEBUG}" = "" ]; then
-		clear
-	fi
-	echo -e "\033[1;32mOrganisation des paquets dans 0Linux.\033[0;0m"
-	echo ""
-	echo "Les paquets de 0Linux sont rangés dans des répertoires faisant office de"
-	echo "catégories thématiques dont voici un aperçu :"
-	echo ""
-	echo "a : Applications exécutables en console n'entrant dans aucune autre catégorie."
-	echo "b : Bibliothèques non rattachées à un environnement particulier."
-	echo "d : Développement. Compilateurs, débogueurs, interpréteurs, etc."
-	echo "e : Environnements. KDE, Xfce, GNOME, Enlightenment et autres environnements."
-	echo "g : applications Graphiques nécessitant X, non rattachées à un environnement."
-	echo "r : Réseau. Clients, serveurs gérant ou utilisant le réseau en console."
-	echo "x : X.org, l'implémentation libre et distribution officielle de X11"
-	echo "z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
-	echo ""
-	echo "Passons aux abonnements."
-	echo ""
-	echo -n "Appuyez sur ENTRÉE pour continuer."
-	read BLURB2;
-	
 	if [ "${INSTALLDEBUG}" = "" ]; then
 		clear
 	fi
@@ -126,7 +102,7 @@ else
 	echo "	0g xorg-abonnement opt-abonnement"
 	echo ""
 	echo -n "Appuyez sur ENTRÉE quand vous en avez terminé avec ces abonnements."
-	read BLURB3;
+	read BLURB2;
 	
 	if [ "${INSTALLDEBUG}" = "" ]; then
 		clear
@@ -155,7 +131,7 @@ else
 	echo "Consultez '0g -h' ou 'man 0g' pour en savoir plus."
 	echo ""
 	echo -n "Appuyez sur ENTRÉE quand vous avez terminé avec l'installation des paquets."
-	read BLURB4;
+	read BLURB3;
 	
 	if [ "${INSTALLDEBUG}" = "" ]; then
 		clear
@@ -168,7 +144,7 @@ else
 	echo "Vous pourrez l'utiliser à nouveau après le redémarrage."
 	echo ""
 	echo -n "Appuyez sur ENTRÉE pour passer à la configuration de votre système."
-	read BLURB5;
+	read BLURB4;
 	
 	# On nettoie tous les fichiers '*.0nouveau' au cas où :
 	for f in $(find ${SETUPROOT}/{etc,var} -type f -name "*.0nouveau" 2>/dev/null); do

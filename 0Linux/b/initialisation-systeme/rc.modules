@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # rc.modules : ce fichier sert à charger des modules au démarrage du système.
-# Il sera conservé à chaque mise à jour du paquet 'initialisation-systeme.
-# Utilisez des fichiers '/etc/modprobe.d/*.conf' si vous devez spécifier des alias,
-# empêcher le chargement de modules , ajouter des options, des dépendances, etc.
+# Il sera conservé à chaque mise à jour du paquet 'initialisation-systeme'.
+# Créez des fichiers nommés '/etc/modprobe.d/*.conf' si vous devez spécifier
+# des alias, empêcher le chargement de modules , ajouter des options, des
+# dépendances, etc.
 # Voyez 'man modprobe.d', 'man modprobe'.
 
 # On met à jour les dépendances des modules avant toute chose :
-depmod -A
+depmod -a
 
 # On charge le « governor » pour les performances processeur :
 modprobe cpufreq_performance

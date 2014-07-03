@@ -196,6 +196,9 @@ sync
 chmod 0755 ${SETUPROOT}
 chmod 1777 ${SETUPROOT}/tmp
 
+# Ça ne fait pas de mal :
+chroot ${SETUPROOT} /usr/sbin/depmod -a 2>/dev/null
+
 # On essaie d'éjecter le disque s'il existe :
 MOUNTEDDEVICE="$(mount | grep /mnt/cdrom | cut -d' ' -f1)"
 if [ ! "${MOUNTEDDEVICE}" = "" ]; then

@@ -52,6 +52,13 @@ while [ 0 ]; do
 	;;
 	"3")
 		. reseau.sh
+		
+		# Si le script a crée un marqueur d'échec, on re-boucle :
+		if [ -r $TMP/depot_invalide ]; then
+			continue
+		else
+			break
+		fi
 	;;
 	"4")
 		. repertoire.sh

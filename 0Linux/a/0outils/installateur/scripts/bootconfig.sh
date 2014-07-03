@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # On nettoie  :
-unset BOOTERINST BLAHH PARTTABLE BOOTDEVICE BOOTPTTYPE MBRBIN WINBOOT WHICHDISK WINDISK
+unset BOOTERINST BLAHH PARTTABLE BOOTDEVICE PARTNAME BOOTPTTYPE MBRBIN WINBOOT WHICHDISK WINDISK
 
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
@@ -77,8 +77,8 @@ while [ 0 ]; do
 			echo ""
 			echo "Appuyez sur ENTRÉE pour ignorer cette étape et utiliser '${DAROOTPART}'."
 			echo ""
-			echo -n "Votre choix (UUID/LABEL=xxx/ENTRÉE): "
-			read PARTNAMEID;
+			echo -n "Votre choix (UUID/LABEL=xxx/ENTRÉE) : "
+			read PARTNAME;
 			if [ "${PARTNAME}" = "UUID" ]; then
 				ROOTFSUUID=$(blkid -p -s UUID -o value ${DAROOTPART})
 				
@@ -98,7 +98,7 @@ while [ 0 ]; do
 				sed -i "s@ROOTPART@${PARTNAME}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
 				
 				# On remplace donc la racine par son LABEL dans 'fstab' :
-				sed -i "s@^${DAROOTPART}@LABEL=${PARTNAME}@" ${SETUPROOT}/etc/fstab
+				sed -i "s@^${DAROOTPART}@${PARTNAME}@" ${SETUPROOT}/etc/fstab
 				break
 				
 			elif [ "${PARTNAME}" = "" ]; then

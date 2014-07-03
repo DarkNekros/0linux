@@ -13,9 +13,14 @@ crunch() {
 # Boucle d'affichage pour les formatages des partitions choisies : :
 while [ 0 ]; do
 	# Si aucun formatage n'est prévu, on quitte :
-	if [ "$(cat $TMP/formatages | crunch)" = "" ]; then
+	if [ ! -r $TMP/formatages ]; then
 		break
+	else
+		if [ "$(cat $TMP/formatages | crunch)" = "" ]; then
+			break
+		fi
 	fi
+	
 	if [ "${INSTALLDEBUG}" = "" ]; then
 		clear
 	fi

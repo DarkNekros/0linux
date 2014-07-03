@@ -120,6 +120,8 @@ else
 			echo ""
 			echo "Informations sur vos partitions :"
 			blkid
+			read BLAH;
+			shutdown -r now
 		else
 			ROOTDEV=$(findfs $ROOTDEV)
 		fi
@@ -127,16 +129,6 @@ else
 	
 	# On monte la vraie racine sur le '/mnt' actuel (en RAM) :
 	mount -o ${RORW} ${ROOTDEV} /mnt
-fi
-
-# Si 'init' est absent, on a un problème :
-if [ ! -r /mnt/sbin/init ]; then
-	echo "ERREUR FATALE : Aucun fichier '/mnt/sbin/init' n'a ete trouve sur la racine"
-	echo "systeme (ou bien celle-ci n'est pas montee correctement)."
-	echo "Vous pouvez arranger cela maintenant puis quitter en tapant 'exit' pour"
-	echo "continuer le demarrage normalement."
-	echo ""
-	/bin/sh
 fi
 
 # On se déplace sur la nouvelle racine, montée sur '/mnt' :
