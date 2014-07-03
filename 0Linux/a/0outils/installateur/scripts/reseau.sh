@@ -5,7 +5,7 @@ rm -f $TMP/choix_media
 unset REPONSEREZO REPONSEDEPOT
 
 # Boucle d'affichage du menu :
-while [ ! -r $TMP/choix_media ]; do
+while [ 0 ]; do
 	if [ "${INSTALLDEBUG}" = "" ]; then
 		clear
 	fi
@@ -43,7 +43,7 @@ while [ ! -r $TMP/choix_media ]; do
 	echo "2 : TUXFAMILY - http://download.tuxfamily.org/0linux/pub/paquets"
 	echo "http://votre/url/paquets"
 	echo ""
-	echo -n "Votre choix :"
+	echo -n "Votre choix : "
 	read REPONSEDEPOT;
 	case "$REPONSEDEPOT" in
 	"1")
