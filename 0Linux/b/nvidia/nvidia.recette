@@ -4,7 +4,6 @@
 NAMESRC=NVIDIA
 VERSION=334.21
 EXT=run
-NAMETGZ=nvidia
 cflags
 if [ "${PKGARCH}" = "i686" ]; then
 	SUBARCH="x86"
@@ -48,7 +47,7 @@ sed -i -e 's@#define NV_NUM_PHYSPAGES                num_physpages@#define NV_NU
 
 # On compile le module noyau :
 cd kernel
-SYSSRC=/lib/modules/$(uname -r)/build make module
+SYSSRC=/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/build make module
 
 # On place le module où il faut :
 cp -a nvidia.ko ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video/

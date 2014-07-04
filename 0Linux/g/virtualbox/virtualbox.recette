@@ -288,6 +288,11 @@ for f in VBoxSDL VirtualBox VBoxHeadless VBoxNetDHCP VBoxNetAdpCtl VBoxNetNAT; d
 	chmod 4711 usr/libLIBDIRSUFFIX/virtualbox/${f}
 done
 
+# On ajoute le module à charger :
+if ! grep -q vboxdrv etc/rc.d/rc.modules; then
+	echo "modprobe vboxdrv" >> etc/rc.d/rc.modules
+fi
+
 EOF
 
 # On corrige la post-installation pour notre suffixe :

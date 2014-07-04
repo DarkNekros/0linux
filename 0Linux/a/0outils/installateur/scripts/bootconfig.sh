@@ -92,7 +92,7 @@ while [ 0 ]; do
 			elif [ ! "$(echo ${PARTNAME} | grep -E '^LABEL=')" = "" ]; then
 				
 				# On affecte le LABEL à la partition :
-				tune2fs -L ${PARTNAME} ${DAROOTPART}
+				tune2fs -L $(echo ${PARTNAME} | cut -d'=' -f2) ${DAROOTPART}
 				
 				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par le LABEL  :
 				sed -i "s@ROOTPART@${PARTNAME}@" ${SETUPROOT}/boot/extlinux/extlinux.conf

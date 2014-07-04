@@ -99,7 +99,7 @@ mirror () {
         
     # Ne gère que les timestamps :
     [ -f "$1" ] || TZ=UTC0 touch -t 197001010000.01 "$1"
-    lftp -c "open ${user},${CREDFTP} $FTP && mirror -ReN"$1" -X*~ -Xarchives_sources/* -X0linux*maxi* -X0linux-zeta* -X0linux*i686*.iso* -Xzeta -Xi686 -Xarm. ." || exit 1
+    lftp -c "open ${user},${CREDFTP} $FTP && mirror -ReN"$1" -X*~ -Xarchives_sources/* -X0linux*maxi* -X0linux-zeta* -X0linux*i686*.iso* -Xzeta -Xi686 -Xarm . ." || exit 1
     
     ## Méthode rsync :
     #find /tmp/ -mindepth 1 -maxdepth 1 -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
