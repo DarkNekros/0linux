@@ -1,3 +1,69 @@
+#!/usr/bin/env bash
+# Création/mise à jour du catalogue en ligne des paquets de 0Linux.
+
+# Emplacement du dépôt des paquets :
+PKGREPO=${PKGREPO:-/usr/local/paquets}
+
+# Liste les fichiers du paquet demandé.
+# $f PAQUET
+lister_fichiers() {
+	cpio --quiet -i --to-stdout "files.xz"  < "$1" | xz -d -c | cpio --quiet --list
+}
+
+humansize () {
+# Affiche les tailles de manière lisible.
+# $f TAILLE EN KILO-OCTETS
+POSIXLY_CORRECT=Y awk 'BEGIN{split("G M K", u); x=1048576
+                                 while (++i && x >= '$1')
+                                     x/=1024
+                                 printf("%.2f %sio\n", '$1'/x, u[i])}'
+}
+
+humansize 2913
+
+exit 1
+# Pour chaque archi et chaque catégorie, on scanne chaque paquet :
+for archi in arm i686 x86_64; do
+	for categ in a b d e g j r x z; do
+		
+		# On ignore si le répertoire demandé n'existe pas :
+		if [ ! -d ${PKGREPO}/${archi}/${categ} ]; then
+			continue
+		else
+			for paq in $(find ${PKGREPO}/${archi}/${categ} -type f -name "*.spack" | sort); do
+				lister_fichiers ${paq}
+			done
+		fi
+	done
+done
+
+
+
+
+
+
+humansize () {
+    # Affiche les tailles de manière lisible.
+    # $f TAILLE EN KILO-OCTETS
+    POSIXLY_CORRECT=Y awk 'BEGIN{split("G M K", u); x=1048576
+                                 while (++i && x >= '$1')
+                                     x/=1024
+                                 printf("%.1f %sio\n", '$1'/x, u[i])}'
+}
+
+spacklist -v ${pkg} :
+
+NOM DU PAQUET : libpng-1.6.9-x86_64-2
+TAILLE COMPRESSÉE : 643 Kio
+TAILLE DÉCOMPRESSÉE : 2913 Kio
+EMPLACEMENT DU PAQUET : /home/appzer0/0/pub/paquets/eta/x86_64/b/libpng/libpng-1.6.9-x86_64-2.spack
+DESCRIPTION DU PAQUET :
+${pkg}: gnagnagna
+
+Fichiers installés :
+( spacklist -V libpng | sed -e '/NOM DU PAQUET.*$/,/\.\//d' ; spacklist -v -p libpng | sed -e 's@^/@@' -e '/------/d' -e '/^> /d' -e '/^\/\./d' ) | LC_ALL=C  sort
+
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
 0LINUX
 base-systeme
 Mars 2014
@@ -26,7 +92,7 @@ Les systèmes de fichiers CHIFFRÉS sont spécifiés dans le fichier __/etc/cryp
 
 Les services du système sont gérés par de simples scripts nommés « rc.* » et rangés dans __/etc/rc.d/rc.*__.  On les rend actifs au démarrage de l'ordinateur en les rendant exécutables (chmod +x) et on les appelle en les exécutant, comme de simples scripts.
 
-= PARAMÉTRAGE DU RÉSEAU ET NOM D'HÔTE =[parametragedureseauetnomdhote]
+= PARAMÉTRAGE DU RÉSEAU ET NOM D'HÔTE =[arametragedureseauetnomdhote]
 
 On définit le nom d'hôte ainsi que les paramètres de connexion au réseau en renseignant le fichier __/etc/0linux/reseau__. Un outil dédié existe, **__0reseau__**.
 
@@ -69,3 +135,10 @@ extlinux(1), 0g(8), 'spackadd --help', 'spackrm --help'.
 
 Et consultez la documentation sur le site de 0linux : [http://0linux.org]
 
+EOF
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done

@@ -11,11 +11,13 @@ cflags
 
 # Merci à Seb pour sa constance !
 
-# On applique les traductions françaises à 'spackadd' et 'spackpkg' ainsi que
-# la traduction et les modifications pour 0linux à 'spackdesc' :
-cat $CWD/spackadd.patch | patch -p1
+# On applique les traductions françaises à 'spackadd', 'spackpkg', 'spackdesc'
+# et 'spacklist' :
+cat $CWD/spackadd1.patch | patch -p1
+cat $CWD/spackadd2.patch | patch -p1
 cat $CWD/spackpkg.patch | patch -p1
 cat $CWD/spackdesc.patch | patch -p1
+cat $CWD/spacklist.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
