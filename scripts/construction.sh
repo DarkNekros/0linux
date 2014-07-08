@@ -37,6 +37,12 @@
 # Emplacement du dépôt des paquets résultant de la construction :
 PKGREPO=${PKGREPO:-/usr/local/paquets}
 
+# Emplacement de la racine des paquets invasifs ('nvidia', 'catalyst'...) installés
+# ailleurs pour ne pas polluer le système. 
+# NOTE : Cette variable doit correspondre à celle présente dans le script
+# 'catalogue/catalogue.sh'.
+UGLYPKGROOT=${UGLYPKGROOT:-/tmp/paquets_invasifs}
+
 # La fonction de construction/installation de chaque paquet :
 # $f RECETTE
 compiler_installer() {
@@ -98,9 +104,11 @@ compiler_installer() {
 			fi
 		done
 		
-		# On n'installe ni nvidia ni catalyst, il écrasent des fichiers de Mesa :
+		# On installe 'nvidia' et 'catalyst' dans une racine isolée, vu qu'ils écrasent
+		# des fichiers de Mesa. Les installer ailleurs permet à 'catalogue.sh' de générer
+		# le catalogue pour ces paquets sans qu'ils polluent le système :
 		if [ "$(basename ${1} .recette)" = "nvidia" -o "$(basename ${1} .recette)" = "catalyst" ]; then
-			bash -ex $(basename ${1})
+			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd --root=/tmp/paquets_invasifs $(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/*/ -mindepth 1 -type d -name "$(basename ${1} .recette)")/*.spack
 		else
 			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd ${ROOTCMD} $(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/*/ -mindepth 1 -type d -name "$(basename ${1} .recette)")/*.spack
 		fi

@@ -658,15 +658,15 @@ empaqueter() {
 	# On crée le répertoire de doc pour notre journal et nos dépendances :
 	mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux
 	
-	# On crée un lien générique vers notre répertoire de doc (Xorg en a besoin, notamment) :
-	# Si $NAMESRC et $NAMETGZ sont différents, on crée un lien $NAMESRC -> $NAMETGZ -> $NAMETGZ-$VERSION :
+	# On crée un lien générique vers notre répertoire de doc (Xorg en a besoin, notamment)
+	# du type /usr/doc/$NAMESRC -> $NAMETGZ -> $NAMETGZ-$VERSION.
+	
+	# On crée un lien $NAMETGZ -> $NAMETGZ-$VERSION quoi qu'il arrive :
+	ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
+	
+	# On ajoute un lien du type $NAMESRC -> $NAMETGZ si $NAMESRC et $NAMETGZ sont différents:
 	if [ ! "${NAMESRC}" = "${NAMETGZ}" ]; then
 		ln -sf ${NAMETGZ} ${PKG}/usr/doc/${NAMESRC}
-		ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
-	
-	# Sinon, on crée un simple lien $NAMETGZ -> $NAMETGZ-$VERSION :
-	else
-		ln -sf ${NAMETGZ}-${VERSION} ${PKG}/usr/doc/${NAMETGZ}
 	fi
 	
 	# On définit le compteur de compilations $BUILD en se basant sur l'éventuel

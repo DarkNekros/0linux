@@ -1,55 +1,141 @@
 #!/usr/bin/env bash
 # Création/mise à jour du catalogue en ligne des paquets de 0Linux.
 
+# On affecte les variables du système (notamment $VERSION) :
+source /etc/os-release
+
 # Emplacement du dépôt des paquets :
-PKGREPO=${PKGREPO:-/usr/local/paquets}
+PKGREPO=${PKGREPO:-/usr/local/paquets/${VERSION}/$(uname -m)}
 
-# Liste les fichiers du paquet demandé.
-# $f PAQUET
-lister_fichiers() {
-	cpio --quiet -i --to-stdout "files.xz"  < "$1" | xz -d -c | cpio --quiet --list
+# Emplacement de la racine des paquets invasifs ('nvidia', 'catalyst'...) installés
+# ailleurs pour ne pas polluer le système :
+UGLYPKGROOT=${UGLYPKGROOT:-/tmp/paquets_invasifs}
+
+# Les journaux des paquets :
+PKGLOGDIR=${PKGLOGDIR:-/var/log/packages}
+
+# Le catalogue qui va accueillir les résultats du scan :
+CATALOGDIR=${CATALOGDIR:-/home/appzer0/0/pub/catalogue/${VERSION}/$(uname -m)}
+
+# Affiche le nom court ("gcc", "pkg-config"...) du journal demandé.
+# $f JOURNAL
+nom_court() {
+	echo $(basename "${1}" | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)
 }
 
-humansize () {
-# Affiche les tailles de manière lisible.
-# $f TAILLE EN KILO-OCTETS
-POSIXLY_CORRECT=Y awk 'BEGIN{split("G M K", u); x=1048576
-                                 while (++i && x >= '$1')
-                                     x/=1024
-                                 printf("%.2f %sio\n", '$1'/x, u[i])}'
-}
-
-humansize 2913
-
-exit 1
-# Pour chaque archi et chaque catégorie, on scanne chaque paquet :
-for archi in arm i686 x86_64; do
-	for categ in a b d e g j r x z; do
+# Scanne les paquets fournis.
+# $f JOURNAUX DE PAQUETS
+scan() {
+	for pkglog in "${1}"; do
 		
-		# On ignore si le répertoire demandé n'existe pas :
-		if [ ! -d ${PKGREPO}/${archi}/${categ} ]; then
-			continue
-		else
-			for paq in $(find ${PKGREPO}/${archi}/${categ} -type f -name "*.spack" | sort); do
-				lister_fichiers ${paq}
-			done
+		# On déduit le répertoire du paquet selon son emplacement en le découpant.
+		# Retourne un chemin du type : "e/kde/kdeartwork/kdeartwork".
+		categ=$(dirname $(spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | \
+			egrep '^EMPLACEMENT' | cut -d':' -f2) | sed -e "s@^.*$(uname -m)/@@")
+		
+		if [ "${categ}" = "" ]; then
+			echo "Erreur : catégorie introuvable."
+			exit 1
 		fi
+		
+		# Si le log en txt2tags est présent, on ignore le scan :
+		if [ -r ${CATALOGDIR}/${categ}/$(basename ${pkglog}).t2t ]; then
+			continue
+		
+		# Sinon, on supprime toute trace, y compris d'un récent déplacement de paquet
+		#  (ça arrive plutôt souvent en fait) :
+		else
+			find ${CATALOGDIR} -type d -name "$(nom_court ${pkglog})" -exec rm -rf {} \; 2>/dev/null
+		fi
+		
+		# On traite différemment les paquets dégueus, installés sur la racine $UGLYPKGROOT :
+		if [ "$(nom_court ${pkglog})" = "catalyst" -o "$(nom_court ${pkglog})" = "nvidia" ]; then
+			PKGLOGDIR="${UGLYPKGROOT}/${PKGLOGDIR}"
+		else
+			PKGLOGDIR="${PKGLOGDIR}"
+		fi
+		
+		# On crée le répertoire d'accueil :
+		mkdir -p ${CATALOGDIR}/${categ}
+		
+		# On va créer des logs temporaires et les assembler plus tard dans un document txt2tags.
+		
+		# On récupère les entêtes (nom, taille, description...) :
+		spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | sed '/^EMPLACEMENT/d' > ${CATALOGDIR}/${categ}/$(basename ${pkglog}).header
+		
+		# On récupère la liste nettoyée des fichiers installés + les liens symboliques placés :
+		( spacklist --directory="${PKGLOGDIR}" -V $(nom_court ${pkglog}) | \
+			sed -e '/NOM DU PAQUET.*$/,/\.\//d' ; \
+			spacklist --directory="${PKGLOGDIR}" -v -p $(nom_court ${pkglog}) | \
+			sed -e 's@^/@@' -e '/------/d' -e '/^> /d' -e '/^\/\./d' ) | \
+			sort > ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list
+		
+		if [ ! "$(echo ${PKGLOGDIR} | grep ${UGLYPKGROOT})" = "" ]; then
+			TARGETROOT="${UGLYPKGROOT}"
+		else
+			TARGETROOT=""
+		fi
+		
+		# On récupère les dépendances en nettoyant le paquet concerné :
+		cat ${TARGETROOT}/usr/doc/$(nom_court ${pkglog})/0linux/$(basename ${pkglog}).dep | \
+			sed "/^$(nom_court ${pkglog})$/d" | \
+			sort > ${CATALOGDIR}/${categ}/$(basename ${pkglog}).dep
+		
+		# On récupère les dépendants en scannant les autres journaux '*.dep' :
+		touch ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby.tmp
+		
+		for deplog in /usr/doc/*/0linux/*.dep; do
+			if egrep -q "^$(nom_court ${pkglog})$" ${deplog}; then
+				echo "$(nom_court ${deplog})" >> ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby.tmp
+			fi
+		done
+		
+		# On trie :
+		sort -u ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby.tmp | sed '/^$(nom_court ${pkglog})$/d' > ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby
+		rm -f ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby.tmp
 	done
-done
+	
+	# On génère le document txt2tags :
+	cat > ${CATALOGDIR}/${categ}/$(basename ${pkglog}).t2t << EOF
+0Linux : détails du paquet ${categ}/$(basename ${pkglog})
+Équipe 0Linux <contact@0linux.org>
+%%mtime(%d/%m/%Y)
 
+%!encoding: UTF-8
 
+= $(echo $(basename ${pkglog}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1 \2/p' -n) =
 
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).header)
 
+Installation : ``0g $(nom_court ${pkglog})``
+Téléchargements : Paquet [HTTP http://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack ] [FTP ftp://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack] | [Recette http://git.tuxfamily.org/0linux/0linux.git?p=0linux/0linux.git;a=tree;f=0Linux/${categ}] | Sources http://marmite.0linux.org/ftp/archives_sources/$(basename ${categ})]
 
+  ||  Dépendances  |
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).dep | sed 's/\(^\).*\($\)/   |  \1&\2  |/')
+  
+  ||  Dépendants  |
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby | sed 's/\(^\).*\($\)/   |  \1&\2  |/')
 
-humansize () {
-    # Affiche les tailles de manière lisible.
-    # $f TAILLE EN KILO-OCTETS
-    POSIXLY_CORRECT=Y awk 'BEGIN{split("G M K", u); x=1048576
-                                 while (++i && x >= '$1')
-                                     x/=1024
-                                 printf("%.1f %sio\n", '$1'/x, u[i])}'
+  ||  Fichiers installés  |
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list | sed 's/\(^\).*\($\)/   |  \1&\2  |/')
+
+EOF
+
 }
+
+# On évite les problèmes de locales, notamment pour 'sort' :
+export LC_ALL='C'
+
+scan "$@"
+
+exit 0
+
+	if [ $(find ${CATALOGDIR} -type f -name ${pkglog}.t2t | wc -l) -gt 0 ]; then
+		continue
+	else
+		break
+	fi
+
 
 spacklist -v ${pkg} :
 

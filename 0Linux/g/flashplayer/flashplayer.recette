@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=11.2.202.378
+VERSION=11.2.202.394
 WGET=(http://fpdownload.macromedia.com/get/flashplayer/pdc/${VERSION}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.i386.tar.gz
       http://fpdownload.macromedia.com/get/flashplayer/pdc/${VERSION}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.x86_64.tar.gz
      )
@@ -13,8 +13,21 @@ if [ "${PKGARCH}" != "x86_64" ] && [ "${PKGARCH}" != "i686" ]; then
 	# L'architecture n'est pas prise en charge :
 	echo "Cette architecture n'est pas prise en charge par le paquet 'flashplayer'." > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0-LISEZMOI
 else
+	# On empêche le téléchargement des sources si on trouve les bonnes versions en
+	# les renommant :
+	if [ -r ${PKGSOURCES}/${NAMETGZ}/install_flash_player_${VERSION}_linux.x86_64.tar.gz ]; then
+		mv ${PKGSOURCES}/${NAMETGZ}/install_flash_player_{${VERSION},$(echo ${VERSION} | cut -d'.' -f1)}_linux.x86_64.tar.gz
+	fi
+	if [ -r ${PKGSOURCES}/${NAMETGZ}/install_flash_player_${VERSION}_linux.i386.tar.gz ]; then
+		mv ${PKGSOURCES}/${NAMETGZ}/install_flash_player_{${VERSION},$(echo ${VERSION} | cut -d'.' -f1)}_linux.i386.tar.gz
+	fi
+	
 	telecharger_sources
 	
+	# On renomme les sources avec la version :
+	mv ${PKGSOURCES}/${NAMETGZ}/install_flash_player_{$(echo ${VERSION} | cut -d'.' -f1),${VERSION}}_linux.x86_64.tar.gz
+	mv ${PKGSOURCES}/${NAMETGZ}/install_flash_player_{$(echo ${VERSION} | cut -d'.' -f1),${VERSION}}_linux.i386.tar.gz
+
 	if [ "${PKGARCH}" = "x86_64" ]; then
 		
 		# On installe le greffon 32 bits pour le multilib :
@@ -24,7 +37,7 @@ else
 		LIBDIRSUFFIX="32"
 		
 		# On décompacte le tout dans $PKG :
-		tar xf ${PKGSOURCES}/${NAMETGZ}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.i386.tar.gz -C ${PKG}
+		tar xf ${PKGSOURCES}/${NAMETGZ}/install_flash_player_${VERSION}_linux.i386.tar.gz -C ${PKG}
 		
 		# On renomme le répertoire des bibliothèques...
 		mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/kde4
@@ -50,7 +63,7 @@ else
 	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 	
 	# On décompacte le tout dans $PKG :
-	tar xf ${PKGSOURCES}/${NAMETGZ}/install_flash_player_$(echo ${VERSION} | cut -d'.' -f1)_linux.${FLASHARCH}.tar.gz -C ${PKG}
+	tar xf ${PKGSOURCES}/${NAMETGZ}/install_flash_player_${VERSION}_linux.${FLASHARCH}.tar.gz -C ${PKG}
 	
 	# On renomme le répertoire des bibliothèques...
 	if [ "${PKGARCH}" = "x86_64" ]; then
