@@ -53,11 +53,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+installer_doc
+
 # On crée un lien pour lier la doc :
 ln -sf doc/xproto/x11protocol.html.db ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 ln -sf doc/xproto/xproto.html.db ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 
-installer_doc
 creer_post_installation
 stripper
 empaqueter
