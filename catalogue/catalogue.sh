@@ -97,7 +97,7 @@ scan() {
 	
 	# On génère le document txt2tags :
 	cat > ${CATALOGDIR}/${categ}/$(basename ${pkglog}).t2t << EOF
-0Linux : détails du paquet ${categ}/$(basename ${pkglog})
+Détails du paquet ${categ}/$(basename ${pkglog}) pour 0Linux ${VERSION} $(uname -m)
 Équipe 0Linux <contact@0linux.org>
 %%mtime(%d/%m/%Y)
 
@@ -105,19 +105,29 @@ scan() {
 
 = $(echo $(basename ${pkglog}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1 \2/p' -n) =
 
-$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).header)
+== Informations ==
 
-Installation : ``0g $(nom_court ${pkglog})``
-Téléchargements : Paquet [HTTP http://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack ] [FTP ftp://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack] | [Recette http://git.tuxfamily.org/0linux/0linux.git?p=0linux/0linux.git;a=tree;f=0Linux/${categ}] | Sources http://marmite.0linux.org/ftp/archives_sources/$(basename ${categ})]
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).header | sed 's@^@  - @')
+
+== Installation et ressources==
+
+  - Installation : ``0g $(nom_court ${pkglog})``
+  - Télécharger le paquet : [HTTP http://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack ] [FTP ftp://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack]
+  - [Recette http://git.tuxfamily.org/0linux/0linux.git?p=0linux/0linux.git;a=tree;f=0Linux/${categ}]
+  - [Archives sources http://marmite.0linux.org/ftp/archives_sources/$(basename ${categ})]
+
+== Interactions inter-paquets ==
 
   ||  Dépendances  |
-$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).dep | sed 's/\(^\).*\($\)/   |  \1&\2  |/')
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).dep | sed 's/\(^\).*\($\)/   |\1&\2  |/')
   
   ||  Dépendants  |
-$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby | sed 's/\(^\).*\($\)/   |  \1&\2  |/')
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby | sed 's/\(^\).*\($\)/   |\1&\2  |/')
+
+== Contenu ==
 
   ||  Fichiers installés  |
-$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list | sed 's/\(^\).*\($\)/   |  \1&\2  |/')
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list | sed 's/\(^\).*\($\)/   |\1&\2  |/')
 
 EOF
 

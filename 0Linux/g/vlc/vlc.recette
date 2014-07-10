@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.1.4
+VERSION=2.1.5
 WGET=http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Le lecteur multimédia polyvalent VLC"
 
@@ -9,16 +9,15 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige la prise en charge de 'freerdp' et des 'libva' les plus récentes :
-cat $CWD/vlc.libva.patch | patch -p1
-cat $CWD/vlc.rdp.patch | patch -p1
-
 # On corrige le répertoire standard des bibliothèques :
 sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
 
-# On corrige la police par défaut :
+# On corrige les polices par défaut :
 cat $CWD/vlc.polices.patch | patch -p1
-  
+
+# On corrige la prise en charge de RDP :
+cat $CWD/vlc.rdp.patch | patch -p1
+
 # Compilation en forçant les chemins de Samba :
 LDFLAGS+="-I/usr/include/samba-4.0" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -30,7 +29,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-debug \
 	--disable-rpath \
 	--disable-update-check \
 	--enable-a52 \
@@ -44,15 +42,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-flac \
 	--enable-libass \
 	--enable-libcddb \
-	--enable-libfreerdp \
 	--enable-live555 \
 	--enable-lua \
 	--enable-ncurses \
+	--enable-nls \
 	--enable-ogg \
 	--enable-opus \
 	--enable-realrtsp \
 	--enable-run-as-root \
 	--enable-schroedinger \
+	--enable-sftp \
 	--enable-shared \
 	--enable-shout \
 	--enable-speex \

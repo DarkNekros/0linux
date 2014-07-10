@@ -2,8 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.19
-WGET=http://ftp.gnu.org/gnu/$NAMETGZ/$NAMESRC-$VERSION.tar.xz
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques système vitales"
+EXTRADEPS="base-systeme busybox"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -43,7 +44,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	EXTRAFLAG="-mno-tls-direct-seg-refs"
 	
 	# Compilation 32 bits avec une optimisation maximale :
-	CFLAGS="${FLAGS} -g -O3 ${EXTRAFLAG}" CXXFLAGS="${FLAGS} -g -O3 ${EXTRAFLAG}" \
+	CFLAGS="${FLAGS} -O3 ${EXTRAFLAG}" CXXFLAGS="${FLAGS} -O3 ${EXTRAFLAG}" \
 	$TMP/${NAME}/configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -94,7 +95,7 @@ if [ "${PKGARCH}" = "i686" ]; then
 fi
 
 # Compilation avec une optimisation maximale :
-CFLAGS="${FLAGS} -g -O3 ${EXTRAFLAG}" CXXFLAGS="${FLAGS} -g -O3 ${EXTRAFLAG}" \
+CFLAGS="${FLAGS} -O3 ${EXTRAFLAG}" CXXFLAGS="${FLAGS} -O3 ${EXTRAFLAG}" \
 $TMP/${NAME}/configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
