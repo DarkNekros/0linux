@@ -11,6 +11,9 @@ cflags # Pour définir LIBDIRSUFFIX
 # On clone le dépôt git :
 mkdir -p ${PKGSOURCES}/${NAMETGZ}
 cd ${PKGSOURCES}/${NAMETGZ}
+if [[ -e linux-firmware ]] ; then
+	rm -rf linux-firmware
+fi
 git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
 
 # On passe le dépôt à la version voulue :
