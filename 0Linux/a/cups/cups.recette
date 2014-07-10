@@ -18,6 +18,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On corrige un chemin codé en dur :
 	sed -i 's@$exec_prefix/lib/cups@$libdir/cups@g' configure
 	
+	# Permet de se passer d'Avahi (--disable-avahi ne suffit pas) :
+	cat $CWD/cups.avahi.patch | patch -Np1
+	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
