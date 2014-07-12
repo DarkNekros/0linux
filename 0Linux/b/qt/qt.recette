@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=qt-everywhere-opensource-src
-VERSION=4.8.5} # recette prévue pour Qt5, "4.8.5" apparait donc partout dans la recette
-EXT=tar.gz
-NAMETGZ=qt
-WGET=(http://download.qt-project.org/official_releases/qt/4.8/4.8.5/$NAMESRC-4.8.5.tar.gz)
+VERSION=4.8.6
+WGET=(http://download.qt-project.org/official_releases/qt/4.8/$VERSION/$NAMESRC-$VERSION.tar.gz)
 DESC="Outils et bibliothèques de création d'applications graphiques"
 # Qt5 : http://download.qt-project.org/official_releases/qt/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/single/$NAMESRC-$VERSION.$EXT
 
@@ -13,7 +11,7 @@ DESC="Outils et bibliothèques de création d'applications graphiques"
 telecharger_sources
 
 # On compile Qt4 :
-preparer_sources $NAMESRC-4.8.5.tar.gz
+preparer_sources $NAMESRC-$VERSION.tar.gz
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -27,12 +25,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On corrige un problème identifié avec CUPS depuis le bureau KDE :
 	cat $CWD/qt.cups.patch | patch -p1
-	
-	# On corrige un problème identifié par les développeurs :
-	cat $CWD/qt.bug-31579.patch | patch -p1
-	
-	# On corrige un problème identifié par les développeurs :
-	cat $CWD/qt.bug-32534.patch | patch -p1
 	
 	# On corrige les chemins de X11 codés en dur :
 	for fichier in $(grep -lr "X11R6" *); do
@@ -61,7 +53,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		-prefix /usr \
 		-confirm-license \
 		-datadir /usr/share/qt \
-		-docdir /usr/doc/${NAMETGZ}-4.8.5 \
+		-docdir /usr/doc/${NAMETGZ}-$VERSION \
 		-fast \
 		-importdir /usr/lib${LIBDIRSUFFIX}/qt4/imports \
 		-L/usr/lib${LIBDIRSUFFIX} \
@@ -121,7 +113,7 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources $NAMESRC-4.8.5.tar.gz
+preparer_sources $NAMESRC-$VERSION.tar.gz
 cflags
 
 # On corrige un problème identifié dans l'analyse des entêtes de 'boost' :
@@ -129,12 +121,6 @@ cat $CWD/qt.boost.patch | patch -p1
 
 # On corrige un problème identifié avec CUPS depuis le bureau KDE :
 cat $CWD/qt.cups.patch | patch -p1
-
-# On corrige un problème identifié par les développeurs :
-cat $CWD/qt.bug-31579.patch | patch -p1
-
-# On corrige un problème identifié par les développeurs :
-cat $CWD/qt.bug-32534.patch | patch -p1
 
 # On corrige les chemins de X11 codés en dur :
 for fichier in $(grep -lr "X11R6" *); do
@@ -162,7 +148,7 @@ QMAKSPEC=linux-g++-${OPTMACHINE} \
 	-prefix                         /usr \
 	-confirm-license \
 	-datadir                        /usr/share/qt \
-	-docdir                         /usr/doc/${NAMETGZ}-4.8.5 \
+	-docdir                         /usr/doc/${NAMETGZ}-$VERSION \
 	-fast \
 	-importdir                      /usr/lib${LIBDIRSUFFIX}/qt4/imports \
 	-L/usr/lib${LIBDIRSUFFIX} \
@@ -235,7 +221,7 @@ fi
 
 # On place d'abord et on redimensionne le logo de Qt :
 mkdir -p ${PKG}/usr/share/icons/hicolor/{16x16,32x32,48x48,64x64,128x128}/apps
-convert ${PKG}/usr/doc/${NAMETGZ}-4.8.5/src/images/qt-logo.png -resize 48x48 ${PKG}/usr/share/icons/hicolor/48x48/apps/qt-logo.png || true
+convert ${PKG}/usr/doc/${NAMETGZ}-$VERSION/src/images/qt-logo.png -resize 48x48 ${PKG}/usr/share/icons/hicolor/48x48/apps/qt-logo.png || true
 
 # On place les autres icônes :
 cp -a tools/assistant/tools/assistant/images/assistant.png ${PKG}/usr/share/icons/hicolor/32x32/apps/assistant.png
@@ -248,7 +234,7 @@ for icone in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
 done
 
 # On place la doc dans un répertoire à part :
-installer_doc ${NAMETGZ}-4.8.5
+installer_doc ${NAMETGZ}-$VERSION
 
 # On fait comme Slackware, c'est propre et complet :
 
