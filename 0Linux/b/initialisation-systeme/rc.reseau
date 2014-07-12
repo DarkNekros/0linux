@@ -16,14 +16,7 @@ lancer_reseau() {
 		fi
 	fi
 
-	# Si un routeur/passerelle spécifique a été configuré :
-	if [ "$(route -n | grep \"^0.0.0.0\")" = "" ]; then
-		if [ ! "${PASSERELLE}" = "" ]; then
-			route add default gw ${PASSERELLE} metric 1
-		fi
-	fi
-	
-	# Pour chaque interface Ethernet configurée :
+	# Pour chaque interface Ethernet configurée (4 maxi) :
 	for i in 0 1 2 3; do
 		
 		# On neutralise toute variable positionnée :
@@ -37,7 +30,7 @@ lancer_reseau() {
 				echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de l'interface réseau 'eth${i}'..."
 				ifconfig eth${i}
 				route add -net 127.0.0.0 netmask 255.0.0.0 lo
-				fi
+			fi
 			
 			# Si l'IP, le masque et la passerelle sont configurés, on se connecte en statique :
 			if [ ! "${PASSERELLE}" = "" -a ! "${IP[${i}]}" = "" -a ! "${SOUSRESEAU[${i}]}" = "" ]; then
@@ -62,6 +55,13 @@ lancer_reseau() {
 			fi
 		fi
 	done
+	
+	# Si un routeur/passerelle spécifique a été configuré :
+	if [ "$(route -n | grep \"^0.0.0.0\")" = "" ]; then
+		if [ ! "${PASSERELLE}" = "" ]; then
+			route add default gw ${PASSERELLE} metric 1
+		fi
+	fi
 }
 
 stopper_reseau() {

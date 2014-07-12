@@ -19,7 +19,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	sed -i 's@$exec_prefix/lib/cups@$libdir/cups@g' configure
 	
 	# Permet de se passer d'Avahi (--disable-avahi ne suffit pas) :
-	cat $CWD/cups.avahi.patch | patch -Np1
+	cat $CWD/cups.avahi.patch | patch -p1
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -46,10 +46,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	make -j${JOBS} || make
 	fakeroot make install BUILDROOT=${PKG}
+	
+	# On supprime ce répertoire, qu'on liera en 64 bits :
+	rm -rf  ${PKG}/usr/lib${LIBDIRSUFFIX}/cups
 fi
-
-# On supprime ce répertoire, qu'on liera en 64 bits :
-rm -rf  ${PKG}/usr/lib${LIBDIRSUFFIX}/cups
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
@@ -86,9 +86,10 @@ make -j${JOBS} || make
 fakeroot make install BUILDROOT=${PKG}
 
 # On copie le script d'initialisation au bon endroit et on nettoie :
-mv ${PKG}/etc/rc.d/init.d/cups ${PKG}/etc/rc.d/rc.cups
+mkdir -p ${PKG}/etc/rc.d
+mv ${PKG}/etc/init.d/cups ${PKG}/etc/rc.d/rc.cups
 chmod 755 ${PKG}/etc/rc.d/rc.cups
-rm -rf ${PKG}/etc/rc.d/init.d 
+rm -rf ${PKG}/etc/{initd.d,rc{0,2,3,5}.d}
 
 # On corrige le raccourci bureau :
 sed -i 's@^Exec=htmlview http://localhost:631/@Exec=xdg-open http://localhost:631/@g' ${PKG}/usr/share/applications/cups.desktop

@@ -13,6 +13,7 @@ UGLYPKGROOT=${UGLYPKGROOT:-/tmp/paquets_invasifs}
 
 # Les journaux des paquets :
 PKGLOGDIR=${PKGLOGDIR:-/var/log/packages}
+PKGPOSTDIR=${PKGPOSTDIR:-/var/log/scripts}
 
 # Le catalogue qui va accueillir les résultats du scan :
 CATALOGDIR=${CATALOGDIR:-/home/appzer0/0/pub/catalogue/${VERSION}/$(uname -m)}
@@ -43,7 +44,7 @@ scan() {
 			continue
 		
 		# Sinon, on supprime toute trace, y compris d'un récent déplacement de paquet
-		#  (ça arrive plutôt souvent en fait) :
+		# (ça arrive plutôt souvent en fait) :
 		else
 			find ${CATALOGDIR} -type d -name "$(nom_court ${pkglog})" -exec rm -rf {} \; 2>/dev/null
 		fi
@@ -51,8 +52,10 @@ scan() {
 		# On traite différemment les paquets dégueus, installés sur la racine $UGLYPKGROOT :
 		if [ "$(nom_court ${pkglog})" = "catalyst" -o "$(nom_court ${pkglog})" = "nvidia" ]; then
 			PKGLOGDIR="${UGLYPKGROOT}/${PKGLOGDIR}"
+			PKGPOSTDIR="${UGLYPKGROOT}/${PKGPOSTDIR}"
 		else
 			PKGLOGDIR="${PKGLOGDIR}"
+			PKGPOSTDIR="${PKGPOSTDIR}"
 		fi
 		
 		# On crée le répertoire d'accueil :
@@ -64,11 +67,16 @@ scan() {
 		spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | sed '/^EMPLACEMENT/d' > ${CATALOGDIR}/${categ}/$(basename ${pkglog}).header
 		
 		# On récupère la liste nettoyée des fichiers installés + les liens symboliques placés :
-		( spacklist --directory="${PKGLOGDIR}" -V $(nom_court ${pkglog}) | \
-			sed -e '/NOM DU PAQUET.*$/,/\.\//d' ; \
-			spacklist --directory="${PKGLOGDIR}" -v -p $(nom_court ${pkglog}) | \
-			sed -e 's@^/@@' -e '/------/d' -e '/^> /d' -e '/^\/\./d' ) | \
-			sort > ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list
+		spacklist --directory="${PKGLOGDIR}" -V $(nom_court ${pkglog}) | \
+			sed -e '/NOM DU PAQUET.*$/,/\.\//d' \
+			> ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list.tmp
+		
+		spacklist --directory="${PKGLOGDIR}" -v -p $(nom_court ${pkglog}) | \
+			sed -e 's@^/@@' -e '/------/d' -e '/^> /d' -e '/^\.\/$/d' \
+			>> ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list.tmp
+		
+		sort ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list.tmp > ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list
+		rm -f ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list.tmp
 		
 		if [ ! "$(echo ${PKGLOGDIR} | grep ${UGLYPKGROOT})" = "" ]; then
 			TARGETROOT="${UGLYPKGROOT}"
@@ -107,27 +115,28 @@ Détails du paquet ${categ}/$(basename ${pkglog}) pour 0Linux ${VERSION} $(uname
 
 == Informations ==
 
-$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).header | sed 's@^@  - @')
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).header | sed -e 's@^@  - @' -e '/DESCRIPTION DU PAQUET/d')
+
 
 == Installation et ressources==
 
-  - Installation : ``0g $(nom_court ${pkglog})``
-  - Télécharger le paquet : [HTTP http://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack ] [FTP ftp://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack]
-  - [Recette http://git.tuxfamily.org/0linux/0linux.git?p=0linux/0linux.git;a=tree;f=0Linux/${categ}]
-  - [Archives sources http://marmite.0linux.org/ftp/archives_sources/$(basename ${categ})]
+  - ``Installation : 0g $(nom_court ${pkglog})``
+  - Télécharger le paquet : [HTTP http://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack] [FTP ftp://marmite.0linux.org/ftp/paquets/$(uname -m)/${categ}/$(basename ${pkglog}).spack]
+  - Sources : [Recette 0Linux http://git.tuxfamily.org/0linux/0linux.git?p=0linux/0linux.git;a=tree;f=0Linux/${categ}] | [Archives sources http://marmite.0linux.org/ftp/archives_sources/$(basename ${categ})]
+
 
 == Interactions inter-paquets ==
 
-  ||  Dépendances  |
-$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).dep | sed 's/\(^\).*\($\)/   |\1&\2  |/')
+|| Dépendances |
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).dep | sed 's/\(^\).*\($\)/| \1&\2  |/')
   
-  ||  Dépendants  |
-$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby | sed 's/\(^\).*\($\)/   |\1&\2  |/')
+|| Dépendants |
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).reqby | sed 's/\(^\).*\($\)/| \1&\2  |/')
 
 == Contenu ==
 
-  ||  Fichiers installés  |
-$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list | sed 's/\(^\).*\($\)/   |\1&\2  |/')
+|| Fichiers installés  |
+$(cat ${CATALOGDIR}/${categ}/$(basename ${pkglog}).list | sed 's/\(^\).*\($\)/| \1&\2  |/')
 
 EOF
 
@@ -136,105 +145,8 @@ EOF
 # On évite les problèmes de locales, notamment pour 'sort' :
 export LC_ALL='C'
 
-scan "$@"
+for arg in "$@"; do
+	scan "${arg}"
+done
 
 exit 0
-
-	if [ $(find ${CATALOGDIR} -type f -name ${pkglog}.t2t | wc -l) -gt 0 ]; then
-		continue
-	else
-		break
-	fi
-
-
-spacklist -v ${pkg} :
-
-NOM DU PAQUET : libpng-1.6.9-x86_64-2
-TAILLE COMPRESSÉE : 643 Kio
-TAILLE DÉCOMPRESSÉE : 2913 Kio
-EMPLACEMENT DU PAQUET : /home/appzer0/0/pub/paquets/eta/x86_64/b/libpng/libpng-1.6.9-x86_64-2.spack
-DESCRIPTION DU PAQUET :
-${pkg}: gnagnagna
-
-Fichiers installés :
-( spacklist -V libpng | sed -e '/NOM DU PAQUET.*$/,/\.\//d' ; spacklist -v -p libpng | sed -e 's@^/@@' -e '/------/d' -e '/^> /d' -e '/^\/\./d' ) | LC_ALL=C  sort
-
-cat > ${TMP}/${NAMETGZ}.t2t << EOF
-0LINUX
-base-systeme
-Mars 2014
-
-%!postproc(man): "^(\.TH.*) 1 "  "\1 7 "
-%!encoding: UTF-8
-
-= NOM =[nom]
-
-0Linux - Un système Linux francophone, didactique et original
-
-= DESCRIPTION =[description]
-
-Un survol rapide de la configuration de 0Linux.
-
-= OUTILS DE 0LINUX =[outilsde0linux]
-
-0Linux se configure via certains outils dédiés pour éviter d'avoir à chercher quel fichier gère quelle fonction. Tous les outils de 0linux commencent par un « 0 », afin qu'il soit aisé de parcourir tous les outils disponibles via l'auto-complètement de la ligne de commande, en tapant simplement « 0 » suivi de 2 frappes sur la touche TABULATION (ou TAB).
-
-= SYSTÈMES DE FICHIERS ET MONTAGES =[systemesdefichiersetmontages]
-
-Les systèmes de fichiers à monter sont spécifiés dans le fichier __/etc/fstab__.
-Les systèmes de fichiers CHIFFRÉS sont spécifiés dans le fichier __/etc/crypttab__.
-
-= SERVICES DU SYSTÈME =[servicesdusysteme]
-
-Les services du système sont gérés par de simples scripts nommés « rc.* » et rangés dans __/etc/rc.d/rc.*__.  On les rend actifs au démarrage de l'ordinateur en les rendant exécutables (chmod +x) et on les appelle en les exécutant, comme de simples scripts.
-
-= PARAMÉTRAGE DU RÉSEAU ET NOM D'HÔTE =[arametragedureseauetnomdhote]
-
-On définit le nom d'hôte ainsi que les paramètres de connexion au réseau en renseignant le fichier __/etc/0linux/reseau__. Un outil dédié existe, **__0reseau__**.
-
-= LANGUE DU SYSTÈME =[languedusysteme]
-
-On définit la langue et la localisation du système en définissant les variables $LANG et $LC_ALL dans le fichier __/etc/0linux/locale__. Un outil dédié existe : **__0locale__**.
-
-= DISPOSITION DES TOUCHES DU CLAVIER POUR LA CONSOLE VIRTUELLE =[dispositiondestouchesduclavierpourlaconsolevirtuelle]
-
-On définit la disposition de touches du clavier dans la console en renseignant le fichier __/etc/0linux/clavier__, contenant une variable $CLAVIER. Le clavier se définit aussi via l'outil dédié **__0clavier__**, lequel permet de tester les dispositions de clavier.
-
-= POLICE DE CARACTÈRES DE LA CONSOLE VIRTUELLE =[policedecaracteresdelaconsolevirtuelle]
-
-On définit la police d ecaractères à charger dans la console virtuelle en renseignant le fichier __/etc/0linux/police__, contenant une variable $POLICE. Le clavier se définit aussi via l'outil dédié **__0police__**, lequel permet de tester les polices de caractères disponibles.
-
-= FUSEAU HORAIRE =[fuseauhoraire]
-
-Le fuseau horaire se définit avec l'outil dédié **__0horloge__**. Ces commandes servent à créer un lien symbolique __/etc/localtime__ pointant sur le fichier de fuseau horaire choisi sous __/usr/share/zoneinfo/__. Par exemple :
-
-/etc/localtime -> /usr/share/zoneinfo/Europe/Paris
-
-= GESTION DES PAQUETS =[gestiondespaquets]
-
-Les paquets sont gérés par **Spack** (en particulier les programmes 'spackadd' et 'spackrm') et l'outil de gestion des dépôts et mises à jour, **0g**. Voyez leur manuel respectif pour en savoir plus.
-
-= AMORÇAGE DU SYSTÈME =[amorcagedusysteme]
-
-Le gestionnaire d'amorçage du système est **extlinux**, un outil du paquet **syslinux**. Sa configuration se trouve dans __/boot/extlinux/extlinux.conf__.
-
-= MODULES DU NOYAU =[modulesdunoyau]
-
-Les modules sont chargés automatiquement selon le matériel. Pour forcer le chargement d'un module donné, ajoutez-le à un fichier dédié sous __/etc/modprobe.d/__. Pour empêcher un module de se charger, ajoutez une commande 'blacklist' adaptée au module dans le fichier __/etc/modprobe.d/blacklist.conf__ ou bien créez dans ce même répertoire un fichier du nom de votre choix, contenant la commande 'blacklist' à invoquer.
-
-= POUR EN SAVOIR PLUS =[pourensavoirplus]
-
-Voyez ces manuels :
-
-tzselect(8), hostname(5),, timezone(3), fstab(5), crypttab(5), modprobe.d(5), 
-extlinux(1), 0g(8), 'spackadd --help', 'spackrm --help'.
-
-Et consultez la documentation sur le site de 0linux : [http://0linux.org]
-
-EOF
-
-# On génère la description dans les différents formats :
-mkdir -p ${PKG}/var/log/0abonnements
-for format in html txt; do
-	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
-done
