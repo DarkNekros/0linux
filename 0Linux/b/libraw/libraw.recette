@@ -3,9 +3,7 @@
 
 NAMESRC=LibRaw
 VERSION=0.16.0
-EXT=tar.gz
-NAMETGZ=libraw
-WGET=http://www.libraw.org/data/$NAMESRC-$VERSION.$EXT
+WGET=http://www.libraw.org/data/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques pour la gestion d'appareils photos"
 
 
