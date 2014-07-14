@@ -3,12 +3,9 @@
 
 NAMESRC=qca
 VERSION=2.0.3
-EXT=tar.bz2
-NAMETGZ=qca2
-WGET=http://delta.affinix.com/download/qca/2.0/$NAMESRC-$VERSION.$EXT
+WGET=http://delta.affinix.com/download/qca/2.0/$NAMESRC-$VERSION.tar.bz2
 DESC="Extension de cryptographie pour Qt"
 EXTRADEPS="ca-certificates"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

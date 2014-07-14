@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libmsn
 VERSION=4.2.1
-EXT=tar.bz2
-NAMETGZ=libmsn
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques permettant d'utiliser le protocole MSN/Live de Microsoft"
 
 
@@ -16,8 +13,11 @@ cflags
 # Corrige la compilation avec gcc 4.7.x :
 cat $CWD/libmsn.gcc47.patch | patch -p1
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \

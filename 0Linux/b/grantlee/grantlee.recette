@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=grantlee
 VERSION=0.4.0
-EXT=tar.gz
-NAMETGZ=grantlee
-WGET=http://downloads.grantlee.org/$NAMESRC-$VERSION.$EXT
+WGET=http://downloads.grantlee.org/$NAMESRC-$VERSION.tar.gz
 DESC="Système de gestion de modèles pour Qt"
 
 
@@ -13,8 +10,11 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
