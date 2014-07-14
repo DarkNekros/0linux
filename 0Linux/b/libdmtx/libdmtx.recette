@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libdmtx
 VERSION=0.7.4
-EXT=tar.bz2
-NAMETGZ=libdmtx
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques manipulant les matrices de donnés à barres"
 
 

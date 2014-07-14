@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=attica
 VERSION=0.4.2
-EXT=tar.bz2
-NAMETGZ=attica
-WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$VERSION.$EXT
-DESC="Services Ouverts de Collaboration pour Qt et KDE"
-########################################
-
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+DESC="Services ouverts de Collaboration pour Qt et KDE"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
@@ -29,7 +27,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	./ ../
 
-make -j3 || make
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
 

@@ -1,27 +1,21 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=media-player-info
 VERSION=21
-EXT=tar.gz
-NAMETGZ=media-player-info
-WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Informations communes sur les lecteurs de média"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# Corrige une règle udev erronée :
+cat $CWD/udev_errors.patch | patch -p1
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-udevdir=/usr/lib${LIBDIRSUFFIX}/udev \
 	--build=${PKGARCH}-0linux-linux-gnu
