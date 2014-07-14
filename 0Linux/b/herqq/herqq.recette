@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=herqq
 VERSION=1.0.0
-EXT=tar.xz
-NAMETGZ=herqq
-WGET=http://prdownloads.sourceforge.net/hupnp/$VERSION/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/hupnp/$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Découverte de périphérique UPnP pour Qt"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# Corrige les chemins pour prendre en compte LIBDIRSUFFIX :
+sed -i -e "s#PREFIX/lib#&${LIBDIRSUFFIX}#" $(find . -type f -name "*.pro")
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
