@@ -2,8 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=srtp
-VERSION=1.4.4
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tgz
+VERSION=1.4.5~20130609
+WGET=http://ftp.de.debian.org/debian/pool/main/s/$NAMESRC/${NAMESRC}_${VERSION}~dfsg.orig.tar.gz
 DESC="Bibliothèque de gestion du protocole SRTP"
 
 telecharger_sources
