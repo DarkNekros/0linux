@@ -10,13 +10,13 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Permet d'afficher l'état de la connexion :
-cat $CWD/broken-status.patch | patch -p0
+cat $CWD/meanwhile.broken-status.patch | patch -p0
 
 # Corrige les appels à glib :
-cat $CWD/fix_glib_includes.patch | patch -p1
+cat $CWD/meanwhile.fix_glib_includes.patch | patch -p1
 
-# Empêche un crach en cas de discutions groupé :
-cat $CWD/fix_groupchat.patch | patch -p1
+# Empêche un crash en cas de discussions groupés :
+cat $CWD/meanwhile.fix_groupchat.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
