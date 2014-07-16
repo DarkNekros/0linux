@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+NAMESRC=srtp
+VERSION=1.4.4
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tgz
+DESC="Bibliothèque de gestion du protocole SRTP"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Corrige la doc pour un Doxygen récents :
+cat $CWD/update_doxygen.patch | patch -p1
+
+# Permet de disposer d'un .so :
+cat $CWD/shared.patch | patch -p1
+
+# Évite une fuite mémoire :
+cat $CWD/data_alignment.patch | patch -p1
+
+# Compilation :
+autoreconf -vif
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
