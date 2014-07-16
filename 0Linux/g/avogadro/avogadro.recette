@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=avogadro
 VERSION=1.1.0
-EXT=tar.bz2
-NAMETGZ=avogadro
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Éditeur de molécules avancé"
-########################################
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,8 +12,11 @@ cflags
 # Utilise la libgl2ps du système :
 cat $CWD/avogadro.libgl2ps.patch | patch -p1
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \

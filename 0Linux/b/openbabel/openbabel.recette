@@ -1,30 +1,24 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=openbabel
 VERSION=2.3.1
-EXT=tar.gz
-NAMETGZ=openbabel
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Boite à outil pour logiciels de chimie"
-########################################
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 LDFLAGS="$LDFLAGS -ltirpc" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc \
 	./ ../
