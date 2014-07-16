@@ -33,10 +33,6 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
 
-# On corrige une variable manquante empêchant la détection avec cmake :
-#sed -i "s@# install locations@# install location\nset_and_check(PACKAGE_PREFIX_DIR \"/usr\")@" \
-#	$PKG/usr/lib64/cmake/Strigi/StrigiConfig.cmake
-
 installer_doc
 creer_post_installation
 stripper
