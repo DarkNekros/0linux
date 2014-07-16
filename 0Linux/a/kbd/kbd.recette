@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=kbd
 VERSION=1.15.3
-EXT=tar.gz
-NAMETGZ=kbd
-WGET=http://ftp.altlinux.com/pub/people/legion/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://ftp.altlinux.com/pub/people/legion/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Dispositions pour claviers et polices pour console"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -18,7 +14,7 @@ cflags
 cat $CWD/kbd-1.15.1-backspace-1.patch | patch -p1
 
 # On applique également le correctif pour l'euro de la disposition « nl » :
-cat $CWD/nl.euro.diff | patch -p1
+cat $CWD/nl.euro.patch | patch -p1
 
 # On corrige une faute de frappe et on se demande comment ils font pour compiler :
 sed -i 's@fichero de tipos %2$dx%3$d de %1$d caracteres@fichero de tipos %dx%d de %d caracteres@' po/es.po

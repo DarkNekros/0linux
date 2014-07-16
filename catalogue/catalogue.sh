@@ -44,11 +44,13 @@ scan() {
 		
 		# Si le log en txt2tags est présent, on ignore le scan :
 		if [ -r ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t ]; then
+			echo "Catalogue pour '$(nom_court ${pkglog})' ignoré car déjà présent."
 			continue
 		
 		# Sinon, on supprime toute trace, y compris d'un récent déplacement de paquet
 		# (ça arrive plutôt souvent en fait) :
 		else
+			echo "Génération du catalogue pour '$(nom_court ${pkglog})'..."
 			find ${CATALOGDIR}/${VERSION}/$(uname -m) -type d -name "$(nom_court ${pkglog})" -exec rm -rf {} \; 2>/dev/null || true
 		fi
 		
