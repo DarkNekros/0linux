@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.0.2
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+DESC="Bibliothèque de gestion du protocole de Lotus Sametime"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Permet d'afficher l'état de la connexion :
+cat $CWD/broken-status.patch | patch -p0
+
+# Corrige les appels à glib :
+cat $CWD/fix_glib_includes.patch | patch -p1
+
+# Empêche un crach en cas de discutions groupé :
+cat $CWD/fix_groupchat.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--disable-mailme \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
