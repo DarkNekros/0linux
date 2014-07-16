@@ -53,6 +53,9 @@ cmake \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# Lien symbolique de transition :
+ln -sf OpenCV $PKG/usr/share/opencv
+
 installer_doc
 creer_post_installation
 stripper
