@@ -11,13 +11,13 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Corrige la doc pour un Doxygen récents :
-cat $CWD/update_doxygen.patch | patch -p1
+cat $CWD/libsrtp.update_doxygen.patch | patch -p1
 
 # Permet de disposer d'un .so :
-cat $CWD/shared.patch | patch -p1
+cat $CWD/libsrtp.shared.patch | patch -p1
 
 # Évite une fuite mémoire :
-cat $CWD/data_alignment.patch | patch -p1
+cat $CWD/libsrtp.data_alignment.patch | patch -p1
 
 # Compilation :
 autoreconf -vif
