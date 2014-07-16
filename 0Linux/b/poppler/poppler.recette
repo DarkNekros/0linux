@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.26.1
-EXT=tar.xz
+VERSION=0.26.2
 WGET=(
-      http://poppler.freedesktop.org/$NAMESRC-$VERSION.$EXT
+      http://poppler.freedesktop.org/$NAMESRC-$VERSION.tar.xz
       http://poppler.freedesktop.org/poppler-data-0.4.6.tar.gz
      )
 
@@ -20,7 +19,7 @@ cflags
 fakeroot make install prefix=/usr DESTDIR=${PKG}
 
 # On compile maintenant 'poppler' :
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-$VERSION.tar.xz # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Compilation :

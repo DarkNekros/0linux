@@ -1,19 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.3
+VERSION=0.9.4
 WGET=http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques d'interfaçage Qt pour Telepathy"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige la détection de 'farstream' :
-sed -i 's@farstream-0\.1@farstream-0.2@g' cmake/modules/FindFarstream.cmake
-
-# On corrige la compilation avec les derniers 'cmake' :
-cat $CWD/cmake.patch | patch -p1
 
 # On compile dans un répertoire dédié :
 mkdir build

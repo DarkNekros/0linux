@@ -1,22 +1,14 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=opencv
-VERSION=2.4.5
-EXT=tar.gz
-NAMETGZ=opencv
-WGET=http://prdownloads.sourceforge.net/opencvlibrary/$NAMESRC-$VERSION.$EXT
+VERSION=2.4.9
+WGET=https://github.com/Itseez/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Bibliothèques graphiques « Open Source Computer Vision »"
 
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige pour éviter les erreurs dûes au répertoire avec majuscules ainsi
-# que le fichier pour 'pkg-config', absolument immonde :
-cat $CWD/opencv.maj.patch | patch -p1
-cat $CWD/opencv.pkgconfig.patch | patch -p1
 
 # Les instructions SSE3 ne sont pas forcément sur tous les processeurs i686 :
 if [ "${PKGARCH}" = "i686" ]; then
@@ -25,26 +17,37 @@ elif [ "${PKGARCH}" = "x86_64" ]; then
 	OPTSSE3="ON"
 fi
 
+# On corrige le fichier pour 'pkg-config', absolument immonde :
+cat $CWD/pkgconfig.patch | patch -Np1
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
 	-D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_C_FLAGS="${FLAGS}" \
 	-D CMAKE_CXX_FLAGS="${FLAGS}" \
 	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D BUILD_EXAMPLES=ON \
 	-D BUILD_SHARED_LIBS=ON \
 	-D BUILD_TESTS=OFF \
+	-D BUILD_PERF_TESTS=OFF \
+	-D BUILD_WITH_DEBUG_INFO=OFF \
 	-D ENABLE_SSE=ON \
 	-D ENABLE_SSE2=ON \
 	-D ENABLE_SSE3=${OPTSSE3} \
-	-D USE_FAST_MATH=ON \
-	-D INSTALL_C_EXAMPLES=OFF \
-	-D INSTALL_DOC_DIR=doc/${NAMETGZ}-${VERSION} \
-	-D INSTALL_MAN_DIR=man \
-	-D INSTALL_PYTHON_EXAMPLES=OFF \
+	-D INSTALL_C_EXAMPLES=ON \
+	-D INSTALL_PYTHON_EXAMPLES=ON \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D LIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX} \
+	-D WITH_GTK=ON \
+	-D WITH_QT=ON \
+	-D WITH_OPENGL=ON \
+	-D WITH_TBB=OFF \
+	-D WTIH_XINE=OFF \
 	./ ../
 
 make -j${JOBS} || make
