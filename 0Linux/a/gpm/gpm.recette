@@ -1,20 +1,16 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gpm
 VERSION=1.20.7
-EXT=tar.lzma
-NAMETGZ=gpm
-WGET=http://www.nico.schottelius.org/software/$NAMESRC/archives/$NAMESRC-$VERSION.$EXT
+WGET=http://www.nico.schottelius.org/software/$NAMESRC/archives/$NAMESRC-$VERSION.tar.lzma
 DESC="Serveur de pointage"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # On applique un correctif pour ne pas polluer les consoles :
-cat $CWD/gpm-1.20.6.no-console-pollution.diff | patch -p1
+cat $CWD/gpm-1.20.6.no-console-pollution.patch | patch -p1
 
 # Compilation :
 ./autogen.sh

@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=lynx
 VERSION=2.8.8
-EXT=tar.bz2
-NAMETGZ=lynx
-WGET=http://lynx.isc.org/$NAMESRC$VERSION/$NAMESRC$VERSION.$EXT
+WGET=http://lynx.isc.org/$NAMESRC$VERSION/$NAMESRC$VERSION.tar.bz2
 DESC="Navigateur Web en mode texte"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,7 +13,7 @@ cflags
 sed -i "s#usr/local/lib/#usr/lib${LIBDIRSUFFIX}/#g" userdefs.h
 
 # On applique le correctif Slackware pour que les couleurs piquent moins les yeux :
-cat $CWD/lynx.cfg.diff | patch -p1
+cat $CWD/lynx.cfg.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" CPPFLAGS+="-I$KRB/include -I/usr/include/openssl" \
