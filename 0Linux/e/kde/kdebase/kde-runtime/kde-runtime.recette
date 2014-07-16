@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=kde-runtime
-VERSION=4.13.0
-EXT=tar.xz
-NAMETGZ=kde-runtime
-WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.$EXT
+VERSION=4.13.3
+WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.tar.xz
 DESC="Outils communs des applications et du bureau KDE"
-EXTRADEPS="polkit-kde-agent"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,31 +12,34 @@ cflags
 # Correctif : on utilise les en-tête de libtirpc et non ceux de la libc :
 cat $CWD/kde-runtime.rpc_fix.patch | patch -p1
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	-D RUN_KAPPFINDER=ON \
 	./ ../
 
-make -j3 || make
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
+
+# On déplace les fichiers DBus au bon endroit
+mv ${PKG}/etc/{kde/,}dbus-1
 
 # Certains programmes cherchent KDESu dans le PATH :
 ln -s /usr/lib${LIBDIRSUFFIX}/kde4/libexec/kdesu ${PKG}/usr/bin/
  
 # Conflit avec le thème HiColor du système :
 rm -rf ${PKG}/usr/share/icons/hicolor/index.theme
+rm -rf ${PKG}/usr/share/icons/default.kde4
 
 installer_doc
 creer_post_installation

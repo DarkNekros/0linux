@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=kwebkitpart
-VERSION=1.3.3
-EXT=tar.bz2
-NAMETGZ=kwebkitpart
-WGET=ftp://ftp.archlinux.org/other/packages/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.3.4
+WGET=ftp://ftp.archlinux.org/other/packages/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Module KPart permettant d'utiliser WebKit dans les applications KDE"
 EXTRADEPS="kde-runtime kde-baseapps"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,8 +13,11 @@ cflags
 # Efface de la construction un répertoire présent dans git mais pas dans l'archive :
 sed -i '/add_subdirectory(kdelauncher)/d' CMakeLists.txt
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
