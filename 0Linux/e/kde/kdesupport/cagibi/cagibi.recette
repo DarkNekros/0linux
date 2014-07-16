@@ -25,8 +25,11 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
 
-# On renome le fichier de configuration
+# On renome le fichier de configuration :
 mv ${PKG}/etc/kde/cagibid.conf{,.0nouveau}
+
+# On déplace les fichiers DBus au bon endroit :
+mv ${PKG}/etc/{kde/,}dbus-1
 
 installer_doc
 creer_post_installation

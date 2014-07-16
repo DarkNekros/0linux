@@ -5,24 +5,20 @@ VERSION=1.12.1
 WGET=ftp://ftp.kde.org/pub/kde/stable/akonadi/src/akonadi-$VERSION.tar.bz2
 DESC="Services de gestion des informations personnelles"
 
-
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
-	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	-D INSTALL_QSQLITE_IN_QT_PREFIX=ON \
 	./ ../
 

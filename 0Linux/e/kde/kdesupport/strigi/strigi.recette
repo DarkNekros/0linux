@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=strigi
 VERSION=0.7.8
-EXT=tar.bz2
-NAMETGZ=strigi
-WGET=http://www.vandenoever.info/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://www.vandenoever.info/software/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Services et bibliothèques de recherche sur le bureau"
-########################################
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,21 +12,21 @@ cflags
 # Corrige une variable qui n'est pas exporté :
 cat $CWD/strigi.export.patch | patch -p1
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
-	-D CMAKE_SKIP_RPATH=OFF \
+	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
-	-D KDE4_BUILD_TESTS=FALSE \
 	-D CMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D ENABLE_CLUCENE=ON \
+	-D ENABLE_CLUCENE_NG=ON \
+	-D ENABLE_FFMPEG=ON \
 	-D ENABLE_INOTIFY=ON \
-	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	./ ../
 
 make -j${JOBS} || make
@@ -39,8 +34,8 @@ fakeroot make install DESTDIR=${PKG}
 cd ../
 
 # On corrige une variable manquante empêchant la détection avec cmake :
-sed -i "s@# install locations@# install location\nset_and_check(PACKAGE_PREFIX_DIR \"/usr\")@" \
-	$PKG/usr/lib64/cmake/Strigi/StrigiConfig.cmake
+#sed -i "s@# install locations@# install location\nset_and_check(PACKAGE_PREFIX_DIR \"/usr\")@" \
+#	$PKG/usr/lib64/cmake/Strigi/StrigiConfig.cmake
 
 installer_doc
 creer_post_installation

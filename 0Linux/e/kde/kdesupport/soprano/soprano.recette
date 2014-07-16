@@ -5,25 +5,20 @@ VERSION=2.9.4
 WGET=http://prdownloads.sourceforge.net/project/soprano/Soprano/$VERSION/soprano-$VERSION.tar.bz2
 DESC="Bibliothèques de haut niveau de traitement de données RDF"
 
-
-
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=OFF \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
-	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	./ ../
 
 make -j${JOBS} || make
@@ -42,7 +37,6 @@ SOPRANO_BACKEND="redland"                       # virtuoso, sesame2, redland
 # Fin de /etc/sysconfig/soprano
 EOF
 mkdir -p $PKG/var/lib/soprano
-
 
 installer_doc
 creer_post_installation
