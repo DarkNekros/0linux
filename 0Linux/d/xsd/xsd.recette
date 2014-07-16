@@ -5,7 +5,6 @@ VERSION=3.3.0_2+dep
 WGET=http://www.codesynthesis.com/download/xsd/3.3/xsd-$(echo $VERSION | sed 's/_/\-/').tar.bz2
 DESC="Compilateur pour modèle XML pour le C++"
 
-
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
