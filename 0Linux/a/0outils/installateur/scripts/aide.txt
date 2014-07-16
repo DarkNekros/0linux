@@ -136,10 +136,15 @@ exploitables.
 	   changer selon le programme choisi).
 
 N'oubliez pas de rendre amorçable la partition destinée à accueillir 0Linux !
-Pour les disques GPT, il vous faudra invoquer la commande suivante, ici pour le
-disque '/dev/sda', afin d'activer la fonctionnalité « Legacy BIOS bootable » :
+Pour les disques MBR, utilisez l'option « Amorçable » ou « Bootable » de
+'cfdisk'.
+Pour les disques GPT, il vous faudra invoquer la commande suivante, ici pour la
+partition '/dev/sda1', afin d'activer la fonctionnalité « Legacy BIOS
+bootable » :
 
 	# sgdisk /dev/sda --attributes=1:set:2
+
+Notez que le numéro de la partition concernée se spécifie après le « = ».
 
 
 3- Lancement de l'installateur

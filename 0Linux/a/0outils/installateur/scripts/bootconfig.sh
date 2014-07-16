@@ -47,13 +47,41 @@ while [ 0 ]; do
 		echo "Vous pouvez spécifier le lien générique '/boot/vmlinuz' mais vérifiez"
 		echo "qu'il pointe bien sur le noyau de 0Linux."
 		echo ""
-		echo "Le système doit être lancé de préférence en lecture seule (read-only, ro, etc.)"
-		echo "et aucun « initrd » n'est nécessaire au démarrage."
+		echo "Le système peut être lancé en lecture seule (read-only, ro, etc.) ou pas et"
+		echo "l'initrd '/boot/initrd' n'est nécessaire que pour amorcer la racine via son"
+		echo "LABEL ou son identifiant UUID. Dans le doute, spécifiez cet initrd au"
+		echo "démarrage systématiquement."
 		echo ""
 		echo "Notez ces informations et appuyez sur ENTRÉE pour continuer."
 		read BLAHH;
 		continue
 	elif [ "$BOOTERINST" = "1" ]; then
+		
+		# On va tout de suite s'occuper de l'attribut « amorçable » de la partition racine,
+		# qui doit être dans le top 5 des problèmes les plus fréquents. Mais on ignore tout
+		# échec :
+		
+		# On déduit le périphérique à amorcer.
+		# Si '/boot' est sur une partition séparée, c'est elle qu'on doit activer :
+		if grep '/boot' ${SETUPROOT}/etc/fstab; then
+			BOOTDEVICE="$(mount | grep '/boot' | crunch | cut -d' ' -f1 | tr -d '[0-9]')"
+			BOOTNUMPART="$(mount | grep '/boot' | crunch | cut -d' ' -f1 | tr -d '[A-Za-z/]')"
+		
+		# Sinon, on en déduit que c'est la partition racine qu'on doit activer :
+		else
+			BOOTDEVICE="$(cat $TMP/partition_racine | crunch | tr -d '[0-9]')"
+			BOOTNUMPART="$(cat $TMP/partition_racine | crunch | tr -d '[A-Za-z/]')"
+		fi
+		
+		# Le type de la table de partition :
+		BOOTPTTYPE=$(blkid -p -s PTTYPE -o value ${BOOTDEVICE})
+		
+		# On rend la partition '/' ou '/boot' active/bootable/amorçable en GPT ou MBR :
+		if [ "${BOOTPTTYPE}" = "gpt" ]; then
+			sgdisk ${BOOTDEVICE} --attributes=${BOOTNUMPART}:set:2 2>/dev/null || true
+		else
+			sfdisk ${BOOTDEVICE} --activate ${BOOTNUMPART}         2>/dev/null || true
+		fi
 		
 		# Boucle d'affichage du choix du LABEL / UUID :
 		while [ 0 ]; do
@@ -67,17 +95,20 @@ while [ 0 ]; do
 			echo "pour s'assurer qu'elle sera bien identifiée par le chargeur d'amorçage."
 			echo "Entrez ci-dessous la méthode de nommage désirée pour nommer votre partition"
 			echo "de façon persistante ou bien entrez directement le nom désiré de la"
-			echo "partition racine après le mot-clé « LABEL= ». Contraintes : 16 caractères"
-			echo "maximum, évitez les espaces, accents et caractères spéciaux. "
+			echo "partition racine après le mot-clé « LABEL= ». Entrez simplement « LABEL » pour"
+			echo "nommer automatiquement votre racine « 0LINUXRACINE »."
+			echo "Contraintes pour les LABELS : 16 caractères maximum, évitez les espaces,"
+			echo "accents et caractères spéciaux. "
 			echo "Exemples de noms : LABEL=0LINUXRACINE ; LABEL=0linux ; LABEL=systeme0"
 			echo ""
 			echo "Au choix :"
 			echo "UUID                  : utiliser l'UUID de la partition (recommandé)"
-			echo "LABEL=nomdevotrechoix : assigner un nom persistant"
+			echo "LABEL                 : assigner le nom persistant « 0LINUXRACINE »"
+			echo "LABEL=nomdevotrechoix : assigner un nom persistant de votre choix"
 			echo ""
 			echo "Appuyez sur ENTRÉE pour ignorer cette étape et utiliser '${DAROOTPART}'."
 			echo ""
-			echo -n "Votre choix (UUID/LABEL=xxx/ENTRÉE) : "
+			echo -n "Votre choix (UUID/LABEL/LABEL=xxx/ENTRÉE) : "
 			read PARTNAME;
 			if [ "${PARTNAME}" = "UUID" ]; then
 				ROOTFSUUID=$(blkid -p -s UUID -o value ${DAROOTPART})
@@ -89,6 +120,20 @@ while [ 0 ]; do
 				sed -i "s@^${DAROOTPART}@UUID=${ROOTFSUUID}@" ${SETUPROOT}/etc/fstab
 				break
 				
+			# LABEL automatique :
+			elif [ "${PARTNAME}" = "LABEL" ]; then
+				PARTNAME="0LINUXRACINE"
+				
+				# On affecte le LABEL à la partition :
+				tune2fs -L ${PARTNAME} ${DAROOTPART}
+				
+				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par le LABEL  :
+				sed -i "s@ROOTPART@${PARTNAME}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+				
+				# On remplace donc la racine par son LABEL dans 'fstab' :
+				sed -i "s@^${DAROOTPART}@${PARTNAME}@" ${SETUPROOT}/etc/fstab
+				break
+			
 			elif [ ! "$(echo ${PARTNAME} | grep -E '^LABEL=')" = "" ]; then
 				
 				# On affecte le LABEL à la partition :
@@ -110,7 +155,7 @@ while [ 0 ]; do
 				break
 				
 			else
-				echo "Veuillez soit entrer « UUID », « LABEL=nomdevotrechoix », soit"
+				echo "Veuillez soit entrer « UUID », « LABEL », « LABEL=nomdevotrechoix », soit"
 				echo "appuyer sur ENTRÉE."
 				echo ""
 				sleep 2

@@ -87,19 +87,24 @@ else
 	echo ""
 	echo "Il est temps de faire votre choix parmi les abonnements de 0Linux."
 	echo "Vous allez pour cela utiliser l'outil '0g' dans la console n°2."
-	echo "Les paquets-abonnements (dans 'z/') sont des ensembles cohérents de logiciels"
+	echo "'0g' est un outil de téléchargement, d'installation et de mise à jour de"
+	echo "paquets pour 0Linux."
+	echo ""
+	echo "Les paquets-abonnements sont des ensembles cohérents de logiciels"
 	echo "qui simplifient leur installation."
 	echo ""
 	echo "'base-abonnement' a déjà été installé d'office et forme la base du système."
 	echo "Si vous désirez utiliser un environnement ou un bureau graphique, installez"
 	echo "'xorg-abonnement'."
-	echo ""
 	echo "L'abonnement 'opt-abonnement', quant à lui, permet de disposer de la"
 	echo "plupart des bibliothèques et outils système dans une sélection très complète"
 	echo "de logiciels. Installez-le si vous débutez."
 	echo ""
 	echo "Ainsi, pour installer les abonnements recommandés, vous taperez :"
 	echo "	0g xorg-abonnement opt-abonnement"
+	echo ""
+	echo "'0g' met automatiquement à jour votre système, il se peut donc que certains"
+	echo "paquets que vous n'avez pas demandés soient installés d'office."
 	echo ""
 	echo -n "Appuyez sur ENTRÉE quand vous en avez terminé avec ces abonnements."
 	read BLURB2;
@@ -110,26 +115,25 @@ else
 	echo -e "\033[1;32mChoix des paquets logiciels supplémentaires.\033[0;0m"
 	echo ""
 	echo "Il est temps de faire votre choix parmi les paquets de 0Linux."
-	echo "Vous allez pour cela utiliser l'outil '0g' dans la console n°2."
-	echo ""
-	echo "'0g' ne permet pas encore de lister les paquets disponibles ou d'en avoir"
-	echo "une description ; consultez donc directement le dépôt de paquets pour en"
-	echo "savoir plus sur son contenu. Des fichiers '*.txt' contiennent une"
-	echo "description pour chaque paquet. "
-	echo "Utilisez les abonnements de 'z/' pour vous faciliter la tâche !"
+	echo "Utilisez les paquets-abonnements pour vous faciliter la tâche !"
 	echo ""
 	echo "Pour installer un environnement graphique, vous ferez par exemple :"
 	echo "	0g kde-abonnement"
 	echo "	0g xfce-abonnement"
 	echo "	0g enlightenment-abonnement"
 	echo ""
-	echo "Puis par exemple, pour installer le navigateur Firefox :"
+	echo "Puis, par exemple, pour installer le navigateur Firefox :"
 	echo "	0g firefox"
 	echo ""
-	echo "Nous faciliterons l'accès aux listings et aux descriptions très prochainement."
+	echo "Pour lister tous les paquets disponibles (plus de 1300 !), tapez : "
+	echo "	0g -i"
+	echo ""
+	echo "Suivi d'un nom de paquet, il vous en affichera une brève description."
+	echo ""
 	echo "Vous utiliserez souvent '0g', familiarisez-vous avec, il est très simple."
 	echo "Consultez '0g -h' ou 'man 0g' pour en savoir plus."
 	echo ""
+	echo "Vous pourrez installer d'autres paquets plus tard si vous êtes perdu(e)."
 	echo -n "Appuyez sur ENTRÉE quand vous avez terminé avec l'installation des paquets."
 	read BLURB3;
 	
@@ -157,15 +161,6 @@ else
 	# On supprime la configuration de 0g :
 	sed -i "\@^Source=\"${PROTOCOLE}${MEDIACHOISI}\"@d" /etc/0outils/0g.conf
 	sed -i "\@^ROOT=\"${SETUPROOT}\"@d"                 /etc/0outils/0g.conf
-
-	# On supprime la configuration de 0g sur $SETUPROOT :
-	sed -i "\@^Source=\"${PROTOCOLE}${MEDIACHOISI}\"@d" ${SETUPROOT}/etc/0outils/0g.conf
-	
-	# On place la config' standard par défaut sur $SETUPROOT :
-	sed -i '
-/# Source=file:\/\/${Cache}.*$/ i\
-Source="ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
-' ${SETUPROOT}/etc/0outils/0g.conf
 	
 	# On démonte le cache de 0g sur $SETUPROOT :
 	umount -f ${SETUPROOT}/var/cache/0g 1>/dev/null 2>/dev/null || true

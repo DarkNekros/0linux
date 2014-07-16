@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMETGZ=opt-abonnement
-VERSION=10
+VERSION=11
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-lib                 alsa-plugins \
@@ -16,7 +16,8 @@ bash                    bash-completion          bc \
 berkeley-db             binutils                 boost \
 busybox                 bzip2                    cabextract \
 ca-certificates         cairo                    cairomm \
-cantarell-fonts         chmlib                   chrpath \
+cantarell-fonts \
+cdrtools                chmlib                   chrpath \
 cifs-utils              cln                      cloog \
 colord                  colord-gtk \
 consolekit              coreutils                cpio \
