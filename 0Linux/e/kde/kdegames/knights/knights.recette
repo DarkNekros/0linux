@@ -1,29 +1,24 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=knights
 VERSION=2.5.0
-EXT=tar.bz2
-NAMETGZ=knights
-WGET=http://dl.dropbox.com/u/2888238/Knights/$NAMESRC-$VERSION.$EXT
+WGET=http://dl.dropbox.com/u/2888238/Knights/$NAMESRC-$VERSION.tar.bz2
 DESC="Un jeu d'échecs pour KDE"
 EXTRADEPS="gnuchess"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
