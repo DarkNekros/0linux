@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.5.0
+VERSION=0.5.2
 WGET=http://git.kolab.org/libkolab/snapshot/libkolab-$VERSION.tar.gz
 DESC="Bibliothèque pour la messagerie collaborative Kolab"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Les utilitaires sont cassés :
-sed -e "/add_subdirectory(utils)/d" -i CMakeLists.txt
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
 
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
