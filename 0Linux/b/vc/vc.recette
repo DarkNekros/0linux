@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.7.3
-WGET=http://code.compeng.uni-frankfurt.de/attachments/download/174/Vc-$VERSION.tar.gz
+VERSION=0.7.4
+WGET=http://code.compeng.uni-frankfurt.de/attachments/download/183/Vc-$VERSION.tar.gz
 DESC="Bibliothèques de manipulation d'objets vectoriels"
 
 telecharger_sources
@@ -17,10 +17,6 @@ if [ "${PKGARCH}" = "x86_64" ] ; then
 	cmake -D CMAKE_BUILD_TYPE=Release \
 		-D CMAKE_SKIP_RPATH=ON \
 		-D CMAKE_INSTALL_PREFIX=/usr \
-		-D BUILD_TESTING=OFF \
-		-D ENABLE_SSE=ON \
-		-D ENABLE_SSE2=ON \
-		-D ENABLE_SSE3=ON \
 		-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 		-D SYSCONF_INSTALL_DIR=/etc \
 		./ ../

@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=yaml-cpp
 VERSION=0.3.0
-EXT=tar.gz
-NAMETGZ=yaml-cpp
-WGET=http://yaml-cpp.googlecode.com/files/$NAMESRC-$VERSION.$EXT
+WGET=http://yaml-cpp.googlecode.com/files/$NAMESRC-$VERSION.tar.gz
 DESC="Bindings C++ pour Yaml"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
