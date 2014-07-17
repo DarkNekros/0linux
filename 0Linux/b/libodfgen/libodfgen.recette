@@ -5,7 +5,6 @@ VERSION=0.0.4
 WGET=http://prdownloads.sourceforge.net/libwpd/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèque de génération de fichiers ODF"
 
-
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags

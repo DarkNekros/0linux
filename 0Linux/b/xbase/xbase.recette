@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xbase
 VERSION=2.0.0
-EXT=tar.gz
-NAMETGZ=xbase
-WGET=http://prdownloads.sourceforge.net/xdb/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/xdb/$NAMESRC-$VERSION.tar.gz
 DESC="Système de manipulation de divers formats de bases de données"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

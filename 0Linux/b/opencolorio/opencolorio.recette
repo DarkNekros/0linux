@@ -2,25 +2,22 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.0.9
-WGET=https://github.com//imageworks/OpenColorIO/archive/v$VERSION.tar.gz
+WGET=https://github.com/imageworks/OpenColorIO/archive/v$VERSION.tar.gz
 DESC="Bibliothèques de gestion de couleurs avancée"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On doit compiler dans un répertoire dédié :
-mkdir -p build && cd build
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D USE_EXTERNAL_LCMS=ON \
 	-D USE_EXTERNAL_TINYXML=ON \

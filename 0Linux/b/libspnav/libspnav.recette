@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libspnav
 VERSION=0.2.2
-EXT=tar.gz
-NAMETGZ=libspnav
-WGET=http://prdownloads.sourceforge.net/spacenav/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/spacenav/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques pour le support de prériphériques de navigation 3D"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -19,7 +15,8 @@ cat $CWD/libspnav.makefile.patch | patch -p0
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
-	--prefix=/usr 
+	--prefix=/usr \
+	--disable-debug
 
 make -j${JOBS} || make
 
