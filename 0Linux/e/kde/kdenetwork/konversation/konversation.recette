@@ -5,20 +5,18 @@ VERSION=1.5
 WGET=ftp://ftp.kde.org/pub/kde/stable/konversation/$VERSION/src/konversation-$VERSION.tar.xz
 DESC="Un puissant client IRC pour KDE"
 
-
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \

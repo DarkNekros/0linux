@@ -1,28 +1,22 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=ktorrent
 VERSION=4.3.1
-EXT=tar.bz2
-NAMETGZ=ktorrent
-WGET=http://ktorrent.org/downloads/$VERSION/$NAMESRC-$VERSION.$EXT
+WGET=http://ktorrent.org/downloads/$VERSION/$NAMESRC-$VERSION.tar.bz2
 DESC="Un puissant client BitTorrent pour KDE"
-########################################
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
