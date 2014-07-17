@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.1
+VERSION=1.1.0
 WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.tar.xz
 DESC="Affiche des informations sur la distribution utilisé"
 EXTRADEPS="kde-workspace"
