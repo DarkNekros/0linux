@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.8.2
+VERSION=2.8.5
 WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Calligra : la suite bureautique et artistique complète pour KDE"
 EXTRADEPS="openimageio vc kde-runtime libspnav libqtgtl libetonyek"
@@ -21,19 +21,28 @@ fi
 sed -i "s:/usr/include/openjpeg:/usr/include/openjpeg-1.5:" \
 	cmake/modules/FindOpenJPEG.cmake
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
+	-D CMAKE_C_FLAGS="${FLAGS} -I/usr/include/librevenge-0.0" \
+	-D CMAKE_CXX_FLAGS="${FLAGS} -I/usr/include/librevenge-0.0" \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	-D BUILD_active=OFF \
+	-D OKULAR_CORE_LIBRARY=/usr/lib64/libokularcore.so \
+	-D OKULAR_INCLUDE_DIR=/usr/include/okular \
+	-D Okular_DIR=/usr/lib64/cmake/Okular \
+	-D SPNAV_INCLUDE_DIR=/usr/include \
+	-D SPNAV_LIBRARY=/usr/lib64/libspnav.so \
+	-D Vc_DIR=/usr/lib64/cmake/Vc \
+	-D Vc_LIBRARIES=/usr/lib64/libVc.a \
 	-D WITH_Pstoedit=ON \
 	-D WITH_Vc=$VC_OPT \
 	./ ../

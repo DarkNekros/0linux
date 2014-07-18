@@ -1,28 +1,22 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=krecipes
 VERSION=2.0_beta2
-EXT=tar.gz
-NAMETGZ=krecipes
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/\-/').$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/\-/').tar.bz2
 DESC="Gestionnaire de recettes de cuisine"
-########################################
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_SKIP_RPATH=ON \
+cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
