@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=nspr
-VERSION=4.10.1
-EXT=tar.gz
-NAMETGZ=nspr
-WGET=ftp://ftp.mozilla.org/pub/mozilla.org/$NAMESRC/releases/v$VERSION/src/$NAMESRC-$VERSION.$EXT
+VERSION=4.10.6
+WGET=ftp://ftp.mozilla.org/pub/mozilla.org/$NAMESRC/releases/v$VERSION/src/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques système multi-plateformes de Mozilla"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

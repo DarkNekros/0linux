@@ -2,8 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.1
-NAMETGZ=gtk-icones
-WGET=(http://art.gnome.org/download/themes/icon/1002/ICON-BlankOn.tar.gz
+WGET=(
+      http://art.gnome.org/download/themes/icon/1002/ICON-BlankOn.tar.gz
       http://art.gnome.org/download/themes/icon/1049/ICON-DroplineEtiquette.tar.bz2
       http://art.gnome.org/download/themes/icon/1100/ICON-DroplineNeu.tar.bz2
       http://art.gnome.org/download/themes/icon/1112/ICON-DroplineNuovo.tar.bz2
@@ -30,7 +30,6 @@ WGET=(http://art.gnome.org/download/themes/icon/1002/ICON-BlankOn.tar.gz
       http://art.gnome.org/download/themes/icon/1128/ICON-YattaBlues.tar.gz
      )
 DESC="Ensemble d'icônes pour GTK+"
-
 
 cflags
 telecharger_sources

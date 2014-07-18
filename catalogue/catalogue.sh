@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 # Création/mise à jour du catalogue en ligne des paquets de 0Linux.
-
-# On affecte les variables du système (notamment $VERSION) :
-source /etc/os-release
+# Ce script crée un document txt2tags, converti en document pour Dokuwiki
+# pour chaque paquet demandé et récrée à chaque fois l'index de la catégorie
+# correspondante.
+#
+# Utilisation :
+#	catalogue.sh [PAQUETS,JOURNAUX DE PAQUETS]
+#
+# Variables disponibles : affecter une valeur quelconque aux variables :
+#  FORCECATALOGUE pour forcer la génération du catalogue même s'il est déjà présent
+#  NOINDEX pour ignorer la génération de l'index correspondant aux paquets demandés
 
 # Emplacement du dépôt des paquets :
-PKGREPO=${PKGREPO:-/usr/local/paquets/${VERSION}/$(uname -m)}
+PKGREPO=${PKGREPO:-/usr/local/paquets/$(uname -m)}
 
 # Emplacement de la racine des paquets invasifs ('nvidia', 'catalyst'...) installés
 # ailleurs pour ne pas polluer le système :
@@ -30,32 +37,44 @@ nom_court() {
 # Scanne les paquets fournis.
 # $f JOURNAUX DE PAQUETS
 scan() {
-	for pkglog in "${1}"; do
+	for arg in "${1}"; do
+		unset pkglog
 		
-		# On déduit le répertoire du paquet selon son emplacement en le découpant.
-		# Retourne un chemin du type : "e/kde/kdeartwork/kdeartwork".
-		categ=$(dirname $(spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | \
-			egrep '^EMPLACEMENT' | cut -d':' -f2) | sed -e "s@^.*$(uname -m)/@@")
+		# Si l'argument est un journal existant : :
+		if [ -f "${arg}" ]; then
+			pkglog="${arg}"
 		
-		if [ "${categ}" = "" ]; then
-			echo "Erreur : catégorie introuvable."
+		# Si l'argument est un nom de paquet :
+		else
+			for f in "$(find ${PKGLOGDIR} ${UGLYPKGROOT}/${PKGLOGDIR} -type f -name "${arg}*")"; do
+				
+				# On tient notre journal, on sort de la boucle :
+				if [ "$(nom_court ${f})" = "${arg}" ]; then
+					pkglog="${f}"
+					break
+				fi
+			done
+		fi
+		
+		# Rien trouvé ? On quitte :
+		if [ -z ${pkglog} ]; then
+			echo "Argument invalide : paquet ou journal de paquet inexistant."
+			echo ""
+			echo "Utilisation :"
+			echo "	catalogue.sh [PAQUETS, JOURNAUX DE PAQUETS]"
+			echo ""
+			echo "Exemples :"
+			echo "	$(basename $0) /var/log/paquets/0outil-12-x86_64-1 /var/log/paquet/libpng-1.6-x86_64-1"
+			echo "	$(basename $0) 0outils libpng"
+			echo "	$(basename $0) /var/log/paquets/a*"
 			exit 1
 		fi
 		
-		# Si le log en txt2tags est présent, on ignore le scan :
-		if [ -r ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t ]; then
-			echo "Catalogue pour '$(nom_court ${pkglog})' ignoré car déjà présent."
-			continue
-		
-		# Sinon, on supprime toute trace, y compris d'un récent déplacement de paquet
-		# (ça arrive plutôt souvent en fait) :
-		else
-			echo "Génération du catalogue pour '$(nom_court ${pkglog})'..."
-			find ${CATALOGDIR}/${VERSION}/$(uname -m) -type d -name "$(nom_court ${pkglog})" -exec rm -rf {} \; 2>/dev/null || true
-		fi
+		# On a notre journal à analyser, on démarre :
+		echo "Génération du catalogue pour '$(nom_court ${pkglog})'..." 
 		
 		# On traite différemment les paquets dégueus, installés sur la racine $UGLYPKGROOT :
-		if [ "$(nom_court ${pkglog})" = "catalyst" -o "$(nom_court ${pkglog})" = "nvidia" ]; then
+		if [ ! "$(echo ${arg} | grep -E 'catalyst|nvidia')" = "" ]; then
 			PKGLOGDIR="${UGLYPKGROOT}/${PKGLOGDIR}"
 			PKGPOSTDIR="${UGLYPKGROOT}/${PKGPOSTDIR}"
 			TARGETROOT="${UGLYPKGROOT}" # Pour scanner les '*.dep' dans '$TARGETROOT/usr/doc'
@@ -65,29 +84,51 @@ scan() {
 			TARGETROOT=""
 		fi
 		
+		# On déduit le répertoire du paquet selon son emplacement en le découpant.
+		# Retourne un chemin du type : "e/kde/kdeartwork/kdeartwork".
+		categ=$(dirname $(spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | \
+			egrep '^EMPLACEMENT' | cut -d':' -f2) | sed -e "s@^.*$(uname -m)/@@")
+		
+		if [ "${categ}" = "" ]; then
+			echo "Erreur : catégorie introuvable pour '$(nom_court ${pkglog})'."
+			exit 1
+		fi
+		
+		# Si le log en txt2tags est présent et que FORCECATLOGUE est vide, on ignore le scan :
+		if [ -z "${FORCECATALOGUE}" ]; then
+			if [ -r ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t ]; then
+				echo "Catalogue pour '$(nom_court ${pkglog})' ignoré car déjà présent."
+				continue
+			fi
+		fi
+			
+		# On supprime toute trace, y compris d'un récent déplacement de paquet
+		# (ça arrive plutôt souvent en fait) :
+		find ${CATALOGDIR}/$(uname -m) -type d -name "$(nom_court ${pkglog})" -exec rm -rf {} \; 2>/dev/null || true
+		
 		# On crée le répertoire d'accueil :
-		mkdir -p ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}
+		mkdir -p ${CATALOGDIR}/$(uname -m)/${categ}
 		
 		# On va créer des logs temporaires et les assembler plus tard dans un document txt2tags.
 		
 		# On récupère les entêtes (nom, taille, description...) :
-		spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | sed '/^EMPLACEMENT/d' > ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).header
+		spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | sed '/^EMPLACEMENT/d' > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).header
 		
 		# On récupère la liste nettoyée des fichiers installés :
-		touch ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
+		touch ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
 		
 		spacklist --directory="${PKGLOGDIR}" -V $(nom_court ${pkglog}) | \
 			sed -e '/NOM DU PAQUET.*$/,/\.\//d' \
-			> ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
+			> ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
 		
 		# On ajoute la liste nettoyée des liens symboliques traités en post-installation :
 		spacklist --directory="${PKGPOSTDIR}" -v -p $(nom_court ${pkglog}) | \
 			sed -e 's@^/@@' -e '/------/d' -e '/^> /d' -e '/^\.\/$/d' \
-			>> ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
+			>> ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
 		
 		# On réunit le tout, qu'on trie dans l'ordre :
-		sort ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp > ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list
-		rm -f ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
+		sort ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list
+		rm -f ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
 		
 		# On récupère les dépendances en nettoyant le paquet concerné.
 		# Pour chaque dépendance :
@@ -99,12 +140,12 @@ scan() {
 				egrep '^EMPLACEMENT' | cut -d':' -f2) | sed -e "s@^.*$(uname -m)/@@")
 			
 			# On crée le champ "paquet url" pour créer chaque lien hypertexte :
-			echo "${linedep} ${CATALOGURL}/${VERSION}/$(uname -m)/${depcateg}/${linedep}.txt"
+			echo "${linedep} ${CATALOGURL}/$(uname -m)/${depcateg}/${linedep}"
 			
-		done | sed "/$(nom_court ${pkglog})\.txt$/d" > ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).dep
+		done | sed "/$(nom_court ${pkglog})\.txt$/d" > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).dep
 		
 		# On récupère les dépendants en scannant les autres journaux '*.dep' :
-		touch ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+		touch ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
 		
 		for reqlog in /usr/doc/*/0linux/*.dep; do
 			if grep -E -q "^$(nom_court ${pkglog})$" ${reqlog}; then
@@ -114,17 +155,17 @@ scan() {
 				reqcateg=$(dirname $(spacklist --directory="${PKGLOGDIR}" -v $(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) | \
 					egrep '^EMPLACEMENT' | cut -d':' -f2) | sed -e "s@^.*$(uname -m)/@@")
 				
-				echo "$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) ${CATALOGURL}/${VERSION}/$(uname -m)/${reqcateg}/$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')).txt" >> ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+				echo "$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) ${CATALOGURL}/$(uname -m)/${reqcateg}/$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@'))" >> ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
 			fi
 		done
 		
 		# On trie :
-		sort -u ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp | sed "/$(nom_court ${pkglog})\.txt$/d" > ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby
-		rm -f ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+		sort -u ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp | sed "/$(nom_court ${pkglog})\.txt$/d" > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby
+		rm -f ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
 	
 		# On génère le document txt2tags :
-		cat > ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t << EOF
-Détails du paquet ${categ}/$(basename ${pkglog}) pour 0Linux ${VERSION} $(uname -m)
+		cat > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t << EOF
+Détails du paquet ${categ}/$(basename ${pkglog}) pour 0Linux $(uname -m)
 Équipe 0Linux <contact@0linux.org>
 Généré le %%mtime(%d/%m/%Y)
 
@@ -134,12 +175,16 @@ Généré le %%mtime(%d/%m/%Y)
 
 == Informations ==
 
-$(cat ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).header | sed -e 's@^@  - @' -e '/DESCRIPTION DU PAQUET/d')
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).header | sed -e 's@^@  - @' -e '/DESCRIPTION DU PAQUET/d' -e "s@^$(nom_court ${pkglog}):@@g")
 
 
 == Installation ==
 
-``0g $(nom_court ${pkglog})``
+"""
+<code bash>
+0g $(nom_court ${pkglog})
+</code>
+"""
 
 == Ressources ==
 
@@ -150,75 +195,78 @@ $(cat ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).heade
 == Interactions inter-paquets ==
 
 || Dépendances |
-$(cat ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).dep | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@" -e 's/\+/%2B/g')
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).dep | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@")
   
 || Dépendants |
-$(cat ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@" -e 's/\+/%2B/g')
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@")
 
 == Contenu ==
 
 || Fichiers installés  |
-$(cat ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list | sed "s@\(^\).*\($\)@| \\\`\\\`\1&\2\\\`\\\`  |@")
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list | sed "s@\(^\).*\($\)@| \\\`\\\`\1&\2\\\`\\\`  |@")
 
 EOF
 		
 		# On nettoie :
-		rm -f ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).{dep*,header,list*,reqby*}
+		rm -f ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).{dep*,header,list*,reqby*}
 		
 		# On génère la sortie finale :
-		#txt2tags -t xhtml ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t
-		txt2tags -t doku -o ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).txt ${CATALOGDIR}/${VERSION}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t
+		#txt2tags -q -t xhtml ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t
+		txt2tags -q -t doku -o ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).txt ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t
 		
-		### On page à la génération des index des catégories ###
-		
-		# L'index concerné :
-		INDEXNAME="$(echo ${categ} | cut -d'/' -f1)"
-		
-		# On nettoie l'index associé à la catégorie du paquet demandé, qu'on va régénérer :
-		rm -f ${CATALOGDIR}/${VERSION}/$(uname -m)/${INDEXNAME}/accueil.txt
-		
-		# On remplit une liste. Pour chaque paquet de la catégorie :
-		for categpaquet in $(find ${CATALOGDIR}/${VERSION}/$(uname -m)/${INDEXNAME} -type f -name "*.txt" -a \! -name "accueil.txt"); do
+		# On passe à la génération des index des catégories si $NOINDEX n'est pas spécifiée :
+		if [ -z ${NOINDEX} ]; then
+			# L'index concerné :
+			INDEXNAME="$(echo ${categ} | cut -d'/' -f1)"
 			
-			# On crée le champ "paquet url" pour créer chaque lien hypertexte dans l'index:
-			echo "$(basename ${categpaquet} | sed 's@\.txt$@@') ${CATALOGURL}/${VERSION}/$(uname -m)/$(echo ${categpaquet} | sed "s@^${CATALOGDIR}/${VERSION}/$(uname -m)/@@")"
-		done | sort > ${CATALOGDIR}/${VERSION}/$(uname -m)/${INDEXNAME}/accueil.index
-		
-		[ "${INDEXNAME}" = "a" ] && CATDESC="a : Applications exécutables en console n'entrant dans aucune autre catégorie."
-		[ "${INDEXNAME}" = "b" ] && CATDESC="b : Bibliothèques non rattachées à un environnement particulier."
-		[ "${INDEXNAME}" = "d" ] && CATDESC="d : Développement. Compilateurs, débogueurs, interpréteurs, etc."
-		[ "${INDEXNAME}" = "e" ] && CATDESC="e : Environnements. KDE, Xfce, GNOME, Enlightenment et autres environnements."
-		[ "${INDEXNAME}" = "g" ] && CATDESC="g : applications Graphiques nécessitant X, non rattachées à un environnement."
-		[ "${INDEXNAME}" = "r" ] && CATDESC="r : Réseau. Clients, serveurs gérant ou utilisant le réseau en console."
-		[ "${INDEXNAME}" = "x" ] && CATDESC="x : X.org, l'implémentation libre et distribution officielle de X11"
-		[ "${INDEXNAME}" = "z" ] && CATDESC="z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
-		
-		# On n'a plus qu'à créer le document txt2tags :
-		cat > ${CATALOGDIR}/${VERSION}/$(uname -m)/${INDEXNAME}/accueil.t2t << EOF
+			# On nettoie l'index associé à la catégorie du paquet demandé, qu'on va régénérer :
+			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.txt
+			
+			# On remplit une liste. Pour chaque paquet de la catégorie :
+			for categpaquet in $(find ${CATALOGDIR}/$(uname -m)/${INDEXNAME} -type f -name "*.txt" -a \! -name "accueil.txt"); do
+				
+				# On crée les champs "paquet url" pour créer chaque entrée dans l'index:
+				echo "$(echo $(basename ${categpaquet}) | sed 's@\.txt$@@g') ${CATALOGURL}/$(uname -m)/$(echo ${categpaquet} | sed -e  "s@^${CATALOGDIR}/$(uname -m)/@@" -e 's@\.txt$@@g')"
+			done | sort > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.index
+			
+			[ "${INDEXNAME}" = "a" ] && CATDESC="a : Applications exécutables en console n'entrant dans aucune autre catégorie."
+			[ "${INDEXNAME}" = "b" ] && CATDESC="b : Bibliothèques non rattachées à un environnement particulier."
+			[ "${INDEXNAME}" = "d" ] && CATDESC="d : Développement. Compilateurs, débogueurs, interpréteurs, etc."
+			[ "${INDEXNAME}" = "e" ] && CATDESC="e : Environnements. KDE, Xfce, GNOME, Enlightenment et autres environnements."
+			[ "${INDEXNAME}" = "g" ] && CATDESC="g : applications Graphiques nécessitant X, non rattachées à un environnement."
+			[ "${INDEXNAME}" = "j" ] && CATDESC="j : Jeux, graphiques ou en mode texte, non rattachés à un environnement."
+			[ "${INDEXNAME}" = "r" ] && CATDESC="r : Réseau. Clients, serveurs gérant ou utilisant le réseau en console."
+			[ "${INDEXNAME}" = "x" ] && CATDESC="x : X.org, l'implémentation libre et distribution officielle de X11"
+			[ "${INDEXNAME}" = "z" ] && CATDESC="z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
+			
+			# On n'a plus qu'à créer le document txt2tags :
+			cat > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.t2t << EOF
 Paquets de la catégorie ${CATDESC}
 Équipe 0Linux <contact@0linux.org>
 Généré le %%mtime(%d/%m/%Y)
 
 %!encoding: UTF-8
 
-$(cat ${CATALOGDIR}/${VERSION}/$(uname -m)/${INDEXNAME}/accueil.index | sed -e "s@\(^\).*\($\)@  - [\1&\2]@" -e 's/\+/%2B/g')
+|| Nom  |
+$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.index  | sed 's@\(^.*\)\(.*$\)@| [\1\2]  | @')
 
 EOF
-		
-		# On génère la sortie finale :
-		#txt2tags -t xhtml ${CATALOGDIR}/${VERSION}/$(uname -m)/${INDEXNAME}/accueil.t2t
-		txt2tags -t doku -o ${CATALOGDIR}/${VERSION}/$(uname -m)/${INDEXNAME}/accueil.txt ${CATALOGDIR}/${VERSION}/$(uname -m)/${INDEXNAME}/accueil.t2t
-		
-		# On nettoie :
-		rm -f ${CATALOGDIR}/${VERSION}/$(uname -m)/${INDEXNAME}/*.index
+			
+			# On génère la sortie finale :
+			#txt2tags -q -t xhtml ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.t2t
+			txt2tags -q -t doku -o ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.txt ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.t2t
+			
+			# On nettoie :
+			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/*.index
+		fi
 	done
 }
 
 # On évite les problèmes de locales, notamment pour 'sort' :
 export LC_ALL='C'
 
-for arg in "$@"; do
-	scan "${arg}"
+for argument in $@; do
+	scan "${argument}"
 done
 
 exit 0
