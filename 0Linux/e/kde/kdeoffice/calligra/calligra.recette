@@ -30,8 +30,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D CMAKE_C_FLAGS="${FLAGS} -I/usr/include/librevenge-0.0" \
-	-D CMAKE_CXX_FLAGS="${FLAGS} -I/usr/include/librevenge-0.0" \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
