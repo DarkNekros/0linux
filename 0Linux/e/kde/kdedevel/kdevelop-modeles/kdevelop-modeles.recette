@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-PKGCAT="apps/kde/$(basename $(dirname $(pwd)))"
-NAMESRC=kdevelop-modeles
 VERSION=0.1.1
-EXT=tar.bz2
-NAMETGZ=kdevelop-modeles
 WGET=(http://opendesktop.org/CONTENT/content-files/138514-make_plainc.tar.bz2
       http://prdownloads.sourceforge.net/otzy-007.u/cmake_plainc.tar.bz2
       http://opendesktop.org/CONTENT/content-files/145846-simple_java.tar.bz2)
 DESC="Modèles supplémentaires pour KDevelop"
 EXTRADEPS="kdevelop"
-
 
 telecharger_sources
 cflags
