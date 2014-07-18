@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=clamz
 VERSION=0.5
-EXT=tar.gz
-NAMETGZ=clamz
-WGET=https://clamz.googlecode.com/files/$NAMESRC-$VERSION.$EXT
+WGET=https://clamz.googlecode.com/files/$NAMESRC-$VERSION.tar.gz
 DESC="Application de téléchargement de musique sur Amazon"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
