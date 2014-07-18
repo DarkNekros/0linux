@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=file
-VERSION=5.18
-EXT=tar.gz
-NAMETGZ=file
-WGET=ftp://ftp.astron.com/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=5.19
+WGET=ftp://ftp.astron.com/pub/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Outil de détermination des types de fichier"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
