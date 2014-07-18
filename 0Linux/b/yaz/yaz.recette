@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.1.1
+VERSION=5.3.0
 WGET=http://ftp.indexdata.dk/pub/yaz/yaz-$VERSION.tar.gz
 DESC="Toolkit pour la programmation de clients ou serveurs Z39.50/SRW/SRU"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
