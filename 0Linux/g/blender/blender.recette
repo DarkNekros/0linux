@@ -89,8 +89,8 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On précompile les modules Python pour de meilleures performances :
-python -m compileall "${PKG}/usr/share/blender"
+# On précompile les modules Python pour de meilleures performances (requière Python 3.4) :
+#python -m compileall "${PKG}/usr/share/blender"
 cd ../
 
 installer_doc
