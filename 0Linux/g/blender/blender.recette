@@ -4,7 +4,7 @@
 VERSION=2.70a
 WGET=http://download.blender.org/source/blender-$VERSION.tar.gz
 DESC="Modéliseur 3D avancé de référence"
-
+EXTRADEPS="desktop-file-utils hicolor-icon-theme jack suiteparse python shared-mime-info xdg-utils"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -44,11 +44,22 @@ sed -i -e 's#set(WITH_BINRELOC ON)#set(WITH_BINRELOC OFF)#' CMakeLists.txt
 # On force l'usage du GLEW du système :
 sed -i -e '/-DGLEW_STATIC/d' $(find . -type f -name "CMakeLists.txt")
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
-mkdir -p build && cd build
-CFLAGS="${FLAGS} -funsigned-char" CXXFLAGS="${FLAGS} -funsigned-char" \
+# L'option -D WITH_CYCLES_OSL=OFF passera à ON des qu'OpenShadingLanguage compilera.
+# Pour le moment, OSL ne peut se compiler sur 0Linux à cause d'un bug de CLang corrigé
+# dans CLang 3.4 (voir https://bugs.launchpad.net/ubuntu/+source/llvm-defaults/+bug/1242300
+# disant que des chemins vers des includes gcc sont codé en dur).
+CFLAGS="${FLAGS} -funsigned-char -fno-delete-null-pointer-checks -DNDEBUG" \
+CXXFLAGS="${FLAGS} -funsigned-char -fno-delete-null-pointer-checks -DNDEBUG" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D LLVM_VERSION=3.3 \
+	-D LLVM_STATIC=OFF \
+	-D OPENIMAGEIO_ROOT_DIR=/usr \
 	-D OPENJPEG_INCLUDE_DIR=/usr/include/openjpeg-1.5 \
 	-D PYTHON_LIBPATH=/usr/lib${LIBDIRSUFFIX} \
 	-D PYTHON_LIBRARY=python3.3m \
@@ -57,11 +68,13 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D WITH_CODEC_FFMPEG=ON \
 	-D WITH_CODEC_SNDFILE=ON \
 	-D WITH_CYCLES=ON \
+	-D WITH_CYCLES_OSL=OFF \
 	-D WITH_FFTW3=ON \
 	-D WITH_GAMEENGINE=ON \
 	-D WITH_INSTALL_PORTABLE=OFF \
 	-D WITH_JACK=ON \
 	-D WITH_JACK_DYNLOAD=ON \
+	-D WITH_LLVM=ON \
 	-D WITH_MOD_OCEANSIM=ON \
 	-D WITH_OPENCOLLADA=ON \
 	-D WITH_PLAYER=ON \
@@ -75,6 +88,9 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+# On précompile les modules Python pour de meilleures performances :
+python -m compileall "${PKG}/usr/share/blender"
 cd ../
 
 installer_doc
