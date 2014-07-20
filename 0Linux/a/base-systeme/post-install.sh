@@ -60,6 +60,7 @@ basegid=(
 		"shadow:43"
 		"avahi:44"
 		"tor:45"
+		"privoxy:46"
 		"ftp:50"
 		"oprofile:51"
 		"lock:54"
@@ -107,6 +108,7 @@ baseuid=(
 		"gdm:42:42:Utilisateur GDM:/var/state/gdm:/usr/bin/false"
 		"avahi:44:44:Utilisateur Avahi:/dev/null:/usr/bin/false"
 		"tor:45:45:Utilisateur Tor:/var/lib/tor:/usr/bin/false"
+		"privoxy:46:46:Utilisateur Privoxy:/var/spool/privoxy:/bin/false"
 		"oprofile:51:51:Utilisateur oprofile:/usr/bin:/usr/bin/false"
 		"tomcat:66:66:Utilisateur Tomcat:/var/lib/tomcat:/usr/bin/false"
 		"dovenull:74:74:Utiliateur non fiable pour dovecot:/var/empty:/usr/bin/false"
@@ -147,6 +149,7 @@ kdm:x:41:41:Utilisateur KDM:/var/lib/kdm:/usr/bin/false
 gdm:x:42:42:Utilisateur GDM:/var/state/gdm:/usr/bin/false
 avahi:x:44:44:Utilisateur Avahi:/dev/null:/usr/bin/false
 tor:45:45:Utilisateur Tor:/var/lib/tor:/usr/bin/false
+privoxy:46:46:Utilisateur Privoxy:/var/spool/privoxy:/bin/false
 oprofile:x:51:51:Utilisateur oprofile:/usr/bin:/usr/bin/false
 tomcat:x:66:66:Utiliasteur Tomcat:/var/lib/tomcat:/usr/bin/false
 apache:x:80:80:Utilisateur Apache httpd:/srv/httpd:/usr/bin/false
@@ -200,6 +203,7 @@ gdm:x:42:
 shadow:x:43:
 avahi:x:44:
 tor:x:45:
+privoxy:x:46:
 ftp:x:50:
 oprofile:x:51:
 tomcat:x:66:
