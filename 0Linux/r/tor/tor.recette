@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=0.2.4.22
+WGET=http://www.torproject.org/dist/$NAMESRC-$VERSION.tar.gz
+DESC="Le Routeur Oignon, un système de routage préservant l'anonymat"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée le répertoire de travail de Tor :
+mkdir -p $PKG/var/lib/tor
+
+# On crée le fichier de configuration de distribution à partir de l'exemple fournis :
+cp $PKG/etc/tor/torrc{.sample,-dist.0nouveau}
+
+# On copie un fichier de configuration :
+cp $CWD/torrc.0nouveau $PKG/etc/tor
+
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.tor << "EOF"
+#!/usr/bin/env bash
+
+tor_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de Tor..."
+	/usr/bin/tor -f /etc/tor/torrc
+}
+
+tor_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de Tor..."
+	killall tor
+}
+
+case "$1" in
+	'start')
+		tor_start
+	;;
+	
+	'stop')
+		tor_stop
+	;;
+	
+	'restart')
+		tor_stop
+		sleep 1
+		tor_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
+
+EOF
+
+# Le service est activé par défaut :
+chmod +x ${PKG}/etc/rc.d/rc.tor
+
+installer_doc
+creer_post_installation
+
+# On gère les droits d'accès
+cat >> ${PKG}/post-install.sh << "EOF"
+chown tor:tor /var/lib/tor
+chmod 700 /var/lib/tor
+
+EOF
+
+
+stripper
+empaqueter
+
+# C'est fini.
