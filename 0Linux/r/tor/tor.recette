@@ -18,13 +18,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--with-tor-user=45 \
+	--with-tor-group=45 \
+	--enable-openbsd-malloc \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On crée le répertoire de travail de Tor :
-mkdir -p $PKG/var/lib/tor
+# On crée les répertoires de travail de Tor :
+mkdir -p $PKG/var/{run,log,lib}/tor
 
 # On crée le fichier de configuration de distribution à partir de l'exemple fournis :
 cp $PKG/etc/tor/torrc{.sample,-dist.0nouveau}
@@ -74,12 +77,31 @@ EOF
 # Le service est activé par défaut :
 chmod +x ${PKG}/etc/rc.d/rc.tor
 
+# On ajoute le logrotate :
+mkdir -p $PKG/etc/logrotate.d
+cat > $PKG/etc/logrotate.d/tor << EOF
+/var/log/tor/*log {
+  su tor tor
+  daily
+  rotate 5
+  compress
+  delaycompress
+  missingok
+  notifempty
+  create 0644 tor tor
+  sharedscripts
+  postrotate
+    /etc/rc.d/rc.tor reload > /dev/null
+  endscript
+}
+EOF
+
 installer_doc
 creer_post_installation
 
 # On gère les droits d'accès
 cat >> ${PKG}/post-install.sh << "EOF"
-chown tor:tor /var/lib/tor
+chown tor:tor /var/{run,log,lib}/tor
 chmod 700 /var/lib/tor
 
 EOF
