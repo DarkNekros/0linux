@@ -24,7 +24,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
-fakeroot make prefix="$PKG/usr" SBIN_DEST="$PKGœ/usr/bin" \
+fakeroot make prefix="$PKG/usr" SBIN_DEST="$PKG/usr/bin" \
     MAN_DEST="$PKG/usr/share/man/man1" GROUP=46 \
     CONF_BASE="$PKG/etc/privoxy" VAR_DEST="$PKG/var" install
 
