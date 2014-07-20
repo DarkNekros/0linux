@@ -1,13 +1,35 @@
 #!/usr/bin/env bash
+# Service de construction automatisé des paquets de 0Linux.
 
-# Le fichier du processus (on n'est pas root) :
-PIDFILE="/tmp/service_construction.pid"
+# Ce script automatise plusieurs tâches :
+#
+#   - il évalue les derniers commmits du dépôt git  et lance la ocnstruction
+#     des paquets correspondants avec 'construction.sh'
+#   - il régénère une image ISO avec '0creation_live' si l'installateur a subi
+#   - des modifications
+#   - il lance ensuite 'trouver_binaires_casses.sh' pour vérifier l'intégrité
+#     de l'ensemble du système
+#   - il génère le catalogue en ligne via '../catalogue/catalogue.sh' des
+#     paquets fraîchement construits ainsi que leurs dépendances
+#   - il génère enfin la base de données des paquets 'paquets.db' et envoie le
+#     tout sur le serveur spécifié avec le script '0mir'.
+#
+# On peut « nourrir » soi-même la file d'attente pour forcer des constructions
+# de paquets en ajoutant du contenu à la file d'attente (1 paquet par ligne).
+
+# Le fichier du processus :
+PIDFILE="/var/lock/service_construction.pid"
 
 # La file d'attente :
 FILEDATTENTE="/tmp/en_attente.tmp"
 
+# Emplacement du dépôt des paquets résultant de la construction. À définir en
+# tant que variable d'environnement car utilisée aussi dans 'construction.sh'
+# entre autres.
+PKGREPO=${PKGREPO:-/usr/local/paquets}
+
 # On supprime un éventuel déchet '.pid' restant :
-if ! ps axc | grep 'service_construction' 1> /dev/null 2> /dev/null ; then
+if ! ps axc | grep 'service_construction' 1>/dev/null 2>/dev/null ; then
 	rm -f ${PIDFILE}
 fi
 
@@ -24,7 +46,9 @@ source /etc/profile
 source /etc/os-release
 
 # La fonction de traitement de la file d'attente :
+# $f
 traiter_filedattente() {
+	
 	# On s'assure que la file d'attente existe :
 	touch ${FILEDATTENTE}
 	
@@ -34,6 +58,17 @@ traiter_filedattente() {
 			
 			# On compile/installe (nvidia est ignoré automatiquement à l'installation) :
 			./construction.sh ${recette_demandee}
+			
+			# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
+			sed -i '1d' ${FILEDATTENTE}
+			
+			# On génère le catalogue du paquet et son index :
+			FORCECATALOGUE=oui ../catalogue/catalogue.sh ${recette_demandee}
+			
+			# Et le catalogue de chaque dépendance et chacun de leur index :
+			cat /usr/doc/${recette_demandee}/0linux/*.dep | while read deppp; do
+				FORCECATALOGUE=oui ../catalogue/catalogue.sh ${deppp}
+			done
 			
 			# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
 			sed -i '1d' ${FILEDATTENTE}
@@ -92,7 +127,7 @@ if [ "${CHECKBINAIRES}" = "oui" ]; then
 fi
 
 # Si l'on doit régénérer une image ISO :
-if [ "${ISOGEN}" = "oui" ]; then
+if [ -n ${ISOGEN} = "oui" ]; then
 	
 	# On nettoie et on génère l'iso dans '/usr/local/temp' (par défaut, mais sait-on jamais) :
 	rm -rf /usr/local/temp/iso
@@ -108,7 +143,11 @@ if [ "${ISOGEN}" = "oui" ]; then
 	cd -
 fi
 
-### Étape 3 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
+### Étape 3 : on génère le catalogue des paquets et de leurs dépendances ainsi
+### que l'index correspondant à la catégorie pour envoyer sur le wiki :
+FORCECATALOGUE=oui ../catalogue/catalogue.sh
+
+### Étape 4 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
 ./0mir
 
 # On peut supprimer le fichier du processus pour les prochaines fois :

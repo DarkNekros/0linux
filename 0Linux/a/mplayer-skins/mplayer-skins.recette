@@ -1,19 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=mplayer-skins
-VERSION=14092012
+VERSION=19072014
 EXT=tar.bz2
-NAMETGZ=mplayer-skins
-WGET=(http://www.mplayerhq.hu/MPlayer/skins/Abyss-1.7.${EXT
+WGET=(http://www.mplayerhq.hu/MPlayer/skins/Abyss-1.7.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/AlienMind-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/Ater-1.2.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/Blue-1.8.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/Blue-small-1.5.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/Blue-1.10.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/Blue-small-1.7.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/BlueHeart-1.5.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/Canary-1.2.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/Clearlooks-1.5.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/Corelian-1.1.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/Clearlooks-1.6.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/Corelian-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/CornerMP-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/CornerMP-aqua-1.4.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/CubicPlayer-1.1.${EXT}
@@ -26,6 +24,7 @@ WGET=(http://www.mplayerhq.hu/MPlayer/skins/Abyss-1.7.${EXT
       http://www.mplayerhq.hu/MPlayer/skins/KDE-0.3.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/Linea-1.0.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/MidnightLove-1.6.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/Noskin-1.0.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/OSX-Brushed-2.3.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/OSX-Mod-1.1.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/OpenDoh-1.1.${EXT}
@@ -36,12 +35,12 @@ WGET=(http://www.mplayerhq.hu/MPlayer/skins/Abyss-1.7.${EXT
       http://www.mplayerhq.hu/MPlayer/skins/Terminator3-1.1.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/WMP6-2.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/XFce4-1.0.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/avifile-1.6.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/avifile-1.7.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/bluecurve-1.3.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/brushedGnome-1.0.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/changuito-0.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/clearplayer-0.9.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/disappearer-1.1.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/disappearer-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/divxplayer-1.3.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/gnome-1.1.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/handheld-1.0.${EXT}
@@ -50,35 +49,34 @@ WGET=(http://www.mplayerhq.hu/MPlayer/skins/Abyss-1.7.${EXT
       http://www.mplayerhq.hu/MPlayer/skins/iTunes-1.1.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/iTunes-mini-1.1.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/krystal-1.1.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/mentalic-1.2.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/mentalic-1.3.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/mini-0.1.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/moonphase-1.0.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/mplayer_red-1.0.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/nativeRed-1.1.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/mplayer_red-1.1.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/nativeRed-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/netscape4-1.0.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/neutron-1.5.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/neutron-1.6.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/new-age-1.0.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/pcland-1.0.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/phony-1.1.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/phony-1.2.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/plastic-1.3.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/plastik-2.0.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/productive-1.0.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/proton-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/sessene-1.0.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/slim-1.2.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/slim-1.3.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/smoothwebby-1.1.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/softgrip-1.1.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/standard-1.9.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/trium-1.3.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/tvisor-1.1.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/softgrip-1.2.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/standard-1.10.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/trium-1.4.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/tvisor-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/ultrafina-1.1.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/webby-1.3.${EXT}
-      http://www.mplayerhq.hu/MPlayer/skins/xanim-1.6.${EXT}
+      http://www.mplayerhq.hu/MPlayer/skins/xanim-1.7.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/xine-lcd-1.2.${EXT}
       http://www.mplayerhq.hu/MPlayer/skins/xmmplayer-1.5.${EXT}
      )
-WGET=http://www.mplayerhq.hu/MPlayer/skins/
 DESC="Ensemble d'habillages visuels pour MPlayer"
-
 
 telecharger_sources
 cflags
@@ -95,9 +93,9 @@ for skin in ${WGET[*]}; do
 done
 
 # On vérifie les permissions de l'ensemble :
-	find ${PKG}/usr/share/mplayer/skins \
-		\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-		\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+find ${PKG}/usr/share/mplayer/skins \
+	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
+	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # On assigne un habillage par défaut en créant un lien 'default' :
 ln -sf productive ${PKG}/usr/share/mplayer/skins/default
