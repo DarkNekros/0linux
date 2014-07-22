@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.6.0
-WGET=ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.$EXT
+WGET=ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques et outils communs de développement pour KDE"
 EXTRADEPS="kde-dev-scripts kde-dev-utils poxml"
 
