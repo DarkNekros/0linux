@@ -3,9 +3,7 @@
 
 NAMESRC=Coin
 VERSION=3.1.3
-EXT=tar.gz
-NAMETGZ=coin3d
-WGET=https://bitbucket.org/Coin3D/coin/downloads/$NAMESRC-$VERSION.$EXT
+WGET=https://bitbucket.org/Coin3D/coin/downloads/$NAMESRC-$VERSION.tar.gz
 DESC="Une bibliothèque 3D de haut niveau, compatible avec SGI Open Inventor 2"
 
 
@@ -62,8 +60,8 @@ fakeroot make install DESTDIR=${PKG}
 # Coin n'a rien à faire dans Libs.private :
 sed -e '/Libs.private/s/ -lCoin//' -i Coin.pc
 
-# coin-config ne prend pas en compte notre prefix :
-sed -i -e "s/\`cd \"\$wd\/..\"; pwd\`/\"\/usr\/\"/" $PKG/usr/bin/coin-config
+# coin-config ne prend pas en compte correctement notre prefix :
+sed -i -e "s@\`cd \"\$wd/..\"; pwd\`@\"/usr/\"@" $PKG/usr/bin/coin-config
 
 # Le pages de man (très nombreuses) sont un vrai bazard :
 for f in threads deprecated errors events fields base ; do
