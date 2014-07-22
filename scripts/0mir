@@ -113,7 +113,7 @@ mirror () {
 export LC_ALL="C"
 umask 022
 #FTP="ftp://ftp.igh.cnrs.fr"
-FTP="ftp://ftp.tuxfamily.org/0linux"
+FTP="ftp.tuxfamily.org/0linux"
 #URL="http://ftp.igh.cnrs.fr/pub/os/linux/0linux"
 URL="http://download.tuxfamily.org/0linux/pub"
 FTPDIR="0linux-repository/pub"
