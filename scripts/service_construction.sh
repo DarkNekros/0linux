@@ -67,7 +67,7 @@ traiter_filedattente() {
 			
 			# Et le catalogue de chaque dépendance et chacun de leur index :
 			cat /usr/doc/${recette_demandee}/0linux/*.dep | while read deppp; do
-				FORCECATALOGUE=oui ../catalogue/catalogue.sh ${deppp}
+				( cd ../catalogue ; FORCECATALOGUE=oui ../catalogue/catalogue.sh ${deppp} )
 			done
 			
 			# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
