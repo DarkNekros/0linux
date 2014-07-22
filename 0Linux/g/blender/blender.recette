@@ -4,7 +4,7 @@
 VERSION=2.70a
 WGET=http://download.blender.org/source/blender-$VERSION.tar.gz
 DESC="Modéliseur 3D avancé de référence"
-EXTRADEPS="desktop-file-utils hicolor-icon-theme jack suiteparse python shared-mime-info xdg-utils"
+EXTRADEPS="desktop-file-utils hicolor-icon-theme jack python shared-mime-info xdg-utils"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

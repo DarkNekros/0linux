@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=OpenCASCADE
-VERSION=6.6.0
-EXT=tgz
-NAMETGZ=opencascade
-WGET=http://files.opencascade.com/OCCT/OCC_${VERSION}_release/${NAMESRC}$(echo $VERSION | sed "s/\.//g").$EXT
+VERSION=6.7.1
+WGET=http://files.opencascade.com/OCCT/OCC_${VERSION}_release/${NAMESRC}-$VERSION.tgz
 DESC="Bibliothèques de modélisation de surfaces 3D pour la CAO/DAO"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

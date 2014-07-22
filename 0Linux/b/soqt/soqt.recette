@@ -3,11 +3,8 @@
 
 NAMESRC=SoQt
 VERSION=1.5.0
-EXT=tar.gz
-NAMETGZ=soqt
-WGET=https://bitbucket.org/Coin3D/coin/downloads/$NAMESRC-$VERSION.$EXT
+WGET=https://bitbucket.org/Coin3D/coin/downloads/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèque de liaison entre Qt et Coin"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -34,8 +31,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# soqt-config ne prend pas en compte notre prefix :
-sed -i -e "s/\`cd \"\$wd\/..\"; pwd\`/\"\/usr\/\"/" $PKG/usr/bin/soqt-config
+# soqt-config ne prend pas en compte correctement notre prefix :
+sed -i -e "s@\`cd \"\$wd/..\"; pwd\`@\"/usr/\"@" $PKG/usr/bin/soqt-config
 
 installer_doc
 creer_post_installation
