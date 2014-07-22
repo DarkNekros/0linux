@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=24.6.0
+VERSION=31.0
 cflags
 WGET=http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.tar.bz2
 DESC="Client de messagerie électronique de la fondation Mozilla"

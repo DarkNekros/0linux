@@ -34,13 +34,15 @@
 #
 #	DESTDIR=/mon/chroot ./construction.sh blah
 
-# Emplacement du dépôt des paquets résultant de la construction :
+# Emplacement du dépôt des paquets résultant de la construction. À définir en
+# tant que variable d'environnement car utilisée aussi dans 'service_construction.sh'
+# entre autres.
 PKGREPO=${PKGREPO:-/usr/local/paquets}
 
 # Emplacement de la racine des paquets invasifs ('nvidia', 'catalyst'...) installés
-# ailleurs pour ne pas polluer le système. 
-# NOTE : Cette variable doit correspondre à celle présente dans le script
-# 'catalogue/catalogue.sh'.
+# ailleurs pour ne pas polluer le système. À définir en
+# tant que variable d'environnement car utilisée aussi dans 'catalogue.sh'
+# entre autres.
 UGLYPKGROOT=${UGLYPKGROOT:-/tmp/paquets_invasifs}
 
 # La fonction de construction/installation de chaque paquet :
@@ -108,7 +110,7 @@ compiler_installer() {
 		# des fichiers de Mesa. Les installer ailleurs permet à 'catalogue.sh' de générer
 		# le catalogue pour ces paquets sans qu'ils polluent le système :
 		if [ "$(basename ${1} .recette)" = "nvidia" -o "$(basename ${1} .recette)" = "catalyst" ]; then
-			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd --root=/tmp/paquets_invasifs $(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/*/ -mindepth 1 -type d -name "$(basename ${1} .recette)")/*.spack
+			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd --root=${UGLYPKGROOT} $(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/*/ -mindepth 1 -type d -name "$(basename ${1} .recette)")/*.spack
 		else
 			bash -ex $(basename ${1}) && ${SUDOBINAIRE} /usr/sbin/spackadd ${ROOTCMD} $(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/*/ -mindepth 1 -type d -name "$(basename ${1} .recette)")/*.spack
 		fi

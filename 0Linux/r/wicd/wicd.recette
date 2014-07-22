@@ -40,7 +40,7 @@ sudo_app = 0
 EOF
 
 # NON !
-find ${PKG} -type d -name "systemd" -exec rm -rf {} \;
+find ${PKG} -type d -name "systemd" -exec rm -rf {} \; || true
 
 installer_doc
 creer_post_installation

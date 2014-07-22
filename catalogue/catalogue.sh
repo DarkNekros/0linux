@@ -14,19 +14,19 @@
 # Emplacement du dépôt des paquets :
 PKGREPO=${PKGREPO:-/usr/local/paquets/$(uname -m)}
 
+# Les journaux des paquets :
+PKGLOGDIR="/var/log/packages"
+PKGPOSTDIR="/var/log/scripts"
+
 # Emplacement de la racine des paquets invasifs ('nvidia', 'catalyst'...) installés
 # ailleurs pour ne pas polluer le système :
 UGLYPKGROOT=${UGLYPKGROOT:-/tmp/paquets_invasifs}
-
-# Les journaux des paquets :
-PKGLOGDIR=${PKGLOGDIR:-/var/log/packages}
-PKGPOSTDIR=${PKGPOSTDIR:-/var/log/scripts}
 
 # Le catalogue qui va accueillir les résultats du scan :
 CATALOGDIR=${CATALOGDIR:-/home/appzer0/0/pub/catalogue}
 
 # L'URL du catalogue en ligne (ici, le namespace - en relatif - du wiki de 0Linux) :
-CATALOGURL=${CATALOGURL:-paquets:}
+CATALOGURL=${CATALOGURL:-paquets/}
 
 # Affiche le nom court ("gcc", "pkg-config"...) du journal demandé.
 # $f JOURNAL
@@ -40,13 +40,17 @@ scan() {
 	for arg in "${1}"; do
 		unset pkglog
 		
+		# Les journaux des paquets (variables réinitialisées à chaque boucle) :
+		PKGLOGDIR="/var/log/packages"
+		PKGPOSTDIR="/var/log/scripts"
+		
 		# Si l'argument est un journal existant : :
 		if [ -f "${arg}" ]; then
 			pkglog="${arg}"
 		
 		# Si l'argument est un nom de paquet :
 		else
-			for f in "$(find ${PKGLOGDIR} ${UGLYPKGROOT}/${PKGLOGDIR} -type f -name "${arg}*")"; do
+			for f in "$(find ${PKGLOGDIR} ${UGLYPKGROOT}${PKGLOGDIR} -type f -name "$(basename ${arg})*")"; do
 				
 				# On tient notre journal, on sort de la boucle :
 				if [ "$(nom_court ${f})" = "${arg}" ]; then
@@ -75,8 +79,8 @@ scan() {
 		
 		# On traite différemment les paquets dégueus, installés sur la racine $UGLYPKGROOT :
 		if [ ! "$(echo ${arg} | grep -E 'catalyst|nvidia')" = "" ]; then
-			PKGLOGDIR="${UGLYPKGROOT}/${PKGLOGDIR}"
-			PKGPOSTDIR="${UGLYPKGROOT}/${PKGPOSTDIR}"
+			PKGLOGDIR="${UGLYPKGROOT}${PKGLOGDIR}"
+			PKGPOSTDIR="${UGLYPKGROOT}${PKGPOSTDIR}"
 			TARGETROOT="${UGLYPKGROOT}" # Pour scanner les '*.dep' dans '$TARGETROOT/usr/doc'
 		else
 			PKGLOGDIR="${PKGLOGDIR}"
@@ -94,10 +98,10 @@ scan() {
 			exit 1
 		fi
 		
-		# Si le log en txt2tags est présent et que FORCECATLOGUE est vide, on ignore le scan :
+		# Si le log en .txt est présent et que FORCECATLOGUE est vide, on ignore le scan :
 		if [ -z "${FORCECATALOGUE}" ]; then
-			if [ -r ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t ]; then
-				echo "Catalogue pour '$(nom_court ${pkglog})' ignoré car déjà présent."
+			if [ -r ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).txt ]; then
+				echo "Catalogue '$(nom_court ${pkglog}).txt' ignoré car déjà présent."
 				continue
 			fi
 		fi
@@ -136,7 +140,7 @@ scan() {
 			
 			# On déduit le répertoire du paquet en dépendance selon son emplacement en le découpant.
 			# Retourne un chemin du type : "e/kde/kdeartwork/kdeartwork".
-			depcateg=$(dirname $(spacklist --directory="${PKGLOGDIR}" -v ${linedep} | \
+			depcateg=$(dirname $(spacklist -v ${linedep} | \
 				egrep '^EMPLACEMENT' | cut -d':' -f2) | sed -e "s@^.*$(uname -m)/@@")
 			
 			# On crée le champ "paquet url" pour créer chaque lien hypertexte :
@@ -144,24 +148,27 @@ scan() {
 			
 		done | sed "/$(nom_court ${pkglog})\.txt$/d" > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).dep
 		
-		# On récupère les dépendants en scannant les autres journaux '*.dep' :
-		touch ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
-		
-		for reqlog in /usr/doc/*/0linux/*.dep; do
-			if grep -E -q "^$(nom_court ${pkglog})$" ${reqlog}; then
-				
-				# On déduit le répertoire du paquet en dépendance selon son emplacement en le découpant.
-				# Retourne un chemin du type : "e/kde/kdeartwork/kdeartwork".
-				reqcateg=$(dirname $(spacklist --directory="${PKGLOGDIR}" -v $(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) | \
-					egrep '^EMPLACEMENT' | cut -d':' -f2) | sed -e "s@^.*$(uname -m)/@@")
-				
-				echo "$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) ${CATALOGURL}/$(uname -m)/${reqcateg}/$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@'))" >> ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
-			fi
-		done
-		
-		# On trie :
-		sort -u ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp | sed "/$(nom_court ${pkglog})\.txt$/d" > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby
-		rm -f ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+		# On récupère les dépendants en scannant les autres journaux '*.dep' (on ignore
+		# le scan pour les paquets dégueus isolés comme 'nvidia' et 'catalyst') :
+		if [ ! "${PKGLOGDIR}" = "${UGLYPKGROOT}/${PKGLOGDIR}" ]; then
+			touch ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+			
+			for reqlog in /usr/doc/*/0linux/*.dep; do
+				if grep -E -q "^$(nom_court ${pkglog})$" ${reqlog}; then
+					
+					# On déduit le répertoire du paquet en dépendance selon son emplacement en le découpant.
+					# Retourne un chemin du type : "e/kde/kdeartwork/kdeartwork".
+					reqcateg=$(dirname $(spacklist --directory="${PKGLOGDIR}" -v $(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) | \
+						egrep '^EMPLACEMENT' | cut -d':' -f2) | sed -e "s@^.*$(uname -m)/@@")
+					
+					echo "$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) ${CATALOGURL}/$(uname -m)/${reqcateg}/$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@'))" >> ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+				fi
+			done
+			
+			# On trie :
+			sort -u ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp | sed "/$(nom_court ${pkglog})\.txt$/d" > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby
+			rm -f ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+		fi
 	
 		# On génère le document txt2tags :
 		cat > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t << EOF
@@ -195,10 +202,10 @@ $(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).header | sed -e 
 == Interactions inter-paquets ==
 
 || Dépendances |
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).dep | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@")
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).dep | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
   
 || Dépendants |
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@")
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby 2>/dev/null | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
 
 == Contenu ==
 
@@ -213,11 +220,13 @@ EOF
 		# On génère la sortie finale :
 		#txt2tags -q -t xhtml ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t
 		txt2tags -q -t doku -o ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).txt ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t
+		rm -f ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t
 		
 		# On passe à la génération des index des catégories si $NOINDEX n'est pas spécifiée :
 		if [ -z ${NOINDEX} ]; then
 			# L'index concerné :
 			INDEXNAME="$(echo ${categ} | cut -d'/' -f1)"
+			echo "Génération de l'index pour la catégorie '${INDEXNAME}/'..." 
 			
 			# On nettoie l'index associé à la catégorie du paquet demandé, qu'on va régénérer :
 			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.txt
@@ -248,13 +257,14 @@ Généré le %%mtime(%d/%m/%Y)
 %!encoding: UTF-8
 
 || Nom  |
-$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.index  | sed 's@\(^.*\)\(.*$\)@| [\1\2]  | @')
+$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.index  | sed -e 's@\(^.*\)\(.*$\)@| [\1\2]  | @' -e '/| \[.*/s/\+/_/2g')
 
 EOF
 			
 			# On génère la sortie finale :
 			#txt2tags -q -t xhtml ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.t2t
 			txt2tags -q -t doku -o ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.txt ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.t2t
+			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/accueil.t2t
 			
 			# On nettoie :
 			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/*.index
