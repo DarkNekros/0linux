@@ -2,15 +2,18 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=wxWidgets
-VERSION=2.8.12
+VERSION=3.0.1
 EXT=tar.bz2
-NAMETGZ=wxwidgets
-WGET=http://prdownloads.sourceforge.net/wxwindows/${NAMESRC}-${VERSION}.$EXT
+WGET=(
+      http://prdownloads.sourceforge.net/wxwindows/${NAMESRC}-2.8.12.$EXT
+      http://prdownloads.sourceforge.net/wxwindows/${NAMESRC}-${VERSION}.$EXT
+     )
 DESC="Outils et bibliothèques C++ de création d'interfaces graphiques"
 
-
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile wxwidgets 2.x :
+preparer_sources ${NAMESRC}-2.8.12.$EXT
 cflags
 
 # Compilation :
@@ -37,6 +40,37 @@ fakeroot make -C contrib/src install DESTDIR=${PKG}
 
 # On copie un en-tête utile à certains paquets :
 cp -a include/msvc/wx/setup.h ${PKG}/usr/include/wx-2.8/wx
+
+# On compile maintenant la version de la recette :
+preparer_sources
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--enable-graphics_ctx \
+	--enable-mediactrl \
+	--enable-stl \
+	--enable-unicode \
+	--enable-webview \
+	--with-gtk=2 \
+	--with-libjpeg=sys \
+	--with-libpng=sys \
+	--with-libtiff=sys \
+	--with-libxpm=sys \
+	--with-opengl \
+	--with-regex=builtin \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+make -j${JOBS} -C locale allmo || make -C locale allmo
+fakeroot make                install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
