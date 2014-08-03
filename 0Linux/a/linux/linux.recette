@@ -34,8 +34,13 @@ find ${PKG}/usr \( -name .install -o -name ..install.cmd \) -delete
 mv ${PKG}/usr/include/asm{,-x86}
 ln -sf asm-x86 ${PKG}/usr/include/asm
 
-# On copie la configuration du noyau :
-cat $CWD/config-${PKGARCH} > .config
+# On copie la configuration du noyau se lon ce qu'on trouve : en priorité les
+# fichiers 'config-$VERSION-$PKGARCH', sinon 'config-$PKGARCH' :
+if [ -r $CWD/config-${VERSION}-${PKGARCH} ]; then
+	cat $CWD/config-${VERSION}-${PKGARCH} > .config
+else
+	cat $CWD/config-${PKGARCH} > .config
+fi
 
 # On compile le noyau :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" make -j${JOBS} || make
