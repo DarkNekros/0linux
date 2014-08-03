@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=poedit
-VERSION=1.5.5
-EXT=tar.gz
-NAMETGZ=poedit
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
-DESC="Éditeur de catalogues Gettext (fichiers '.po')"
-
+VERSION=1.6.7
+WGET=https://github.com/vslavik/$NAMESRC/releases/download/v${VERSION}-oss/$NAMESRC-$VERSION.tar.gz
+DESC="Éditeur de catalogues de traduction pour Gettext (fichiers '.po')"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige la compilation avec 'wxwidgets' :
-cat $CWD/poedit.wx28.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
