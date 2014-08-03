@@ -2,21 +2,18 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=rel
-VERSION=3.0.4
-EXT=tar.gz
-NAMETGZ=lucene++
-WGET=https://github.com/luceneplusplus/LucenePlusPlus/archive/${NAMESRC}_${VERSION}.$EXT
+VERSION=3.0.5
+WGET=https://github.com/luceneplusplus/LucenePlusPlus/archive/${NAMESRC}_${VERSION}.tar.gz
 DESC="Port C++ des bibliothèques Java Lucene"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige quelques problèmes connus :
-cat $CWD/lucene++.c11.patch | patch -p1
-cat $CWD/lucene++.custom-allocator.patch | patch -p1
-cat $CWD/lucene++.typo.patch | patch -p1
+# On corrige des numéros de version erronés :
+sed -i -e 's#SET(LUCENE++_VERSION_REVISION.*#SET(LUCENE++_VERSION_REVISION "5")#' \
+	-e 's#SET(LUCENE++_VERSION_PATCH.*#SET(LUCENE++_VERSION_PATCH "0")#' \
+	CMakeLists.txt
 
 # On doit compiler dans un répertoire dédié :
 mkdir -p build && cd build
