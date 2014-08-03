@@ -98,15 +98,15 @@ mirror () {
     #lftp -v 1 -c "set net:limit-total-rate 800000,90000 && open $FTP -u ${user},${CREDFTP} && mirror -R -e --only-missing -X *~ . ." || exit 1
         
     # Ne gère que les timestamps :
-    [ -f "$1" ] || TZ=UTC0 touch -t 197001010000.01 "$1"
-    lftp -c "open ${user},${CREDFTP} $FTP/${FTPDIR} && mirror -ReN"$1" -X*~ -Xarchives_sources/* -Xcatalogue/* -Xiso/* -X0linux*maxi* -X0linux-zeta* -X0linux*i686*.iso* -Xzeta -Xi686 -Xarm . ." || exit 1
+    #[ -f "$1" ] || TZ=UTC0 touch -t 197001010000.01 "$1"
+    #lftp -c "open ${user},${CREDFTP} $FTP/${FTPDIR} && mirror -ReN"$1" -X*~ -Xarchives_sources/* -Xcatalogue/* -Xiso/* -X0linux*maxi* -X0linux-zeta* -X0linux*i686*.iso* -Xzeta -Xi686 -Xarm . ." || exit 1
+    
+    # Méthode rsync :
+    find /tmp/ -mindepth 1 -maxdepth 1 -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
+    RSYNC_PASSWORD="${CREDRSYNC}" rsync -a --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@${RSYNCDIR}
     
     # On synchronise les pages du catalogue sur le wiki :
-    lftp -c "open ${user},${CREDFTP} ${FTP}/${WIKIDIR} && mirror -R -e -X*~ ./catalogue/* ." || exit 1
-    
-    ## Méthode rsync :
-    #find /tmp/ -mindepth 1 -maxdepth 1 -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
-    #RSYNC_PASSWORD="${CREDRSYNC}" rsync -aP --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@${RSYNCDIR}
+    lftp -c "open ${user},${CREDFTP} ${FTP}/${WIKIDIR} && mirror -R -e -X*~ ./catalogue/$(uname -m)/* ." || exit 1
 }
 
 # === Main =====================================================================
@@ -129,66 +129,64 @@ log="/tmp/0mir-error.log"
 # On se place à la racine du dépôt :
 cd "$(pwd)/../../../$ROOT" || exit 1
 
-# On génère les descriptions de chaque paquet :
+# La racine et l'architecture :
 pkgroot="paquets/$VERSION"
-for arch in x86_64; do # On ne fait que x86_64 pour le moment...
-	echo "   Génère les descriptions dans $pkgroot/$arch/..."
+arch="$(uname -m)"
 
-	(
-		cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
+# On génère les descriptions de chaque paquet :
+echo "   Génère les descriptions dans $pkgroot/$arch/..."
+(	cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
 
-		# Pour chaque catégorie :
-		for categorie in $(find * -maxdepth 0 -type d | sort); do
+	# Pour chaque catégorie :
+	for categorie in $(find * -maxdepth 0 -type d | sort); do
+		
+		# Pour chaque paquet trouvé :
+		for paquet in $(find $categorie -type f -name "*.spack" | sort); do
 			
-			# Pour chaque paquet trouvé :
-			for paquet in $(find $categorie -type f -name "*.spack" | sort); do
-				
-				# Si la description du paquet est absente, on nettoie et on la crée :
-				if [ ! -r $(echo $paquet | sed 's@\.spack@\.txt@') ]; then
-					rm -f $(dirname $paquet)/*.txt # les restes d'une autre version ou nom différent
-					/usr/sbin/spackadd --about $paquet > $(echo $paquet | sed 's@\.spack@\.txt@')
-				fi
-			done
-			
-			# la description de chaque catégorie :
-			catdesc=""
-			
-			# Éviter de dépasser cette règle |-------------------------------------------------------------------------------|
-			[ "$categorie" = "a" ] && catdesc="a : Applications exécutables en console n'entrant dans aucune autre catégorie."
-			[ "$categorie" = "b" ] && catdesc="b : Bibliothèques non rattachées à un environnement particulier."
-			[ "$categorie" = "d" ] && catdesc="d : Développement. Compilateurs, débogueurs, interpréteurs, etc."
-			[ "$categorie" = "e" ] && catdesc="e : Environnements. KDE, Xfce, GNOME, Enlightenment et autres environnements."
-			[ "$categorie" = "g" ] && catdesc="g : applications Graphiques nécessitant X, non rattachées à un environnement."
-			[ "$categorie" = "r" ] && catdesc="r : Réseau. Clients, serveurs gérant ou utilisant le réseau en console."
-			[ "$categorie" = "x" ] && catdesc="x : X.org, l'implémentation libre et distribution officielle de X11"
-			[ "$categorie" = "z" ] && catdesc="z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
-			
-			# Si le contenu est différent de la description, on met à jour, sinon on ignore :
-			if [ ! "$(cat ${categorie}/${categorie}.txt)" = "${catdesc}" ]; then
-				echo "$catdesc" > ${categorie}/${categorie}.txt
+			# Si la description du paquet est absente, on nettoie et on la crée :
+			if [ ! -r $(echo $paquet | sed 's@\.spack@\.txt@') ]; then
+				rm -f $(dirname $paquet)/*.txt # les restes d'une autre version ou nom différent
+				/usr/sbin/spackadd --about $paquet > $(echo $paquet | sed 's@\.spack@\.txt@')
 			fi
 		done
-	)
-done
+		
+		# la description de chaque catégorie :
+		catdesc=""
+		
+		# Éviter de dépasser cette règle |-------------------------------------------------------------------------------|
+		[ "$categorie" = "a" ] && catdesc="a : Applications exécutables en console n'entrant dans aucune autre catégorie."
+		[ "$categorie" = "b" ] && catdesc="b : Bibliothèques non rattachées à un environnement particulier."
+		[ "$categorie" = "d" ] && catdesc="d : Développement. Compilateurs, débogueurs, interpréteurs, etc."
+		[ "$categorie" = "e" ] && catdesc="e : Environnements. KDE, Xfce, GNOME, Enlightenment et autres environnements."
+		[ "$categorie" = "g" ] && catdesc="g : applications Graphiques nécessitant X, non rattachées à un environnement."
+		[ "$categorie" = "r" ] && catdesc="r : Réseau. Clients, serveurs gérant ou utilisant le réseau en console."
+		[ "$categorie" = "x" ] && catdesc="x : X.org, l'implémentation libre et distribution officielle de X11"
+		[ "$categorie" = "z" ] && catdesc="z : Zérolinux : paquets-abonnements, facilitant l'installation d'ensembles."
+		
+		# Si le contenu est différent de la description, on met à jour, sinon on ignore :
+		if [ ! "$(cat ${categorie}/${categorie}.txt)" = "${catdesc}" ]; then
+			echo "$catdesc" > ${categorie}/${categorie}.txt
+		fi
+	done
+)
 
 rm -f "$log" # sa présence signifie qu'il y a eu erreur.
 
 # On génère la base de données des paquets :
-for arch in x86_64; do # On ne fait que x86_64 pour le moment...
-    echo "   Génère    $pkgroot/$arch/paquets.db..."
-    ( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
-      getstuff | mk0db "$log" | sort >"./paquets.db"
-    )
-    if [ -f "$log" ]; then
-        echo "Le dépôt $arch contient des erreurs!" >&2
-        cat "$log" >&2
-        echo "Ce journal des erreurs est enregistré dans $log" >&2
-        exit 1
-    fi
+echo "   Génère    $pkgroot/$arch/paquets.db..."
+( cd "$pkgroot/$arch" || growl 1 "Impossible d'entrer dans \"$pkgroot/$arch\"."
+  getstuff | mk0db "$log" | sort >"./paquets.db"
+)
+if [ -f "$log" ]; then
+	echo "Le dépôt $arch contient des erreurs!" >&2
+	cat "$log" >&2
+	echo "Ce journal des erreurs est enregistré dans $log" >&2
+	exit 1
+fi
 done
 
-mirror ../.timestamp               # Méthode lftp avec timestamps uniquement
-#mirror                             # Méthode rsync/ftp sans timestamps
+#mirror ../.timestamp               # Méthode lftp avec timestamps uniquement
+mirror                             # Méthode rsync/ftp sans timestamps
 checknewpkg ../.timestamp $pkgroot # ajouter ici les autres dossiers à vérifier.
 
 # EoF

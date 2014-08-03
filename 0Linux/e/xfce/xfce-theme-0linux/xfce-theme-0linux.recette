@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1
+VERSION=2
 DESC="Thème 0Linux pour Xfce"
+EXTRADEPS="gnome-colors hicolor-icon-theme murrine"
 
 cflags
 

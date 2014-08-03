@@ -47,7 +47,7 @@ gdk-pixbuf              gegl                     geoclue \
 gettext                 giflib                   git \
 glade                   glib                     glibc \
 glibmm                  glib-networking          gmp \
-gnome-vfs \
+gnome-colors            gnome-vfs \
 gnu-ghostscript         gnupg                    gnutls \
 gobject-introspection   goocanvas                goocanvasmm \
 goom                    gperf                    gpgme \
