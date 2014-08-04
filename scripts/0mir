@@ -183,7 +183,6 @@ if [ -f "$log" ]; then
 	echo "Ce journal des erreurs est enregistré dans $log" >&2
 	exit 1
 fi
-done
 
 #mirror ../.timestamp               # Méthode lftp avec timestamps uniquement
 mirror                             # Méthode rsync/ftp sans timestamps
