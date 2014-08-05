@@ -106,7 +106,7 @@ mirror () {
     RSYNC_PASSWORD="${CREDRSYNC}" rsync -a --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@${RSYNCDIR}
     
     # On synchronise les pages du catalogue sur le wiki :
-    lftp -c "open ${user},${CREDFTP} ${FTP}/${WIKIDIR} && mirror -R -e -X*~ ./catalogue/$(uname -m)/* ." || exit 1
+    scp -r ./catalogue/$(uname -m)/* ${user}@${SCPURL}/ || exit 1
 }
 
 # === Main =====================================================================
@@ -114,6 +114,7 @@ export LC_ALL="C"
 umask 022
 #FTP="ftp://ftp.igh.cnrs.fr"
 FTP="ftp.tuxfamily.org/0linux"
+SCPURL="sh.tuxfamily.net/0linux/0.tuxfamily.org-web/htdocs/data/pages/paquets/$(uname -m)"
 #URL="http://ftp.igh.cnrs.fr/pub/os/linux/0linux"
 URL="http://download.tuxfamily.org/0linux/pub"
 FTPDIR="0linux-repository/pub"
