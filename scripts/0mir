@@ -103,7 +103,7 @@ mirror () {
     
     # Méthode rsync :
     find /tmp/ -mindepth 1 -maxdepth 1 -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
-    RSYNC_PASSWORD="${CREDRSYNC}" rsync -a --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@${RSYNCDIR}
+    RSYNC_PASSWORD="${CREDRSYNC}" rsync -avP --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@${RSYNCDIR}
     
     # On synchronise les pages du catalogue sur le wiki :
     scp -r ./catalogue/$(uname -m)/* ${user}@${SCPURL}/ || exit 1
