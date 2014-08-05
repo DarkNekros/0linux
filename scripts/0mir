@@ -114,7 +114,7 @@ export LC_ALL="C"
 umask 022
 #FTP="ftp://ftp.igh.cnrs.fr"
 FTP="ftp.tuxfamily.org/0linux"
-SCPURL="ssh.tuxfamily.net/0linux/0.tuxfamily.org-web/htdocs/data/pages/paquets/$(uname -m)"
+SCPURL="ssh.tuxfamily.net:/home/0linux/0.tuxfamily.org-web/htdocs/data/pages/paquets/$(uname -m)"
 #URL="http://ftp.igh.cnrs.fr/pub/os/linux/0linux"
 URL="http://download.tuxfamily.org/0linux/pub"
 FTPDIR="0linux-repository/pub"
