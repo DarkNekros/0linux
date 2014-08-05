@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.3.8
-WGET=http://gitorious.org/procps/procps/archive-tarball/v${VERSION}.tar.gz
+WGET=https://gitorious.org/procps/procps/archive/v${VERSION}.tar.gz
 DESC="Outils de surveillance des processus"
 
 telecharger_sources
