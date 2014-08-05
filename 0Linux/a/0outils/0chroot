@@ -54,20 +54,11 @@ mount -v ${1} ${CHROOTDIR}
 
 # On monte les systèmes de fichiers virtuels :
 echo "Montage des systèmes de fichiers virtuels sous '${CHROOTDIR}'..."
-echo "mkdir -p ${CHROOTDIR}/{dev,proc,run,sys}"
 mkdir -pv ${CHROOTDIR}/{dev,proc,run,sys}
-
-echo "mount --bind /proc ${CHROOTDIR}/proc"
-mount --bind /proc ${CHROOTDIR}/proc
-
-echo "mount --bind /sys ${CHROOTDIR}/sys"
-mount --bind /sys ${CHROOTDIR}/sys
-
-echo "mount --bind /dev ${CHROOTDIR}/dev"
-mount --bind /dev ${CHROOTDIR}/dev
-
-echo "mount --bind /run ${CHROOTDIR}/run"
-mount --bind /run ${CHROOTDIR}/run
+mount -v --bind /proc ${CHROOTDIR}/proc
+mount -v --bind /sys ${CHROOTDIR}/sys
+mount -v --bind /dev ${CHROOTDIR}/dev
+mount -v --bind /run ${CHROOTDIR}/run
 
 echo "Si tout s'est bien passé, vous pouvez maintenant entrer dans votre système"
 echo "0Linux en invoquant :"

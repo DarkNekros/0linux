@@ -39,7 +39,7 @@ while [ 0 ]; do
 	echo "si des restrictions s'appliquent à certains serveurs."
 	echo "Appuyez sur ENTRÉE pour ignorer cette étape."
 	echo ""
-	echo "1 : IGH/CNRS  - http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets"
+	echo "1 : IGH/CNRS  - http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets (recommandé)"
 	echo "2 : TUXFAMILY - http://download.tuxfamily.org/0linux/pub/paquets"
 	echo "http://votre/url/paquets"
 	echo ""
