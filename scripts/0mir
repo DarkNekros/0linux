@@ -106,7 +106,7 @@ mirror () {
     RSYNC_PASSWORD="${CREDRSYNC}" rsync -avP --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@${RSYNCDIR}
     
     # On synchronise les pages du catalogue sur le wiki :
-    scp -r ./catalogue/$(uname -m)/* ${user}@${SCPURL}/ || exit 1
+    scp -rv ./catalogue/$(uname -m)/* ${user}@${SCPURL}/ || exit 1
 }
 
 # === Main =====================================================================
