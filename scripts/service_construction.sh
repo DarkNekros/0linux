@@ -143,11 +143,7 @@ if [ -n ${ISOGEN} = "oui" ]; then
 	cd -
 fi
 
-### Étape 3 : on génère le catalogue des paquets et de leurs dépendances ainsi
-### que l'index correspondant à la catégorie pour envoyer sur le wiki :
-FORCECATALOGUE=oui ../catalogue/catalogue.sh
-
-### Étape 4 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
+### Étape 3 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
 ./0mir
 
 # On peut supprimer le fichier du processus pour les prochaines fois :

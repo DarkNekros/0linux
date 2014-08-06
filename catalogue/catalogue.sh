@@ -68,7 +68,7 @@ scan() {
 			echo "	catalogue.sh [PAQUETS, JOURNAUX DE PAQUETS]"
 			echo ""
 			echo "Exemples :"
-			echo "	$(basename $0) /var/log/paquets/0outil-12-x86_64-1 /var/log/paquet/libpng-1.6-x86_64-1"
+			echo "	$(basename $0) /var/log/paquets/0outils-12-x86_64-1 /var/log/paquets/libpng-1.6-x86_64-1"
 			echo "	$(basename $0) 0outils libpng"
 			echo "	$(basename $0) /var/log/paquets/a*"
 			exit 1

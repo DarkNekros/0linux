@@ -1,23 +1,16 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=lensfun
 VERSION=0.2.8
-EXT=tar.gz
-NAMETGZ=lensfun
-WGET=http://download.berlios.de/$NAMESRC/$NAMESRC-$VERSION.$EXT
-DESC="Bibliothèques de base de données ODBC"
-
+WGET=http://download.berlios.de/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+DESC="Bibliothèques d'optimisation graphique"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On utilise le bon Python :
-sed -i 's|#!/usr/bin/python|#!/usr/bin/python2|' configure
-
-# On corrige la compilation avec make 4 :
-cat $CWD/lensfun.make-4.patch | patch -p0
+# On corrige la compilation avec 'make' 4 :
+sed -i 's@"3\.81", True)@"4.0", True)@' configure
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -25,7 +18,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
+
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
