@@ -3,17 +3,17 @@
 
 VERSION=1.1
 WGET=http://www.recherche.enac.fr/log/facile/distrib/facile-$VERSION.tar.gz
-DESC="Résolveur d'équation"
+DESC="Résolveur d'équations"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Il faut créer manuellement le répertoire d'acueil avant le make install :
-mkdir -p $PKG/usr/lib64/ocaml/facile
+mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/ocaml/facile
 
 ./configure \
-	--faciledir $PKG/usr/lib$LIBDIRSUFFIX/ocaml/facile
+	--faciledir $PKG/usr/lib${LIBDIRSUFFIX}/ocaml/facile
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}

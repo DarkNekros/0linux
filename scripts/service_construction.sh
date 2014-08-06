@@ -23,6 +23,9 @@ PIDFILE="/var/lock/service_construction.pid"
 # La file d'attente :
 FILEDATTENTE="/tmp/en_attente.tmp"
 
+# La file d'attente du catalogue pour le wiki :
+FILEDATTENTECATALOGUE="/tmp/catalogue_en_attente.tmp"
+
 # Emplacement du dépôt des paquets résultant de la construction. À définir en
 # tant que variable d'environnement car utilisée aussi dans 'construction.sh'
 # entre autres.
@@ -56,22 +59,40 @@ traiter_filedattente() {
 	cat ${FILEDATTENTE} | while read recette_demandee; do
 		if [ ! "${recette_demandee}" = "" ]; then
 			
-			# On compile/installe (nvidia est ignoré automatiquement à l'installation) :
+			# On compile/installe (nvidia et catalyst sont installés ailleurs pour ne pas polluer
+			# le système avec leurs doublons) :
 			./construction.sh ${recette_demandee}
+			
+			# On envoie le paquet en cours à la file d'attente du catalogue pour le régénérer :
+			echo "${recette_demandee}" >> ${FILEDATTENTECATALOGUE}
 			
 			# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
 			sed -i '1d' ${FILEDATTENTE}
+		fi
+	done
+}
+
+# La fonction de traitement de la file d'attente du ctaalogue pour le wiki :
+# $f
+traiter_filedattente_catalogue() {
+	
+	# On s'assure que la file d'attente existe :
+	touch ${FILEDATTENTECATALOGUE}
+	
+	# On traite la file d'attente (qu'on peut remplir aussi manuellement au besoin) :
+	cat ${FILEDATTENTECATALOGUE} | while read catalogue_demande; do
+		if [ ! "${catalogue_demande}" = "" ]; then
 			
 			# On génère le catalogue du paquet et son index :
-			FORCECATALOGUE=oui ../catalogue/catalogue.sh ${recette_demandee}
+			FORCECATALOGUE=oui ../catalogue/catalogue.sh ${catalogue_demande}
 			
 			# Et le catalogue de chaque dépendance et chacun de leur index :
-			cat /usr/doc/${recette_demandee}/0linux/*.dep | while read deppp; do
+			cat /usr/doc/${catalogue_demande}/0linux/*.dep | while read deppp; do
 				( cd ../catalogue ; FORCECATALOGUE=oui ../catalogue/catalogue.sh ${deppp} )
 			done
 			
-			# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
-			sed -i '1d' ${FILEDATTENTE}
+			# On nettoie le(s) catalogue(s) demandé(s) (première ligne) de la file d'attente :
+			sed -i '1d' ${FILEDATTENTECATALOGUE}
 		fi
 	done
 }
@@ -144,6 +165,12 @@ if [ -n ${ISOGEN} = "oui" ]; then
 fi
 
 ### Étape 3 : on vérifie le dépôt + génère les descriptions + synchronise le serveur distant :
+./0mir
+
+### Étape 4 : on régénère les catalogues maintenant que 'paquets.db' est à jour :
+traiter_filedattente_catalogue
+
+### Étape 5 : on '0mir' à nouveau, spécifiquement pour envoyer le catalogue à jour :
 ./0mir
 
 # On peut supprimer le fichier du processus pour les prochaines fois :
