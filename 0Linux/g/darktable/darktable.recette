@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.4.2
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+DESC="Studio de gestion et de développement d'images brutes"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On compile dans un répertoire dédié :
+mkdir build
+cd build
+  
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS} -fpermissive" \
+cmake \
+	-DBINARY_PACKAGE_BUILD=1 \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_FLAGS:STRING="${CFLAGS}" \
+	-DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS}" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DDONT_INSTALL_GCONF_SCHEMAS=True \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
+	-DMAN_INSTALL_DIR=/usr/man \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
