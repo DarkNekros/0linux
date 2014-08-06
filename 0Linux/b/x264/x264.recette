@@ -3,17 +3,14 @@
 
 NAMESRC=x264-snapshot
 VERSION=20130208
-EXT=tar.bz2
-NAMETGZ=x264
-WGET=ftp://ftp.videolan.org/pub/videolan/x264/snapshots/${NAMESRC}-${VERSION}-2245.$EXT} # Version différente !
+WGET=ftp://ftp.videolan.org/pub/videolan/x264/snapshots/${NAMESRC}-${VERSION}-2245.tar.bz2 # Version différente !
 DESC="Bibliothèques de codage de flux X264/AVC"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compilation pour que le codage sur 10 bits pour commencer :
+# Compilation pour le codage sur 10 bits pour commencer :
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 ./configure \
 	--prefix=/usr \
