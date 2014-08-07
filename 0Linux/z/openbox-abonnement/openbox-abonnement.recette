@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1 # La version sert pour les ajouts/suppressions de paquets dans EXTRADEPS, modif' de description, etc.
+DESC="Le gestionnaire de fenêtres Openbox, ses thèmes et ses outils graphiques de personnalisation"
+EXTRADEPS="openbox obconf obmenu obapps openbox-themes"
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Août 2013
+
+= Openbox, un gestionnaire de fenêtres rapide, léger et personnalisable =
+
+Openbox est un gestionnaire de fenêtres d'un genre nouveau. Il n'est pas basé sur du code existant, cependant son aspect visuel est fortement inspiré de celui de Blackbox. Il  est fonctionnel en tant qu'environnement de travail complet ou alors peut remplacer les gestionnaires de fenêtres par défaut des environnements de bureau GNOME ou KDE.
+
+Certaines fonctionnalités intéressantes d'Openbox sont :
+
+ - le respect des standards ICCCM et EWMH
+ - sa rapidité
+ - la possibilité de créer des raccourcis clavier complexes
+ - des actions personnalisables à la souris
+ - la « résistance » des fenêtres
+ - la pris en charge du mode multiécran Xinerama
+ - des menus dynamiques (« pipe menus »)
+
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient le gestionnaire Openbox, des outils de configuration dont 'obmenu', 'obconf' et 'obapps' ainsi qu'un ensemble de thèmes graphiques.
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.
