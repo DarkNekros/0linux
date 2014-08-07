@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=0.37
+WGET=http://arsunik.free.fr/pkg/$NAMESRC-$VERSION.tar.gz
+DESC="Version colorisé et amélioré de l'outils standard « du »"
+EXTRADEPS="perl"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+fakeroot make install DESTDIR=${PKG}/usr
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
