@@ -81,7 +81,7 @@ rm -rf ${PKG}/usr/{mysql-test,sql-bench}
 cp ${PKG}/usr/share/mysql/my-medium.cnf ${PKG}/etc/my.cnf.0nouveau
 
 for i in client mysql-clients server tokudb; do
-	mv ${PKG}/etc/my.cnf.d/${i}.cnf{,.0nouveau}
+	mv ${PKG}/etc/my.cnf.d/${i}.cnf{,.0nouveau} || true
 done
 
 # On place 'mysqlaccess.conf' en prenant garde à ne rien écraser :
