@@ -34,6 +34,18 @@ nom_court() {
 	echo $(basename "${1}" | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)
 }
 
+# Affiche le champ de la base de données du journal demandé.
+# $f (nom|paquet|emplacement|taille|dépendances)
+afficher_champ_db() {
+	[ "$1" = "" ] && echo "Erreur : Champ de la db non spécifié !" && exit 1
+	[ "$1" = "nom" ] && IDCHAMP="1"
+	[ "$1" = "paquet" ] && IDCHAMP="2"
+	[ "$1" = "emplacement" ] && IDCHAMP="3"
+	[ "$1" = "taille" ] && IDCHAMP="4"
+	[ "$1" = "deps" ] && IDCHAMP="5-"
+	grep -E "^${2}[[:blank:]]" ${PKGREPO}/paquets.db | cut -d' ' -f${IDCHAMP}
+}
+
 # Scanne les paquets fournis.
 # $f JOURNAUX DE PAQUETS
 scan() {
@@ -90,6 +102,8 @@ scan() {
 		
 		# On déduit le répertoire du paquet selon son emplacement en le découpant.
 		# Retourne un chemin du type : "e/kde/kdeartwork/kdeartwork".
+		NOM PAQUET EMPLACEMENT TAILLE (DEP DEP DEP DEP...)
+		
 		categ=$(dirname $(spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | \
 			egrep '^EMPLACEMENT' | cut -d':' -f2) | sed -e "s@^.*$(uname -m)/@@")
 		

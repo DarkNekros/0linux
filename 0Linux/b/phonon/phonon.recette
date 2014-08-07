@@ -2,9 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=4.7.2
-WGET=ftp://ftp.kde.org/pub/kde/stable/phonon/$VERSION/phonon-$VERSION.tar.xz
+WGET=ftp://ftp.kde.org/pub/kde/stable/phonon/$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Couche d'abstraction et bibliothèques multimédia pour Qt"
-
  
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -38,7 +37,7 @@ fakeroot make install DESTDIR=${PKG}
 sed -i -e 's@includedir}$@& -I\${includedir}/phonon@' ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/phonon.pc
 
 # On corrige un chemin dans le fichier pour 'cmake' :
-sed -i -e 's@${currentDir}/../../../@/usr/@' ${PKG}/usr/lib64/cmake/phonon/PhononConfig.cmake
+sed -i -e 's@${currentDir}/../../../@/usr/@' ${PKG}/usr/lib${LIBDIRSUFFIX}/cmake/phonon/PhononConfig.cmake
 
 # On veille à lier le répertoires des « backends » de Phonon à KDE4 :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/qt4/plugins/

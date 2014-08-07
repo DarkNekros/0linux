@@ -64,7 +64,7 @@ traiter_filedattente() {
 			./construction.sh ${recette_demandee}
 			
 			# On envoie le paquet en cours à la file d'attente du catalogue pour le régénérer :
-			echo "${recette_demandee}" >> ${FILEDATTENTECATALOGUE}
+			#echo "${recette_demandee}" >> ${FILEDATTENTECATALOGUE}
 			
 			# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
 			sed -i '1d' ${FILEDATTENTE}
@@ -152,7 +152,7 @@ if [ -n ${ISOGEN} = "oui" ]; then
 	
 	# On nettoie et on génère l'iso dans '/usr/local/temp' (par défaut, mais sait-on jamais) :
 	rm -rf /usr/local/temp/iso
-	TMP=/usr/local/temp 0creation_live --mini $(pwd)/../../../pub/${VERSION}/$(uname -m)/
+	sudo TMP=/usr/local/temp 0creation_live --mini $(pwd)/../../../pub/${VERSION}/$(uname -m)/
 	
 	# On déduit le nome de l'image ISO :
 	NOMISO=$(ls -1 /usr/local/temp/iso/)
@@ -168,10 +168,10 @@ fi
 ./0mir
 
 ### Étape 4 : on régénère les catalogues maintenant que 'paquets.db' est à jour :
-traiter_filedattente_catalogue
+#traiter_filedattente_catalogue
 
 ### Étape 5 : on '0mir' à nouveau, spécifiquement pour envoyer le catalogue à jour :
-./0mir
+#./0mir
 
 # On peut supprimer le fichier du processus pour les prochaines fois :
 rm -f ${PIDFILE}
