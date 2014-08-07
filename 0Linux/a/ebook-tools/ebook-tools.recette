@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=ebook-tools
 VERSION=0.2.2
-EXT=tar.gz
-NAMETGZ=ebook-tools
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Outils et bibliothèques de manipulation de livres électroniques (« e-books »)"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -30,8 +26,10 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 make -j3 || make
 fakeroot make install DESTDIR=${PKG}
 
-# On renomme ça :
-mv ${PKG}/usr/lib{,${LIBDIRSUFFIX}}
+# On renomme ça le cas échéant :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	mv ${PKG}/usr/lib{,${LIBDIRSUFFIX}}
+fi
 
 installer_doc
 creer_post_installation
