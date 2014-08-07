@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=3.5.2
+WGET=http://openbox.org/dist/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+DESC="Openbox, un gestionnaire de fenêtres léger, rapide et personnalisable"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/openbox \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-startup-notification \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée un fichier 'xinitrc' prenant ConsoleKit en charge pour pouvoir utiliser 'startx' ou 'xdm' :
+mkdir -p ${PKG}/etc/X11/xinit
+cat > ${PKG}/etc/X11/xinit/xinitrc.openbox << "EOF"
+#!/bin/sh
+
+userresources=$HOME/.Xresources
+usermodmap=$HOME/.Xmodmap
+sysresources=/etc/X11/xinit/.Xresources
+sysmodmap=/etc/X11/xinit/.Xmodmap
+
+if [ -f $sysresources ]; then
+	/usr/bin/xrdb -merge $sysresources
+fi
+
+if [ -f $sysmodmap ]; then
+	/usr/bin/xmodmap $sysmodmap
+fi
+
+if [ -f $userresources ]; then
+	/usr/bin/xrdb -merge $userresources
+fi
+
+if [ -f $usermodmap ]; then
+	/usr/bin/xmodmap $usermodmap
+fi
+
+if [ ! -d $HOME/.config/openbox ]; then
+	mkdir -p $HOME/.config/openbox
+	cat /etc/xdg/openbox/menu.xml > $HOME/.config/openbox/menu.xml
+	cat /etc/xdg/openbox/rc.xml > $HOME/.config/openbox/rc.xml
+fi
+
+if [ -z "$DESKTOP_SESSION" -a -x /usr/bin/ck-launch-session ]; then
+	exec ck-launch-session dbus-launch --exit-with-session openbox
+else
+	exec dbus-launch --exit-with-session openbox
+fi
+
+EOF
+
+cat > ${PKG}/etc/X11/xinit/xinitrc.openbox-session << "EOF"
+#!/bin/sh
+
+userresources=$HOME/.Xresources
+usermodmap=$HOME/.Xmodmap
+sysresources=/etc/X11/xinit/.Xresources
+sysmodmap=/etc/X11/xinit/.Xmodmap
+
+if [ -f $sysresources ]; then
+	/usr/bin/xrdb -merge $sysresources
+fi
+
+if [ -f $sysmodmap ]; then
+	/usr/bin/xmodmap $sysmodmap
+fi
+
+if [ -f $userresources ]; then
+	/usr/bin/xrdb -merge $userresources
+fi
+
+if [ -f $usermodmap ]; then
+	/usr/bin/xmodmap $usermodmap
+fi
+
+if [ ! -d $HOME/.config/openbox ]; then
+	mkdir -p $HOME/.config/openbox
+	cat /etc/xdg/openbox/menu.xml > $HOME/.config/openbox/menu.xml
+	cat /etc/xdg/openbox/rc.xml > $HOME/.config/openbox/rc.xml
+fi
+
+if [ -z "$DESKTOP_SESSION" -a -x /usr/bin/ck-launch-session ]; then
+	exec ck-launch-session dbus-launch --exit-with-session openbox-session
+else
+	exec dbus-launch --exit-with-session openbox-session
+fi
+
+EOF
+chmod +x ${PKG}/etc/X11/xinit/*
+
+# On crée des liens au bon emplacement pour afficher les sessions dans KDM :
+mkdir -p ${PKG}/usr/share/apps/kdm/sessions
+
+for i in ${PKG}/usr/share/xsessions/openbox*.desktop ; do
+	ln -sf /usr/share/xsessions/$(basename $i) $PKG/usr/share/apps/kdm/sessions/$(basename $i)
+done
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

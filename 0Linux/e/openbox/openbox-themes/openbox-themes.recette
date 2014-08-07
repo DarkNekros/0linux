@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.0.2
+WGET=http://ftp.debian.org/debian/pool/main/o/$NAMESRC/${NAMESRC}_${VERSION}.tar.gz
+DESC="Ensemble de thèmes pour Openbox fournis par Debian"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On installe les thèmes :
+mkdir -p ${PKG}/usr/share/themes
+cp -a * ${PKG}/usr/share/themes/
+
+# On nettoie :
+rm -rf ${PKG}/usr/share/themes/debian
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
