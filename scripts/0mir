@@ -102,8 +102,8 @@ mirror () {
     #lftp -c "open ${user},${CREDFTP} $FTP/${FTPDIR} && mirror -ReN"$1" -X*~ -Xarchives_sources/* -Xcatalogue/* -Xiso/* -X0linux*maxi* -X0linux-zeta* -X0linux*i686*.iso* -Xzeta -Xi686 -Xarm . ." || exit 1
     
     # Méthode rsync :
-    find /tmp/ -mindepth 1 -maxdepth 1 -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
-    RSYNC_PASSWORD="${CREDRSYNC}" rsync -avP --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@${RSYNCDIR}
+    #find /tmp/ -mindepth 1 -maxdepth 1 -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
+    #RSYNC_PASSWORD="${CREDRSYNC}" rsync -avP --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@${RSYNCDIR}
 }
 
 # === Main =====================================================================
@@ -111,8 +111,8 @@ export LC_ALL="C"
 umask 022
 #FTP="ftp://ftp.igh.cnrs.fr"
 FTP="ftp.tuxfamily.org/0linux"
-#URL="http://ftp.igh.cnrs.fr/pub/os/linux/0linux"
-URL="http://download.tuxfamily.org/0linux/pub"
+URL="http://ftp.igh.cnrs.fr/pub/os/linux/0linux"
+#URL="http://download.tuxfamily.org/0linux/pub"
 FTPDIR="0linux-repository/pub"
 RSYNCDIR="ftp.igh.cnrs.fr/0linuxadmin/"
 FTPUSER="appzer0"
@@ -182,7 +182,16 @@ if [ -f "$log" ]; then
 fi
 
 #mirror ../.timestamp               # Méthode lftp avec timestamps uniquement
-mirror                             # Méthode rsync/ftp sans timestamps
-checknewpkg ../.timestamp $pkgroot # ajouter ici les autres dossiers à vérifier.
+#mirror                             # Méthode rsync/ftp sans timestamps
+
+# Méthode rsync :
+find /tmp/ -mindepth 1 -maxdepth 1 -type f -name "0mir-rsync.log" -size +50M # On nettoie si le journal est trop gros
+
+# x86_64 est l'architecture principale, les autres n'ont que les paquets et les ISO à synchroniser :
+if [ "$(uname -m)" = "x86_64" ]; then
+	# On synchronise tout le dépôt :
+	RSYNC_PASSWORD="${CREDRSYNC}" rsync -avP --log-file=/tmp/0mir-rsync.log --delete --exclude "*~" * rsync://${LOGINRSYNC}@${RSYNCDIR}
+	checknewpkg ../.timestamp $pkgroot # ajouter ici les autres dossiers à vérifier.
+fi
 
 # EoF
