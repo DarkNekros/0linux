@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=3.0.4
+WGET=http://projects.gw-computing.net/attachments/download/79/$NAMESRC-$VERSION.tar.gz
+DESC="Version colorisé et amélioré de l'outils standard « df »"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D SYSCONFDIR=/etc \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+# On renome les fichiers de configuration
+mv $PKG/etc/xdg/dfc/dfcrc{,.0nouveau}
+mv $PKG/etc/xdg/dfc/fr/dfcrc{,.0nouveau}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
