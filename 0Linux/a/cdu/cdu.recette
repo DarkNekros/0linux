@@ -3,7 +3,7 @@
 
 VERSION=0.37
 WGET=http://arsunik.free.fr/pkg/$NAMESRC-$VERSION.tar.gz
-DESC="Version colorisé et amélioré de l'outils standard « du »"
+DESC="Version colorisée et améliorée de l'outil standard « du »"
 EXTRADEPS="perl"
 
 telecharger_sources

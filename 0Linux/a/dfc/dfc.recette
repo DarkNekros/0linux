@@ -3,7 +3,7 @@
 
 VERSION=3.0.4
 WGET=http://projects.gw-computing.net/attachments/download/79/$NAMESRC-$VERSION.tar.gz
-DESC="Version colorisé et amélioré de l'outils standard « df »"
+DESC="Version colorisée et améliorée de l'outil standard « df »"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
