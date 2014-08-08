@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=12.7.2
+VERSION=12.7.3
 DESC="Outils « maison » pour l'installation et l'administration du système 0Linux"
 EXTRADEPS="realpath"
 
