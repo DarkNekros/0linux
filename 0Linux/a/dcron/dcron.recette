@@ -6,7 +6,6 @@ EXT=tar.gz
 WGET=http://www.jimpryor.net/linux/releases/$NAMESRC-$VERSION.$EXT
 DESC="Planificateur de tâches"
 
-
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
@@ -33,6 +32,9 @@ cp -a $CWD/root ${PKG}/var/spool/cron/crontabs/root.0nouveau
 
 # On copie le script d'exécution périodique :
 cp -a $CWD/lancer-taches.sh ${PKG}/usr/bin/lancer-taches
+
+# On crée un lien de compatibilité ('ca-certificates' en a notamment besoin) :
+ln -sf lancer-taches ${PKG}/usr/bin/run-parts
 
 # On copie les binaires :
 cp -a crond ${PKG}/usr/sbin
