@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libbluray
 VERSION=0.2.3
 EXT=tar.bz2
-NAMETGZ=libbluray
 WGET=ftp://ftp.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'accès aux disques Blu-Ray"
 

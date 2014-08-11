@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gettext
 VERSION=0.18.3.2
 EXT=tar.gz
-NAMETGZ=gettext
 WGET=ftp://ftp.igh.cnrs.fr/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Suite d'outils pour l'internationalisation"
 

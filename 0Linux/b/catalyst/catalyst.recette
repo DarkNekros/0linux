@@ -3,7 +3,6 @@
 
 NAMESRC=amd-catalyst
 VERSION=14.4
-NAMETGZ=catalyst
 WGET=http://www2.ati.com/drivers/linux/${NAMESRC}-$(echo $VERSION | tr '.' '-')-linux-x86-x86-64.zip
 DESC="Pilotes et bibliothèques graphiques fermés de AMD"
 

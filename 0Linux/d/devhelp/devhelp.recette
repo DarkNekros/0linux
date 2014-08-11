@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=devhelp
 VERSION=2.32.0
 EXT=tar.gz
-NAMETGZ=devhelp
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Outil de navigation GTK+ pour documentation d'API"
 

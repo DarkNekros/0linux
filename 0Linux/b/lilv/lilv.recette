@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=lilv
 VERSION=0.14.4
 EXT=tar.bz2
-NAMETGZ=lilv
 WGET=http://download.drobilla.net/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'interfaçage pour greffons LV2"
 

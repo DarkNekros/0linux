@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gnome-games
 VERSION=3.6.1
 EXT=tar.xz
-NAMETGZ=gnome-games
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de jeux pour GNOME"
 

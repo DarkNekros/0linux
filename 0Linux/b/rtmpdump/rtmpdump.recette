@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=rtmpdump
 VERSION=2.4
 EXT=tar.xz
-NAMETGZ=rtmpdump
 WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Outils de téléchargement de flux RTMP"
 

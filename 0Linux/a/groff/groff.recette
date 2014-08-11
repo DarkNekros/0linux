@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=groff
 VERSION=1.22.2
 EXT=tar.gz
-NAMETGZ=groff
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Système de formatage de documents"
 

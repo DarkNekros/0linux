@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=icoutils
 VERSION=0.31.0
 EXT=tar.bz2
-NAMETGZ=icoutils
 WGET=http://savannah.nongnu.org/download/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil de manipulation de fichiers au format ICO de Microsoft"
 

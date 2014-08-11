@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gtkhtml
 VERSION=4.8.0
 EXT=tar.xz
-NAMETGZ=gtkhtml
 WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/3.32/$NAMESRC-3.32.2.tar.bz2
       http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
      )

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gavl
 VERSION=1.4.0
 EXT=tar.gz
-NAMETGZ=gavl
 WGET=http://prdownloads.sourceforge.net/gmerlin/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques multimédia bas niveau"
 

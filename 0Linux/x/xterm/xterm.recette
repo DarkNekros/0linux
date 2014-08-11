@@ -2,7 +2,6 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=279
-NAMETGZ=xterm
 WGET=ftp://invisible-island.net/$NAMESRC/$NAMESRC-$VERSION.tgz
 DESC="Émulateur de terminal pour X11"
 

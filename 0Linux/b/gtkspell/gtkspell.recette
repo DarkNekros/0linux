@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gtkspell
 VERSION=3.0.4
 EXT=tar.gz
-NAMETGZ=gtkspell
 WGET=(
       http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}3-$VERSION.$EXT
       http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-2.0.16.$EXT

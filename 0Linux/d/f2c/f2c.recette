@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=f2c
 VERSION=1.0
 EXT=tar.gz
-NAMETGZ=f2c
 WGET=http://0linux.geoffray-levasseur.org/src/$NAMESRC-$VERSION.$EXT
 DESC="Traducteur de code Fortran vers C"
 

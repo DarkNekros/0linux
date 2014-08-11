@@ -4,7 +4,6 @@
 NAMESRC=HandBrake
 VERSION=0.9.9
 EXT=tar.bz2
-NAMETGZ=handbrake
 WGET=http://prdownloads.sourceforge.net/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Application de conversion audio et vidéo"
 

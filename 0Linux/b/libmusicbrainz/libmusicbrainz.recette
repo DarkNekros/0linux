@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libmusicbrainz
 VERSION=5.0.1
 EXT=tar.gz
-NAMETGZ=libmusicbrainz
 WGET=(ftp://ftp.musicbrainz.org/pub/musicbrainz/$NAMESRC-2.1.5.$EXT
       ftp://ftp.musicbrainz.org/pub/musicbrainz/$NAMESRC-3.0.3.$EXT
       https://github.com/downloads/metabrainz/$NAMESRC/$NAMESRC-4.0.3.$EXT

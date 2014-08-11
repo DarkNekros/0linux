@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libmpeg2
 VERSION=0.5.1
 EXT=tar.gz
-NAMETGZ=libmpeg2
 WGET=http://$NAMESRC.sourceforge.net/files/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour le format vidéo MPEG2"
 

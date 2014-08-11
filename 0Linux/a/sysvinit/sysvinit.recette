@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=sysvinit
 VERSION=2.88dsf
 EXT=tar.bz2
-NAMETGZ=sysvinit
 WGET=http://download.savannah.gnu.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Programmes d'initialisation du système"
 

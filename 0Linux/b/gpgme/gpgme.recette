@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gpgme
 VERSION=1.3.2
 EXT=tar.bz2
-NAMETGZ=gpgme
 WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de chiffrement et de signature"
 

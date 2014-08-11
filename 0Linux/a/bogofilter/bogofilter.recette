@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=bogofilter
 VERSION=1.2.4
 EXT=tar.bz2
-NAMETGZ=bogofilter
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de filtrage de pourriel / courrier indésirable (« spam »)"
 

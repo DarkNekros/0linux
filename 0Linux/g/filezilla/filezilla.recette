@@ -4,7 +4,6 @@
 NAMESRC=FileZilla
 VERSION=3.7.0.1
 EXT=tar.bz2
-NAMETGZ=filezilla
 WGET=http://prdownloads.sourceforge.net/filezilla/${NAMESRC}_${VERSION}_src.$EXT
 DESC="Client FTP graphique"
 

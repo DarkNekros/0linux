@@ -4,7 +4,6 @@
 NAMESRC=openldap
 VERSION=2.4.38
 EXT=tgz
-NAMETGZ=openldap-client
 WGET=ftp://ftp.openldap.org/pub/OpenLDAP/$NAMESRC-release/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques pour le protocole OpenLDAP"
 

@@ -4,7 +4,6 @@
 NAMESRC=OpenGTL
 VERSION=0.9.18
 EXT=tar.bz2
-NAMETGZ=opengtl
 WGET=http://download.opengtl.org/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de transformation graphiques"
 

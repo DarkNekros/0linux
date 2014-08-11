@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=neon
 VERSION=0.29.6
 EXT=tar.gz
-NAMETGZ=neon
 WGET=http://www.webdav.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques HTTP et WebDAV pour C"
 

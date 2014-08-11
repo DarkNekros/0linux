@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=readline
 VERSION=6.2
 EXT=tar.gz
-NAMETGZ=readline
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèque d'édition de ligne de commande"
 

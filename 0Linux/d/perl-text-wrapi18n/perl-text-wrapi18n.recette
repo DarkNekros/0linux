@@ -4,7 +4,6 @@
 NAMESRC=Text-WrapI18N
 VERSION=0.06
 EXT=tar.gz
-NAMETGZ=perl-text-wrapi18n
 WGET=http://search.cpan.org/CPAN/authors/id/K/KU/KUBOTA/$NAMESRC-$VERSION.$EXT
 DESC="Module Text-WrapI18N pour Perl"
 

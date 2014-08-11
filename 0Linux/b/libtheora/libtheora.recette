@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libtheora
 VERSION=1.1.1
 EXT=tar.xz
-NAMETGZ=libtheora
 WGET=http://downloads.xiph.org/releases/theora/$NAMESRC-$VERSION.$EXT
 DESC="Format de compression vidéo"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gnome-colors
 VERSION=5.5.1
 EXT=tar.gz
-NAMETGZ=gnome-colors
 WGET=(http://gnome-colors.googlecode.com/files/$NAMESRC-$VERSION.$EXT
       http://gnome-colors.googlecode.com/files/$NAMESRC-extras-$VERSION.$EXT
       http://gnome-colors.googlecode.com/files/shiki-colors-murrine-4.6.$EXT

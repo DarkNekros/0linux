@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xorg-server
 VERSION=1.15.1
 EXT=tar.bz2
-NAMETGZ=xorg-server
 WGET=http://xorg.freedesktop.org/releases/individual/xserver/$NAMESRC-$VERSION.$EXT
 DESC="Le serveur graphique X11"
 

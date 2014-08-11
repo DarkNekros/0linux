@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=numpy
 VERSION=1.6.2
 EXT=tar.gz
-NAMETGZ=numpy
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils scientifiques pour Python"
 

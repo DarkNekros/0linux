@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=avahi
 VERSION=0.6.31
 EXT=tar.gz
-NAMETGZ=avahi
 WGET=http://avahi.org/download/$NAMESRC-$VERSION.$EXT
 DESC="Service DNS avec découverte automatique"
 

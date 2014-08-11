@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gtk-xfce-engine
 VERSION=3.0.1
 EXT=tar.bz2
-NAMETGZ=gtk-xfce-engine
 WGET=http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Moteur d'Xfce pour GTK+"
 

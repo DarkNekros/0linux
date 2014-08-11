@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=irssi
 VERSION=0.8.15
 EXT=tar.bz2
-NAMETGZ=irssi
 WGET=http://www.irssi.org/files/$NAMESRC-$VERSION.$EXT
 DESC="Client IRC pour terminal"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libkate
 VERSION=0.4.1
 EXT=tar.gz
-NAMETGZ=libkate
 WGET=http://libkate.googlecode.com/files//$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'incrustation vidéo pour textes"
 

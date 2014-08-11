@@ -4,7 +4,6 @@
 NAMESRC=webkitgtk
 VERSION=2.2.5
 EXT=tar.xz
-NAMETGZ=webkit-gtk+
 WGET=(
       http://webkitgtk.org/releases/$NAMESRC-$VERSION.$EXT
       http://webkitgtk.org/releases/$NAMESRC-1.10.2.$EXT

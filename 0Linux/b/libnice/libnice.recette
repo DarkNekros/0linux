@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libnice
 VERSION=0.1.3
 EXT=tar.gz
-NAMETGZ=libnice
 WGET=http://nice.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques réseau pour les commmunications pair-à-pair UDP"
 

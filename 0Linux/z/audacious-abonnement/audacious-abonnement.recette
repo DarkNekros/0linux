@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=audacious-abonnement
 VERSION=1
 DESC="Lecteur multimédia basé sur Beep/XMMS et ses greffons"
 EXTRADEPS="audacious audacious-plugins libmcs libmowgli"

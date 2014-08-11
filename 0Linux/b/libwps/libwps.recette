@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libwps
 VERSION=0.2.7
 EXT=tar.gz
-NAMETGZ=libwps
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'importation de fichiers au format Microsoft Works"
 

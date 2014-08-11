@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=mame
 VERSION=0.152
 EXT=tar.xz
-NAMETGZ=mame
 WGET=http://0linux.geoffray-levasseur.org/$NAMESRC-$VERSION.$EXT
 DESC="L'émulateur universel de consoles et autres ordinateurs antiques"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xwininfo
 VERSION=1.1.3
 EXT=tar.bz2
-NAMETGZ=xwininfo
 WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT
 DESC="Applications natives de X11"
 

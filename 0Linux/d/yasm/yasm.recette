@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=yasm
 VERSION=1.2.0
 EXT=tar.gz
-NAMETGZ=yasm
 WGET=http://www.tortall.net/projects/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT
 DESC="Réécriture complète de l'assembleur NASM"
 

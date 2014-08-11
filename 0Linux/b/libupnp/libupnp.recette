@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libupnp
 VERSION=1.6.18
 EXT=tar.bz2
-NAMETGZ=libupnp
 WGET=http://prdownloads.sourceforge.net/pupnp/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de découverte, notification et contrôle de services"
 

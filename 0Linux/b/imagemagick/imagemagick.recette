@@ -4,7 +4,6 @@
 NAMESRC=ImageMagick
 VERSION=6.8.8_10
 EXT=tar.xz
-NAMETGZ=imagemagick
 WGET=http://mirror.checkdomain.de/imagemagick/$NAMESRC-$(echo $VERSION | tr '_' '-').$EXT
 DESC="Outils de manipulation de fichiers graphiques"
 

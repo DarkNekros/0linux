@@ -4,7 +4,6 @@
 NAMESRC=musepack_src
 VERSION=r475
 EXT=tar.gz
-NAMETGZ=musepack
 WGET=http://files.musepack.net/source/${NAMESRC}_${VERSION}.$EXT
 DESC="Outils et bibliothèques pour le format Musepack"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xfce4-appfinder
 VERSION=4.10.1
 EXT=tar.bz2
-NAMETGZ=xfce4-appfinder
 WGET=http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Outil de recherche d'applications pour Xfce"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libva-vdpau-driver
 VERSION=0.7.4
 EXT=tar.bz2
-NAMETGZ=libva-vdpau-driver
 WGET=http://www.freedesktop.org/software/vaapi/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage VDPAU pour l'API VA"
 

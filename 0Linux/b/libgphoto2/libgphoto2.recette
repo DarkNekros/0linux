@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libgphoto2
 VERSION=2.5.1
 EXT=tar.bz2
-NAMETGZ=libgphoto2
 WGET=http://prdownloads.sourceforge.net/gphoto/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'accès aux appareils photo et caméras"
 

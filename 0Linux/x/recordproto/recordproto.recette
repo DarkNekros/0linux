@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=recordproto
 VERSION=1.14.2
 EXT=tar.bz2
-NAMETGZ=recordproto
 WGET=http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers d'en-têtes de protocole pour X11"
 

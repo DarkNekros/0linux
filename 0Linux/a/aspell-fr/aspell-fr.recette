@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=aspell-fr
 VERSION=0.50
 EXT=tar.bz2
-NAMETGZ=aspell-fr
 WGET=http://ftp.gnu.org/gnu/aspell/dict/fr/$NAMESRC-$VERSION-3.$EXT
 DESC="Outils de correction orthographique et dictionnaires français"
 

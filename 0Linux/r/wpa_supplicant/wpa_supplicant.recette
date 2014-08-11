@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=wpa_supplicant
 VERSION=2.0
 EXT=tar.gz
-NAMETGZ=wpa_supplicant
 WGET=http://hostap.epitest.fi/releases/$NAMESRC-$VERSION.$EXT
 DESC="Démon pour réseaux sans fil avec chiffrements WEP, WPA et WPA2"
 

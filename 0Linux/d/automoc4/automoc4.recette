@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=automoc4
 VERSION=0.9.88
 EXT=tar.bz2
-NAMETGZ=automoc4
 WGET=http://ftp.kde.org/stable/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Compilateur de méta-objets pour Qt et C++"
 

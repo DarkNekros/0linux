@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=dvd+rw-tools
 VERSION=7.1
 EXT=tar.gz
-NAMETGZ=dvd+rw-tools
 WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de programmes pour graver DVD et Blu-Ray en ligne de commande"
 

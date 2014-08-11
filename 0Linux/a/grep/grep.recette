@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=grep
 VERSION=2.18
 EXT=tar.xz
-NAMETGZ=grep
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Programme de recherche à l'intérieur des fichiers"
 

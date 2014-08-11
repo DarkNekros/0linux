@@ -4,7 +4,6 @@
 NAMESRC=TiMidity++
 VERSION=2.13.2
 EXT=tar.bz2
-NAMETGZ=timidity++
 WGET=http://prdownloads.sourceforge.net/timidity/$NAMESRC-$VERSION.$EXT
 DESC="Synthétiseur MIDI"
 

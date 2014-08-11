@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=iptables
 VERSION=1.4.21
 EXT=tar.bz2
-NAMETGZ=iptables
 WGET=http://www.netfilter.org/projects/$NAMESRC/files/$NAMESRC-$VERSION.$EXT
 DESC="Outils de filtrage de paquets pour Linux"
 

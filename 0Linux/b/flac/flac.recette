@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=flac
 VERSION=1.2.1
 EXT=tar.gz
-NAMETGZ=flac
 WGET=http://downloads.xiph.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Le format de compression audio sans pertes « Free Lossless Audio Codec »"
 

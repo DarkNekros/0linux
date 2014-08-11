@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=wine
 VERSION=1.7.11
 EXT=tar.bz2
-NAMETGZ=wine
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Implémentation de l'environnement d'exécution de Windows"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=geany-plugins
 VERSION=1.23
 EXT=tar.bz2
-NAMETGZ=geany-plugins
 WGET=http://plugins.geany.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de greffons pour Geany"
 

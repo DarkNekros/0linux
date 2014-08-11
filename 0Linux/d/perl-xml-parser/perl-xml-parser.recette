@@ -4,7 +4,6 @@
 NAMESRC=XML-Parser
 VERSION=2.36
 EXT=tar.gz
-NAMETGZ=perl-xml-parser
 WGET=http://cpan.org/authors/id/M/MS/MSERGEANT/$NAMESRC-$VERSION.$EXT
 DESC="Module XML-Parser pour Perl"
 

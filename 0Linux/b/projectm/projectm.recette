@@ -4,7 +4,6 @@
 NAMESRC=projectM-complete
 VERSION=2.1.0
 EXT=tar.gz
-NAMETGZ=projectm
 WGET=http://prdownloads.sourceforge.net/projectm/$NAMESRC-$VERSION-Source.$EXT
 DESC="Greffon de visualisation d'effets sur flux audio"
 

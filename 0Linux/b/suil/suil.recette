@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=suil
 VERSION=0.6.8
 EXT=tar.bz2
-NAMETGZ=suil
 WGET=http://download.drobilla.net/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour interfaces de greffons LV2"
 

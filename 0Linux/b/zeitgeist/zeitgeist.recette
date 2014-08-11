@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=zeitgeist
 VERSION=0.9.12
 EXT=tar.xz
-NAMETGZ=zeitgeist
 WGET=https://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f 1-2)/$VERSION/+download/$NAMESRC-$VERSION.$EXT
 DESC="Service de surveillance et de journalisation d'évènements"
 

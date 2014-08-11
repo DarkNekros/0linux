@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libgtop
 VERSION=2.28.4
 EXT=tar.xz
-NAMETGZ=libgtop
 WGET=http://ftp.gnome.org/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'information sur les processus système"
 

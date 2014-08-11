@@ -4,7 +4,6 @@
 NAMESRC=libIDL
 VERSION=0.8.14
 EXT=tar.bz2
-NAMETGZ=libidl
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de création d'arbres CORBA pour interfaces"
 

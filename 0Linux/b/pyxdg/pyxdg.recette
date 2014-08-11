@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=pyxdg
 VERSION=0.25
 EXT=tar.gz
-NAMETGZ=pyxdg
 WGET=http://people.freedesktop.org/~takluyver/$NAMESRC-$VERSION.$EXT
 DESC="Implémentation Python des standards de Freedesktop.org"
 

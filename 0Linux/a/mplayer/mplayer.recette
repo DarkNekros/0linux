@@ -4,7 +4,6 @@
 NAMESRC=MPlayer
 VERSION=1.1.1
 EXT=tar.xz
-NAMETGZ=mplayer
 WGET=http://www.mplayerhq.hu/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT
 DESC="Le lecteur multimédia MPlayer"
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=gnome-abonnement
 VERSION=1
 DESC="L'environnement de bureau GNOME complet et ses applications"
 EXTRADEPS="accountsservice \

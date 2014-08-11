@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=glib-networking
 VERSION=2.38.2
 EXT=tar.xz
-NAMETGZ=glib-networking
 WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Support du réseau pour Glib"
 

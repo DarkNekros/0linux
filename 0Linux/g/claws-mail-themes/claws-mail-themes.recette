@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=claws-mail-themes
 VERSION=20120129
 EXT=tar.gz
-NAMETGZ=claws-mail-themes
 WGET=http://www.claws-mail.org/themes/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de thèmes pour Claws Mail"
 

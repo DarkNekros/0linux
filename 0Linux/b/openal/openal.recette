@@ -4,7 +4,6 @@
 NAMESRC=openal-soft
 VERSION=1.15.1
 EXT=tar.bz2
-NAMETGZ=openal
 WGET=http://kcat.strangesoft.net/openal-releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques audio 3D OpenAL"
 

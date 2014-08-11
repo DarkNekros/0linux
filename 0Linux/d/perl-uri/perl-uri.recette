@@ -4,7 +4,6 @@
 NAMESRC=URI
 VERSION=1.60
 EXT=tar.gz
-NAMETGZ=perl-uri
 WGET=http://cpan.enstimac.fr/authors/id/G/GA/GAAS/$NAMESRC-$VERSION.$EXT
 DESC="Module URI pour Perl"
 

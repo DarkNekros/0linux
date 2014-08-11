@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=dialog
 VERSION=1.1_20120706
 EXT=tgz
-NAMETGZ=dialog
 WGET=ftp://invisible-island.net/$NAMESRC/$NAMESRC-$(echo $VERSION | tr '_' '-').$EXT
 DESC="Boîtes de dialogues pour terminal"
 

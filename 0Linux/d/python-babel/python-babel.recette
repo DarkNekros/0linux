@@ -4,7 +4,6 @@
 NAMESRC=Babel
 VERSION=0.9.6
 EXT=tar.gz
-NAMETGZ=python-babel
 WGET=http://ftp.edgewall.com/pub/babel/$NAMESRC-$VERSION.$EXT
 DESC="Outils d'internationalisation pour Python"
 

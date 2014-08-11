@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libshout
 VERSION=2.3.1
 EXT=tar.gz
-NAMETGZ=libshout
 WGET=http://downloads.xiph.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'interfaçage avec le protocole des serveurs Icecast"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=ocaml
 VERSION=3.12.1
 EXT=tar.bz2
-NAMETGZ=ocaml
 WGET=http://caml.inria.fr/pub/distrib/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Le langage Objective Caml"
 

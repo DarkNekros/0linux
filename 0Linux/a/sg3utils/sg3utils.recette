@@ -4,7 +4,6 @@
 NAMESRC=sg3_utils
 VERSION=1.35
 EXT=tar.xz
-NAMETGZ=sg3utils
 WGET=http://sg.danny.cz/sg/p/$NAMESRC-$VERSION.$EXT
 DESC="Outils pour le protocole SCSI"
 

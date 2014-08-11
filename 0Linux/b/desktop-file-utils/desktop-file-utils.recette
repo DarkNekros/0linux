@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=desktop-file-utils
 VERSION=0.21
 EXT=tar.xz
-NAMETGZ=desktop-file-utils
 WGET=http://www.freedesktop.org/software/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT
 DESC="Outils de gestion des fichiers du bureau"
 

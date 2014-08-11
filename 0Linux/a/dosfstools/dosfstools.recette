@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=dosfstools
 VERSION=3.0.20
 EXT=tar.xz
-NAMETGZ=dosfstools
 WGET=http://www.daniel-baumann.ch/files/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils pour les systèmes de fichiers FAT/DOS"
 

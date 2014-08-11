@@ -4,7 +4,6 @@
 NAMESRC=TermReadKey
 VERSION=2.30.02
 EXT=tar.gz
-NAMETGZ=perl-termreadkey
 WGET=http://search.cpan.org/CPAN/authors/id/S/ST/STSI/$NAMESRC-$VERSION.$EXT
 DESC="Module TermReadkey pour Perl"
 

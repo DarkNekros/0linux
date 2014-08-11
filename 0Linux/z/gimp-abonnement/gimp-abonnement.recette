@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=gimp-abonnement
 VERSION=1
 DESC="Le programme de manipulation d'images GIMP et ses programmes additionnels"
 EXTRADEPS="gimp gmic"

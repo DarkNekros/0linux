@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=sip
 VERSION=4.15.2
 EXT=tar.gz
-NAMETGZ=sip
 WGET=http://prdownloads.sourceforge.net/pyqt/$NAMESRC-$VERSION.$EXT
 DESC="Outils d'interfaçage pour Python"
 

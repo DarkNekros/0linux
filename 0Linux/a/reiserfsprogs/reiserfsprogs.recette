@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=reiserfsprogs
 VERSION=3.6.23
 EXT=tar.xz
-NAMETGZ=reiserfsprogs
 WGET=http://ftp.kernel.org/pub/linux/kernel/people/jeffm/$NAMESRC/v${VERSION}/$NAMESRC-$VERSION.$EXT
 DESC="Outils pour le système de fichiers ReiserFS"
 

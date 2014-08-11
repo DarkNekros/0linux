@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=mplayer-abonnement
 VERSION=1
 DESC="Le lecteur multimédia MPlayer, ses codecs et habillages"
 EXTRADEPS="mplayer mplayer-codecs mplayer-skins"

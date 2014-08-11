@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gsettings-desktop-schemas
 VERSION=3.10.1
 EXT=tar.xz
-NAMETGZ=gsettings-desktop-schemas
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Paramètres GSettings partagés pour le bureau"
 

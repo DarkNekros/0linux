@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libxklavier
 VERSION=5.3
 EXT=tar.xz
-NAMETGZ=libxklavier
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour claviers sous X"
 

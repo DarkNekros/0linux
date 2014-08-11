@@ -4,7 +4,6 @@
 NAMESRC=tiff
 VERSION=4.0.3
 EXT=tar.gz
-NAMETGZ=libtiff
 WGET=ftp://ftp.remotesensing.org/pub/libtiff/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques pour le format TIFF"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=makedepend
 VERSION=1.0.5
 EXT=tar.bz2
-NAMETGZ=makedepend
 WGET=http://xorg.freedesktop.org/releases/individual/util/$NAMESRC-$VERSION.$EXT
 DESC="Outils natifs de X11"
 

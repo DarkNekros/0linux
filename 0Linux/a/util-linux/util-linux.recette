@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=util-linux
-VERSION=2.24
-EXT=tar.xz
-NAMETGZ=util-linux
-WGET=http://www.kernel.org/pub/linux/utils/$NAMESRC/v$(echo ${VERSION} | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=2.25
+WGET=http://www.kernel.org/pub/linux/utils/$NAMESRC/v$(echo ${VERSION} | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Ensemble d'outils système vitaux"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -73,6 +69,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-rename \
 	--enable-reset \
 	--enable-schedutils \
+	--enable-vipw \
 	--enable-wall \
 	--enable-write \
 	--enable-use-tty-group \

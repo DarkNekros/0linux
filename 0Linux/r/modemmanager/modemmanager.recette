@@ -4,7 +4,6 @@
 NAMESRC=ModemManager
 VERSION=1.2.0
 EXT=tar.xz
-NAMETGZ=modemmanager
 WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Service de gestion de connexions réseau par modem"
 EXTRADEPS="libmbim libqmi"

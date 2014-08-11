@@ -4,7 +4,6 @@
 NAMESRC=Text-CharWidth
 VERSION=0.04
 EXT=tar.gz
-NAMETGZ=perl-text-charwidth
 WGET=http://search.cpan.org/CPAN/authors/id/K/KU/KUBOTA/$NAMESRC-$VERSION.$EXT
 DESC="Module Text-CharWidth pour Perl"
 

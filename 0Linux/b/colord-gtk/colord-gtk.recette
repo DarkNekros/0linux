@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=colord-gtk
 VERSION=0.1.25
 EXT=tar.xz
-NAMETGZ=colord-gtk
 WGET=http://www.freedesktop.org/software/colord/releases/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage GTK+ pour le démon colord"
 

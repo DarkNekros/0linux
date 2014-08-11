@@ -4,7 +4,6 @@
 NAMESRC=vde2
 VERSION=2.3.2
 EXT=tar.bz2
-NAMETGZ=vde
 WGET=http://prdownloads.sourceforge.net/vde/$NAMESRC-$VERSION.$EXT
 DESC="Distributeur Ethernet pour machines virtuelles"
 

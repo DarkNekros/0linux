@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=vcdimager
 VERSION=0.7.24
 EXT=tar.gz
-NAMETGZ=vcdimager
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Suite d'outils pour les formats Video CD et Super Video CD"
 

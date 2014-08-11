@@ -4,7 +4,6 @@
 NAMESRC=mp4v2
 VERSION=2.0.0
 EXT=tar.bz2
-NAMETGZ=libmp4v2
 WGET=http://mp4v2.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques MPEG-4"
 

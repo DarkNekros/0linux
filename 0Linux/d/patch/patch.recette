@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=patch
 VERSION=2.7.1
 EXT=tar.xz
-NAMETGZ=patch
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Programme d'édition de fichiers"
 

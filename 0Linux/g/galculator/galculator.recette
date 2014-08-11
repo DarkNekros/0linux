@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=galculator
 VERSION=r125
 EXT=tar.gz
-NAMETGZ=galculator
 #WGET=${WGET:-http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT}
 WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Calculatrice en GTK+"

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=a2ps
 VERSION=4.14
 EXT=tar.gz
-NAMETGZ=a2ps
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de conversion vers le format PostScript"
 

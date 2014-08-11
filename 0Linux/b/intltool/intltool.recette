@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=intltool
 VERSION=0.50.2
 EXT=tar.gz
-NAMETGZ=intltool
 WGET=http://edge.launchpad.net/$NAMESRC/trunk/$VERSION/+download/$NAMESRC-$VERSION.$EXT
 DESC="Outils d'internationalisation"
 

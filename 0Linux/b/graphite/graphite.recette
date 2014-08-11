@@ -4,7 +4,6 @@
 NAMESRC=graphite2
 VERSION=1.2.4
 EXT=tgz
-NAMETGZ=graphite
 WGET=http://downloads.sourceforge.net/project/silgraphite/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'analyse textuelle"
 

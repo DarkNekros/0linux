@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libpcap
 VERSION=1.3.0
 EXT=tar.gz
-NAMETGZ=libpcap
 WGET=http://www.tcpdump.org/release/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de capture du trafic réseau"
 

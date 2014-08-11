@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=thunar-archive-plugin
 VERSION=0.3.0
 EXT=tar.bz2
-NAMETGZ=thunar-archive-plugin
 WGET=http://archive.xfce.org/src/thunar-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Greffon de gestion d'archives pour Thunar"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libdvbpsi
 VERSION=0.2.2
 EXT=tar.bz2
-NAMETGZ=libdvbpsi
 WGET=http://download.videolan.org/pub/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques vidéo pour tables DVB PSI et TS"
 

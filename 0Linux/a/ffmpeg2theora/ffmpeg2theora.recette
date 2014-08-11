@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=ffmpeg2theora
 VERSION=0.29
 EXT=tar.bz2
-NAMETGZ=ffmpeg2theora
 WGET=http://v2v.cc/~j/$NAMESRC/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Convertisseur vers le format Ogg Theora"
 

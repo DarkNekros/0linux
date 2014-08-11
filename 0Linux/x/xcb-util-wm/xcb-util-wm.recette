@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xcb-util-wm
 VERSION=0.4.1
 EXT=tar.bz2
-NAMETGZ=xcb-util-wm
 WGET=http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'interfaçage pour X11"
 

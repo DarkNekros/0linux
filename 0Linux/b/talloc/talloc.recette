@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=talloc
 VERSION=2.1.0
 EXT=tar.gz
-NAMETGZ=talloc
 WGET=http://samba.org/ftp/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils d'allocation mémoire"
 

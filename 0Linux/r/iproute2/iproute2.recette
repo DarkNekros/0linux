@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=iproute2
 VERSION=3.3.0
 EXT=tar.xz
-NAMETGZ=iproute2
 WGET=http://kernel.org/pub/linux/utils/net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de routage d'IP"
 

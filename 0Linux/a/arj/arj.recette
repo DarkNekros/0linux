@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=arj
 VERSION=3.10.22
 EXT=tar.gz
-NAMETGZ=arj
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils de compression des archives au format ARJ"
 

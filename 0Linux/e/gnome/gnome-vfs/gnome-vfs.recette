@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gnome-vfs
 VERSION=2.24.4
 EXT=tar.bz2
-NAMETGZ=gnome-vfs
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Système d'accès aux systèmes de fichiers pour GNOME"
 EXTRADEPS="gnome-mime-data"

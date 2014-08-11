@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libtxc_dxtn
 VERSION=1.0.1
 EXT=tar.bz2
-NAMETGZ=libtxc_dxtn
 WGET=http://people.freedesktop.org/~cbrill//$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèquesde de compression de textures 3D pour Mesa"
 

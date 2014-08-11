@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=djvulibre
 VERSION=3.5.25.3
 EXT=tar.gz
-NAMETGZ=djvulibre
 WGET=http://prdownloads.sourceforge.net/djvu/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de manipulation de fichiers DéjaVu"
 

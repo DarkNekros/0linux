@@ -4,7 +4,6 @@
 NAMESRC=krb5
 VERSION=1.10.6
 EXT=tar.gz
-NAMETGZ=kerberos
 WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de cryptographie Kerberos"
 

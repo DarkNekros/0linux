@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xdm
 VERSION=1.1.11
 EXT=tar.bz2
-NAMETGZ=xdm
 WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT
 DESC="Gestionnaire de connexion de X11"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libavc1394
 VERSION=0.5.4
 EXT=tar.gz
-NAMETGZ=libavc1394
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour flux audio/vidéo via IEE1394"
 

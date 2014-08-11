@@ -4,7 +4,6 @@
 NAMESRC=isodate
 VERSION=0.4.9
 EXT=tar.gz
-NAMETGZ=python-isodate
 WGET=http://pypi.python.org/packages/source/i/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques temporelles ISO 8601 pour Python"
 

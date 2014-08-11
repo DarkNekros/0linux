@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=0ad
 VERSION=0.0.15
 EXT=tar.xz
-NAMETGZ=0ad
 WGET=(http://releases.wildfiregames.com/$NAMESRC-$VERSION-alpha-unix-build.$EXT
       http://releases.wildfiregames.com/$NAMESRC-$VERSION-alpha-unix-data.$EXT
      )

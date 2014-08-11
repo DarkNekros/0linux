@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libatasmart
 VERSION=0.19
 EXT=tar.xz
-NAMETGZ=libatasmart
 WGET=http://0pointer.de/public/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothqèeus d'accès aux informations S.M.A.R.T."
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=clutter-gtk
 VERSION=1.4.4
 EXT=tar.xz
-NAMETGZ=clutter-gtk
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage GTK+ pour clutter"
 

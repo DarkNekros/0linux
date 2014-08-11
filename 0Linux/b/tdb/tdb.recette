@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=tdb
 VERSION=1.2.13
 EXT=tar.gz
-NAMETGZ=tdb
 WGET=http://www.samba.org/ftp/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="API de base de données simplifiée pour Samba"
 

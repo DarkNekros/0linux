@@ -4,7 +4,6 @@
 NAMESRC=LRDF
 VERSION=0.5.0
 EXT=tar.gz
-NAMETGZ=liblrdf
 WGET=https://github.com/swh/LRDF/archive/$VERSION.$EXT
 DESC="Bibliothèques RDF supportant les greffons LADSPA"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=stellarium
 VERSION=0.12.4
 EXT=tar.gz
-NAMETGZ=stellarium
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Planétarium 3D avancé de référence"
 ########################################

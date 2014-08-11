@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=isl
 VERSION=0.12
 EXT=tar.bz2
-NAMETGZ=isl
 WGET=http://garage.kotnet.org/~skimo/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques arithmétiques"
 

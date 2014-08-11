@@ -4,7 +4,6 @@
 NAMESRC=raptor2
 VERSION=2.0.8
 EXT=tar.gz
-NAMETGZ=raptor
 WGET=(http://librdf.org/dist/source/raptor-1.4.21.$EXT
      http://librdf.org/dist/source/$NAMESRC-$VERSION.$EXT
     )

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=eog-plugins
 VERSION=3.10.1
 EXT=tar.xz
-NAMETGZ=eog-plugins
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de greffons pour la visionneuse de GNOME"
 

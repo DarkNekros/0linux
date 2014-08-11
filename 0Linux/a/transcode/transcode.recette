@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=transcode
 VERSION=1.1.7
 EXT=tar.bz2
-NAMETGZ=transcode
 WGET=https://bitbucket.org/france/transcode-tcforge/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Outils de codage-décodage de formats multimédia"
 

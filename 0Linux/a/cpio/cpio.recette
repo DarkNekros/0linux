@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=cpio
 VERSION=2.11
 EXT=tar.bz2
-NAMETGZ=cpio
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'archivage et de sauvegarde"
 

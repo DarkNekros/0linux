@@ -4,7 +4,6 @@
 NAMESRC=libsgmls-perl
 VERSION=1.03ii
 EXT=tar.gz
-NAMETGZ=perl-libsgmls
 WGET=http://ftp.de.debian.org/debian/pool/main/libs/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT
 DESC="Module SGMLS pour Perl"
 

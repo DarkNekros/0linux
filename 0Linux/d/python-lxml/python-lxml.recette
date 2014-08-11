@@ -4,7 +4,6 @@
 NAMESRC=lxml
 VERSION=2.3.6
 EXT=tgz
-NAMETGZ=python-lxml
 WGET=http://lxml.de/files/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage Python des bibliothèques XML et XSLT"
 

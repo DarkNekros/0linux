@@ -4,7 +4,6 @@
 NAMESRC=razorqt
 VERSION=0.5.2
 EXT=tar.bz2
-NAMETGZ=razor-qt
 WGET=http://razor-qt.org/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Environnement de bureau très léger basé sur Qt"
 ########################################

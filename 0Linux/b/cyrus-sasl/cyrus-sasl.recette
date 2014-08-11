@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=cyrus-sasl
 VERSION=2.1.26
 EXT=tar.gz
-NAMETGZ=cyrus-sasl
 WGET=ftp://ftp.cyrusimap.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Système d'authentification chiffrée pour la messagerie électronique"
 

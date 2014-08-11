@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=nfs-utils
 VERSION=1.2.8
 EXT=tar.bz2
-NAMETGZ=nfs-utils
 WGET=http://prdownloads.sourceforge.net/nfs/$NAMESRC-$VERSION.$EXT
 DESC="Outils de partage NFS"
 

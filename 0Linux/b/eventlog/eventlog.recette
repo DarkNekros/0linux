@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=eventlog
 VERSION=0.2.12
 EXT=tar.gz
-NAMETGZ=eventlog
 WGET=http://www.balabit.com/downloads/files/eventlog/$(echo $VERSION | cut -d'.' -f1-2)/${NAMESRC}_${VERSION}.${EXT}
 DESC="Bibliothèques de formatage et de structuration de jounaux"
 

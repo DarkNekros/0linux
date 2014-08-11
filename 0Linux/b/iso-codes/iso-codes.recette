@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=iso-codes
 VERSION=3.40
 EXT=tar.xz
-NAMETGZ=iso-codes
 WGET=http://ftp.de.debian.org/debian/pool/main/i/$NAMESRC/${NAMESRC}_${VERSION}.orig.$EXT
 DESC="Les listes des codes ISO et leur traduction"
 

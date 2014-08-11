@@ -4,7 +4,6 @@
 NAMESRC=Imaging
 VERSION=1.1.7
 EXT=tar.gz
-NAMETGZ=pil
 WGET=http://effbot.org/downloads/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques Python de traitement des images"
 

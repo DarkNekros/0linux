@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=dotconf
 VERSION=1.1.0
 EXT=tar.gz
-NAMETGZ=dotconf
 WGET=http://www.azzit.de/dotconf/download/v1.1/$NAMESRC-$VERSION.$EXT
 DESC="Analyseur de fichiers de configurations"
 

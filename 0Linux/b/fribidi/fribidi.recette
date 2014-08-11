@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=fribidi
 VERSION=0.19.5
 EXT=tar.bz2
-NAMETGZ=fribidi
 WGET=http://www.fribidi.org/download/$NAMESRC-$VERSION.$EXT
 DESC="Une implémentation libre de l'algorithme Unicode bi-directionnel"
 

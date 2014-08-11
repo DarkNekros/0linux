@@ -4,7 +4,6 @@
 NAMESRC=a52dec
 VERSION=0.7.4
 EXT=tar.gz
-NAMETGZ=liba52
 WGET=http://liba52.sourceforge.net/files/$NAMESRC-$VERSION.$EXT
 DESC="Décodeur de flux ATSC A/52 (« AC-3 »)"
 

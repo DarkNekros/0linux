@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=raw-thumbnailer
 VERSION=0.2.1
 EXT=tar.gz
-NAMETGZ=raw-thumbnailer
 WGET=http://raw-thumbnailer.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Outil de génération de vignettes pour fichiers RAW"
 EXTRADEPS="libopenraw"

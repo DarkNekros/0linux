@@ -4,7 +4,6 @@
 NAMESRC=ladspa_sdk
 VERSION=1.13
 EXT=tgz
-NAMETGZ=ladspa
 WGET=http://www.ladspa.org/download/${NAMESRC}_${VERSION}.$EXT
 DESC="Bibliothèques pour greffons audio sous Linux"
 

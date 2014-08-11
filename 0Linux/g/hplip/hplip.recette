@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=hplip
 VERSION=3.13.10
 EXT=tar.gz
-NAMETGZ=hplip
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble d'outils et de pilotes pour périphériques HP"
 

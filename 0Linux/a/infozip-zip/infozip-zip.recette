@@ -4,7 +4,6 @@
 NAMESRC=zip
 VERSION=3.0
 EXT=tgz
-NAMETGZ=infozip-zip
 WGET=ftp://ftp.info-zip.org/pub/infozip/src/${NAMESRC}$(echo $VERSION | tr -d '.').tgz
 DESC="Outil de compression 'zip'"
 

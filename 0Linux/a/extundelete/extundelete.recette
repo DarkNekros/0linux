@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=extundelete
 VERSION=0.2.4
 EXT=tar.bz2
-NAMETGZ=extundelete
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil de récupération de fichiers effacés par erreur"
 

@@ -4,7 +4,6 @@
 NAMESRC=Littre
 VERSION=2.0
 EXT=tar.bz2
-NAMETGZ=littre
 WGET=https://dictionnaire-le-littre.googlecode.com/files/$NAMESRC-source-$VERSION.$EXT
 DESC="Client Qt pour le dictionnaire « Le Littré »."
 

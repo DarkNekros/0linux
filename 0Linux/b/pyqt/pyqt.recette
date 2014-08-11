@@ -4,7 +4,6 @@
 NAMESRC=PyQt-x11-gpl
 VERSION=4.9.6
 EXT=tar.gz
-NAMETGZ=pyqt
 WGET=http://prdownloads.sourceforge.net/pyqt/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage python pour qt"
 

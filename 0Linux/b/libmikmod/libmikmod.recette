@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libmikmod
 VERSION=3.3.1
 EXT=tar.bz2
-NAMETGZ=libmikmod
 WGET=http://mikmod.shlomifish.org/files/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques pour modules audio (dont it, s3m et xm)"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libsoup
 VERSION=2.44.2
 EXT=tar.xz
-NAMETGZ=libsoup
 WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques HTTP implémentée en C"
 

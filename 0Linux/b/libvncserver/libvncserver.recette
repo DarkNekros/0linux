@@ -4,7 +4,6 @@
 NAMESRC=LibVNCServer
 VERSION=0.9.9
 EXT=tar.gz
-NAMETGZ=libvncserver
 WGET=http://prdownloads.sourceforge.net/libvncserver/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour l''implémentation de serveurs VNC"
 

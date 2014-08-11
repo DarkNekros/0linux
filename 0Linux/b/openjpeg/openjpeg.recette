@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=openjpeg
 VERSION=2.0.0
 EXT=tar.gz
-NAMETGZ=openjpeg
 WGET=(http://openjpeg.googlecode.com/files/$NAMESRC-1.5.1.$EXT
       http://openjpeg.googlecode.com/files/$NAMESRC-$VERSION.$EXT
      )

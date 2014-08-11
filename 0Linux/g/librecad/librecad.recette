@@ -4,7 +4,6 @@
 NAMESRC=LibreCAD
 VERSION=2.0.2
 EXT=tar.gz
-NAMETGZ=librecad
 WGET=https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.$EXT
 DESC="Logiciel de CAO/DAO complet"
 

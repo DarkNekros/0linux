@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=blender-abonnement
 VERSION=1
 DESC="Le modéliseur 3D avancé de référence et ses bibliothèques"
 EXTRADEPS="blender opencollada opencolorio openimageio"

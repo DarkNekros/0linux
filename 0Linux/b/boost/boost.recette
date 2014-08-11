@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=boost
 VERSION=1.55.0
 EXT=tar.bz2
-NAMETGZ=boost
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_$(echo $VERSION | sed 's/\./_/g').$EXT
 DESC="Ensemble de bibliothèques C++ portables"
 

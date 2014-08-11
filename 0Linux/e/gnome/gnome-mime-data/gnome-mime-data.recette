@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gnome-mime-data
 VERSION=2.18.0
 EXT=tar.bz2
-NAMETGZ=gnome-mime-data
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Base de types MIME et d'applications pour GNOME"
 EXTRADEPS="shared-mime-info"

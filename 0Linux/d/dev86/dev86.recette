@@ -4,7 +4,6 @@
 NAMESRC=Dev86src
 VERSION=0.16.19
 EXT=tar.gz
-NAMETGZ=dev86
 WGET=http://www.debath.co.uk/dev86/$NAMESRC-$VERSION.$EXT
 DESC="Compilateur, assembleur et éditeur de liens 8086"
 

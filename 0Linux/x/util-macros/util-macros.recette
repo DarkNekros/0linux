@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=util-macros
 VERSION=1.19.0
 EXT=tar.bz2
-NAMETGZ=util-macros
 WGET=http://xorg.freedesktop.org/releases/individual/util/$NAMESRC-$VERSION.$EXT
 DESC="Outils natifs de X11"
 

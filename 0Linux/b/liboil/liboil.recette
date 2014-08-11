@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=liboil
 VERSION=0.3.17
 EXT=tar.gz
-NAMETGZ=liboil
 WGET=http://liboil.freedesktop.org/download/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de fonctions C optimisées"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libvisual
 VERSION=0.4.0
 EXT=tar.gz
-NAMETGZ=libvisual
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'abstraction pour applications audio et greffons visuels"
 

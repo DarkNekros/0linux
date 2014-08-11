@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libspectre
 VERSION=0.2.7
 EXT=tar.gz
-NAMETGZ=libspectre
 WGET=http://libspectre.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de manipulation de fichiers Postscript"
 

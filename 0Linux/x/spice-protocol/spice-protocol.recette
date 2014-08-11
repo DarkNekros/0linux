@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=spice-protocol
 VERSION=0.12.6
 EXT=tar.bz2
-NAMETGZ=spice-protocol
 WGET=http://www.spice-space.org/download/releases/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers d'en-têtes de protocole pour X11"
 

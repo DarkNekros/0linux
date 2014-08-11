@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libusb-compat
 VERSION=0.1.5
 EXT=tar.bz2
-NAMETGZ=libusb-compat
 WGET=http://prdownloads.sourceforge.net/libusb/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de compatibilité USB"
 

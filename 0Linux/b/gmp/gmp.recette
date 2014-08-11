@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=gmp
 VERSION=5.1.2
 EXT=tar.xz
-NAMETGZ=gmp
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques arithmétiques « GNU Multiple Precision »"
 

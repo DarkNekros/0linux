@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xdg-utils
 VERSION=1.1.0_rc1
 EXT=tar.bz2
-NAMETGZ=xdg-utils
 WGET=ftp://ftp.slackware.at/slackware-13.37/source/x/xdg-utils/${NAMESRC}-$(echo $VERSION | sed 's/_/\-/').$EXT
 DESC="Outils d'intégration Freedesktop pour applications"
 

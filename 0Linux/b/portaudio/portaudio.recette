@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=portaudio
 VERSION=19_20140130
 WGET=http://www.portaudio.com/archives/pa_stable_v${VERSION}.tgz
 DESC="Outils et bibliothèques audio"

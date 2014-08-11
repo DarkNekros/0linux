@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libcuefile
 VERSION=r475
 EXT=tar.gz
-NAMETGZ=libcuefile
 WGET=http://files.musepack.net/source/${NAMESRC}_${VERSION}.$EXT
 DESC="Outils et bibliothèques Musepack pour les fichiers 'cue'"
 

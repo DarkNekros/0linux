@@ -4,7 +4,6 @@
 NAMESRC=sozi
 VERSION=11.10
 EXT=tar.xz
-NAMETGZ=inkscape-sozi
 WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Greffon de présentations animées pour Inkscape"
 

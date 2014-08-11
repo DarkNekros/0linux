@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=tango-icon-theme
 VERSION=0.8.90
 EXT=tar.bz2
-NAMETGZ=tango-icon-theme
 WGET=http://tango.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Le thème d'icônes «Tango »"
 

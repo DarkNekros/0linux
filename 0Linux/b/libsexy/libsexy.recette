@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libsexy
 VERSION=0.1.11
 EXT=tar.bz2
-NAMETGZ=libsexy
 WGET=http://releases.chipx86.com/$NAMESRC/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'éléments supplémentaires pour GTK+"
 

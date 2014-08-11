@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=cairo
 VERSION=1.12.16
 EXT=tar.xz
-NAMETGZ=cairo
 WGET=http://cairographics.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques graphiques 2D"
 

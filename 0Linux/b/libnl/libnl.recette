@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libnl
 VERSION=3.2.22
 EXT=tar.gz
-NAMETGZ=libnl
 WGET=http://www.infradead.org/~tgr/$NAMESRC/files/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques réseau pour le protocole netlink"
 

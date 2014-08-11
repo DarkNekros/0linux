@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=expect
 VERSION=5.45
 EXT=tar.gz
-NAMETGZ=expect
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}${VERSION}.$EXT
 DESC="Ensemble de tests unitaires pour C"
 

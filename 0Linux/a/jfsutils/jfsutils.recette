@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=jfsutils
 VERSION=1.1.15
 EXT=tar.gz
-NAMETGZ=jfsutils
 WGET=http://jfs.sourceforge.net/project/pub/$NAMESRC-$VERSION.$EXT
 DESC="Outils pour le système de fichiers JFS d'IBM"
 

@@ -4,7 +4,6 @@
 NAMESRC=speech-dispatcher
 VERSION=0.7.1
 EXT=tar.gz
-NAMETGZ=speechd
 WGET=http://devel.freebsoft.org/pub/projects/speechd/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de synthèse vocale"
 

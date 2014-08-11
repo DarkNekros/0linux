@@ -4,7 +4,6 @@
 NAMESRC=XML-Simple
 VERSION=2.20
 EXT=tar.gz
-NAMETGZ=perl-xml-simple
 WGET=http://cpan.cict.fr/authors/id/G/GR/GRANTM/$NAMESRC-$VERSION.$EXT
 DESC="Module XML-Simple pour Perl"
 

@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=apr-util
 VERSION=1.5.1
-EXT=tar.bz2
-NAMETGZ=apr-util
-WGET=http://apache.crihan.fr/dist/apr/$NAMESRC-$VERSION.$EXT
+WGET=http://apache.crihan.fr/dist/apr/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils pour APR"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -15,8 +11,9 @@ cflags
 
 # On force les chemins pour contenir $LIBDIRSUFFIX :
 sed -i -e "/expat_\(ldflags\|libtool\)/s:/lib:&${LIBDIRSUFFIX}:" \
-	-e "s:\$\(withval\|found\)/lib:&${LIBDIRSUFFIX}:g" configure
-	
+	-e "s:\$\(withval\|found\)/lib:&${LIBDIRSUFFIX}:g" \
+	configure
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \

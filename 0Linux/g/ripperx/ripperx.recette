@@ -4,7 +4,6 @@
 NAMESRC=ripperX
 VERSION=2.7.3
 EXT=tar.gz
-NAMETGZ=ripperx
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'extraction de CD audio (ou « rip ») vers Ogg, MP3 ou FLAC"
 

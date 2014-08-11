@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=safecopy
 VERSION=1.7
 EXT=tar.gz
-NAMETGZ=safecopy
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil de sauvegarde de médias endommagés"
 

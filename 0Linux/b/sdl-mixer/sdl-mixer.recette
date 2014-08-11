@@ -4,7 +4,6 @@
 NAMESRC=SDL_mixer
 VERSION=2.0.0
 EXT=tar.gz
-NAMETGZ=sdl-mixer
 WGET=(http://www.libsdl.org/projects/$NAMESRC/release/$(echo $NAMESRC | sed 's@SDL@SDL2@')-$VERSION.$EXT
       http://www.libsdl.org/projects/$NAMESRC/release/$NAMESRC-1.2.12.$EXT
      )

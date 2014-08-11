@@ -4,7 +4,6 @@
 NAMESRC=aspell6-en
 VERSION=7.1
 EXT=tar.bz2
-NAMETGZ=aspell-en
 WGET=http://ftp.gnu.org/gnu/aspell/dict/en/$NAMESRC-$VERSION-0.$EXT} # !
 DESC="Outils de correction orthographique et dictionnaires anglais"
 

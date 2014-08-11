@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xfce4-terminal
 VERSION=0.6.3
 EXT=tar.bz2
-NAMETGZ=xfce4-terminal
 WGET=http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Émulateur de terminal pour Xfce"
 

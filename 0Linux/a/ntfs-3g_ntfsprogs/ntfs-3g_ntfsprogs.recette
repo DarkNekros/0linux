@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=ntfs-3g_ntfsprogs
 VERSION=2014.2.15
 EXT=tgz
-NAMETGZ=ntfs-3g_ntfsprogs
 WGET=http://tuxera.com/opensource/$NAMESRC-$VERSION.$EXT
 DESC="Pilote en lecture-écriture et outils pour le système de fichiers NTFS"
 

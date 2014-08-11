@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=farstream
 VERSION=0.2.2
 EXT=tar.gz
-NAMETGZ=farstream
 WGET=(http://freedesktop.org/software/farstream/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
       http://freedesktop.org/software/farstream/releases/$NAMESRC/$NAMESRC-0.1.2.$EXT
      )

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=pycairo
 VERSION=1.10.0
 EXT=tar.bz2
-NAMETGZ=pycairo
 WGET=(http://cairographics.org/releases/py2cairo-$VERSION.$EXT
       http://cairographics.org/releases/$NAMESRC-$VERSION.$EXT
      )

@@ -4,7 +4,6 @@
 NAMESRC=pyOpenSSL
 VERSION=0.13
 EXT=tar.gz
-NAMETGZ=pyopenssl
 WGET=http://pypi.python.org/packages/source/p/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage Python pour OpenSSL"
 

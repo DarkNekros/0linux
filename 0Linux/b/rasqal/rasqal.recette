@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=rasqal
 VERSION=0.9.30
 EXT=tar.gz
-NAMETGZ=rasqal
 WGET=http://download.librdf.org/source/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'analyse RDF"
 

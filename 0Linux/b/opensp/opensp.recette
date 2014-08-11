@@ -4,7 +4,6 @@
 NAMESRC=OpenSP
 VERSION=1.5.2
 EXT=tar.gz
-NAMETGZ=opensp
 WGET=http://prdownloads.sourceforge.net/openjade/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'analyse et de validation SGML et XML"
 

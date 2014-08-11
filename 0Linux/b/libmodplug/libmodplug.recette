@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libmodplug
 VERSION=0.8.8.4
 EXT=tar.gz
-NAMETGZ=libmodplug
 WGET=http://prdownloads.sourceforge.net/modplug-xmms/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques pour le format ModPlug"
 

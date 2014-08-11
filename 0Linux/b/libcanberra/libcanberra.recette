@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libcanberra
 VERSION=0.30
 EXT=tar.xz
-NAMETGZ=libcanberra
 WGET=http://0pointer.de/lennart/projects/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Implémentation de la XDG Sound Specification pour les évènements audio"
 

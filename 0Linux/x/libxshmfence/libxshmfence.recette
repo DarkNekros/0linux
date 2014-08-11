@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libxshmfence
 VERSION=1.1
 EXT=tar.bz2
-NAMETGZ=libxshmfence
 WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'accès pour X11"
 

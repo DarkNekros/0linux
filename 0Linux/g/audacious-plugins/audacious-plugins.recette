@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=audacious-plugins
 VERSION=3.2.4
 EXT=tar.gz
-NAMETGZ=audacious-plugins
 WGET=http://distfiles.audacious-media-player.org/$NAMESRC-$VERSION.$EXT
 DESC="Greffons pour Audacious"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=iana-etc
 VERSION=2.30
 EXT=tar.bz2
-NAMETGZ=iana-etc
 WGET=http://sethwklein.net/$NAMESRC-$VERSION.$EXT
 DESC="Fichiers de définitions réseau de l'IANA"
 

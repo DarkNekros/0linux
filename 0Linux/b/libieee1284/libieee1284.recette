@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libieee1284
 VERSION=0.2.11
 EXT=tar.bz2
-NAMETGZ=libieee1284
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de manipulation de périphériques sur port parallèle"
 

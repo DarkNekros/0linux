@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=lshw
 VERSION=B.02.17
 EXT=tar.gz
-NAMETGZ=lshw
 WGET=http://ezix.org/software/files/$NAMESRC-$VERSION.$EXT
 DESC="Outil d'exploration des informations sur le matériel "
 

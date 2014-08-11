@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=duma
 VERSION=2.5.15
 EXT=tar.gz
-NAMETGZ=duma
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_$(echo ${VERSION} | tr '.' '_').$EXT
 DESC="Outil de surveillance de gestion de mémoire"
 

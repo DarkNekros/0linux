@@ -4,7 +4,6 @@
 NAMESRC=apache-log4cxx
 VERSION=0.10.0
 EXT=tar.gz} 
-NAMETGZ=log4cxx
 WGET=http://apache.cict.fr/logging/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de journalisation avancée pour C++"
 

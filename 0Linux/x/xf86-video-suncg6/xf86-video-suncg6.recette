@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xf86-video-suncg6
 VERSION=1.1.2
 EXT=tar.bz2
-NAMETGZ=xf86-video-suncg6
 WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.$EXT
 DESC="Pilotes graphiques pour X11"
 

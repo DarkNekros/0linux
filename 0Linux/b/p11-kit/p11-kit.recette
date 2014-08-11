@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=p11-kit
 VERSION=0.20.1
 EXT=tar.gz
-NAMETGZ=p11-kit
 WGET=http://p11-glue.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour les modules PKCS#11"
 

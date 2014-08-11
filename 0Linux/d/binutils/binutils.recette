@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=binutils
 VERSION=2.23.2
 EXT=tar.bz2
-NAMETGZ=binutils
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Binaires de développement GNU"
 

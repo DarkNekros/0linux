@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=sox
 VERSION=14.4.1
 EXT=tar.bz2
-NAMETGZ=sox
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Convertisseur et outil de traitement audio multi-formats"
 

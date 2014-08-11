@@ -4,7 +4,6 @@
 NAMESRC=wireless_tools
 VERSION=29
 EXT=tar.gz
-NAMETGZ=wireless-tools
 WGET=http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/${NAMESRC}.${VERSION}.$EXT
 DESC="Outils pour réseaux sans fil"
 

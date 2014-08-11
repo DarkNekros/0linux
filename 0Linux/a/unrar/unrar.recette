@@ -4,7 +4,6 @@
 NAMESRC=unrarsrc
 VERSION=5.1.2
 EXT=tar.gz
-NAMETGZ=unrar
 WGET=http://www.rarlab.com/rar/$NAMESRC-$VERSION.$EXT
 DESC="Décompresseur d'archives RAR"
 

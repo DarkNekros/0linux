@@ -4,7 +4,6 @@
 NAMESRC=clucene-core
 VERSION=2.3.3.4
 EXT=tar.gz
-NAMETGZ=clucene
 WGET=http://prdownloads.sourceforge.net/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Moteur de recherche de texte avancé et rapide"
 

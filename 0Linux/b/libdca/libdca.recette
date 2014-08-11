@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libdca
 VERSION=0.0.5
 EXT=tar.bz2
-NAMETGZ=libdca
 WGET=http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques pour le traitement audio DTS"
 

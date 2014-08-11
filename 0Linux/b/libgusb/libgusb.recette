@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libgusb
 VERSION=0.1.6
 EXT=tar.xz
-NAMETGZ=libgusb
 WGET=http://people.freedesktop.org/~hughsient/releases/$NAMESRC-$VERSION.$EXT
 DESC="Interfaçage Glib pour libusb"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=grilo-plugins
 VERSION=0.2.12
 EXT=tar.xz
-NAMETGZ=grilo-plugins
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Ensemble de greffons d'accès aux contenus multimédia pour Grilo"
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libofa
 VERSION=0.9.3
 EXT=tar.gz
-NAMETGZ=libofa
 WGET=http://musicip-libofa.googlecode.com/files/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de génération d'empreintes audio"
 

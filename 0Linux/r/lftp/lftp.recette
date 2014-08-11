@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=lftp
 VERSION=4.4.15
 EXT=tar.xz
-NAMETGZ=lftp
 WGET=http://lftp.cybermirror.org/$NAMESRC-$VERSION.$EXT
 DESC="Client HTTP et FTP en ligne de commande"
 

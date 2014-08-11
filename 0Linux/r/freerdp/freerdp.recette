@@ -4,7 +4,6 @@
 NAMESRC=FreeRDP
 VERSION=1.1.0beta_20130710
 EXT=tar.gz
-NAMETGZ=freerdp
 WGET=https://github.com/$NAMESRC/$NAMESRC/archive/780d451afad21a22d2af6bd030ee71311856f038.$EXT
 DESC="Un client RDP pour l'accès aux bureaux à distance"
 

@@ -4,7 +4,6 @@
 NAMESRC=gettext
 VERSION=1.05
 EXT=tar.gz
-NAMETGZ=perl-gettext
 WGET=http://search.cpan.org/CPAN/authors/id/P/PV/PVANDRY/$NAMESRC-$VERSION.$EXT
 DESC="Module gettext pour Perl"
 

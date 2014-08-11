@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=ekd
 VERSION=3.1.2
 EXT=tar.bz2
-NAMETGZ=ekd
 WGET=http://download.tuxfamily.org/ekdforum/ekd/appli/linux/sources/ekd_linux_source_$(echo ${VERSION} | tr '.' '_')_20120814.$EXT} # Version différente !
 DESC="Logiciel de post-production vidéo"
 EXTRADEPS="gmic"

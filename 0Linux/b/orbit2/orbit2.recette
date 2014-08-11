@@ -4,7 +4,6 @@
 NAMESRC=ORBit2
 VERSION=2.14.19
 EXT=tar.bz2
-NAMETGZ=orbit2
 WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Outils et bibliothèques CORBA"
 

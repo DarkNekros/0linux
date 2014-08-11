@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=stk
 VERSION=4.4.4
 EXT=tar.gz
-NAMETGZ=stk
 WGET=http://ccrma.stanford.edu/software/$NAMESRC/release/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques de génération de son"
 ########################################

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=tftp-hpa
 VERSION=5.2
 EXT=tar.xz
-NAMETGZ=tftp-hpa
 WGET=https://www.kernel.org/pub/software/network/tftp/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Serveur de fichiers trivial pour le démarrage réseau"
 

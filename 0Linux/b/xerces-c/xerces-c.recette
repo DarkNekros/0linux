@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xerces-c
 VERSION=3.1.1
 EXT=tar.gz
-NAMETGZ=xerces-c
 WGET=http://wwwftp.ciril.fr/pub/apache/xerces/c/3/sources/$NAMESRC-$VERSION.$EXT
 DESC="Analyseur XML de validation"
 

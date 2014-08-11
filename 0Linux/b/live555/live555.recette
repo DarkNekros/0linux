@@ -4,7 +4,6 @@
 NAMESRC=live
 VERSION=2013.03.07
 EXT=tar.gz
-NAMETGZ=live555
 WGET=http://www.live555.com/liveMedia/public/${NAMESRC}.${VERSION}.$EXT
 DESC="Outils et bibliothèque pour flux en streaming"
 

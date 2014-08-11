@@ -4,7 +4,6 @@
 NAMESRC=acpica-unix
 VERSION=20121018
 EXT=tar.gz
-NAMETGZ=iasl
 WGET=http://acpica.org/download/$NAMESRC-$VERSION.$EXT
 DESC="Compilateur ACPI"
 

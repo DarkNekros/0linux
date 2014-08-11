@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=xcb-util-keysyms
 VERSION=0.3.9
 EXT=tar.bz2
-NAMETGZ=xcb-util-keysyms
 WGET=http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'interfaçage pour X11"
 

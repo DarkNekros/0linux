@@ -4,7 +4,6 @@
 NAMESRC=polkit-kde-agent-1
 VERSION=0.99.0
 EXT=tar.bz2
-NAMETGZ=polkit-kde-agent
 WGET=ftp://ftp.kde.org/pub/kde/stable/apps/KDE4.x/admin/$NAMESRC-$VERSION.$EXT
 DESC="Authentification à chaud sous KDE"
 EXTRADEPS="kde-runtime"

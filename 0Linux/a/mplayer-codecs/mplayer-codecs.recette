@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=mplayer-codecs
 VERSION=20071007
-NAMETGZ=mplayer-codecs
 cflags
 if [ "${PKGARCH}" = "i686" ]; then
 	WGET=(http://www.mplayerhq.hu/MPlayer/releases/codecs/essential-$VERSION.tar.bz2

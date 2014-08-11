@@ -4,7 +4,6 @@
 NAMESRC=dejavu-fonts-ttf
 VERSION=2.33
 EXT=tar.bz2
-NAMETGZ=dejavu-fonts
 WGET=http://prdownloads.sourceforge.net/dejavu/$NAMESRC-$VERSION.$EXT
 DESC="Polices TrueType pour X"
 

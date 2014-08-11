@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=netcat
 VERSION=0.7.1
 EXT=tar.bz2
-NAMETGZ=netcat
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outil de lecture-écriture réseau"
 

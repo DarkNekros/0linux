@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=dash
 VERSION=0.5.7
 EXT=tar.gz
-NAMETGZ=dash
 WGET=http://gondor.apana.org.au/~herbert/dash/files/$NAMESRC-$VERSION.$EXT
 DESC="Interpréteur (ou « shell ») léger alternatif à Bash et compatible POSIX"
 

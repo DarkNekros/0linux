@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=libdiscid
 VERSION=0.3.2
 EXT=tar.gz
-NAMETGZ=libdiscid
 WGET=http://ftp.musicbrainz.org/pub/musicbrainz/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Bibliothèques d'identification de disques optiques (DiscID)"
 

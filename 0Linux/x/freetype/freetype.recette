@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=freetype
 VERSION=2.5.3
 EXT=tar.bz2
-NAMETGZ=freetype
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Moteur de rendu pour polices TrueType"
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMETGZ=opt-abonnement
 VERSION=11
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \

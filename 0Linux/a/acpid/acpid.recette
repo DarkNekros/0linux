@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=acpid
 VERSION=2.0.22
 EXT=tar.xz
-NAMETGZ=acpid
 WGET=http://prdownloads.sourceforge.net/${NAMESRC}2/$NAMESRC-$VERSION.$EXT
 DESC="Gestion de l'énergie ACPI"
 
