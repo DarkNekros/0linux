@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.7.3
+VERSION=1.7.5
 WGET=http://www.cups.org/software/$VERSION/$NAMESRC-$VERSION-source.tar.bz2
 DESC="Le système d'impression « Common Unix Printing System »"
 
