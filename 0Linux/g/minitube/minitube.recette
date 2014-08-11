@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=minitube
-VERSION=2.1.6
-EXT=tar.gz
-NAMETGZ=minitube
+VERSION=2.2.0
 # L'archive fournis par le site upstream ne contiens plus de versions : inutilisable
-WGET=http://0linux.geoffray-levasseur.org/src/$NAMESRC-$VERSION.$EXT
+WGET=http://0linux.geoffray-levasseur.org/src/$NAMESRC-$VERSION.tar.xz
 DESC="Client Youtube natif : regardez vos vidéos sans FlashPlayer"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
