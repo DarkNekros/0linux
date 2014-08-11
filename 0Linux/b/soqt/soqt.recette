@@ -10,6 +10,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# soqt-config ne prend pas en compte correctement notre prefix :
+sed -i '/^prefix/c prefix="/usr/"' src/Inventor/Qt/common/sogui-config.in
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -26,13 +29,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--disable-dependency-tracking \
 	--enable-shared \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-qt=/usr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-# soqt-config ne prend pas en compte correctement notre prefix :
-sed -i -e "s@\`cd \"\$wd/..\"; pwd\`@\"/usr/\"@" $PKG/usr/bin/soqt-config
 
 installer_doc
 creer_post_installation
