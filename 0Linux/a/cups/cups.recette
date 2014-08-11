@@ -87,7 +87,8 @@ fakeroot make install BUILDROOT=${PKG}
 
 # On copie le script d'initialisation au bon endroit et on nettoie :
 mkdir -p ${PKG}/etc/rc.d
-mv ${PKG}/etc/rc.d/init.d/cups ${PKG}/etc/rc.d/rc.cups
+mv ${PKG}/etc/rc.d/init.d/cups ${PKG}/etc/rc.d/rc.cups || true
+mv ${PKG}/etc/init.d/cups ${PKG}/etc/rc.d/rc.cups || true
 chmod 755 ${PKG}/etc/rc.d/rc.cups
 rm -rf ${PKG}/etc/{initd.d,rc{0,2,3,5}.d}
 
