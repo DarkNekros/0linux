@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.2.2
+WGET=http://download.qt-project.org/official_releases/pyside/$NAMESRC-qt4.8+${VERSION}.tar.bz2
+DESC="Interfaçage Qt pour Python et ses outils de construction"
+EXTRADEPS="shiboken"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On doit compiler dans un répertoire dédié :
+mkdir -p build && cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake \
+	-DBUILD_TESTS=OFF \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-DCMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DENABLE_GCC_OPTIMIZATION=ON \
+	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
