@@ -35,6 +35,15 @@ fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
+
+# On complète la post-installation : 
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On vérifie les greffons :
+dot -c &>/dev/null 2>&1
+
+EOF
+
 stripper
 empaqueter
 
