@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.2.2
+WGET=http://download.qt-project.org/official_releases/pyside/$NAMESRC-$VERSION.tar.bz2
+DESC="Bibliothèque de gestion des liens Python"
+EXTRADEPS="python"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation pour Pÿthon 3.x.x :
+mkdir -p build_python3 && cd build_python3
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_BUILD_TYPE=Release \
+	-D LIB_SUFFIX=$LIBDIRSUFFIX \
+	-D BUILD_TESTS=OFF \
+	-D USE_PYTHON3=yes \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ..
+
+# Compilation pour Python 2.x.x :
+mkdir -p build_python2 && cd build_python2
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_BUILD_TYPE=Release \
+	-D LIB_SUFFIX=$LIBDIRSUFFIX \
+	-D BUILD_TESTS=OFF \
+	-D PYTHON_EXECUTABLE=/usr/bin/python2 \
+	-D PYTHON_LIBRARY=/usr/lib${LIBDIRSUFFIX}/libpython2.7.so \
+	-D PYTHON_INCLUDE_DIR=/usr/include/python2.7 \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ..
+
+# Installation manuelle des fichiers cmake et pkgconfig:
+mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/{cmake/Shiboken-${VERSION},pkgconfig}
+cp -a build_python2/data/ShibokenConfig-python2.7.cmake \
+	$PKG/usr/lib${LIBDIRSUFFIX}/cmake/Shiboken-$VERSION/
+cp -a build_python3/data/{ShibokenConfig.cmake,ShibokenConfigVersion.cmake,ShibokenConfig.cpython-3?m.cmake} \
+	$PKG/usr/lib${LIBDIRSUFFIX}/cmake/Shiboken-$VERSION/
+cp -a build_python3/data/shiboken.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
+
+# On corrige les répertoire des libs pour cmake
+for f in ShibokenConfig.cmake ShibokenConfigVersion.cmake \
+	ShibokenConfig.cpython-3?m.cmake ShibokenConfig-python2.7.cmake ; do
+	sed -i -e "s@/usr/lib/@/usr/lib${LIBDIRSUFFIX}/@g" \
+		$PKG/usr/lib${LIBDIRSUFFIX}/cmake/Shiboken-$VERSION/$f
+done
+
+# On corrige les répertoire des libs pour pkgconfig
+sed -i -e "s@/usr/lib/@/usr/lib${LIBDIRSUFFIX}/@g" \
+	$PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/shiboken.pc
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
