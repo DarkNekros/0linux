@@ -29,6 +29,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 		--disable-last \
 		--disable-mountpoint \
+		--without-python \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
