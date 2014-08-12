@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.9.4
+VERSION=2.0.4
 EXT=tar.xz
 WGET=(https://www.kernel.org/pub/software/scm/git/$NAMESRC-$VERSION.$EXT
       https://www.kernel.org/pub/software/scm/git/$NAMESRC-manpages-$VERSION.$EXT
