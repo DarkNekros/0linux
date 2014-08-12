@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.5.12
+VERSION=5.5.14
 WGET=http://www.php.net/distributions/$NAMESRC-$VERSION.tar.bz2
 DESC="Le langage de programmation PHP"
 
