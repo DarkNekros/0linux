@@ -9,7 +9,7 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Empèche pleins de problèmes d'installation :
+# Cela cause des erreurs d'installation (les dévs testent-ils leurs sources ?):
 sed -i "s@/src/py/partio.py@/py/partio.py@" src/py/CMakeLists.txt
 sed -i "/(src\/doc)/d" CMakeLists.txt
 
@@ -18,11 +18,12 @@ sed -i "/EXECUTE_PROCESS/d" CMakeLists.txt
 sed -i "/SET(CMAKE_INSTALL_PREFIX/d" CMakeLists.txt
 
 # Compilation :
-# Contrairement à l'usage avec CMake, ne pas créer de répertoire de compilation séparé sinon ça foire
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-cmake -D CMAKE_BUILD_TYPE=Release \
-	-D CMAKE_SKIP_RPATH=ON \
+cmake \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_SKIP_RPATH=ON \
 	./
 
 make -j${JOBS} || make
@@ -36,6 +37,14 @@ fi
 
 # On vire les tests pour les développeurs du projet :
 rm -rf ${PKG}/usr/test
+
+# Les fichiers pour Python2 sont mal placés ! Bravo à 'partio' qui entre dans le
+# le Top 10 du PTP (Paquets Tout Pourris) :
+PYTHONLIB=$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
+	sed 's#/site-packages##')
+mkdir -p ${PKG}/${PYTHONLIB}
+cp -ar ${PKG}/usr/lib${LIBDIRSUFFIX}/python/* ${PKG}/${PYTHONLIB}
+rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/python
 
 installer_doc
 creer_post_installation

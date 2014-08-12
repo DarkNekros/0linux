@@ -8,7 +8,6 @@ WGET=(http://cairographics.org/releases/py2cairo-$VERSION.$EXT
      )
 DESC="Interfaçage Python pour Cairo"
 
-
 telecharger_sources
 
 # On compile py2cairo :
@@ -18,7 +17,7 @@ cflags
 # Compilation :
 PYTHON=/usr/bin/python2 \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-python ./waf configure \
+python2 ./waf configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
@@ -27,12 +26,23 @@ python ./waf configure \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
 
-python ./waf build -j${JOBS} || python ./waf build
-fakeroot python ./waf install --destdir=${PKG}
+python2 ./waf build -j${JOBS} || python2 ./waf build
+fakeroot python2 ./waf install --destdir=${PKG}
 
 # On compile pycairo :
 preparer_sources
 cflags
+
+# On fait afficher le répertoire de construction à 'waf' :
+cat $CWD/pycairo.waf-unpack.patch | patch -p1
+
+wafdir="$(./waf unpack)"
+mkdir -p ${wafdir} && cd ${wafdir}
+
+# On corrige pour Python 3.4+ :
+sed -i 's@for incstr in conf\.cmd_and_log.*$@for incstr in conf.cmd_and_log([conf.env.PYTHON_CONFIG,'--includes']).strip().split():@' waflib/Tools/python.py
+
+cd ..
 
 # Compilation :
 PYTHON=/usr/bin/python3 \

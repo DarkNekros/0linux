@@ -2,29 +2,35 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=Python
-VERSION=2.7.5
+VERSION=2.7.8
 EXT=tar.xz
-WGET=(http://www.python.org/ftp/python/3.3.4/$NAMESRC-3.3.4.$EXT
-      http://docs.python.org/ftp/python/doc/3.3.4/python-3.3.4-docs-html.tar.bz2
-      http://docs.python.org/ftp/python/doc/3.3.4/python-3.3.4-docs-text.tar.bz2
+WGET=(http://www.python.org/ftp/python/3.4.1/$NAMESRC-3.4.1.$EXT
+      http://docs.python.org/ftp/python/doc/3.4.0/python-3.4.0-docs-html.tar.bz2
+      http://docs.python.org/ftp/python/doc/3.4.0/python-3.4.0-docs-text.tar.bz2
       http://www.python.org/ftp/python/$VERSION/$NAMESRC-$VERSION.$EXT
       http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-html.tar.bz2
       http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-text.tar.bz2
      )
 DESC="Langage de programmation interprété orienté objet"
 
-
 telecharger_sources
 
 # On compile Python 3 :
-preparer_sources $NAMESRC-3.3.4.$EXT
+preparer_sources $NAMESRC-3.4.1.$EXT
 cflags
 
-# On corrige les sources pour intégrer notre répertoire standard de bibliothèques :
-cat $CWD/python3.lib64.patch | sed "s@lib64@lib${LIBDIRSUFFIX}@g" | patch -p1
+# On corrige les sources pour intégrer notre répertoire standard de bibliothèques,
+# merci à Gentoo (dites donc chez Python, on va patcher encore vos sources combien d'années ?) :
+cat $CWD/python3.libdir.patch | sed "s|@@GENTOO_LIBDIR@@|lib${LIBDIRSUFFIX}|g" | patch -p0
 
 # On corrige une idiotie :
 sed -i "s@local/bin/python@bin/python3@" Lib/cgi.py
+
+# On supprime toutes les bibliothèques embarquées pour compiler sur celles su système :
+rm -rf Modules/expat
+rm -rf Modules/zlib
+rm -rf Modules/_ctypes/darwin*
+rm -rf Modules/_ctypes/libffi*
 
 # Compilation (on conserve l'optimisation interne -O3) :
 CFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" CXXFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" \
@@ -43,31 +49,30 @@ CFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" CXXFLAGS="$(echo ${FLAGS} | sed 's@-O2
 	--with-system-expat \
 	--with-system-ffi \
 	--with-threads \
+	--without-ensurepip \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install maninstall DESTDIR=${PKG}
 
 # On copie les outils dans les modules :
-mkdir -p      ${PKG}/usr/lib${LIBDIRSUFFIX}/python3.3/site-packages
-cp -a Tools/* ${PKG}/usr/lib${LIBDIRSUFFIX}/python3.3/site-packages
-
-# On lie un manuel manquant :
-ln -sf python3.3.1 ${PKG}/usr/man/man1/python3.1
+mkdir -p      ${PKG}/usr/lib${LIBDIRSUFFIX}/python3.4/site-packages
+cp -a Tools/* ${PKG}/usr/lib${LIBDIRSUFFIX}/python3.4/site-packages
 
 # On installe la doc dans le répertoire dédié :
-installer_doc ${NAMETGZ}-3.3.4
+installer_doc ${NAMETGZ}-3.4.1
 
 # Et on extrait les archives de documentation au bon endroit :
-tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.3.4-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.3.4/
-tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.3.4-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.3.4/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.4.0-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.4.1/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.4.0-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.4.1/
 
 # On compile Python 2 :
 preparer_sources
 cflags
 
-# On corrige les sources pour intégrer notre répertoire standard de bibliothèques :
-cat $CWD/python.lib64.patch | sed "s@lib64@lib${LIBDIRSUFFIX}@g" | patch -p1
+# On corrige les sources pour intégrer notre répertoire standard de bibliothèques,
+# merci à Gentoo (dites donc chez Python, on va patcher encore vos sources combien d'années ?) :
+cat $CWD/python2.libdir.patch | sed "s|@@GENTOO_LIBDIR@@|lib${LIBDIRSUFFIX}|g" | patch -p0
 
 # On corrige une idiotie :
 sed -i "s@local/bin/python@bin/python2@" Lib/cgi.py
@@ -117,8 +122,8 @@ ln -sf python2.1 ${PKG}/usr/man/man1/python.1
 installer_doc
 
 # Et on extrait les archives de documentation au bon endroit :
-tar xf ${PKGSOURCES}/${NAMETGZ}/python-$VERSION-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
-tar xf ${PKGSOURCES}/${NAMETGZ}/python-$VERSION-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-${VERSION}-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-${VERSION}-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 
 creer_post_installation
 stripper

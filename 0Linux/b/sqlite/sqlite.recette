@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.8.4.3
-EXT=tar.gz
-WGET=http://www.sqlite.org/2014/$NAMESRC-autoconf-$(echo ${VERSION} | tr '.' '0').$EXT
+VERSION=3.8.5
+WGET=http://www.sqlite.org/2014/$NAMESRC-autoconf-$(echo ${VERSION} | tr '.' '0').tar.gz
 DESC="Moteur de bases de données SQL autonome"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
