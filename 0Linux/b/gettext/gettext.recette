@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.19.1
+VERSION=0.19.2
 WGET=ftp://ftp.igh.cnrs.fr/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Suite d'outils pour l'internationalisation"
 
