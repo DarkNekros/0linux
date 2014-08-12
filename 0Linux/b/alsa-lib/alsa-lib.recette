@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.27.2
-EXT=tar.bz2
-WGET=ftp://ftp.alsa-project.org/pub/lib/$NAMESRC-$VERSION.$EXT
+VERSION=1.0.28
+WGET=ftp://ftp.alsa-project.org/pub/lib/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques audio « Advanced Linux Sound Architecture »"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
