@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.4.9
+VERSION=2.4.10
 WGET=http://mirrors.ircam.fr/pub/apache/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Le serveur HTTP de la fondation Apache"
 
