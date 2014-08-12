@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.2.3
+VERSION=2.3.2
 EXT=tar.bz2
 WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.13.$EXT
       http://ffmpeg.org/releases/$NAMESRC-$VERSION.$EXT
