@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.2
-EXT=tar.bz2
-WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT
+VERSION=1.4.3
+WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.tar.bz2
 DESC="Applications natives de X11"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
