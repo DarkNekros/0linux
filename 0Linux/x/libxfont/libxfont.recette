@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=libXfont
-VERSION=1.4.8
+VERSION=1.5.0
 WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques natives de X11"
 
