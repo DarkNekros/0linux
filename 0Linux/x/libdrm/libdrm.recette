@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.4.54
+VERSION=2.4.56
 WGET=http://dri.freedesktop.org/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques graphiques d'interfaçage DRM pour X11"
 
