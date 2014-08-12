@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.99.912
+VERSION=2.99.914
 WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.tar.bz2
 DESC="Pilotes graphiques Intel pour X11"
 
