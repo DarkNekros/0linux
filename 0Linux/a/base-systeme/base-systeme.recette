@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.2.2
+VERSION=5.3.0
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
 
@@ -132,17 +132,17 @@ txt2tags -t man  -o ${PKG}/usr/man/man7/0linux.7                     $CWD/0linux
 cat > ${PKG}/etc/os-release << "EOF"
 # Identification du système et de sa version :
 NAME=0Linux
-VERSION="eta"
+VERSION="theta"
 ID=0linux
-VERSION_ID=eta
+VERSION_ID=theta
 PRETTY_NAME="0Linux"
 ANSI_COLOR="1;32"
 HOME_URL="http://0linux.org/"
 
 # Compatibilité avec la syntaxe de 'lsb-release' :
 DISTRIB_ID=0linux
-DISTRIB_RELEASE=eta
-DISTRIB_DESCRIPTION="0Linux eta"
+DISTRIB_RELEASE=theta
+DISTRIB_DESCRIPTION="0Linux theta"
 
 EOF
 
