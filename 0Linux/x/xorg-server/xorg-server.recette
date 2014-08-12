@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.15.1
-EXT=tar.bz2
-WGET=http://xorg.freedesktop.org/releases/individual/xserver/$NAMESRC-$VERSION.$EXT
+VERSION=1.16.0
+WGET=http://xorg.freedesktop.org/releases/individual/xserver/$NAMESRC-$VERSION.tar.bz2
 DESC="Le serveur graphique X11"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
