@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=MesaLib
-VERSION=10.2.1
+VERSION=10.2.5
 WGET=ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques graphiques 3D OpenGL pour X11"
 

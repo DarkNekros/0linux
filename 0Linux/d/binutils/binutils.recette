@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.23.2
-EXT=tar.bz2
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=2.24
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Binaires de développement GNU"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -51,9 +49,9 @@ fakeroot make install tooldir=/usr DESTDIR=${PKG}
 # Oubli du "make install" :
 cp -a $TMP/${NAME}/include/libiberty.h ${PKG}/usr/include/libiberty.h
 
-# On passe les "ldscripts" dans lib$LIBDIRSUFFIX :
+# On passe les "ldscripts" dans lib$LIBDIRSUFFIX le cas échéant :
 if [ ! "${LIBDIRSUFFIX}" = "" ]; then
-	mv ${PKG}/usr/lib/ldscripts ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	mv ${PKG}/usr/lib/ldscripts ${PKG}/usr/lib${LIBDIRSUFFIX}/ || true
 fi
 
 # 'binutils' s'entête à placer '/usr/share/man' et '/usr/share/info' en doublon :

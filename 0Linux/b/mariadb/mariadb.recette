@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=10.0.12
+VERSION=10.0.13
 WGET=https://downloads.mariadb.org/interstitial/$NAMESRC-$VERSION/source/$NAMESRC-$VERSION.tar.gz
 DESC="Le serveur de bases de données MariaDB, remplaçant libre de MySQL"
 
