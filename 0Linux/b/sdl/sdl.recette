@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=SDL
-VERSION=2.0.1
+VERSION=2.0.3
 EXT=tar.gz
 WGET=(http://www.libsdl.org/release/${NAMESRC}2-$VERSION.$EXT
       http://www.libsdl.org/release/$NAMESRC-1.2.15.$EXT
@@ -21,7 +21,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On corrige un problème avec le redimensisonnement des fenêtres et on désactive
+	# On corrige un problème avec le redimensionnement des fenêtres et on désactive
 	# les instructions MMX qui causent des plantages. On corrige aussi le comportement
 	# des clics souris ainsi qu'un symbole manquant dans la bibliothèque dynamique :
 	cat $CWD/sdl.resizing.patch | patch -p1
@@ -131,6 +131,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--infodir=/usr/info \
 		--enable-alsa \
 		--enable-sdl-dlopen \
+		--enable-video-wayland \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -156,6 +157,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--enable-alsa \
 	--enable-sdl-dlopen \
+	--enable-video-wayland \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

@@ -102,6 +102,7 @@ libvdpau
 libva
 libva-vdpau-driver
 libva-intel-driver
+wayland
 mesa
 glew
 glu

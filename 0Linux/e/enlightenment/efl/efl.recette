@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.9.3
-EXT=tar.bz2
-WGET=http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.10.2
+WGET=http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques du cœur d'Enlightenment"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -29,6 +27,7 @@ CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS}" \
 	--enable-multisense \
 	--enable-sdl \
 	--enable-valgrind \
+	--enable-wayland \
 	--enable-xinput22 \
 	--build=${PKGARCH}-0linux-linux-gnu
 
@@ -39,7 +38,8 @@ fakeroot make install DESTDIR=${PKG}
 installer_doc
 
 # On complète la documentation :
-cp -a doc/html ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a doc/html  ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+cp -a doc/latex ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 
 creer_post_installation
 stripper

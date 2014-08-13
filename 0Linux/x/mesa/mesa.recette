@@ -47,7 +47,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--enable-vdpau \
 		--enable-xa \
 		--with-dri-drivers="i915,i965,nouveau,r200,radeon,swrast" \
-		--with-egl-platforms="drm,x11" \
+		--with-egl-platforms="x11,drm,wayland" \
 		--with-gallium-drivers="i915,nouveau,r300,r600,radeonsi,svga,swrast" \
 		--with-llvm-shared-libs \
 		--build=${PKGARCH}-0linux-linux-gnu
@@ -92,7 +92,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-vdpau \
 	--enable-xa \
 	--with-dri-drivers="i915,i965,nouveau,r200,radeon,swrast" \
-	--with-egl-platforms="drm,x11" \
+	--with-egl-platforms="x11,drm,wayland" \
 	--with-gallium-drivers="i915,nouveau,r300,r600,radeonsi,svga,swrast" \
 	--with-llvm-shared-libs \
 	--build=${PKGARCH}-0linux-linux-gnu
