@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.12.0
+VERSION=3.12.2
 EXT=tar.xz
 WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.24/$NAMESRC-2.24.22.$EXT
       http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
      )
 DESC="Suite d'outils pour la création d'interfaces graphiques"
-
 
 telecharger_sources
 cflags
@@ -124,8 +123,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-schemas-compile \
+	--enable-broadway-backend \
 	--enable-gtk2-dependency \
 	--enable-introspection \
+	--enable-wayland-backend \
 	--enable-xkb \
 	--build=${PKGARCH}-0linux-linux-gnu
 

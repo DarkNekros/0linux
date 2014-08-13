@@ -29,6 +29,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-dga \
 	--enable-dri \
 	--enable-dmx \
+	--enable-glamor \
 	--enable-glx-tls \
 	--enable-install-setuid \
 	--enable-ipv6 \
@@ -42,6 +43,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-xnest \
 	--enable-xorg \
 	--enable-xvfb \
+	--enable-xwayland \
 	--with-builder-addr="appzer0@0linux.org" \
 	--with-default-font-path="/usr/share/fonts/local,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/misc,/usr/share/fonts/CID,/usr/share/fonts/75dpi/:unscaled,/usr/share/fonts/100dpi/:unscaled,/usr/share/fonts/75dpi,/usr/share/fonts/100dpi,/usr/share/fonts/cyrillic" \
 	--with-module-dir=/usr/lib${LIBDIRSUFFIX}/xorg/modules \
