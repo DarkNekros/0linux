@@ -30,10 +30,13 @@ LDFLAGS="${MYLDFLAGS}" \
 	--infodir=/usr/info \
 	--with-docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	${OPTMULTILIB} \
+	--disable-werror \
+	--enable-gold \
+	--enable-ld=default \
 	--enable-plugins \
 	--enable-shared \
 	--enable-threads \
-	--enable-werror=no \
+	--with-pic \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} configure-host || make configure-host
