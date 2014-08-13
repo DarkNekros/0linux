@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=12.7.3
+VERSION=12.8
 DESC="Outils « maison » pour l'installation et l'administration du système 0Linux"
 EXTRADEPS="realpath"
 
@@ -51,6 +51,60 @@ cp -a $CWD/0g.conf ${PKG}/etc/0outils/0g.conf.0nouveau
 # On place le manuel via 'txt2tags' :
 mkdir -p ${PKG}/usr/man/man8
 txt2tags -t man -o ${PKG}/usr/man/man8/0g.8 $CWD/0g-man.t2t
+
+# On crée le fichier des drapeaux d'optimisation par défaut :
+cat > ${PKG}/etc/0outils/drapeaux.conf << "EOF"
+# N'éditez pas ce fichier, il sera écrasé par toute mise à niveau de '0outils'.
+# Éditez plutôt l'un des fichiers '/etc/0outils/drapeaux-<architecture>.conf', 
+# qui eux conservent vos préférences.
+
+# Les drapeaux d'optimisation globaux par défaut :
+export CC="gcc"
+export CXX="g++"
+FLAGS="-O2 -pipe"
+LIBDIRSUFFIX=""
+export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
+
+EOF
+
+cat > ${PKG}/etc/0outils/drapeaux-i686.conf.0nouveau << "EOF"
+# Les drapeaux d'optimisation globaux par défaut pour i686 :
+export CC="gcc -m32"
+export CXX="g++ -m32"
+export LDFLAGS="-m32" # Utilisé uniquement en multilib
+FLAGS="-m32 -O2 -march=i686 -pipe"
+LIBDIRSUFFIX=""
+export USE_ARCH=32 # Utilisé uniquement en multilib
+export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
+export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
+
+EOF
+
+cat > ${PKG}/etc/0outils/drapeaux-x86_64.conf.0nouveau << "EOF"
+# Les drapeaux d'optimisation globaux par défaut pour x86_64 :
+export CC="gcc"
+export CXX="g++"
+FLAGS="-O2 -fPIC -pipe"
+LIBDIRSUFFIX="64"
+export USE_ARCH=64 # Utilisé uniquement en multilib
+export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
+export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
+
+EOF
+
+cat > ${PKG}/etc/0outils/drapeaux-arm.conf.0nouveau << "EOF"	
+#!/bin/sh
+
+# Les drapeaux d'optimisation globaux par défaut pour ARM (ici v7-a minimum) :
+export CC="gcc"
+export CXX="g++"
+FLAGS="-O2 -march=armv7-a -mfpu=vfpv3-d16 -pipe"
+LIBDIRSUFFIX=""
+export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
+export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
+
+EOF
 
 installer_doc
 

@@ -312,7 +312,9 @@ cflags() {
 		JOBS=$(( ($(nproc) * 2) + 1 )) || JOBS=1  # HT disponible
 	fi
 	
-	# Les drapeaux d'optimisation globaux pour chaque architecture. 
+	# Drapeaux d'optimisation globaux pour chaque architecture (CFLAGS, LDFLAGS, etc.). 
+	
+	# On applique les drapeaux par défaut, surchargeables ensuite via des fichiers :
 	# x86 32 bits :
 	if [ ${PKGARCH} = "i686" ]; then
 		export CC="gcc -m32"
@@ -320,18 +322,18 @@ cflags() {
 		export LDFLAGS="-m32" # Utilisé uniquement en multilib
 		FLAGS="-m32 -O2 -march=i686 -pipe"
 		LIBDIRSUFFIX=""
-		USE_ARCH=32 # Utilisé uniquement en multilib
-		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+		export USE_ARCH=32 # Utilisé uniquement en multilib
+		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
 		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	
 	# x86 64 bits :
 	elif [ ${PKGARCH} = "x86_64" ]; then
-		export CC="gcc -m64"
-		export CXX="g++ -m64"
+		export CC="gcc"
+		export CXX="g++"
 		FLAGS="-O2 -fPIC -pipe"
 		LIBDIRSUFFIX="64"
-		USE_ARCH=64 # Utilisé uniquement en multilib
-		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+		export USE_ARCH=64 # Utilisé uniquement en multilib
+		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
 		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	
 	# ARM v7-a :
@@ -340,7 +342,7 @@ cflags() {
 		export CXX="g++"
 		FLAGS="-O2 -march=armv7-a -mfpu=vfpv3-d16 -pipe"
 		LIBDIRSUFFIX=""
-		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
 		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	
 	# Tout le reste :
@@ -351,6 +353,22 @@ cflags() {
 		LIBDIRSUFFIX=""
 		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
 		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
+	fi
+	
+	# On applique les drapeaux définis dans les fichiers de configuration :
+	if [ -r /etc/0outils/drapeaux-${PKGARCH}.conf ]; then
+		source /etc/0outils/drapeaux-${PKGARCH}.conf
+	else
+		if [ -r /etc/0outils/drapeaux.conf ]; then
+			source /etc/0outils/drapeaux.conf
+		fi
+	fi
+	if [ -r ~/.0outils/drapeaux-${PKGARCH}.conf ]; then
+		source ~/.0outils/drapeaux-${PKGARCH}.conf
+	else
+		if [ -r ~/.0outils/drapeaux.conf ]; then
+			source ~/.0outils/drapeaux.conf
+		fi
 	fi
 }
 
