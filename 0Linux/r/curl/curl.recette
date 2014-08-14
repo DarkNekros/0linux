@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7.37.0
+VERSION=7.37.1
 WGET=http://curl.haxx.se/download/$NAMESRC-$VERSION.tar.bz2
 DESC="Outil de téléchargement en ligne de commande"
 

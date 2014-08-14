@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.69
-WGET=http://www.kernel.org/pub/linux/docs/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=3.70
+WGET=http://www.kernel.org/pub/linux/docs/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Manuels du système Linux"
 EXTRADEPS="man-db"
 
