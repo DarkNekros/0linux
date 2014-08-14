@@ -372,6 +372,32 @@ cflags() {
 	fi
 }
 
+# Procédure d'installation standard configure ; make ; fakeroot make install :
+configure_make_makeinstall() {
+	
+	# On déduit les options disponibles dans le script 'configure' :
+	CONFIGURE_OPTIONS="--prefix=/usr"
+	if grep -q "sysconfdir" configure; then CONFIGURE_OPTIONS+=" --sysconfdir=/etc"; fi
+	if grep -q "localstatedir" configure; then CONFIGURE_OPTIONS+=" --localstatedir=/var"; fi
+	if grep -q "libdir" configure; then        CONFIGURE_OPTIONS+=" --libdir=/usr/lib${LIBDIRSUFFIX}"; fi
+	if grep -q "mandir" configure; then        CONFIGURE_OPTIONS+=" --mandir=/usr/man"; fi
+	if grep -q "infodir" configure; then       CONFIGURE_OPTIONS+=" --infodir=/usr/info"; fi
+	if grep -q "docdir" configure; then        CONFIGURE_OPTIONS+=" --docdir=/usr/doc/${NAMETGZ}-${VERSION}"; fi
+	if grep -q "build" configure; then         CONFIGURE_OPTIONS+=" --build=${PKGARCH}-0-linux-gnu"; fi
+	
+	# On lance le 'configure' avec nos drapeaux :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" ./configure ${CONFIGURE_OPTIONS}
+	
+	# On compile :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" make -j${JOBS} || make
+	
+	# On installe en déduisant le mot-clé du répertoire d'installation :
+	if grep -q "INSTALL_ROOT" Makefile; then   DESTPKGDIR="INSTALL_ROOT"; fi
+	if grep -q "install_prefix" Makefile; then DESTPKGDIR="install_prefix"; fi
+	if grep -q "DESTDIR" Makefile; then        DESTPKGDIR="DESTDIR"; fi
+	fakeroot make install ${DESTPKGDIR}=${PKG}
+}
+
 installer_doc() {
 	# On peut forcer un répertoire de doc. non standard pour les recettes multiversion
 	# Ex. : installer_doc ${NAMETGZ}-${VERSION}/$NAMETGZ-1.2.3

@@ -1,14 +1,36 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.10.22
-EXT=tar.bz2
-WGET=http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.2.1
+WGET=(
+      http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.22.tar.bz2
+      http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+     )
 DESC="Interfaçage Python pour GStreamer"
 
-
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile gst-python 0.10.x :
+preparer_sources $NAMESRC-0.10.22.tar.bz2
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On compile la verison de la recette :
+preparer_sources $NAMESRC-$VERSION.tar.gz
 cflags
 
 # Compilation :

@@ -9,9 +9,12 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On supprime un bogue absurde :
+sed -i 's@^.*efl requires a C++ compiler got.*@true@' configure
+
 # Compilation :
-CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS}" \
-LDFLAGS="${LDFLAGS} -ldl" \
+CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS} -fvisibility=hidden" \
+LDFLAGS+="-ldl" LIBS+="-ldl" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \

@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.2.3
+VERSION=1.4.0
 EXT=tar.xz
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.36.$EXT
       http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
      )
 DESC="Ensemble de bibliothèques multimédia"
-
 
 telecharger_sources
 cflags
@@ -32,9 +31,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--disable-gtk-doc \
-		--disable-examples \
-		--disable-tests \
+		--with-package-name="GStreamer 0.10 (0Linux)" \
+		--with-package-origin="http://0linux.org" \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -56,7 +54,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-0.10.36 \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-package-name="GStreamer 0.10 (0Linux)" \
 	--with-package-origin="http://0linux.org" \
 	--build=${PKGARCH}-0linux-linux-gnu
@@ -68,6 +66,9 @@ fakeroot make install DESTDIR=${PKG}
 for binaire in ${PKG}/usr/bin/*-0.10; do
 	rm -f $(echo {binaire} | sed 's@-0.10@@')
 done
+
+# On installe la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-0.10.36
 
 # On compile maintenant la version normale de la recette :
 preparer_sources

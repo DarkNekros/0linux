@@ -56,7 +56,10 @@ txt2tags -t man -o ${PKG}/usr/man/man8/0g.8 $CWD/0g-man.t2t
 cat > ${PKG}/etc/0outils/drapeaux.conf << "EOF"
 # N'éditez pas ce fichier, il sera écrasé par toute mise à niveau de '0outils'.
 # Éditez plutôt l'un des fichiers '/etc/0outils/drapeaux-<architecture>.conf', 
-# qui eux conservent vos préférences.
+# qui eux conservent vos préférences, ou bien copiez ce fichier dans
+# '~/.0outils/drapeaux.conf' ou '~/.0outils/drapeaux-<architecture>.conf' , qui
+# surcharge les variables de '/etc/0outils/*'.
+# Cf. http://0.tuxfamily.org/doku.php/documentation/methode_de_creation_des_paquets_pour_0linux_native#cflags
 
 # Les drapeaux d'optimisation globaux par défaut :
 export CC="gcc"

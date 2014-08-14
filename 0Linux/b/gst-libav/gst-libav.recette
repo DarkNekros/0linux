@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.2.3
+VERSION=1.4.0
 EXT=tar.xz
 WGET=(http://gstreamer.freedesktop.org/src/gst-ffmpeg/gst-ffmpeg-0.10.13.tar.gz
       http://gstreamer.freedesktop.org/src/gst-libav/$NAMESRC-$VERSION.$EXT
      )
 DESC="Greffons FFMPEG pour GStreamer"
-
 
 telecharger_sources
 cflags

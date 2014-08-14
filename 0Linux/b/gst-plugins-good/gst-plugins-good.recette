@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.2.3
+VERSION=1.4.0
 EXT=tar.xz
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.31.$EXT
       http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
      )
 DESC="Ensemble de greffons de qualité pour GStreamer"
-
 
 telecharger_sources
 cflags

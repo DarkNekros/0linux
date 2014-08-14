@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.1.2
-WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
-DESC="Système de stockage et d'indexation des données"
+VERSION=1.0.3
+WGET=http://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/+download/$NAMESRC-$VERSION.tar.gz
+DESC="Bibliothèques pour le développement d'applications en C"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -16,21 +16,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-unit-tests \
-	--enable-libflac \
-	--enable-libvorbis \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-# on place un fichier manquant pour 'pkgconfig' :
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
-cp data/tracker-sparql-*.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/
 
 installer_doc
 creer_post_installation

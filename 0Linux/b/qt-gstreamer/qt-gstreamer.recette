@@ -1,25 +1,44 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.10.3
-WGET=http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+VERSION=1.2.0
+WGET=(
+      http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.3.tar.bz2
+      http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+     )
 DESC="Interface Qt pour GStreamer"
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile qt-gstreamer 0.10.x :
+preparer_sources $NAMESRC-0.10.3.tar.bz2
 cflags
 
-# Compilation :
+# Compilation dans un répertoire dédié :
 mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	./ ../
+	..
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-cd ../
+
+# On compile la version de la recette :
+preparer_sources $NAMESRC-$VERSION.tar.xz
+cflags
+
+# Compilation dans un répertoire dédié :
+mkdir -p build && cd build
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
