@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.1.8
+VERSION=2.1.9
 EXT=tar.xz
 WGET=(https://launchpad.net/$NAMESRC/trunk/$(echo $VERSION | cut -d'.' -f1-2)/+download/$NAMESRC-0.12.99.tar.gz
       http://freedesktop.org/software/$NAMESRC/releases/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
