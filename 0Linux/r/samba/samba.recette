@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.1.6
-EXT=tar.gz
-WGET=http://ftp.samba.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=4.1.11
+WGET=http://ftp.samba.org/pub/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Clients et serveurs Samba pour les protocoles SMB, CIFS et Active Directory"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
