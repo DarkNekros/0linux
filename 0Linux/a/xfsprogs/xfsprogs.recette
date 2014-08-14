@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.1.11
+VERSION=3.2.1
 WGET=ftp://oss.sgi.com/projects/xfs/cmd_tars/$NAMESRC-$VERSION.tar.gz
 DESC="Outils pour le système de fichiers XFS"
 
