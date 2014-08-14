@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.4.15
-EXT=tar.xz
-WGET=http://lftp.cybermirror.org/$NAMESRC-$VERSION.$EXT
+VERSION=4.5.4
+WGET=http://lftp.yar.ru/ftp/$NAMESRC-$VERSION.tar.xz
 DESC="Client HTTP et FTP en ligne de commande"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -21,6 +19,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-gnutls \
 	--with-openssl \
 	--build=${PKGARCH}-0linux-linux-gnu
 
