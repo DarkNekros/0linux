@@ -24,6 +24,15 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On déplace les fichiers pour 'pkgconfig' :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	if [ -d ${PKG}/usr/lib/pkgconfig ]; then
+		mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+		cp -ar ${PKG}/usr/lib/pkgconfig/* ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/
+		rm -rf ${PKG}/usr/lib/pkgconfig
+	fi
+fi
+
 installer_doc
 creer_post_installation
 stripper
