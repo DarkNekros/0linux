@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=NetworkManager
-VERSION=0.9.8.10
+VERSION=0.9.10.0
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Démon de gestion du réseau"
 EXTRADEPS="dhcpcd iptables iproute2 modemmanager polkit ppp wpa_supplicant"
