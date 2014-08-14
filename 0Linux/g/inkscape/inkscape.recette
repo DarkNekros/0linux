@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.48.4
+VERSION=0.48.5
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Éditeur de graphismes vectoriels SVG"
 
@@ -9,13 +9,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Une virgule plante la compilation avec les GCC récents :
-sed -i 's@GtkWidget \*commands_toolbox,;@GtkWidget \*commands_toolbox;@' src/widgets/desktop-widget.h
-
-# On corrige la compilation avec les plus récents 'poppler', 'gc', et un comportemant problématique :
-cat $CWD/inkscape.poppler-0.26+.patch | patch -p0
-cat $CWD/inkscape.gc74.patch | patch -p1
-cat $CWD/inkscape.ime-placement.patch | patch -p1
+# On corrige la détection de 'gc' :
+sed -i '/extern unsigned GC_version;/c unsigned GC_version=GC_VERSION_MAJOR<<16+GC_VERSION_MINOR<<8+GC_VERSION_MICRO;' configure
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
