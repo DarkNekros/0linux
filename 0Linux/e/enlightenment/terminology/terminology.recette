@@ -1,32 +1,24 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.12.4
-WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
-DESC="Serveur centralisé de gestion du temps"
+VERSION=0.6.1
+WGET=http://download.enlightenment.org/rel/apps/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+DESC="Émulateur de terminal basé sur les EFL"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS} -fvisibility=hidden" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-examples \
-	--disable-schemas-compile \
-	--disable-uoa \
-	--enable-vala-bindings \
-	--with-openldap=yes \
-	--with-krb5=/usr \
-	--with-libdb=/usr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

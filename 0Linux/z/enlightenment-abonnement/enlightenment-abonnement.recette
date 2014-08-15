@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1
+VERSION=2
 DESC="L'environnement graphique Enlightenment"
-EXTRADEPS="enlightenment efl evas_generic_loaders emotion_generic_players elementary expedite exquisite"
-
+EXTRADEPS="enlightenment efl evas_generic_loaders emotion_generic_players elementary terminology expedite exquisite"
 
 cflags
 
@@ -16,7 +15,7 @@ Janvier 2014
 
 = L'environnement graphique Enlightenment et ses bibliothèques EFL =
 
-Enlightenment DR17 (ou « E17 ») est un gestionnaire de fenêtres ainsi qu'un environnement graphique original et avancé prenant en charge les arrière-plans animés, l'animation et l'ombrage des fenêtres, le tout basé sur un ensemble cohérent et optimisé de bibliothèques , les « EFL ».
+Enlightenment (ou « E ») est un gestionnaire de fenêtres ainsi qu'un environnement graphique original et avancé prenant en charge les arrière-plans animés, l'animation et l'ombrage des fenêtres, le tout basé sur un ensemble cohérent et optimisé de bibliothèques , les « EFL ».
 
 = L'abonnement $NAMETGZ pour 0linux =
 
