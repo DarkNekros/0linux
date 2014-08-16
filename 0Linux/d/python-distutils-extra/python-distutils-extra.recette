@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.38
+WGET=http://launchpad.net/$NAMESRC/trunk/$VERSION/+download/$NAMESRC-$VERSION.tar.gz
+DESC="Améliorations du système de construction de Python"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation pour Python 2 et 3 :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+fakeroot python2 setup.py install --root=${PKG}
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+fakeroot python3 setup.py install --root=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

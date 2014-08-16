@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.6.2
+WGET=(
+      https://github.com/maxmind/$NAMESRC-api-c/archive/v${VERSION}.tar.gz
+      http://geolite.maxmind.com/download/$NAMESRC/database/GeoLiteCountry/GeoIP.dat.gz
+      http://geolite.maxmind.com/download/$NAMESRC/database/GeoIPv6.dat.gz
+     )
+DESC="Bibliothèques et bases de correspondances entre IP et pays sans résolution DNS"
+
+# On force le téléchargement des bases pour s'assurer qu'elles sont à jour :
+rm -f ${PKGSOURCES}/${NAMETGZ}/GeoIP*.dat.gz
+
+telecharger_sources
+
+# On place d'abord les base de données géographiques :
+mkdir -p ${PKG}/usr/share/GeoIP
+zcat ${PKGSOURCES}/${NAMETGZ}/GeoIP.dat.gz   > ${PKG}/usr/share/GeoIP/GeoIP.dat
+zcat ${PKGSOURCES}/${NAMETGZ}/GeoIPv6.dat.gz > ${PKG}/usr/share/GeoIP/GeoIPv6.dat
+
+# On compile GeoIP :
+preparer_sources v${VERSION}.tar.gz
+cflags
+
+# Compilation :
+autoreconf -vif
+configure_make_makeinstall
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
