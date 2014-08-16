@@ -17,7 +17,7 @@ cflags
 # Compilation :
 PYTHON=/usr/bin/python2 \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-python2 ./waf configure \
+./waf configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
@@ -40,14 +40,14 @@ wafdir="$(./waf unpack)"
 mkdir -p ${wafdir} && cd ${wafdir}
 
 # On corrige pour Python 3.4+ :
-sed -i 's@for incstr in conf\.cmd_and_log.*$@for incstr in conf.cmd_and_log([conf.env.PYTHON_CONFIG,'--includes']).strip().split():@' waflib/Tools/python.py
-
+cat $CWD/pycairo.waf-python34.patch | patch -p1
 cd ..
+unset wafdir
 
 # Compilation :
 PYTHON=/usr/bin/python3 \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-python3 ./waf configure \
+./waf configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
@@ -56,8 +56,8 @@ python3 ./waf configure \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION}
 
-python3 ./waf build -j${JOBS} || python3 ./waf build
-fakeroot python3 ./waf install --destdir=${PKG}
+./waf build -j${JOBS} || python3 ./waf build
+fakeroot ./waf install --destdir=${PKG}
 
 installer_doc
 creer_post_installation
