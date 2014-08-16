@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.2.4.22
+VERSION=0.2.4.23
 WGET=http://www.torproject.org/dist/$NAMESRC-$VERSION.tar.gz
 DESC="Le Routeur Oignon, un système de routage préservant l'anonymat"
 
@@ -29,7 +29,7 @@ fakeroot make install DESTDIR=${PKG}
 # On crée les répertoires de travail de Tor :
 mkdir -p $PKG/var/{run,log,lib}/tor
 
-# On crée le fichier de configuration de distribution à partir de l'exemple fournis :
+# On crée le fichier de configuration de distribution à partir de l'exemple fourni :
 cp $PKG/etc/tor/torrc{.sample,-dist.0nouveau}
 
 # On copie un fichier de configuration :
@@ -99,13 +99,12 @@ EOF
 installer_doc
 creer_post_installation
 
-# On gère les droits d'accès
+# On gère les droits d'accès :
 cat >> ${PKG}/post-install.sh << "EOF"
 chown tor:tor /var/{run,log,lib}/tor
 chmod 700 /var/lib/tor
 
 EOF
-
 
 stripper
 empaqueter

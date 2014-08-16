@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=lxml
-VERSION=2.3.6
-WGET=http://lxml.de/files/$NAMESRC-$VERSION.tgz
-DESC="Interfaçage Python des bibliothèques XML et XSLT"
+VERSION=0.6.0
+WGET=http://download.enlightenment.org/rel/apps/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+DESC="Client BitTorrent basé sur libtorrent et les EFL"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compilation  :
+# Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-python setup.py build
-
-fakeroot python setup.py install --root=${PKG}
+fakeroot python setup.py install --optimize=1 --root=${PKG}
 
 installer_doc
 creer_post_installation

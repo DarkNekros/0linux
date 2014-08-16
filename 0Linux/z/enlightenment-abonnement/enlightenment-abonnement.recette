@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2
+VERSION=3
 DESC="L'environnement graphique Enlightenment"
-EXTRADEPS="enlightenment efl evas_generic_loaders emotion_generic_players elementary terminology expedite exquisite"
+EXTRADEPS="enlightenment efl evas_generic_loaders emotion_generic_players elementary terminology epour expedite exquisite"
 
 cflags
 
