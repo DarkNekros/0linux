@@ -21,173 +21,195 @@ crunch() {
 rm -f $TMP/{choix_partitions,choix_partitions_fat,choix_media,choix_swap}
 rm -f $TMP/{fstab,formatages,partition_racine}
 
-# On affiche l'introduction : 
-if [ "${INSTALLDEBUG}" = "" ]; then
-	clear
-fi
-echo "--------------------------------------"
-echo -e "       \033[1;32mSystème autonome 0Linux\033[0;0m"
-echo "--------------------------------------"
-echo ""
-echo "Bonjour ! Bienvenue dans l'installateur de 0Linux."
-echo ""
-echo "Pour commencer, basculez sur la console n°2 avec ALT+F2 et connectez-"
-echo "vous y en root. Puis, revenez sur cette console avec ALT+F1. La console"
-echo "n°2 vous servira à lancer les outils vous permettant de renseigner"
-echo "l'installateur sur votre système (oui, il est un peu fainéant)."
-echo "Vous disposez ainsi de 6 consoles, de ALT+F1 à ALT+F6."
-echo ""
-echo "Nous espérons que vous trouverez 0Linux utile et agréable."
-echo ""
-echo "Sachez que vous pouvez quitter cet installateur à tout moment avec"
-echo "la combinaison de touches CTRL+C."
-echo ""
-echo -n "Appuyez sur ENTRÉE pour continuer."
-read GNAH1;
+# On vérifie qu'on n'est pas dans un mode spécial d'installation (mode automatique) :
+if [ -n "$1" ]; then
+	if [ "$1" = "auto" ]; then
+		
+		# Si on a une configuration en local, on la charge :
+		if [ "$(echo ${2} | grep -E '^http|^ftp')" = "" ]; then
+			[ -r ${2} ] && source ${2}
+		
+		# Si on a une configuration distante, on la charge via 'curl-statique' :
+		else
+			curl-statique ${2} | source
+		fi
+	fi
 
-# On demande à préparer les disques :
-if [ "${INSTALLDEBUG}" = "" ]; then
-	clear
-fi
-echo -e "\033[1;32mPréparation de vos disques durs.\033[0;0m"
-echo ""
-echo "Vos disques durs doivent être partitionnés pour Linux avant d'installer"
-echo "votre système."
-echo ""
-echo "Pour cela, passez sur la console n°2 et invoquez 'cfdisk' pour afficher"
-echo "et partitionner vos disques durs. Les outils de partitionnement 'fdisk'"
-echo "et 'parted' sont également disponibles."
-echo "Note : Les disques durs plus récents de type GPT sont manipulables avec"
-echo "les outils 'cgdisk', 'gdisk' et 'parted'."
-echo ""
-echo "Consultez l'aide dans le menu qui va suivre pour en savoir plus."
-echo ""
-echo -n "Appuyez sur ENTRÉE pour continuer."
-read GNAH2;
-
-# Boucle pour l'affichage du menu :
-unset CHOIXMENUNPRINCIPAL
-
-while [ 0 ]; do
-	
-	# On définit les messages sur l'état d'avancement de l'installation :
-	if [ -r $TMP/choix_clavier ]; then
-		CLAVIERMESSAGE="configuré  : $(cat $TMP/choix_clavier)"
-	else
-		CLAVIERMESSAGE="définir la disposition des touches du clavier"
-	fi
-	
-	if [ -r $TMP/choix_swap ]; then
-		SWAPMESSAGE="configuré : $(cat $TMP/choix_swap | crunch | cut -d' ' -f1)"
-	elif [ -r $TMP/ignorer_swap ]; then
-		SWAPMESSAGE="(ignoré)"
-	else
-		SWAPMESSAGE="définir votre partition d'échange « swap »"
-	fi
-	
-	if [ -r $TMP/partition_racine -a -r $TMP/partitions_linux ]; then
-		PARTITIONSMESSAGE="configuré  : $(cat $TMP/partition_racine) et autres partitions"
-	elif [ -r $TMP/partition_racine ]; then
-		PARTITIONSMESSAGE="configuré  : $(cat $TMP/partition_racine)"
-	else
-		PARTITIONSMESSAGE="définir les partitions sur lesquelles installer 0"
-	fi
-	
-	if [ -r $TMP/choix_media ]; then
-		MEDIAMESSAGE="configuré : $(cat $TMP/choix_media)"
-	else
-		MEDIAMESSAGE="spécifier la source des dépôts de paquets"
-	fi
-	
+# Ici débute le mode d'installation classique avec questions-réponses :
+else
+	# On affiche l'introduction : 
 	if [ "${INSTALLDEBUG}" = "" ]; then
 		clear
 	fi
-	echo -e "\033[1;32mInstallation de votre système Linux.\033[0;0m"
+	echo "--------------------------------------"
+	echo -e "       \033[1;32mSystème autonome 0Linux\033[0;0m"
+	echo "--------------------------------------"
 	echo ""
-	echo "Entrez ci-après le code de la rubrique souhaitée et appuyez sur ENTRÉE."
-	echo "En cas de doute, faites les étapes suivantes dans l'ordre."
+	echo "Bonjour ! Bienvenue dans l'installateur de 0Linux."
 	echo ""
-	echo "1 : AIDE       - lire l'aide de l'installateur"
-	echo "2 : CLAVIER    - ${CLAVIERMESSAGE}"
-	echo "3 : SWAP       - ${SWAPMESSAGE}"
-	echo "4 : PARTITIONS - ${PARTITIONSMESSAGE}"
-	echo "5 : PAQUETS    - ${MEDIAMESSAGE}"
-	echo "6 : INSTALLER  - lancer l'installation des paquets logiciels"
-	echo "7 : QUITTER    - quitter l'installateur"
+	echo "Pour commencer, basculez sur la console n°2 avec ALT+F2 et connectez-"
+	echo "vous y en root. Puis, revenez sur cette console avec ALT+F1. La console"
+	echo "n°2 vous servira à lancer les outils vous permettant de renseigner"
+	echo "l'installateur sur votre système (oui, il est un peu fainéant)."
+	echo "Vous disposez ainsi de 6 consoles, de ALT+F1 à ALT+F6."
 	echo ""
-	echo -n "Votre choix : "
-	read CHOIXMENUPRINCIPAL;
-	case "$CHOIXMENUPRINCIPAL" in
-	"1")
-		less /usr/share/0outils/installateur/scripts/aide.txt
-		unset CHOIXMENUPRINCIPAL
-		continue
-	;;
-	"2")
-		. clavier.sh
-		unset CHOIXMENUPRINCIPAL
-		continue
-	;;
-	"3")
-		. swap.sh
-		unset CHOIXMENUPRINCIPAL
-		continue
-	;;
-	"4")
-		. partition_racine.sh
-		. partitions_linux.sh
-		. partitions_fat.sh
-		. formatages.sh
-		. montages.sh
-		unset CHOIXMENUPRINCIPAL
-		continue
-	;;
-	"5")
-		. media.sh
-		unset CHOIXMENUPRINCIPAL
-		continue
-	;;
-	"6")
-		if [ ! -r $TMP/choix_media -o ! -r $TMP/choix_partitions ]; then
-			if [ "${INSTALLDEBUG}" = "" ]; then
-				clear
-			fi
-			echo -e "\033[1;32mLe système n'est pas préparé.\033[0;0m"
-			echo ""
-			echo "Avant de procéder à l'installation des paquets logiciels,"
-			echo "vous devez au préalable terminer certaines étapes, au minimum :"
-			echo ""
-			echo "- avoir choisi la partition sur laquelle installer votre système,"
-			echo "- avoir spécifié le média source où se trouvent les paquets."
-			echo ""
-			echo "Appuyez sur ENTRÉE pour retourner au menu principal."
-			echo ""
-			read BLAH;
+	echo "Nous espérons que vous trouverez 0Linux utile et agréable."
+	echo ""
+	echo "Sachez que vous pouvez quitter cet installateur à tout moment avec"
+	echo "la combinaison de touches CTRL+C."
+	echo ""
+	echo -n "Appuyez sur ENTRÉE pour continuer."
+	read GNAH1;
+
+	# On demande à préparer les disques :
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
+	echo -e "\033[1;32mPréparation de vos disques durs.\033[0;0m"
+	echo ""
+	echo "Vos disques durs doivent être partitionnés pour Linux avant d'installer"
+	echo "votre système."
+	echo ""
+	echo "Pour cela, passez sur la console n°2 et invoquez 'cfdisk' pour afficher"
+	echo "et partitionner vos disques durs. Les outils de partitionnement 'fdisk'"
+	echo "et 'parted' sont également disponibles."
+	echo ""
+	echo "N.B. : assurez-vous que la partition racine à amorcer soit bien marquée"
+	echo "active, bootable ou amorçable ou votre système Linux ne démarrera pas"
+	echo "avec le chargeur d'amorçage de 0Linux (Extlinux)."
+	echo ""
+	echo "Vous pouvez ignorer la préparation des disques durs si vous prévoyez"
+	echo "d'utiliser l'installation automatique, qui s'en occupera à votre place."
+	echo ""
+	echo "Consultez l'aide dans le menu qui va suivre pour en savoir plus."
+	echo ""
+	echo -n "Appuyez sur ENTRÉE pour continuer."
+	read GNAH2;
+	
+	# Boucle pour l'affichage du menu :
+	unset CHOIXMENUNPRINCIPAL
+
+	while [ 0 ]; do
+		
+		# On définit les messages sur l'état d'avancement de l'installation :
+		if [ -r $TMP/choix_clavier ]; then
+			CLAVIERMESSAGE="configuré  : $(cat $TMP/choix_clavier)"
+		else
+			CLAVIERMESSAGE="définir la disposition des touches du clavier"
+		fi
+		
+		if [ -r $TMP/choix_swap ]; then
+			SWAPMESSAGE="configuré : $(cat $TMP/choix_swap | crunch | cut -d' ' -f1)"
+		elif [ -r $TMP/ignorer_swap ]; then
+			SWAPMESSAGE="(ignoré)"
+		else
+			SWAPMESSAGE="définir votre partition d'échange « swap »"
+		fi
+		
+		if [ -r $TMP/partition_racine -a -r $TMP/partitions_linux ]; then
+			PARTITIONSMESSAGE="configuré  : $(cat $TMP/partition_racine) et autres partitions"
+		elif [ -r $TMP/partition_racine ]; then
+			PARTITIONSMESSAGE="configuré  : $(cat $TMP/partition_racine)"
+		else
+			PARTITIONSMESSAGE="définir les partitions sur lesquelles installer 0"
+		fi
+		
+		if [ -r $TMP/choix_media ]; then
+			MEDIAMESSAGE="configuré : $(cat $TMP/choix_media)"
+		else
+			MEDIAMESSAGE="spécifier la source des dépôts de paquets"
+		fi
+		
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
+		fi
+		echo -e "\033[1;32mInstallation de votre système Linux.\033[0;0m"
+		echo ""
+		echo "Entrez ci-après le code de la rubrique souhaitée et appuyez sur ENTRÉE."
+		echo "En cas de doute, faites les étapes suivantes dans l'ordre."
+		echo ""
+		echo "1 : AIDE       - lire l'aide de l'installateur"
+		echo "2 : CLAVIER    - ${CLAVIERMESSAGE}"
+		echo "3 : SWAP       - ${SWAPMESSAGE}"
+		echo "4 : PARTITIONS - ${PARTITIONSMESSAGE}"
+		echo "5 : PAQUETS    - ${MEDIAMESSAGE}"
+		echo "6 : INSTALLER  - lancer l'installation des paquets logiciels"
+		echo "7 : QUITTER    - quitter l'installateur"
+		echo ""
+		echo -n "Votre choix : "
+		read CHOIXMENUPRINCIPAL;
+		case "$CHOIXMENUPRINCIPAL" in
+		"1")
+			less /usr/share/0outils/installateur/scripts/aide.txt
 			unset CHOIXMENUPRINCIPAL
 			continue
-		else
-			. paquets.sh
-			
-			# On copie 'resolv.conf' dans $SETUPROOT pour profiter de la résolution
-			# des DNS du système autonome sans avoir à se reconnecter :
-			if [ -r ${SETUPROOT}/etc/resolv.conf ]; then
-				cat /etc/resolv.conf > ${SETUPROOT}/etc/resolv.conf
+		;;
+		"2")
+			. clavier.sh
+			unset CHOIXMENUPRINCIPAL
+			continue
+		;;
+		"3")
+			. swap.sh
+			unset CHOIXMENUPRINCIPAL
+			continue
+		;;
+		"4")
+			. partition_racine.sh
+			. partitions_linux.sh
+			. partitions_fat.sh
+			. formatages.sh
+			. montages.sh
+			unset CHOIXMENUPRINCIPAL
+			continue
+		;;
+		"5")
+			. media.sh
+			unset CHOIXMENUPRINCIPAL
+			continue
+		;;
+		"6")
+			if [ ! -r $TMP/choix_media -o ! -r $TMP/choix_partitions ]; then
+				if [ "${INSTALLDEBUG}" = "" ]; then
+					clear
+				fi
+				echo -e "\033[1;32mLe système n'est pas préparé.\033[0;0m"
+				echo ""
+				echo "Avant de procéder à l'installation des paquets logiciels,"
+				echo "vous devez au préalable terminer certaines étapes, au minimum :"
+				echo ""
+				echo "- avoir choisi la partition sur laquelle installer votre système,"
+				echo "- avoir spécifié le média source où se trouvent les paquets."
+				echo ""
+				echo "Appuyez sur ENTRÉE pour retourner au menu principal."
+				echo ""
+				read BLAH;
+				unset CHOIXMENUPRINCIPAL
+				continue
+			else
+				. paquets.sh
+				
+				# On copie 'resolv.conf' dans $SETUPROOT pour profiter de la résolution
+				# des DNS du système autonome sans avoir à se reconnecter :
+				if [ -r ${SETUPROOT}/etc/resolv.conf ]; then
+					cat /etc/resolv.conf > ${SETUPROOT}/etc/resolv.conf
+				fi
+				
+				. configurer.sh
 			fi
-			
-			. configurer.sh
-		fi
-		unset CHOIXMENUPRINCIPAL
-		break
-	;;
-	"7")
-		exit 0
-	;;
-	*)
-		echo "Veuillez entrer un numéro valide (entre 1 et 7)."
-		sleep 2
-		continue
-	esac
-done
+			unset CHOIXMENUPRINCIPAL
+			break
+		;;
+		"7")
+			exit 0
+		;;
+		*)
+			echo "Veuillez entrer un numéro valide (entre 1 et 7)."
+			sleep 2
+			continue
+		esac
+	done
+fi
 
 # On synchronise les systèmes de fichiers :
 sync

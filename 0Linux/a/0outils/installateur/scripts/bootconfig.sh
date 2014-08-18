@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 
 # On nettoie  :
-unset BOOTERINST BLAHH PARTTABLE BOOTDEVICE PARTNAME BOOTPTTYPE MBRBIN WINBOOT WHICHDISK WINDISK
+unset BOOTERINST BLAHH PARTTABLE BOOTDEVICE BOOTPART PARTNAME BOOTPTTYPE MBRBIN WINBOOT WHICHDISK WINDISK
 
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
 	read STRING;
 	echo $STRING;
 }
-
-# La partition racine :
-DAROOTPART=$(cat $TMP/partition_racine)
 
 # Boucle d'affichage pour l'installation du chargeur d'amorçage :
 while [ 0 ]; do
@@ -21,8 +18,6 @@ while [ 0 ]; do
 	echo ""
 	echo "Voulez-vous installer le chargeur d'amorçage Extlinux sur votre"
 	echo "partition racine '$(cat $TMP/partition_racine)' ?"
-	echo "N.B.: ceci n'altèrera pas votre bloc d'amorçage principal (MBR uniquement,"
-	echo "les disques avec GPT ne sont pas pris en charge par 0Linux)."
 	echo ""
 	echo "1 : Installer Extlinux sur la partition racine $(cat $TMP/partition_racine)"
 	echo "2 : Voir comment configurer d'autres chargeurs d'amorçage pour amorcer 0Linux"
@@ -48,7 +43,7 @@ while [ 0 ]; do
 		echo "qu'il pointe bien sur le noyau de 0Linux."
 		echo ""
 		echo "Le système peut être lancé en lecture seule (read-only, ro, etc.) ou pas et"
-		echo "l'initrd '/boot/initrd' n'est nécessaire que pour amorcer la racine via son"
+		echo "l'initrd '/boot/initrd' est nécessaire pour amorcer la racine via son"
 		echo "LABEL ou son identifiant UUID. Dans le doute, spécifiez cet initrd au"
 		echo "démarrage systématiquement."
 		echo ""
@@ -64,106 +59,22 @@ while [ 0 ]; do
 		# On déduit le périphérique à amorcer.
 		# Si '/boot' est sur une partition séparée, c'est elle qu'on doit activer :
 		if grep '/boot' ${SETUPROOT}/etc/fstab; then
-			BOOTDEVICE="$(mount | grep '/boot' | crunch | cut -d' ' -f1 | tr -d '[0-9]')"
-			BOOTNUMPART="$(mount | grep '/boot' | crunch | cut -d' ' -f1 | tr -d '[A-Za-z/]')"
+			BOOTPART="$(mount | grep '/boot' | crunch | cut -d' ' -f1)"
 		
 		# Sinon, on en déduit que c'est la partition racine qu'on doit activer :
 		else
-			BOOTDEVICE="$(cat $TMP/partition_racine | crunch | tr -d '[0-9]')"
-			BOOTNUMPART="$(cat $TMP/partition_racine | crunch | tr -d '[A-Za-z/]')"
+			BOOTPART="$(cat $TMP/partition_racine)"
 		fi
-		
-		# Le type de la table de partition :
-		BOOTPTTYPE=$(blkid -p -s PTTYPE -o value ${BOOTDEVICE})
 		
 		# On rend la partition '/' ou '/boot' active/bootable/amorçable en GPT ou MBR :
-		if [ "${BOOTPTTYPE}" = "gpt" ]; then
-			sgdisk ${BOOTDEVICE} --attributes=${BOOTNUMPART}:set:2 2>/dev/null || true
-		else
-			sfdisk ${BOOTDEVICE} --activate ${BOOTNUMPART}         2>/dev/null || true
-		fi
+		parted ${BOOTPART} set boot on 2>/dev/null || true
 		
-		# Boucle d'affichage du choix du LABEL / UUID :
-		while [ 0 ]; do
-			if [ "${INSTALLDEBUG}" = "" ]; then
-				clear
-			fi
-			echo -e "\033[1;32mNommage de la partition ${DAROOTPART}.\033[0;0m"
-			echo ""
-			echo "Votre partition peut changer de nom selon les circonstances. Il vous faut"
-			echo "donc la nommer à votre guise ou bien utiliser son identifiant unique UUID"
-			echo "pour s'assurer qu'elle sera bien identifiée par le chargeur d'amorçage."
-			echo "Entrez ci-dessous la méthode de nommage désirée pour nommer votre partition"
-			echo "de façon persistante ou bien entrez directement le nom désiré de la"
-			echo "partition racine après le mot-clé « LABEL= ». Entrez simplement « LABEL » pour"
-			echo "nommer automatiquement votre racine « 0LINUXRACINE »."
-			echo "Contraintes pour les LABELS : 16 caractères maximum, évitez les espaces,"
-			echo "accents et caractères spéciaux. "
-			echo "Exemples de noms : LABEL=0LINUXRACINE ; LABEL=0linux ; LABEL=systeme0"
-			echo ""
-			echo "Au choix :"
-			echo "UUID                  : utiliser l'UUID de la partition (recommandé)"
-			echo "LABEL                 : assigner le nom persistant « 0LINUXRACINE »"
-			echo "LABEL=nomdevotrechoix : assigner un nom persistant de votre choix"
-			echo ""
-			echo "Appuyez sur ENTRÉE pour ignorer cette étape et utiliser '${DAROOTPART}'."
-			echo ""
-			echo -n "Votre choix (UUID/LABEL/LABEL=xxx/ENTRÉE) : "
-			read PARTNAME;
-			if [ "${PARTNAME}" = "UUID" ]; then
-				ROOTFSUUID=$(blkid -p -s UUID -o value ${DAROOTPART})
-				
-				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par l'UUID :
-				sed -i "s@ROOTPART@UUID=${ROOTFSUUID}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
-				
-				# On remplace donc la racine par son UUID dans 'fstab' :
-				sed -i "s@^${DAROOTPART}@UUID=${ROOTFSUUID}@" ${SETUPROOT}/etc/fstab
-				break
-				
-			# LABEL automatique :
-			elif [ "${PARTNAME}" = "LABEL" ]; then
-				PARTNAME="0LINUXRACINE"
-				
-				# On affecte le LABEL à la partition :
-				tune2fs -L ${PARTNAME} ${DAROOTPART}
-				
-				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par le LABEL  :
-				sed -i "s@ROOTPART@${PARTNAME}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
-				
-				# On remplace donc la racine par son LABEL dans 'fstab' :
-				sed -i "s@^${DAROOTPART}@${PARTNAME}@" ${SETUPROOT}/etc/fstab
-				break
-			
-			elif [ ! "$(echo ${PARTNAME} | grep -E '^LABEL=')" = "" ]; then
-				
-				# On affecte le LABEL à la partition :
-				tune2fs -L $(echo ${PARTNAME} | cut -d'=' -f2) ${DAROOTPART}
-				
-				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par le LABEL  :
-				sed -i "s@ROOTPART@${PARTNAME}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
-				
-				# On remplace donc la racine par son LABEL dans 'fstab' :
-				sed -i "s@^${DAROOTPART}@${PARTNAME}@" ${SETUPROOT}/etc/fstab
-				break
-				
-			elif [ "${PARTNAME}" = "" ]; then
-				
-				# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par la racine  :
-				sed -i "s@ROOTPART@${DAROOTPART}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
-				
-				# Et on laisse 'fstab' tel quel.
-				break
-				
-			else
-				echo "Veuillez soit entrer « UUID », « LABEL », « LABEL=nomdevotrechoix », soit"
-				echo "appuyer sur ENTRÉE."
-				echo ""
-				sleep 2
-				unset PARTNAME
-				continue
-			fi
-		done
-
+		# On déduit l'UUID de la racine :
+		ROOTFSUUID=$(blkid -p -s UUID -o value $(cat $TMP/partition_racine))
+		
+		# On remplace le marqueur « ROOTPART » dans 'extlinux.conf' par l'UUID :
+		sed -i "s@ROOTPART@UUID=${ROOTFSUUID}@" ${SETUPROOT}/boot/extlinux/extlinux.conf
+		
 		# On demande si l'on doit écraser le MBR :
 		if [ "${INSTALLDEBUG}" = "" ]; then
 			clear
@@ -174,9 +85,6 @@ while [ 0 ]; do
 		echo "contenant 0Linux afin qu'Extlinux prenne en charge vos différents"
 		echo "systèmes ?"
 		echo "N.B. : ceci écrasera votre ancienne amorce de façon irréversible !"
-		echo "N.B. : la partition à démarrer doit être marquée comme amorçable !"
-		echo "       Pour les disques GPT, il faudra invoquer, pour le disque'/dev/sda' :"
-		echo "       	sgdisk /dev/sda --attributes=1:set:2"
 		echo ""
 		echo "Entrez « oui » pour confirmer l'écrasement ou bien appuyez sur"
 		echo "ENTRÉE pour ignorer cette étape."
@@ -201,7 +109,7 @@ while [ 0 ]; do
 			fi
 			cat /usr/share/syslinux/${MBRBIN} > ${BOOTDEVICE}
 			
-			# Si le MBR est occupé par Extlinux, alors on en profite pour ajouter d'autres « OS » :
+			# Comme le MBR est occupé par Extlinux, on en profite pour ajouter d'autres « OS ».
 			
 			# On ajoute un éventuel système Windows :
 			if [ "$(fdisk -l | grep -i -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | \
@@ -248,7 +156,8 @@ while [ 0 ]; do
 						WINDISK="5"
 					else
 						WINDISK=""
-						echo "Réponse probablement erronée. La prise en charge de DOS/Windows sera ignorée."
+						echo "Erreur : impossible d'identifier la partition ou réponse"
+						echo "erronée. La prise en charge de DOS/Windows sera ignorée."
 						sleep 2
 					fi
 						

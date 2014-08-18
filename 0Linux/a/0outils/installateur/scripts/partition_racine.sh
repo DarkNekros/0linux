@@ -2,7 +2,7 @@
 
 # On nettoie avant toute chose :
 rm -f $TMP/choix_partitions $TMP/formatages
-unset KHGFKJ ROOTSELECT BLAHFORMAT ROOTFORMAT
+unset BLAH ROOTSELECT BLAHFORMAT ROOTFORMAT
 
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
@@ -23,7 +23,7 @@ if [ "$(fdisk -l | grep Linux | grep -v swap 2> /dev/null)" = "" ]; then
 	echo "Pour en savoir plus, lisez l'aide de l'installateur."
 	echo ""
 	echo -n "Appuyez sur ENTRÉE pour revenir au menu principal."
-	read KJGFKJ;
+	read BLAH;
 else
 	# Boucle d'affichage du menu du choix de racine :
 	while [ 0 ]; do

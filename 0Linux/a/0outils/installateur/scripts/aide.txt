@@ -74,39 +74,12 @@ logiciels.
 Faire une partition séparée pour /home est optionnel mais recommandé,
 celle-ci contenant entre autres les préférences des utilisateurs.
 
-Les disques durs ont 2 types de tables de partitions : la traditionnelle, dite
-« MBR », et une plus récente, nommée « GPT ». SI vous prévoyez d'installer le
-chargeur d'amorçage de 0Linux, Syslinux, préférez le MBR pour le moment. GPT
-sera bientôt pris en charge.
+Partitionnez avec le programme 'cfdisk', ou bien avec sa version plus 
+« vieille école », 'fdisk'. Les deux programmes font le même travail. 
+'cfdisk' est plus accessible car il est administrable via des menus 
+graphiques.
 
-Pour savoir quel type de disque dur vous possédez, invoquez (remplacez « X »
-par la lettre de votre lecteur) :
-
-	# gdisk -l /dev/sdX
-
-Cette ligne indique que le disque est de type GPT : 
-
-	GPT: present
-
-Cette ligne montrera en revanche un disque MBR : 
-
-	GPT: not present
-
-Le partitionnement s'effectue avec un outil de partitionnement adapté à votre
-disque dur.
-
-Pour les disques MBR classiques, partitionnez avec le programme 'cfdisk', ou
-bien avec sa version plus « vieille école », 'fdisk'. Les deux programmes
-font le même travail. 
-
-Pour les disques GPT plus récents, partitionnez avec le programme 'cgdisk', ou
-bien avec sa version plus « vieille école », 'gdisk'. Les deux programmes
-font le même travail. 
-
-Globalement, les outils 'cfdisk' et 'cgdisk' sont plus faciles à utiliser car
-ils sont administrables via des menus « graphiques ».
-
-Par défaut, 'fdisk'/'gdisk' et 'cfdisk'/'cgdisk' sélectionnent le premier
+Par défaut, 'fdisk' et 'cfdisk' sélectionnent le premier
 lecteur de disque dur de votre machine, '/dev/sda'. 
 Pour partitionner des disque durs supplémentaires, il faut les indiquer.
 
@@ -115,36 +88,25 @@ disque spécifique, tapez, au choix (remplacez « X » par la lettre de votre
 lecteur) : 
 
 	# fdisk -l
-	# gdisk -l /dev/sdX
 	# parted --list
 
-Par exemple, pour partitionner le second disque dur, tapez, au choix :
+Par exemple, pour partitionner le second disque dur, tapez :
 
 	# cfdisk /dev/sdb
-	# cgdisk /dev/sdb
 
 Vous allez avoir besoin d'au moins une partition de type 83 ou 8300 (type Linux
 par défaut) et optionnellement une de type 82 ou 8200 (la partition d'échange
 ou « swap ») afin que l'installateur reconnaisse vos partitions comme
 exploitables.
 
-	a) Si vous choisissez 'cfdisk' ou 'cgdisk', les menus vous guideront.
+	a) Si vous choisissez 'cfdisk', les menus vous guideront.
 	
-	b) Si vous choisissez 'fdisk' ou 'gdisk', utilisez la commande 't' pour
+	b) Si vous choisissez 'fdisk', utilisez la commande 't' pour
 	   choisir le type des partitions puis finissez par 'w' pour écrire la
-	   nouvelle table de partitions avant de quitter (les commandes peuvent
-	   changer selon le programme choisi).
+	   nouvelle table de partitions avant de quitter.
 
 N'oubliez pas de rendre amorçable la partition destinée à accueillir 0Linux !
-Pour les disques MBR, utilisez l'option « Amorçable » ou « Bootable » de
-'cfdisk'.
-Pour les disques GPT, il vous faudra invoquer la commande suivante, ici pour la
-partition '/dev/sda1', afin d'activer la fonctionnalité « Legacy BIOS
-bootable » :
-
-	# sgdisk /dev/sda --attributes=1:set:2
-
-Notez que le numéro de la partition concernée se spécifie après le « = ».
+Utilisez pour cela l'option « Amorçable » ou « Bootable » de 'cfdisk'.
 
 
 3- Lancement de l'installateur
@@ -177,31 +139,46 @@ aviez démarré correctement. Inutile de réinstaller complètement 0Linux.
 
 ---
 
+Message d'erreur lors de l'amorçage :
 « kernel panic-not syncing: VFS: unable to mount root fs » : 
 
-Le partition du système 0Linux ne parvient pas à s emonter. La lettre du
+Le partition du système 0Linux ne parvient pas à se monter. La lettre du
 lecteur spécifiée dans la configuration du chargeur d'amorçage est 
-vraisemblablement erronée ou la partition est endommagée. 
+vraisemblablement erronée, la partition endommagée, ou l'initrd de 0Linux n'a
+pas été spécifié correctement.
 
 Un problème connu est le nommage de vos disques durs par le noyau Linux 
 (/dev/sda, /dev/sdb). Celui-ci peut changer selon que vous avez installé 0Linux 
 depuis un périphérique de type bloc comme une clef USB, une carte mémoire, un
 disque dur externe, etc. Ce comportement n'arrive pas si vous installez depuis
-un lecteur optique (CD, DVD) ou une image ISO chargée depuis PXE. Ce problème
-sera réglé dès que l'initrd de 0Linux sera intégré (et ce message disparaîtra
-de l'aide).
+un lecteur optique (CD, DVD) ou une image ISO chargée depuis PXE, ou bien si 
+vous avez choisi d'amorcer votre système via l'identifiant UUID de la partition
+racine ou son LABEL. 0Linux possède un programme de démarrage en mémoire 
+(« initrd ») qui permet ce type d'amorçage, préférez-le à l'amorçage classique 
+(via '/dev/sdXX') si vous voulez vous éviter des migraines !
+
+Pour en savoir plus, consultez la documentation sur l'amorçage de 0Linux : 
+http://0.tuxfamily.org/doku.php/documentation/amorcage
 
 ---
 
+Messages d'erreur de temps à autre pendant l'installation des paquets, du type 
 « cpio: premature end of file », 
 « Le paquet xxx est CORROMPU ! », 
 « paquets.db est inaccessible » :
 
 Si l'installation des paquets vous affichent ces messages d'erreur, il est
 possible que le serveur hébergeant les paquets rencontrent des problèmes de
-connectivité. Installez depuis une image ISO « maxi » qui contient tous les
-paquets, ou synchronisez le dépôt vous-même dans un répertoire que vous
-monterez dans l'installateur via la rubrique RÉPERTOIRE.
+connectivité. Attendez que les choses rentrent dans l'ordre, ou bien installez 
+depuis une image ISO « maxi » qui contient tous les paquets, ou synchronisez le
+dépôt vous-même dans un répertoire que vous monterez dans l'installateur via la
+rubrique RÉPERTOIRE.
+
+Notez que les paquets peuvent paraître installés (aucun message d'erreur
+bloquant ne sera affiché et l'installateur validera l'étape) mais ça n'est pas
+le cas (ou bien ils vous manquera quelques paquets, dont certains peuvent être
+critiques). Sachez que l'installation de 'base-abonnement' prend au moins une
+minute (souvent plus) pour vous faire une idée.
 
 ---
 
@@ -209,4 +186,8 @@ Pour toute remarque sur cet installateur, écrivez à appzer0@0linux.org ou
 consultez le site officiel http://0linux.org, des forums y sont consultables,
 un wiki et d'autres canaux de communication.
 
-Appuyez sur Q pour quitter cette aide et revenir à l'installateur.
+Appuyez sur Q pour quitter cette aide et revenir à l'installateur. Vous venez
+d'utiliser 'less' !
+
+
+appzer0

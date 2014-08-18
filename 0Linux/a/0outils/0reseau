@@ -150,7 +150,7 @@ while [ 0 ]; do
 				read DHCPHOST;
 				if [ ! "$DHCPHOST" = "" ]; then
 					# On envoie l'hôte DHCP à la section pour eth0 :
-					sed -i "s/HOTEDHCP\[0\]=/&${DHCPHOST}/" ${NETWORKCONFIGFILE}
+					sed -i "s/HOTEDHCP\[0\]=.*/HOTEDHCP[0]=${DHCPHOST}/" ${NETWORKCONFIGFILE}
 				fi
 				NETCONFIG="ok"
 				break
@@ -193,9 +193,9 @@ while [ 0 ]; do
 						continue
 					fi
 					# On envoie les paramètres à la section pour eth0 :
-					sed -i "s/IP\[0\]=/&${IPPARAM}/" ${NETWORKCONFIGFILE}
-					sed -i "s/SOUSRESEAU\[0\]=/&${MASKPARAM}/" ${NETWORKCONFIGFILE}
-					sed -i "s/PASSERELLE=/&${GATEPARAM}/" ${NETWORKCONFIGFILE}
+					sed -i "s/IP\[0\]=.*/IP[0]=${IPPARAM}/" ${NETWORKCONFIGFILE}
+					sed -i "s/SOUSRESEAU\[0\]=.*/SOUSRESEAU[0]=${MASKPARAM}/" ${NETWORKCONFIGFILE}
+					sed -i "s/PASSERELLE=.*/PASSERELLE=${GATEPARAM}/" ${NETWORKCONFIGFILE}
 					break
 				fi
 			done

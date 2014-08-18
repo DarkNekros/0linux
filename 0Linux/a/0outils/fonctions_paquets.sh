@@ -721,8 +721,17 @@ empaqueter() {
 		# On le définit à 1 par défaut :
 		BUILD=1
 		
-		# On scanne les paquets installés :
-		for paquetinstalle in $(find /var/log/packages -type f -name "${NAMETGZ}-*" 2>/dev/null); do
+		# On scanne les paquets installés, avec une exception pour 'catalyst' et 'nvidia',
+		# installés ailleurs pour ne rien polluer :
+		for paquetcrado in nvidia catalyst; do
+			if [ "${NAMETGZ}" = "${paquetcrado}" ]; then
+				LOGDIRTOSCAN="/tmp/paquets_invasifs/var/log/packages"
+			else
+				LOGDIRTOSCAN="/var/log/packages"
+			fi
+		done
+		
+		for paquetinstalle in $(find ${LOGDIRTOSCAN} -type f -name "${NAMETGZ}-*" 2>/dev/null); do
 		
 			# Si on trouve le même paquet déjà installé avec le même $NAMETGZ :
 			if [ "$(echo $(basename ${paquetinstalle}) | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)" = "${NAMETGZ}" ]; then

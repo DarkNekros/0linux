@@ -101,7 +101,6 @@ bzip2 \
 pkg-config \
 shadow \
 util-linux \
-gptfdisk \
 psmisc \
 procps \
 e2fsprogs \

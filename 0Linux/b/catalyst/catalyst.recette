@@ -18,7 +18,6 @@ rm -rf $TMP/* $PKG/*
 mkdir -p ${PKG}/etc/X11/xorg.conf.d
 mkdir -p ${PKG}/etc/ati
 mkdir -p ${PKG}/etc/modprobe.d
-mkdir -p ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video
 mkdir -p ${PKG}/usr/include/{ATI,GL}
 mkdir -p ${PKG}/usr/{,s}bin
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
@@ -126,7 +125,8 @@ VERBOSE=1 V=1 fakeroot sh -x ./make.sh --uname_r=$(uname -r) 2>&1
 cd -
 
 # On place le module en le renommant :
-cp common/lib/modules/fglrx/fglrx.$(uname -r).ko ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video/fglrx.ko
+mkdir -p ${PKG}/usr/lib{,${LIBDIRSUFFIX}}/modules/$(uname -r)/kernel/drivers/video
+cp common/lib/modules/fglrx/fglrx.$(uname -r).ko ${PKG}/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/kernel/drivers/video/fglrx.ko
 
 # On crée un fichier blacklist pour empêcher les pilotes libres de se charger :
 cat > ${PKG}/etc/modprobe.d/blacklist-ati-radeon.conf.0nouveau << "EOF"

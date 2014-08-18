@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=8
+VERSION=9
 DESC="La base minimale du système 0Linux"
-EXTRADEPS="busybox base-systeme binutils tzdata glibc readline ncurses bash sgml-common 0outils zlib file gmp mpfr mpc cloog isl gcc libcap libcap-ng libffi libgcrypt libgpg-error libssh coreutils sed bzip2 shadow util-linux gptfdisk psmisc procps iana-etc grep bc libtool gdbm inetutils perl diffutils gawk findutils xz less gzip iproute2 kbd kmod libpipeline make patch sysklogd sysvinit tar texinfo eudev spack dhcpcd initialisation-systeme enveloppe_multiarch acl attr pcre gnutls net-tools rsync icu4c libidn openldap-client popt rtmpdump cyrus-sasl cpio openssl expat openssh libelf berkeley-db iptables curl wget e2fsprogs dosfstools jfsutils lvm2 b43-firmware linux-firmware rfkill fuse ntfs-3g_ntfsprogs squashfs sqlite parted reiserfsprogs xfsprogs kerberos nettle p11-kit ca-certificates tcp_wrappers wireless-tools syslinux linux"
+EXTRADEPS="busybox base-systeme binutils tzdata glibc readline ncurses bash sgml-common 0outils zlib file gmp mpfr mpc cloog isl gcc libcap libcap-ng libffi libgcrypt libgpg-error libssh coreutils sed bzip2 shadow util-linux psmisc procps iana-etc grep bc libtool gdbm inetutils perl diffutils gawk findutils xz less gzip iproute2 kbd kmod libpipeline make patch sysklogd sysvinit tar texinfo eudev spack dhcpcd initialisation-systeme enveloppe_multiarch acl attr pcre gnutls net-tools rsync icu4c libidn openldap-client popt rtmpdump cyrus-sasl cpio openssl expat openssh libelf berkeley-db iptables curl wget e2fsprogs dosfstools jfsutils lvm2 b43-firmware linux-firmware rfkill fuse ntfs-3g_ntfsprogs squashfs sqlite parted reiserfsprogs xfsprogs kerberos nettle p11-kit ca-certificates tcp_wrappers wireless-tools syslinux linux"
 
 cflags
 

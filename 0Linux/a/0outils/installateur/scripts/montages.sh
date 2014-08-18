@@ -21,6 +21,9 @@ cat $TMP/choix_partitions | while read LINE; do
 	# La partition :
 	MOUNTPART="$(echo ${LINE} | crunch | cut -d' ' -f1)"
 	
+	# L'UUID du système de fichiers de la partition (ne pas confondre avec PART_UUID) :
+	MOUNTFSUUID=$(blkid -p -s UUID -o value ${MOUNTPART})
+	
 	# Le point de montage :
 	MOUNTDIR="$(echo ${LINE} | crunch | cut -d' ' -f2)"
 	
@@ -50,7 +53,7 @@ cat $TMP/choix_partitions | while read LINE; do
 	fi
 	
 	# On ajoute la ligne résultante au fichier 'fstab' :
-	echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
+	echo "UUID=${MOUNTFSUUID}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
 	
 	# On monte la partition :
 	echo "Montage de ${SETUPROOT}/${MOUNTDIR}... "
@@ -66,7 +69,10 @@ if [ -r $TMP/choix_partitions_fat ]; then
 		# La partition :
 		MOUNTPART="$(echo ${LINEDOS} | crunch | cut -d' ' -f1)"
 		
-		# Le point de montage
+		# L'UUID du système de fichiers de la partition (ne pas confondre avec PART_UUID) :
+		MOUNTFSUUID=$(blkid -p -s UUID -o value ${MOUNTPART})
+		
+		# Le point de montage :
 		MOUNTDIR="$(echo ${LINEDOS} | crunch | cut -d' ' -f2)"
 		
 		# On va faire confiance à 'blkid' pour s'assurer du système de fichiers :
@@ -84,7 +90,7 @@ if [ -r $TMP/choix_partitions_fat ]; then
 		fi
 		
 		# On ajoute la ligne résultante au fichier 'fstab' :
-		echo "${MOUNTPART}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
+		echo "UUID=${MOUNTFSUUID}	${MOUNTDIR}		${FSMOUNT}	${MOUNTOPTIONS}		${MAJORMINOR}" >> $TMP/fstab
 		
 		# On crée le point de montage :
 		mkdir -p ${SETUPROOT}/${MOUNTDIR}
@@ -106,7 +112,7 @@ if [ ! "${SETUPROOT}" = "/" ]; then
 fi
 
 # On écrit notre 'fstab' temporaire depuis rien pour éviter de l'écrire plusieurs
-# fois si 'montages.sh' est appelé plusieurs fois:
+# fois si 'montages.sh' est appelé plusieurs fois (ça m'est arrivé 78 fois) :
 mkdir -p ${SETUPROOT}/etc
 echo "" > ${SETUPROOT}/etc/fstab
 
@@ -114,8 +120,11 @@ echo "" > ${SETUPROOT}/etc/fstab
 if [ ! -r $TMP/ignorer_swap ]; then
 	if [ -r $TMP/choix_swap ]; then
 		
+		# L'UUID du système de fichiers de la partition (ne pas confondre avec PART_UUID) :
+		SWAPFSUUID=$(blkid -p -s UUID -o value $(cat $TMP/choix_swap))
+		
 		echo "# Partition d'échange « swap » :" >> ${SETUPROOT}/etc/fstab
-		echo "$(cat $TMP/choix_swap)	swap		swap		defaults		0 0" >> ${SETUPROOT}/etc/fstab
+		echo "UUID=${SWAPFSUUID}	swap		swap		defaults		0 0" >> ${SETUPROOT}/etc/fstab
 		echo "" >> ${SETUPROOT}/etc/fstab
 	fi
 fi
@@ -142,7 +151,7 @@ while [ 0 ]; do
 	echo "les tmpfs sont effacés à chaque démarrage."
 	echo ""
 	echo "- Entrez « oui » pour ajouter une entrée tmpfs '/tmp' à '/etc/fstab' (moitié de"
-	echo "  la quantité de RAM par défaut) - OU"
+	echo "  la quantité de RAM maximum, par défaut, recommandé) - OU"
 	echo "- Entrez une valeur en méga-octets (M) ou giga-octets (G) pour décider"
 	echo "  de la quantité de RAM allouée à '/tmp' - OU"
 	echo "- Appuyez sur ENTRÉE pour ignorer cette étape."
@@ -162,6 +171,8 @@ while [ 0 ]; do
 		else
 			if [ "$(echo ${TMPFSMOUNT} | grep -E 'M$')" = "" ] && [ "$(echo ${TMPFSMOUNT} | grep -E 'G$')" = "" ]; then
 				# On ne sait pas ce que l'utilisateur a entré, on ignore :
+				echo "Valeur incorrecte : ne se termine pas par « M » ou « G », montage ignoré..."
+				sleep 3
 				break
 			else
 				# On ajoute le tmpfs à '/etc/fstab' avec la taille :
