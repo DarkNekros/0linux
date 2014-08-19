@@ -19,8 +19,10 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 ./install --prefix /usr \
 	--repackage ${PKG}/usr
 
-# On renomme le répertoire des bibliothèques  :
-mv ${PKG}/usr/lib{,${LIBDIRSUFFIX}}
+# On renomme le répertoire des bibliothèques le cas échéant :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	mv ${PKG}/usr/lib{,${LIBDIRSUFFIX}}
+fi
 
 # On répercute ce changement sur le « binaire » :
 sed -i "s@/lib/@/lib${LIBDIRSUFFIX}/@" ${PKG}/usr/bin/opera
