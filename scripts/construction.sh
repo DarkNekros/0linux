@@ -135,6 +135,26 @@ for param in $@; do
 					compiler_installer ${recette}
 				fi
 			done 
+		
+		# Si on doit régénérer une image ISO :
+		elif [ ! "$(echo '${param}' | grep 'generer-iso')" = "" ]; then
+			
+			# On découpe le paramètre pour savoir quel type d'ISO on doit générer (mini, maxi, etc.) :
+			ISOTYPE="$(echo ${param} | cut -d'-' -f3)"
+			
+			# On nettoie et on génère l'iso dans '/usr/local/temp' (par défaut, mais sait-on jamais) :
+			rm -rf /usr/local/temp/iso
+			sudo TMP=/usr/local/temp 0creation_live --${ISOTYPE} ${PKGREPO}/$(uname -m)/
+
+			# On déduit le nom de l'image ISO :
+			NOMISO=$(ls -1 /usr/local/temp/iso/)
+			
+			# On copie l'image et on génère la somme de contrôle MD5 :
+			cp /usr/local/temp/iso/${NOMISO} $(pwd)/../../../pub/iso/${VERSION}/
+			cd $(pwd)/../../../pub/iso/${VERSION}/
+			md5sum ${NOMISO} > ${NOMISO}.md5
+			cd -
+			
 		else
 			
 			# Si le paramètre est un fichier existant :

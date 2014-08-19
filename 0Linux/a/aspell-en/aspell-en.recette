@@ -3,10 +3,8 @@
 
 NAMESRC=aspell6-en
 VERSION=7.1
-EXT=tar.bz2
-WGET=http://ftp.gnu.org/gnu/aspell/dict/en/$NAMESRC-$VERSION-0.$EXT} # !
+WGET=http://ftp.gnu.org/gnu/aspell/dict/en/$NAMESRC-$VERSION-0.tar.bz2 # Version différente !
 DESC="Outils de correction orthographique et dictionnaires anglais"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

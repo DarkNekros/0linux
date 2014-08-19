@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.50
-EXT=tar.bz2
-WGET=http://ftp.gnu.org/gnu/aspell/dict/fr/$NAMESRC-$VERSION-3.$EXT
+WGET=http://ftp.gnu.org/gnu/aspell/dict/fr/$NAMESRC-$VERSION-3.tar.bz2
 DESC="Outils de correction orthographique et dictionnaires français"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
