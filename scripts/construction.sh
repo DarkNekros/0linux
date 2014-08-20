@@ -20,14 +20,18 @@
 #
 # 	./construction.sh @kde @gimp libpng alsa*
 #
-# Deux options spéciales existent :
+# Des options spéciales existent :
 #
 # ./construction.sh tout            : compile/installe TOUTES les recettes.
 # ./construction.sh tout-completer  : compile/installe TOUTES les recettes mais
 #                                     ignore les paquets déjà compilés et 
-#                                     installés dans '/usr/local/paquets' 
+#                                     installés dans '$PKGREPO' 
 #                                     (permet de s'assurer que le système est 
 #                                     complet).
+# ./construction.sh tout-retenter   : compile/installe TOUTES les recettes qui
+#                                     ont échoué et dont un log d'erreur existe
+# ./construction.sh generer-iso-mini: régénère une images ISO « mini »
+# ./construction.sh generer-iso-maxi: régénère une images ISO « maxi »
 #
 # On peut installer chaque paquet dans une racine spécifique en spécifiant la
 # variable DESTDIR sur la ligne de commande :
@@ -136,6 +140,14 @@ for param in $@; do
 					compiler_installer ${recette}
 				fi
 			done 
+		
+		# Si on doit compiler tous les paquets échoués :
+		elif [ "${param}" = "tout-retenter" ]; then
+			MARMITE=${MARMITE:-/tmp/0-marmite}
+			MARMITELOGS=${MARMITELOGS:-${MARMITE}/logs}
+				for recette_echouee in $(find ${MARMITELOGS} -type f -name "*.log" | sort); do
+					compiler_installer $(basename ${recette_echouee} .log)
+				done 
 		
 		# Si on doit régénérer une image ISO :
 		elif [ ! "$(echo '${param}' | grep 'generer-iso')" = "" ]; then
