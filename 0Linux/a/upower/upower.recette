@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.99.0
-EXT=tar.xz
-WGET=http://upower.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
+VERSION=0.99.1
+WGET=http://upower.freedesktop.org/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques d'abstraction pour la gestion de l'énergie"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -30,8 +28,10 @@ fakeroot make install DESTDIR=${PKG}
 
 # On crée un lien générique pour le multilib, ça ne fait pas de mal :
 if [ "${PKGARCH}" = "x86_64" ]; then
-	mkdir -p ${PKG}/usr/lib/
-	ln -sf ../lib${LIBDIRSUFFIX}/upower ${PKG}/usr/lib/
+	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+		mkdir -p ${PKG}/usr/lib/
+		ln -sf ../lib${LIBDIRSUFFIX}/upower ${PKG}/usr/lib/
+	fi
 fi
 
 # On place les règles pour 'polkit' permettant aux utilisateurs du groupe

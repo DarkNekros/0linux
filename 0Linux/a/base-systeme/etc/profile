@@ -29,8 +29,10 @@ if [ "`id -u`" = "0" ]; then
 	fi
 fi
 
-# On positionne par défaut la variable $TERM à 'linux' :
-TERM=linux
+# On positionne par défaut la variable $TERM à 'linux' si elle est inconnue :
+if [ "$TERM" = "" -o "$TERM" = "unknown" ]; then
+	TERM=linux
+fi
 
 # Ceci concerne le shell 'ksh'. On le garde dans un coin, sait-on jamais :
 if [ "$SHELL" = "/bin/ksh" ]; then
