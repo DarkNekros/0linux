@@ -135,7 +135,7 @@ for param in $@; do
 		# Si on doit tout compiler mais qu'on doit ignorer tout paquet déjà compilé :
 		elif [ "${param}" = "tout-completer" ]; then
 			for recette in $(find ../0Linux -type f -name "*.recette" | sort); do
-				CHECKPKGDIR="$(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/ -type d -name "$(echo $(basename ${recette} .recette))")"
+				CHECKPKGDIR="$(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/ -type d -name "$(basename ${recette} .recette)")"
 				if [ "$(find ${CHECKPKGDIR} -type f -name *.spack)" = "" ]; then
 					compiler_installer ${recette}
 				fi
