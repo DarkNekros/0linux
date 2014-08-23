@@ -85,7 +85,7 @@ while [ 0 ]; do
 		echo "9 : XBMC            - Centre multimédia autonome (ou « Media Center »)."
 	fi
 	if [ -r /etc/X11/xinit/xinitrc.xfce ]; then
-		echo "10 : Xfc            - Environnement de bureau léger alternatif à GNOME."
+		echo "10 : Xfce           - Environnement de bureau léger alternatif à GNOME."
 	fi
 	
 	echo ""

@@ -14,7 +14,6 @@ cflags
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/udev/rules.d
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/systemd/system/
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -28,16 +27,23 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-libusb_1_0 \
 	--enable-avahi \
+	--enable-locking \
 	--enable-pthread \
 	--with-group=scanner \
 	--with-lockdir=/var/lock/sane \
 	--build=${PKGARCH}-0linux-linux-gnu
-
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On place la règle pour 'udev' :
 cp -a tools/udev/libsane.rules ${PKG}/usr/lib${LIBDIRSUFFIX}/udev/rules.d/80-libsane.rules
+
+# On corrige le groupe d ela règle pour éviter les conflits lors des accès aux
+# multifonctions :
+sed -i -e "s/GROUP=\"scanner\"/GROUP=\"lp\"/g" \
+	-e "s/MODE=\"0664\"/MODE=\"0660\"/g" \
+	-e "s/ACTION!=\"add\"/ACTION!=\"add|change\"/g" \
+	${PKG}/usr/lib${LIBDIRSUFFIX}/udev/rules.d/80-libsane.rules
 
 # On corrige les jets d'encre HP :
 echo "#hpaio" >> ${PKG}/etc/sane.d/dll.conf

@@ -146,7 +146,7 @@ for param in $@; do
 			MARMITE=${MARMITE:-/tmp/0-marmite}
 			MARMITELOGS=${MARMITELOGS:-${MARMITE}/logs}
 				for recette_echouee in $(find ${MARMITELOGS} -type f -name "*.log" | sort); do
-					compiler_installer $(basename ${recette_echouee} .log)
+					compiler_installer $(find ../0Linux -type f -name "$(basename ${recette_echouee} .log).recette")
 				done 
 		
 		# Si on doit régénérer une image ISO :
