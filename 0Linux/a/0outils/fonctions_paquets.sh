@@ -582,6 +582,14 @@ EOF
 		echo "chroot . /usr/bin/xdg-icon-resource forceupdate --theme hicolor >/dev/null 2>&1" >> ${PKG}/post-install.sh
 		EXTRADEPS="${EXTRADEPS} xdg-utils"
 	fi
+	
+	# On s'assure que ces répertoires critiques conservent leurs permissions,
+	# le contraire arrivant trop souvent malgré tout le soin apporté :
+	for ${d} in run/lock var/lock tmp var/tmp; do
+		if [ -d ${PKG}/${d} ]; then
+			echo "chmod 1777 ${d}" >> ${PKG}/post-install.sh
+		fi
+	done
 }
 
 stripper() {
