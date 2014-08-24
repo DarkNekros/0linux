@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.2.4
-EXT=tar.bz2
-WGET=ftp://space.mit.edu/pub/davis/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
-DESC="Bibliothèques multi-plateforme"
-
+WGET=ftp://space.mit.edu/pub/davis/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
+DESC="Langage interprété pour applications"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -27,9 +25,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 make elf
 fakeroot make install-elf DESTDIR=${PKG}
-
-# On corrige les permissions de la bibliothèque partagée :
-chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/libslang.so.*.*.*
 
 installer_doc
 creer_post_installation
