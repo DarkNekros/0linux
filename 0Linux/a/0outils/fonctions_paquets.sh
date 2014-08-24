@@ -573,7 +573,7 @@ EOF
 	
 	# On met à jour le cache des icônes pour GTK+ et on ajoute la dépendance le cas échéant :
 	if [ -d ${PKG}/usr/share/icons ]; then
-		echo "chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor >/dev/null 2>&1" >> ${PKG}/post-install.sh
+		echo "chroot . /usr/bin/gtk-update-icon-cache -f -t /usr/share/icons/hicolor >/dev/null 2>&1 &" >> ${PKG}/post-install.sh
 		EXTRADEPS="${EXTRADEPS} gtk+"
 	fi
 	
@@ -585,7 +585,7 @@ EOF
 	
 	# On s'assure que ces répertoires critiques conservent leurs permissions,
 	# le contraire arrivant trop souvent malgré tout le soin apporté :
-	for ${d} in run/lock var/lock tmp var/tmp; do
+	for d in run/lock var/lock tmp var/tmp; do
 		if [ -d ${PKG}/${d} ]; then
 			echo "chmod 1777 ${d}" >> ${PKG}/post-install.sh
 		fi

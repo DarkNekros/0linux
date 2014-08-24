@@ -1,5 +1,10 @@
 accountsservice
 gsettings-desktop-schemas
+gssdp
+gupnp
+gupnp-av
+gupnp-dlna
+gupnp-igd
 gjs
 gnome-desktop
 libpeas
@@ -7,6 +12,9 @@ gmime
 totem-pl-parser
 gnome-video-effects
 yelp
+yelp-tools
+system-tools-backends
+liboobs
 cogl
 clutter
 clutter-gst
