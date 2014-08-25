@@ -178,13 +178,13 @@ upgrade () {
     exec 3>>"$1"
     while [ "$code" ]; do
         read size; read dwl; c=$((c+1)); p=$(basename "$dwl.spack")
-        echo "$demo Téléchargement de $p : $(humansize $size)"
+        echo "$demo > Téléchargement de $p : $(humansize $size)..."
         if [ "$cch" ] && [ -f "$cch/$dwl.spack" ]; then
             echo " En cache : utilisation de la copie locale..."
             [ "$demo" ] || ln -sf "$cch/$dwl.spack" "$tmp"
         else
             total=$((total+size))
-            [ "$demo" ] || $CURL -o "$tmp/$p" "$url/$dwl.spack"
+            [ "$demo" ] || $CURLWITHPROGRESS -o "$tmp/$p" "$url/$dwl.spack"
         fi
         if [ $code -ne 0 ]; then
             growl 0 "$p est marqué comme spécial et ne sera pas intégré."
@@ -261,6 +261,7 @@ MASTER="http://download.tuxfamily.org/0linux/pub/paquets"
 ROOT="$(echo "$ROOT" | sed 's#/*$#/#')"
 LOGDIR="${ROOT}var/log/packages"
 CURL="/usr/bin/curl-statique -LRs" # curl est compilé statiquement
+CURLWITHPROGRESS="/usr/bin/curl-statique -#LR" # curl est compilé statiquement
 
 for i in $(getopt ACEGJLST "$@"); do
     case "$root$i" in

@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.12.16
-EXT=tar.xz
-WGET=http://cairographics.org/releases/$NAMESRC-$VERSION.$EXT
+WGET=http://cairographics.org/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques graphiques 2D"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -19,9 +17,12 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# La suite de tests contient une dépendance circulaire GTK+-Cairo, on la supprime :
 	sed -i '/noinst_PROGRAMS = cairo-test-suite$(EXEEXT) # always build/d' test/Makefile.am
-	autoreconf -vif
+	
+	# On supprime la prise en charge de LTO qui casse la compilation :
+	cat $CWD/cairo.lto.patch | patch -p1
 	
 	# Compilation pour i686 :
+	autoreconf -vif
 	CFLAGS="${FLAGS} -Wall" CXXFLAGS="${FLAGS} -Wall" \
 	./configure \
 		--prefix=/usr \
@@ -31,6 +32,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--disable-lto \
 		--enable-tee \
 		--enable-xcb \
 		--build=${PKGARCH}-0linux-linux-gnu
@@ -46,9 +48,12 @@ cflags
 
 # La suite de tests contient une dépendance circulaire GTK+-Cairo, on la supprime :
 sed -i '/noinst_PROGRAMS = cairo-test-suite$(EXEEXT) # always build/d' test/Makefile.am
-autoreconf -vif
+
+# On supprime la prise en charge de LTO qui casse la compilation :
+cat $CWD/cairo.lto.patch | patch -p1
 
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS} -Wall" CXXFLAGS="${FLAGS} -Wall" \
 ./configure \
 	--prefix=/usr \
@@ -58,6 +63,13 @@ CFLAGS="${FLAGS} -Wall" CXXFLAGS="${FLAGS} -Wall" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-lto \
+	--enable-egl \
+	--enable-gl \
+	--enable-gobject \
+	--enable-pdf \
+	--enable-ps \
+	--enable-svg \
 	--enable-tee \
 	--enable-xcb \
 	--build=${PKGARCH}-0linux-linux-gnu

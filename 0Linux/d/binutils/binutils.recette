@@ -18,6 +18,10 @@ else
 	MYLDFLAGS="-Wl,-rpath-link,/usr/lib${LIBDIRSUFFIX}:/lib${LIBDIRSUFFIX}"
 fi
 
+# On corrige le comportement de l'installation de la libiberty, qui a disparu
+# dans 'binutils' 2.24 :
+sed -i '/^target_header_dir=$/d' libiberty/configure
+
 # Compilation :
 CC="${CC} -isystem /usr/include" \
 LDFLAGS="${MYLDFLAGS}" \
@@ -32,6 +36,7 @@ LDFLAGS="${MYLDFLAGS}" \
 	${OPTMULTILIB} \
 	--disable-werror \
 	--enable-gold \
+	--enable-install-libiberty \
 	--enable-ld=default \
 	--enable-plugins \
 	--enable-shared \

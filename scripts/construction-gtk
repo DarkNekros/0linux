@@ -14,6 +14,7 @@ atkmm
 at-spi2-core
 at-spi2-atk
 cantarell-fonts
+libxkbcommon
 gtk+
 gtkmm
 glib-networking

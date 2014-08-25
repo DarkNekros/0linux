@@ -5,12 +5,11 @@
 #
 #   - il évalue les derniers commmits du dépôt git  et lance la ocnstruction
 #     des paquets correspondants avec 'construction.sh'
-#   - il régénère une image ISO avec '0creation_live' si l'installateur a subi
-#   - des modifications
 #   - il lance ensuite 'trouver_binaires_casses.sh' pour vérifier l'intégrité
 #     de l'ensemble du système
-#   - il génère le catalogue en ligne via '../catalogue/catalogue.sh' des
-#     paquets fraîchement construits ainsi que leurs dépendances
+#   - Désactivé pour le moment : il génère le catalogue en ligne via 
+#     '../catalogue/catalogue.sh' des paquets fraîchement construits ainsi que
+#     leurs dépendances
 #   - il génère enfin la base de données des paquets 'paquets.db' et envoie le
 #     tout sur le serveur spécifié avec le script '0mir'.
 #
