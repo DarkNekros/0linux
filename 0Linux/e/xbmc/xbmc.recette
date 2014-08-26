@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=13.1
+VERSION=13.2
 EXT=tar.gz
 WGET=(http://mirrors.xbmc.org/releases/source/$NAMESRC-$VERSION.$EXT
       https://github.com/opdenkamp/xbmc-pvr-addons/archive/13.0-Gotham.$EXT
@@ -46,8 +46,10 @@ sed -i -e 's@#include <libsmbclient.h>@#include <samba-4.0/libsmbclient.h>@' xbm
 sed -i '/dbus_connection_send_with_reply_and_block/s:-1:3000:' xbmc/linux/*.cpp
 
 # On utlise les instruction SSE2 si elles sont disponibles :
-if grep 'sse2' /proc/cpuinfo 2>&1 >/dev/null; then
-	sed -i 's@USE_SSE ?= 0@USE_SSE ?= 1@' lib/libsquish/config
+if grep -q 'sse2' /proc/cpuinfo; then
+	sed -i -e '/^CXXFLAGS/{s:-D[^=]*=.::;s:-m[[:alnum:]]*::}' \
+	-e "1iCXXFLAGS += -DSQUISH_USE_SSE=2 -msse2" 
+	lib/libsquish/Makefile*
 fi
 
 # On lance le script 'bootstrap' permettant de générer le nécessaire à la compilation :
@@ -84,7 +86,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-neon \
 	--enable-nfs \
 	--enable-optical-drive \
-	--enable-optimizations \
 	--enable-rtmp \
 	--enable-samba \
 	--enable-sdl \
@@ -96,7 +97,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-xrandr \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-make -j1
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # 'lsb_release' n'existe pas sous 0Linux :
