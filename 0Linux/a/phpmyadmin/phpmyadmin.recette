@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.2.6
+VERSION=4.2.7.1
 WGET=http://prdownloads.sourceforge.net/phpmyadmin/phpMyAdmin-$VERSION-all-languages.tar.xz
 DESC="Interface web pour l'administration de bases de données MySQL"
 EXTRADEPS="php mariadb"
