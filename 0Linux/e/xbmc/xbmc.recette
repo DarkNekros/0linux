@@ -46,10 +46,8 @@ sed -i -e 's@#include <libsmbclient.h>@#include <samba-4.0/libsmbclient.h>@' xbm
 sed -i '/dbus_connection_send_with_reply_and_block/s:-1:3000:' xbmc/linux/*.cpp
 
 # On utlise les instruction SSE2 si elles sont disponibles :
-if grep -q 'sse2' /proc/cpuinfo; then
-	sed -i -e '/^CXXFLAGS/{s:-D[^=]*=.::;s:-m[[:alnum:]]*::}' \
-	-e "1iCXXFLAGS += -DSQUISH_USE_SSE=2 -msse2" 
-	lib/libsquish/Makefile*
+if [ ! "$(grep 'sse2' /proc/cpuinfo)" = "" ]; then
+	FLAGS="${FLAGS} -DSQUISH_USE_SSE=2 -msse2"
 fi
 
 # On lance le script 'bootstrap' permettant de générer le nécessaire à la compilation :

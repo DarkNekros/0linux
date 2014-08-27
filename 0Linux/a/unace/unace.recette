@@ -3,10 +3,8 @@
 
 NAMESRC=unace-nonfree
 VERSION=2.5
-EXT=tar.gz
-WGET=http://ftp.debian.org/debian/pool/non-free/u/$NAMESRC/${NAMESRC}_$VERSION.orig.$EXT
-DESC="Décompression des archives au format ACE"
-
+WGET=http://ftp.debian.org/debian/pool/non-free/u/$NAMESRC/${NAMESRC}_$VERSION.orig.tar.gz
+DESC="Décompresseur d'archives au format ACE"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -18,6 +16,7 @@ cat $CWD/unace.no-io_h.patch | patch -p1
 cat $CWD/unace.gcc.patch | patch -p1
 cat $CWD/unace.warnings.patch | patch -p1
 cat $CWD/unace.bad-pointer.patch | patch -p1
+
 if [ "$PKGARCH" = "x86_64" ] ; then
 	cat $CWD/unace.64bits.patch | patch -p1
 fi
@@ -26,14 +25,15 @@ fi
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 
-# Pas d'installation :
-mkdir -p $PKG/usr/bin
-cp -a unace $PKG/usr/bin/
-
-# On place la licence d'utilisation dans la doc :
-cp -a licence $PKG/usr/doc/$NAMETGZ-$VERSION/
+# Installation manuelle :
+mkdir -p ${PKG}/usr/bin
+cp -a unace ${PKG}/usr/bin/
 
 installer_doc
+
+# On place la licence d'utilisation dans la doc :
+cp -a licence ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
 creer_post_installation
 stripper
 empaqueter
