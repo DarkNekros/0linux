@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.8.5
+VERSION=3.8.6
 WGET=http://www.sqlite.org/2014/$NAMESRC-autoconf-$(echo ${VERSION} | tr '.' '0').tar.gz
 DESC="Moteur de bases de données SQL autonome"
 
