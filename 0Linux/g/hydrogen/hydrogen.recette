@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.9.5.1
-EXT=tar.gz
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Éditeur et boîte à rythmes"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -14,6 +12,9 @@ cflags
 # On adapte aux 'scons' récents :
 cat $CWD/hydrogen.scons.patch | patch -p0
 
+# On corrige une idiotie :
+sed -i "s@env.ParseConfig('pkg-config --modversion jack', get_jack_api_flags)@env.ParseConfig('pkg-config --modversion jack | cut -d'.' -f1-2-3', get_jack_api_flags)@" Sconstruct
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 LDFLAGS+=" -I/usr/include/raptor2" \
@@ -21,7 +22,9 @@ QTDIR=/usr \
 scons \
 	prefix=/usr \
 	lash=1 \
-	libarchive=1
+	libarchive=1 \
+	portaudio=1 \
+	portmidi=1
 
 fakeroot scons install QTDIR=/usr DESTDIR=${PKG}
 
