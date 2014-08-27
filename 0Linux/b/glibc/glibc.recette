@@ -109,6 +109,7 @@ $TMP/${NAME}/configure \
 	--enable-bind-now \
 	--enable-kernel=3.1.0 \
 	--enable-lock-elision \
+	--enable-obsolete-rpc \
 	--enable-stackguard-randomization \
 	--build=${PKGARCH}-0linux-linux-gnu
 
