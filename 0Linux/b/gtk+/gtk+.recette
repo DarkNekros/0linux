@@ -127,6 +127,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-gtk2-dependency \
 	--enable-introspection \
 	--enable-wayland-backend \
+	--enable-x11-backend \
 	--enable-xkb \
 	--build=${PKGARCH}-0linux-linux-gnu
 
