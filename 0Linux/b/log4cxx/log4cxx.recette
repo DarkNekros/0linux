@@ -3,10 +3,8 @@
 
 NAMESRC=apache-log4cxx
 VERSION=0.10.0
-EXT=tar.gz} 
-WGET=http://apache.cict.fr/logging/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.$EXT
+WGET=http://apache.cict.fr/logging/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de journalisation avancée pour C++"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
