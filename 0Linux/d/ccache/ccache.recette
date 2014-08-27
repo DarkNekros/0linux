@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=3.1.9
+WGET=http://samba.org/ftp/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+DESC="Système de cache pour compilateur"
+
+telecharger_sources
+preparer_sources
+cflags
+configure_make_makeinstall
+
+# On crée des liens génériques isolés vers le binaire 'ccache' :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/ccache/bin
+
+for binaire in gcc g++ cc c++ cpp; do
+	ln -sf ../../../bin/ccache ${PKG}/usr/lib${LIBDIRSUFFIX}/ccache/bin/${binaire}
+done
+
+# On place un fichier profil permettant de prioriser 'ccache' en le plaçant au
+# début du PATH :
+mkdir -p ${PKG}/etc/profile.d
+
+cat > ${PKG}/etc/profile.d/ccache.sh << "EOF"
+#!/usr/bin env bash
+
+# Priorisation de ccache par rapport à GCC :
+export PATH="/usr/libARCH/ccache/bin:${PATH}"
+
+EOF
+chmod +x ${PKG}/etc/profile.d/ccache.sh
+
+# On corige le fichier profil pour notre suffixe de bibliothèques :
+sed -i "s@ARCH@${LIBDIRSUFFIX}@g" ${PKG}/etc/profile.d/ccache.sh
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
