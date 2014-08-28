@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.0.15
+VERSION=0.0.16
 EXT=tar.xz
 WGET=(http://releases.wildfiregames.com/$NAMESRC-$VERSION-alpha-unix-build.$EXT
       http://releases.wildfiregames.com/$NAMESRC-$VERSION-alpha-unix-data.$EXT
      )
 DESC="0 A.D. : jeu de stratégie guerrière en temps réel"
 
-
 telecharger_sources
-
-preparer_sources $NAMESRC-$VERSION-alpha-unix-build.$EXT
+preparer_sources $NAMESRC-$VERSION-alpha-unix-build.$EXTp
 cflags
 
 # On déballe les données dans $TMP :
@@ -20,8 +18,8 @@ tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-$VERSION-alpha-unix-data.$EXT -C $TMP
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/{bin,lib${LIBDIRSUFFIX}/${NAMESRC},share/{applications,${NAMESRC},pixmaps}}
 
-# On corrige les appels aux bibliothèques Boost :
-sed -i 's@-mt@@g' build/premake/extern_libs4.lua
+# On ajoute la compatibilité avec UPnP :
+cat $CWD/0ad.upnp.patch | patch -p0
 
 # Compilation :
 CFLAGS="${FLAGS}" CPPFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -30,9 +28,10 @@ build/workspaces/update-workspaces.sh \
 	--libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--datadir=/usr/share/${NAMESRC}/data \
 	--with-system-enet \
+	--with-system-miniupnpc \
 	-j${JOBS}
 
-make CONFIG=Release -j${JOBS} -C build/workspaces/gcc
+make CONFIG=Release -j${JOBS} -C build/workspaces/gcc || make CONFIG=Release -C build/workspaces/gcc
 
 # On place les bibliothèques :
 cp -a binaries/system/*so* ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}

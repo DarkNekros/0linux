@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.1.26
-EXT=tar.gz
-WGET=ftp://ftp.cyrusimap.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=ftp://ftp.cyrusimap.org/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Système d'authentification chiffrée pour la messagerie électronique"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,10 +15,20 @@ cat $CWD/cyrus-sasl.CVE-2013-4122.patch | patch -p1
 # On ajoute une inclusion manquante :
 cat $CWD/cyrus-sasl.types.patch | patch -p1
 
+# On ajoute des dépencances manquantes pour l'éditeur de liens :
+cat $CWD/cyrus-sasl.ld-as-needed.patch | patch -p1
+
 # On force notre répertoire standard pour les bibliothèques :
 sed -i "/sasldir/s/lib/&${LIBDIRSUFFIX}/" plugins/Makefile.in
 
+# On supprime la dépendances à 'kerberos' :
+sed -i '/AC_CHECK_LIB(krb5support,krb5int_getspecific,K5SUP=/d' cmulocal/sasl2.m4
+
+# On corrige une macro :
+sed -i 's/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/' configure.in
+
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
