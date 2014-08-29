@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.10.2
+VERSION=1.11.0
 WGET=http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques du cœur d'Enlightenment"
 
@@ -13,8 +13,7 @@ cflags
 sed -i 's@^.*efl requires a C++ compiler got.*@true@' configure
 
 # Compilation :
-CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS} -fvisibility=hidden" \
-LDFLAGS+="-ldl" LIBS+="-ldl" \
+CFLAGS="${FLAGS} -fvisibility=hidden" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -25,6 +24,7 @@ LDFLAGS+="-ldl" LIBS+="-ldl" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-lua-old \
+	--disable-tslib \
 	--enable-fb \
 	--enable-harfbuzz \
 	--enable-image-loader-webp \

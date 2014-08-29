@@ -34,12 +34,12 @@ fi
 set +e
 
 # === Bibliothèque =============================================================
-
 evalpkg () {
     # Liste les paquets qui doivent être mis à jour
     # $f MODE EXPERT, PAQUETS
-    local exp="#"
+    local exp="#" pkg="REQ"
     [ "$1" = "oui" ] || exp=""; shift 1
+    [ $# -gt 0 ] || pkg="GET"
     awk 'function update (p, c,v,i) {
            if (p in SKIP)
              return
@@ -48,23 +48,23 @@ evalpkg () {
            if (v[2] != GET[p]) {
   '$exp'     for (i=5; i<=c; i++)
   '$exp'       (v[i] in DB) && update(v[i])
-             print ((p in SPECIAL) ? 1 : 0)"\n"v[4]"\n"v[3] v[2]
+             print ((p in SPECIAL) ? 1 : 0), v[4], v[3] v[2]
            }
          }
-         BEGIN { for (i=ARGC-1;i>0;i--) GET[ARGV[i]]="/"; ARGC=split("",ARGV)
+         BEGIN { for (i=1;i<ARGC;i++) REQ[ARGV[i]]; ARGC=split("",ARGV)
                  getline; for (i=1; i <= NF; i++) SKIP[$i]
                  getline; for (i=1; i <= NF; i++) SPECIAL[$i]
                  while ((getline p) > 0) {
                     if (p == "--end--") break
                     n = p; sub(/-[^-]+-[^-]+-[^-]+$/,"",n); GET[n] = p
-                  }
+                 }
                }
          ($1 in SKIP) {delete GET[$1]; next}
          {DB[$1] = $0}
-         END { for (p in GET) 
+         END { for (p in '$pkg') 
                  if (p in DB)
-                    update(p)
-                else if ((GET[p] == "/") && !(p in SKIP))
+                   update(p)
+                 else if ((p in REQ) && !(p in SKIP))
                    print "(!) "p": paquet introuvable !">"/dev/stderr"
              }' $@
 }
@@ -168,7 +168,7 @@ upgrade () {
     # $f GARDER LES PAQUETS, CACHE, DOSS. TAMPON, MODE DÉMO, URL DÉPÔT, JOURNAL
     local save="$1" cch="$2" tmp="${3:-"/tmp"}" demo="$4" url="$5" dwl="" \
           date=$(date +%d/%m/%Y) code="" p="" size=0 total=0 c=0; shift 5
-    if ! read code; then
+    if ! read -r code size dwl; then
         echo "Le système est à jour."
         return 0
     fi
@@ -177,14 +177,14 @@ upgrade () {
     [ "$demo" ] && demo="[démo]"
     exec 3>>"$1"
     while [ "$code" ]; do
-        read size; read dwl; c=$((c+1)); p=$(basename "$dwl.spack")
-        echo "$demo Téléchargement de $p: $(humansize $size)"
+        c=$((c+1)); p=$(basename "$dwl.spack")
+        echo "$demo > Téléchargement de $p: $(humansize $size)"
         if [ "$cch" ] && [ -f "$cch/$dwl.spack" ]; then
             echo " En cache : utilisation de la copie locale..."
             [ "$demo" ] || ln -sf "$cch/$dwl.spack" "$tmp"
         else
             total=$((total+size))
-            [ "$demo" ] || $CURL -o "$tmp/$p" "$url/$dwl.spack"
+            [ "$demo" ] || $CURL --no-silent -o "$tmp/$p" "$url/$dwl.spack"
         fi
         if [ $code -ne 0 ]; then
             growl 0 "$p est marqué comme spécial et ne sera pas intégré."
@@ -193,7 +193,7 @@ upgrade () {
             spackadd --root="$ROOT" "$tmp/$p" && echo "$date + ${p%.spack}" >&3
             [ "$save" = "oui" ] && [ ! -h "$tmp/$p" ] || rm -f "$tmp/$p"
         fi  # on ne garde pas les   ^^^   liens symboliques vers le cache.
-        read code
+        read -r code size dwl
     done
     exec 3>&-
     if ! rmdir "$tmp" 2>/dev/null; then
@@ -215,9 +215,9 @@ usage () {
 
   0g télécharge et met à jour les paquets installés pour lesquels une
   nouvelle version est disponible dans le dépôt de 0Linux. Lorsque des
-  arguments supplémentaires lui sont fournis, en sus de cette opération,
-  0g cherche et installe les nouveaux paquets correspondant avec leurs
-  éventuelles dépendances.
+  arguments supplémentaires lui sont fournis, 0g recherche puis installe
+  ou met à jour les paquets correspondant avec leurs éventuelles
+  dépendances.
 
   Utilisation: 0g [option] [paquet(s)]
 
@@ -258,7 +258,7 @@ unset demo info root paquets
 MASTER="ftp://127.0.0.3:2112/paquets" #"http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets/"
 ROOT="$(echo "$ROOT" | sed 's#/*$#/#')"
 LOGDIR="${ROOT}var/log/packages"
-CURL="/usr/bin/curl -LRs"
+CURL="/usr/bin/curl -#LRs"
 
 for i in $(getopt ACEGJLST "$@"); do
     case "$root$i" in

@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=4.2.0.11
-EXT=tar.bz2
-WGET=http://download.skype.com/linux/$NAMESRC-$VERSION.$EXT
+WGET=http://download.skype.com/linux/$NAMESRC-$VERSION.tar.bz2
 DESC="Programme pair-à-pair de transmission voix/vidéo sur IP"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,8 +15,11 @@ mkdir -p ${PKG}/etc/dbus-1/system.d
 mkdir -p ${PKG}/usr/bin
 mkdir -p ${PKG}/usr/share/{applications,pixmaps,skype}
 
+# On corrige le binaire pour que le service cesse de couper arbitrairement :
+bspatch skype skype-patched $CWD/skype-4.3.0.37-verno.patch
+
 # On copie le binaire :
-cp -a skype ${PKG}/usr/bin
+cp -a skype-patched ${PKG}/usr/bin/skype
 chmod 0755 ${PKG}/usr/bin/skype
 
 # On copie les ressources, avatars et sons :
