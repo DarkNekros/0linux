@@ -9,8 +9,12 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On applique un correctif pour ne pas polluer les consoles :
-cat $CWD/gpm-1.20.6.no-console-pollution.patch | patch -p1
+# On corrige  pour ne pas polluer les consoles :
+sed -i -e 's@syslog/stdout@syslog@g' \
+	-e 's@syslog/stderr@syslog@g' \
+	-e 's@syslog+system console+current console@syslog@g' \
+	-e 's@syslog+system console@syslog@g' \
+	src/report.c
 
 # Compilation :
 ./autogen.sh
