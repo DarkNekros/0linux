@@ -7,30 +7,9 @@ WGET=http://files.musepack.net/source/${NAMESRC}-${VERSION}.tar.bz2
 DESC="Outils et bibliothèques pour le format Musepack"
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources
 cflags
-
-# Compilation :
-mkdir build && cd build
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-cmake -D CMAKE_BUILD_TYPE=Release \
-	-D CMAKE_SKIP_RPATH=ON \
-	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D LIBRARY_OUTPUT_PATH=${PKG}/usr/lib${LIBDIRSUFFIX} \
-	-D SYSCONF_INSTALL_DIR=/etc \
-	./ ../
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
-
-# Nettoyage
-rm -rf ${PKG}/usr/include/mpc/.svn
-
-# On crée un lien réclamé par certains paquets (k3b) :
-ln -sf mpc ${PKG}/usr/include/mpcdec
-
+configure_make_makeinstall
 installer_doc
 creer_post_installation
 stripper
