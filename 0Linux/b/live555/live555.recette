@@ -26,10 +26,11 @@ sed -i \
 	-e 's/\(LIBRARY_LINK_OPTS =\).*/\1 $(LINK_OPTS) -r -Bstatic/g' \
 	config.*
 
-# On active la compatibilité RTSP :
+# On active la compatibilité RTSP et nos drapeaux FLAGS et LDFLAGS :
 sed -i "s@$(INCLUDES) -I. -O2 -DSOCKLEN_T=socklen_t@& ${FLAGS} ${LDFLAGS}@g" config.*
 
 # Compilation :
+unset LDFLAGS
 ./genMakefiles linux${EXTRAARCH}
 
 make -j${JOBS} || make
