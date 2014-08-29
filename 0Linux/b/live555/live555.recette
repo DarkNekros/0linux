@@ -32,7 +32,8 @@ sed -i \
 	config.linux
 
 # Compilation (le Makefile appelle LDFLAGS directement, d'où les drapeaux modifiés) :
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -O1 --as-needed --sort-common" \
+export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -O1 --as-needed --sort-common"
+
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./genMakefiles linux${EXTRAARCH}
 
