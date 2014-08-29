@@ -15,6 +15,7 @@ cat $CWD/gksu.auth_admin.patch | patch -p1
 
 # Compilation :
 autoreconf -vif
+LDFLAGS+="-lgee" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
