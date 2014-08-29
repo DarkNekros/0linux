@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.11.0
+VERSION=1.11.1
 WGET=http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques du cœur d'Enlightenment"
 
