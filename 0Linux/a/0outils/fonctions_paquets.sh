@@ -677,7 +677,7 @@ empaqueter() {
 		rm -f ${fichiergdb}
 	done
 	
-	# On nettoie ce fichier indésirables des modules Perl :
+	# On nettoie ce fichier indésirable des modules Perl :
 	if [ ! "${NAMETGZ}" = "perl" ]; then
 		find ${PKG} -type f -name "perllocal.pod" -delete 2>/dev/null || true
 	fi
