@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.9.4
+WGET=http://archive.apache.org/dist/ant/source/$NAMESRC-$VERSION-src.tar.bz2
+DESC="Outil de construction en Java"
+EXTRADEPS="hamcrest"
+
+telecharger_sources
+preparer_sources $NAMESRC-$VERSION-src.tar.bz2
+cflags
+
+# On nettoie les bibliothèques embarquées et on lie sur le système hôte:
+rm -f lib/optional/hamcrest-core-1.3.jar
+ln -sf /usr/share/java/hamcrest-core.jar lib/optional/
+
+# Compilation :
+./build.sh -Ddist.dir=${PKG}/usr/share/apache-ant dist
+
+# On crée un fichier profil pour définir les variables d'environnement :
+mkdir -p ${PKG}/etc/profile.d
+cat > ${PKG}/etc/profile.d/ant.sh << "EOF"
+#!/usr/bin/env bash
+
+export PATH=${PATH}:/usr/share/apache-ant/bin
+export ANT_HOME=/usr/share/apache-ant
+
+EOF
+chmod +x ${PKG}/etc/profile.d/ant.sh
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
