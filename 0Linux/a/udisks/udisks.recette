@@ -2,12 +2,10 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.1.3
-EXT=tar.bz2
 WGET=(http://hal.freedesktop.org/releases/$NAMESRC-1.0.5.tar.gz
-     http://udisks.freedesktop.org/releases/$NAMESRC-$VERSION.$EXT
+     http://udisks.freedesktop.org/releases/$NAMESRC-$VERSION.tar.bz2
      )
 DESC="Service de gestion de périphériques de stockage"
-
 
 telecharger_sources
 cflags
@@ -35,7 +33,7 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On compile la version de la recette :
-preparer_sources
+preparer_sources $NAMESRC-$VERSION.tar.bz2
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
