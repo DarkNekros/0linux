@@ -24,17 +24,12 @@ fi
 sed -i \
 	-e 's/\(LIBRARY_LINK =\).*/\1 $(LD) -o/g' \
 	-e 's/\(LIBRARY_LINK_OPTS =\).*/\1 $(LINK_OPTS) -r -Bstatic/g' \
-	config.linux
+	config.*
 
 # On active la compatibilité RTSP :
-sed -i \
-	-e 's/$(INCLUDES) -I. -O2 -DSOCKLEN_T/$(INCLUDES) -I. -O2 -I. -fPIC -DRTSPCLIENT_SYNCHRONOUS_INTERFACE=1 -DSOCKLEN_T/g' \
-	config.linux
+sed -i "s@$(INCLUDES) -I. -O2 -DSOCKLEN_T=socklen_t@& ${FLAGS} ${LDFLAGS}@g" config.*
 
-# Compilation (le Makefile appelle LDFLAGS directement, d'où les drapeaux modifiés) :
-export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -O1 --as-needed --sort-common"
-
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+# Compilation :
 ./genMakefiles linux${EXTRAARCH}
 
 make -j${JOBS} || make
