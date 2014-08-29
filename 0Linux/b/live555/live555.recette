@@ -2,11 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=live
-VERSION=2013.03.07
-EXT=tar.gz
-WGET=http://www.live555.com/liveMedia/public/${NAMESRC}.${VERSION}.$EXT
+VERSION=2014.08.26
+WGET=http://www.live555.com/liveMedia/public/${NAMESRC}.${VERSION}.tar.gz
 DESC="Outils et bibliothèque pour flux en streaming"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -28,7 +26,13 @@ sed -i \
 	-e 's/\(LIBRARY_LINK_OPTS =\).*/\1 $(LINK_OPTS) -r -Bstatic/g' \
 	config.linux
 
-# Compilation :
+# On active la compatibilité RTSP :
+sed -i \
+	-e 's/$(INCLUDES) -I. -O2 -DSOCKLEN_T/$(INCLUDES) -I. -O2 -I. -fPIC -DRTSPCLIENT_SYNCHRONOUS_INTERFACE=1 -DSOCKLEN_T/g' \
+	config.linux
+
+# Compilation (le Makefile appelle LDFLAGS directement, d'où les drapeaux modifiés) :
+LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -O1 --as-needed --sort-common" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./genMakefiles linux${EXTRAARCH}
 
