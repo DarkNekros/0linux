@@ -3,7 +3,7 @@
 
 NAMESRC=libmpcdec
 VERSION=1.2.6
-WGET=http://files.musepack.net/source/${NAMESRC}-${VERSION}.tar.gz
+WGET=http://files.musepack.net/source/${NAMESRC}-${VERSION}.tar.bz2
 DESC="Outils et bibliothèques pour le format Musepack"
 
 telecharger_sources
