@@ -11,13 +11,18 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige les cibles et quelques problèmes :
+# On corrige les cibles et des tas de problèmes connus (ce paquet est vieuuuuux):
 cat $CWD/a2ps.buildfix.patch | patch -p1
 cat $CWD/a2ps.automake.patch | patch -p0
-
-autoreconf -vif
+cat $CWD/a2ps.security.patch | patch -p1
+sed -i -e '/^AM_C_PROTOTYPES/d' -e '/^AUTOMAKE_OPTIONS.*ansi2knr/d' \
+	-e 's:AM_CONFIG_HEADER:AC_CONFIG_HEADERS:' -e 's:AM_PROG_CC_STDC:AC_PROG_CC:' \
+	configure.in {contrib/sample,lib,src}/Makefile.am m4/protos.m4
+sed -i "s:^countdictstack: \0:" contrib/psset.in
 
 # Compilation :
+autoreconf -vif
+LIBS+=" -lm" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -27,6 +32,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-nls \
 	--enable-shared \
 	--with-medium=A4 \
 	--build=${PKGARCH}-0linux-linux-gnu
