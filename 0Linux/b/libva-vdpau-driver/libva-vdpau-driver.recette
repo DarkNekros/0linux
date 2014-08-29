@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.7.4
-EXT=tar.bz2
-WGET=http://www.freedesktop.org/software/vaapi/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://www.freedesktop.org/software/vaapi/releases/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Interfaçage VDPAU pour l'API VA"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -13,21 +11,11 @@ cflags
 
 # Corrige la compilation avec Mesa >= 8.5
 cat $CWD/libva-vdpau-driver.glx.patch | patch -p0
+cat $CWD/libva-vdpau-driver.libva.patch | patch -p1
+cat $CWD/libva-vdpau-driver.libvdpau-0.8.patch | patch -p1
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+configure_make_makeinstall
 
 installer_doc
 creer_post_installation
