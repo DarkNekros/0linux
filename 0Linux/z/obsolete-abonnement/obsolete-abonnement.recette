@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=10
-DESC="Outil de désinstallation interactif des paquets maarqués comme obsolètes"
+VERSION=11
+DESC="Paquets maarqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
 
@@ -46,9 +46,11 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	kdnssd \
 	kwallet \
 	lcms2 \
+	libqtgtl \
 	libssh2 \
 	mysql \
 	ndiswrapper \
+	opengtl \
 	python3 \
 	raptor2 \
 	suitesparseconfig \
@@ -117,9 +119,11 @@ kdesdk: supprimé dans la distribution de KDE
 kdetoys: supprimé dans la distribution de KDE
 kwallet: remplacé par 'kwalletmanager'
 lcms2: fusionné dans 'lcms'
+libqtgtl: lié à 'opengtl', projet mort
 libssh2: fusionné dans 'libssh'
-mysql : remplacé par 'mariadb'
+mysql: remplacé par 'mariadb'
 ndiswrapper: supprimé, inutile
+opengtl: projet mort
 python3: fusionné dans 'python'
 raptor2: fusionné dans  'raptor'
 syslog-ng: remplacé par 'syslog'

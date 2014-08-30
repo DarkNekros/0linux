@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.0.28
+WGET=ftp://ftp.alsa-project.org/pub/plugins/$NAMESRC-$VERSION.tar.bz2
+DESC="Jeu de firmwares de cartes audio pour ALSA"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-hotplug-dir=/usr/lib${LIBDIRSUFFIX}/firmware \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Ces fichiers sont en conflit avec 'linux-firmware' :
+rm -rf ${pkgdir}/usr/lib${LIBDIRSUFFIX}/firmware/{ct{efx,speq}.bin,ess,korg,sb16,yamaha}
+
+# Ce lien est cassé :
+rm -rf ${pkgdir}/usr/lib/firmware/turtlebeach
+
+# C'est vide :
+rm -rf ${pkgdir}/usr/bin
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -4,7 +4,8 @@
 VERSION=11
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
-acpid                   alsa-lib                 alsa-plugins \
+acpid                   alsa-firmware            alsa-lib \
+alsa-plugins \
 alsa-utils              apr                      apr-util \
 asciidoc                aspell                   aspell-en \
 aspell-fr               atk                      atkmm \
@@ -142,7 +143,7 @@ notify-python \
 nss-mdns                ntfs-3g_ntfsprogs        numpy \
 ogmtools                openal                   openbabel \
 opencollada             opencolorio              opencore-amr \
-opencv                  openexr                  opengtl \
+opencv                  openexr \
 openimageio             openjade                 openjpeg \
 openldap-client         openslp                  opensp \
 openssh                 openssl                  opus \
