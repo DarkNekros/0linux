@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.0.43
-EXT=tar.gz
-WGET=http://repo.steampowered.com/$NAMESRC/archive/precise/${NAMESRC}_${VERSION}.$EXT
+VERSION=1.0.0.48
+WGET=http://repo.steampowered.com/$NAMESRC/archive/precise/${NAMESRC}_${VERSION}.tar.gz
 DESC="La plateforme ludique de divertissement centralisé multijoueur de Valve"
-
+EXTRADEPS="pulseaudio"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -32,7 +31,7 @@ cp -a steam ${PKG}/usr/bin/
 # On crée notre propre 'steamdeps', le leur est spécifique Debian/Ub#@#¶ :
 cat > ${PKG}/usr/bin/steamdeps << "EOF"
 #!/bin/sh
-echo "0Linux contient déjà les dépendances nécessaires à Steam si le dépôt @steam a été installé !"
+echo "0Linux contient déjà les dépendances nécessaires à Steam !"
 exit 0
 
 EOF
