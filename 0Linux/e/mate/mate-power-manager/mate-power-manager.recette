@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.8.0
+WGET=http://pub.mate-desktop.org/releases/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
+DESC="Gestionnaire d'alimentation pour MATE"
+
+telecharger_sources
+preparer_sources
+cflags
+
+# On corrige une erreur lros de l'analyse SGML :
+sed -i -e 's:@HAVE_DOCBOOK2MAN_TRUE@.*::' man/Makefile.in
+
+# On corrige pour la compatibilité avec les plus récents 'upower' :
+cat $CWD/${NAMETGZ}.kbdbacklight.patch | patch -p1
+cat $CWD/${NAMETGZ}.upower099.patch | patch -p1
+cat $CWD/${NAMETGZ}.upower10.patch | patch -p1
+cat $CWD/${NAMETGZ}.upower099-api.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-applets \
+	--enable-unique \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

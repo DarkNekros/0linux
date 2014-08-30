@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.7.0
+WGET=https://github.com/NiceandGently/$NAMESRC/archive/v${VERSION}.tar.gz
+DESC="Extension pour Caja permettant de personnaliser les programmes lancés via le menu contextuel"
+
+telecharger_sources
+preparer_sources
+cflags
+
+# Compilation :
+NOCONFIGURE=1 ./autogen.sh
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-gtk=2 \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
