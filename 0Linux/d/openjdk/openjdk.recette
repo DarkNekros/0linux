@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.7.0u65_2.5.1
+WGET=(
+      http://icedtea.classpath.org/download/source/icedtea-$(echo $VERSION | cut -d'_' -f2).tar.gz
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/corba.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/hotspot.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/jaxp.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/jaxws.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/jdk.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/langtools.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/openjdk.tar.bz2
+     )
+DESC="Distribution libre de l'environnement « Java Platform Standard Edition Development Kit »"
+EXTRADEPS="apache-ant rhino"
+
+# Merci à AlienBOB pour avoir été assez autiste pour s'occuper d'un machin pareil.
+
+# On empêche le téléchargement si on trouve les bonnes versions en les renommant :
+for archive_source in corba hotspot jaxp jaxws jdk langtools openjdk; do
+	if [ -r ${PKGSOURCES}/${NAMETGZ}/${archive_source}-$(echo $VERSION | cut -d'_' -f2).tar.bz2 ]; then
+		mv ${PKGSOURCES}/${NAMETGZ}/${archive_source}{-$(echo $VERSION | cut -d'_' -f2),}.tar.bz2
+	fi
+done
+
+telecharger_sources
+
+# On renomme les sources avec la version :
+for archive_source in corba hotspot jaxp jaxws jdk langtools openjdk; do
+	if [ -r ${PKGSOURCES}/${NAMETGZ}/${archive_source}.tar.bz2 ]; then
+		mv ${PKGSOURCES}/${NAMETGZ}/${archive_source}{,-$(echo $VERSION | cut -d'_' -f2)}.tar.bz2
+	fi
+done
+
+preparer_sources icedtea-$(echo $VERSION | cut -d'_' -f2).tar.gz
+cflags
+
+# Les sous-répertoires sont différents selon l'architecture :
+if [ "${PKGARCH}" = "i686" ]; then
+	ARCHIDIR="i386"
+elif [ "${PKGARCH}" = "x86_64" ]; then
+	ARCHIDIR="amd64"
+else
+	ARCHIDIR="${PKGARCH}" # L'espoir fait vivre
+fi
+
+# On définit ces variables pour s'adapter ua système de construction :
+export ALT_FREETYPE_LIB_PATH=/usr/lib${LIBDIRSUFFIX}
+export ALT_PARALLEL_COMPILE_JOBS="${JOBS}"
+export BUILD_NUMBER=$JAVABLD
+export HOTSPOT_BUILD_JOBS="${ALT_PARALLEL_COMPILE_JOBS}"
+export LC_ALL=C LANG=C # Indispensable pour openjdk !
+export OS_VARIANT_NAME="0Linux"
+export OS_VARIANT_VERSION=$(grep -E '^VERSION=' /etc/os-release | cut -d'=' -f2)
+export DISTRIBUTION_BOOT_PATCHES=""
+export JAVA_HOME="/usr/lib${LIBDIRSUFFIX}/jdk" # compatible OpenJDK + Oracle JDK
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--with-abs-install-dir=/usr/lib${LIBDIRSUFFIX}/java \
+	--disable-bootstrap \
+	--disable-docs \
+	--disable-jdk-tests \
+	--disable-langtools-tests \
+	--enable-nss \
+	--with-corba-src-zip=${PKGSOURCES}/${NAMETGZ}/corba-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
+	--with-hotspot-src-zip=${PKGSOURCES}/${NAMETGZ}/hotspot-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
+	--with-jaxp-src-zip=${PKGSOURCES}/${NAMETGZ}/jaxp-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
+	--with-jaxws-src-zip=${PKGSOURCES}/${NAMETGZ}/jaxws-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
+	--with-jdk-home=/usr/lib${LIBDIRSUFFIX}/jdk \
+	--with-jdk-src-zip=${PKGSOURCES}/${NAMETGZ}/jdk-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
+	--with-langtools-src-zip=${PKGSOURCES}/${NAMETGZ}/langtools-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
+	--with-openjdk-src-zip=${PKGSOURCES}/${NAMETGZ}/openjdk-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
+	--with-parallel-jobs=${HOTSPOT_BUILD_JOBS} \
+	--with-pkgversion=0Linux \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+
+# On place le JDK et le JRE dans un sous-répertoire du JDK :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+cp -a openjdk.build/j2sdk-image ${PKG}/usr/lib${LIBDIRSUFFIX}/java
+cp -a openjdk.build/j2re-image  ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre
+
+# On corrige cette permission :
+chmod 644 ${PKG}/usr/lib${LIBDIRSUFFIX}/java/lib/sa-jdi.jar
+
+# On crée le fichiers profil pour le JRE et le JDK :
+mkdir -p ${PKG}/etc/profile.d
+
+cat > ${PKG}/etc/profile.d/openjdk.sh << "EOF"
+#!/usr/bin/env bash
+
+export JAVA_HOME=/usr/libARCH/java
+export MANPATH="${MANPATH}:${JAVA_HOME}/man"
+export PATH="${PATH}:${JAVA_HOME}/bin:${JAVA_HOME}/jre/bin"
+
+EOF
+chmod +x ${PKG}/etc/profile.d/openjdk.sh
+
+# On corrige le fichier profil pour notre répertoire de bibliothèques standard :
+sed -i "s@ARCH@${LIBDIRSUFFIX}@g" ${PKG}/etc/profile.d/openjdk.sh
+
+# On génère les certificats SSL :
+mkdir certgen
+(
+	cd certgen
+	cp $CWD/generate-cacerts.pl .
+	
+	for cert in /usr/share/ca-certificates/*/*.crt; do
+		openssl x509 -text -in "${cert}" >> all.crt
+	done
+	
+	perl generate-cacerts.pl keytool all.crt
+	cp cacerts ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/security
+	cd -
+)
+
+# On corrige des permissions et on choisit des fichiers par défaut pour 'fontconfig' :
+chmod 644 ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/fontconfig*
+cp ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/fontconfig{.Ubuntu,}.properties.src
+cp ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/fontconfig{.Ubuntu,}.bfc
+
+# On place les icônes :
+for i in 16 24 32 48 ; do
+	mkdir -p ${PKG}/usr/share/icons/hicolor/${i}x${i}/apps
+	cp openjdk/jdk/src/solaris/classes/sun/awt/X11/java-icon${i}.png ${PKG}/usr/share/icons/hicolor/${i}x${i}/apps/java.png 
+done
+
+# On place les raccourcis bureau :
+mkdir -p ${PKG}/usr/share/applications
+cp *.desktop ${PKG}/usr/share/applications/
+
+# On corrige le chemin des binaires :
+for f in ${PKG}/usr/share/applications/*.desktop; do
+	sed -i -e "s,^Exec=/usr/bin/,Exec=," ${f}
+done
+
+# On déplace la configuration en veillant à ne rien écraser et on lie :
+mkdir -p ${PKG}/etc/java
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/${ARCHIDIR}/jvm.cfg ${PKG}/etc/java/jvm.cfg.0nouveau
+ln -sf /etc/java/jvm.cfg ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/${ARCHIDIR}/jvm.cfg
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/security/java.policy ${PKG}/etc/java/java.policy.0nouveau
+ln -sf /etc/java/java.policy ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/security/java.policy
+mv ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/security/java.security ${PKG}/etc/java/java.security.0nouveau
+ln -sf /etc/java/java.security ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/security/java.security
+cat ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/security/nss.cfg > ${PKG}/etc/java/nss.cfg.0nouveau
+ln -sf /etc/java/nss.cfg ${PKG}/usr/lib${LIBDIRSUFFIX}/java/jre/lib/security/nss.cfg
+
+# On crée des liens standards pour la libjvm :
+ln -sf java/jre/lib/${ARCHIDIR}/server/libjvm.so ${PKG}/usr/lib${LIBDIRSUFFIX}/
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << EOF
+
+# On laisse la priorité au JDK d'Oracle s'il est présent :
+if [ -d usr/lib${LIBDIRSUFFIX}/jdk]; then
+	chmod -x etc/profile.d/openjdk.sh
+fi
+
+EOF
+
+# On 'strip' uniquement la libjvm en conservant la table de symboles :
+#stripper
+find ${PKG} -name libjvm.so -exec strip --strip-debug {} \;
+
+empaqueter
+
+# C'est fini.
