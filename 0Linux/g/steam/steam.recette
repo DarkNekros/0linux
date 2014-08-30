@@ -100,7 +100,7 @@ cflags
 installer_doc
 
 # On complète la documentation avec la licence :
-cp -a steam_install_agreement.txt ${PKG}/usr/doc/${NAMETGZ-${VERSION}}/
+cp -a steam_install_agreement.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 
 creer_post_installation
 empaqueter
