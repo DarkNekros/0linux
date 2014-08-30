@@ -11,6 +11,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On compile avec 'wxwidgets' 2.8.x, le code n'est pas prêt pour la version 3 :
+export WX_CONFIG=/usr/bin/wx-config-2.8
+
 # Compilation avec FFMPEG 0.x et non FFMPEG 2 :
 PKG_CONFIG_PATH+="/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/pkgconfig" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
