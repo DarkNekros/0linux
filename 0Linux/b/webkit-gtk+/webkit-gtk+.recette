@@ -2,11 +2,16 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=webkitgtk
-VERSION=2.4.4
+VERSION=2.4.5
 WGET=http://webkitgtk.org/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Port GTK+ du moteur de navigateur web WebKit"
 
 telecharger_sources
+
+# CC="gcc -mXX" plante la compilation... On s'assure que la compilation
+# n'échoue pas pour un détail pareil (webkit, c'est des heures et des heures de
+# compilation en perspective...) :
+export CC=gcc CXX=g++
 
 # Compilaton de webkit 1 :
 preparer_sources
@@ -16,6 +21,7 @@ cflags
 sed -i 's@“AS IS”@"AS IS"@g' Source/WebCore/xml/XMLViewer.*
 
 # Compilation :
+CC=gcc CXX=g++ \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -43,6 +49,7 @@ cflags
 sed -i 's@“AS IS”@"AS IS"@g' Source/WebCore/xml/XMLViewer.*
 
 # Compilation :
+CC=gcc CXX=g++ \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
