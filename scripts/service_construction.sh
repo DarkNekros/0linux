@@ -31,7 +31,7 @@ FILEDATTENTECATALOGUE="/tmp/catalogue_en_attente.tmp"
 PKGREPO=${PKGREPO:-/usr/local/paquets}
 
 # On supprime un éventuel déchet '.pid' restant :
-if ! ps axc | grep 'service_construction' 1>/dev/null 2>/dev/null ; then
+if [ "$(ps axc | grep 'service_construction')" = "" ]; then
 	rm -f ${PIDFILE}
 fi
 
