@@ -22,20 +22,7 @@ sed -i 's|LOCAL_FOOMATIC_RIP=@LOCAL_FOOMATIC_RIP@|LOCAL_FOOMATIC_RIP=@FOOMATIC_R
 
 # Compilation :
 export LIB_CUPS="/usr/lib${LIBDIRSUFFIX}/cups"
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sbindir=/usr/bin \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+configure_make_makeinstall
 
 # On place la doc dans un sous-répertoire dédié :
 installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-db-engine
@@ -43,40 +30,15 @@ installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-db-engine
 # On compile 'foomatic-db' :
 preparer_sources $NAMESRC-db-4.0-$VERSION.tar.gz
 cflags
-
-# Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+configure_make_makeinstall
 
 # On compile enfin 'foomatic-db-nonfree' :
 preparer_sources $NAMESRC-db-nonfree-$VERSION.tar.gz
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+./make_configure
+configure_make_makeinstall
 
 # On place la doc dans un sous-répertoire dédié :
 installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-db-nonfree
