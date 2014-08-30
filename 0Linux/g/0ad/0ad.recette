@@ -21,6 +21,9 @@ mkdir -p ${PKG}/usr/{bin,lib${LIBDIRSUFFIX}/${NAMESRC},share/{applications,${NAM
 # On ajoute la compatibilité avec UPnP :
 cat $CWD/0ad.upnp.patch | patch -p0
 
+# On compile avec 'wxwidgets' 2.8.x, le code n'est pas prêt pour la version 3 :
+export WX_CONFIG=/usr/bin/wx-config-2.8
+
 # Compilation :
 CFLAGS="${FLAGS}" CPPFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 build/workspaces/update-workspaces.sh \
