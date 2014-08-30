@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1_7R4
+WGET=(
+      https://github.com/mozilla/$NAMESRC/archive/Rhino${VERSION}_RELEASE.tar.gz
+      http://archive.apache.org/dist/xmlbeans/binaries/xmlbeans-2.5.0.tgz
+     )
+DESC="Implémentation open source du langage Javascript en Java"
+EXTRADEPS="apache-ant"
+
+telecharger_sources
+preparer_sources Rhino${VERSION}_RELEASE.tar.gz
+cflags
+
+# On décompacte ler archives Java 'xmlbeans' :
+tar xf ${PKGSOURCES}/${NAMETGZ}/xmlbeans-2.5.0.tgz
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+ant \
+	-Dxbean.jar=./xmlbeans-2.5.0/lib/xbean.jar \
+	-Djsr173.jar=./xmlbeans-2.5.0/lib/jsr173_1.0_api.jar \
+	jar
+
+# On place manuellement l'archive Java produite :
+mkdir -p ${PKG}/usr/share/java/
+cp build/rhino${VERSION}/js.jar ${PKG}/usr/share/java/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
