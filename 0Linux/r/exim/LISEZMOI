@@ -6,4 +6,8 @@ Une fois Sendmail désinstallé, un lien symbolique de compatibilité (respect
 du standard FHS) est recommandé. Pour le créer saisissez la commande suivante
 en root :
 
+Pour 0Linux x86_64 :
   ln -s ../sbin/exim /usr/lib64/sendmail
+  
+Pour le reste :
+  ln -s ../sbin/exim /usr/lib/sendmail

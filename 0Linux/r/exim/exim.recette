@@ -3,10 +3,11 @@
 
 VERSION=4.82
 EXT=tar.bz2
-WGET=(http://dl.ambiweb.de/mirrors/ftp.exim.org/$NAMESRC/${NAMESRC}4/$NAMESRC-$VERSION.$EXT
-	http://dl.ambiweb.de/mirrors/ftp.exim.org/$NAMESRC/${NAMESRC}4/$NAMESRC-html-$VERSION.$EXT)
-DESC="Un MTA traditionnel compatible avec Senmail pour GNU/Linux"
-
+WGET=(
+      http://dl.ambiweb.de/mirrors/ftp.exim.org/$NAMESRC/${NAMESRC}4/$NAMESRC-$VERSION.$EXT
+      http://dl.ambiweb.de/mirrors/ftp.exim.org/$NAMESRC/${NAMESRC}4/$NAMESRC-html-$VERSION.$EXT
+     )
+DESC="Un MTA traditionnel compatible avec Sendmail pour GNU/Linux"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -51,7 +52,7 @@ cat > $PKG/etc/mail/aliases.0nouveau << EOF
 #  
 #  /etc/mail/aliases
 #
-#  ATTENTION : Assurer vous de lancer la commande 'newaliases'
+#  ATTENTION : Assurez-vous de lancer la commande 'newaliases'
 #  après avoir modifié ce fichier
 #
 
@@ -130,9 +131,6 @@ esac
 
 EOF
 
-# Le service est activé par défaut :
-chmod +x ${PKG}/etc/rc.d/rc.exim
-
 # On crée le fichier de rotation des fichiers de log :
 cat > ${PKG}/etc/logrotate.d/exim << "EOF"
 /var/log/exim/*log {
@@ -145,12 +143,13 @@ cat > ${PKG}/etc/logrotate.d/exim << "EOF"
 
 EOF
 
-# On installe la doc :
+installer_doc
+
+# On complète la doc :
 tar xf $PKGSOURCES/$NAMETGZ/$NAMESRC-html-$VERSION.$EXT -C $TMP
 cp -a $TMP/$NAMESRC-html-$VERSION/doc/html $PKG/usr/doc/$NAMETGZ-$VERSION
 cp -a $CWD/LISEZMOI $PKG/usr/doc/$NAMETGZ-$VERSION
 
-installer_doc
 creer_post_installation
 stripper
 empaqueter
