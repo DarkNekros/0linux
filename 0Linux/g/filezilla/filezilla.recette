@@ -2,11 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=FileZilla
-VERSION=3.7.0.1
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/filezilla/${NAMESRC}_${VERSION}_src.$EXT
+VERSION=3.9.0.3
+WGET=http://prdownloads.sourceforge.net/filezilla/${NAMESRC}_${VERSION}_src.tar.bz2
 DESC="Client FTP graphique"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -24,6 +22,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-autoupdatecheck \
 	--enable-locales \
+	--disable-manualupdatecheck \
+	--disable-autoupdatecheck \
 	--with-tinyxml=builtin \
 	--build=${PKGARCH}-0linux-linux-gnu
 
