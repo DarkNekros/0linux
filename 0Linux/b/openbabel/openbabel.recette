@@ -17,10 +17,10 @@ cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 LDFLAGS="$LDFLAGS -ltirpc" \
 cmake \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
-	-DwxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config-2.8
+	-D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D wxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config-2.8 \
 	..
 
 make -j${JOBS} || make
