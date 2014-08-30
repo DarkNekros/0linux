@@ -13,18 +13,18 @@ cflags
 mkdir -p build
 cd build
 
-# Compilation :
+# Compilation sur wxwidgets 2.8.x, le code n'est pas prêt pour la version 3 :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 LDFLAGS="$LDFLAGS -ltirpc" \
-cmake -D CMAKE_BUILD_TYPE=Release \
-	-D CMAKE_SKIP_RPATH=ON \
+cmake \
+	-D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	./ ../
+	-D wxWidgets_CONFIG_EXECUTABLE=/usr/bin/wx-config-2.8
+	..
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-cd ../
 
 installer_doc
 creer_post_installation
