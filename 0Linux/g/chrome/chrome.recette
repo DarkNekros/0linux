@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=36.0.1985.143
+# Pour voir les versions disponibles (vous pouvez faire mieux avec vos
+# numéros de versions, Google !) :
+# curl -s https://dl.google.com/linux/chrome/rpm/stable/x86_64/repodata/other.xml.gz | gzip -df | awk -F\" '/pkgid/{ sub(".*-","",$4); print $4": "$10 }
+VERSION=37.0.2062.94
 
 cflags
 [ "${PKGARCH}" = "x86_64" ] && SRCARCH="amd64"
-[ "${PKGARCH}" = "i686" ] && SRCARCH="i686"
+[ "${PKGARCH}" = "i686" ] && SRCARCH="i386"
 
 WGET=https://dl.google.com/dl/linux/direct/google-chrome-stable_current_${SRCARCH}.deb
 DESC="Chrome, le navigateur Web de Google"
