@@ -102,36 +102,77 @@ telecharger_sources() {
 		# On télécharge l'archive source en '.part et on retombe sur le FTP de 0linux
 		# si le téléchargement se passe mal (fichier inexistant, erreur du serveur, etc.) :
 		if [ ! -r ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) ]; then
-			wget -vc ${WGETEXTRAOPTION} \
-				--no-check-certificate \
-				--timeout=20 \
-				--tries=3 \
-				${wgeturl} \
-				-O ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}).part || \
-			wget -vc \
-				--timeout=20 \
-				--tries=3 \
-				ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/${NAMETGZ}/$(basename ${wgeturl}) \
-				-O ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}).part
 			
-			# On renomme correctement le fichier téléchargé :
-			mv ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}){.part,}
+			# On traite différemment les URL de dépôts git :
+			
+			if [ ! "$(echo ${wgeturl} | grep -E '^git')" = "" ]; then
+				if [ ! -r ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}.tar.xz ]; then
+					(
+						# On nettoie et on clone le dépôt git :
+						cd ${PKGSOURCES}/${NAMETGZ}
+						rm -rf git-clone
+						mkdir git-clone
+						cd git-clone
+						rm -rf ${NAMESRC}-${VERSION}
+						git clone ${wgeturl}
+						
+						# On passe le dépôt à la version voulue :
+						cd "$(ls -1)"
+						git checkout ${VERSION}
+						
+						# On nettoie :
+						rm -rf .git
+						
+						# On revient à la racine et on renomme le répertoire principal :
+						cd ..
+						mv "$(ls -1)" ${NAMESRC}-${VERSION}
+						
+						# On crée l'archive nous-même :
+						tar cfJ ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}.tar.xz ${NAMESRC}-${VERSION}
+						
+						# On nettoie :
+						rm -rf ${NAMESRC}-${VERSION}
+						cd ..
+						rm -rf git-clone
+					)
+				fi
+			else
+				wget -vc ${WGETEXTRAOPTION} \
+					--no-check-certificate \
+					--timeout=20 \
+					--tries=3 \
+					${wgeturl} \
+					-O ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}).part || \
+				wget -vc \
+					--timeout=20 \
+					--tries=3 \
+					ftp://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/${NAMETGZ}/$(basename ${wgeturl}) \
+					-O ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}).part
+				
+				# On renomme correctement le fichier téléchargé :
+				mv ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}){.part,}
+			fi
 		fi
 		
-		# On vérifie l'archive téléchargée :
-		case $(basename ${wgeturl}) in
-			*.tar.*|*.TAR.*|*.tgz|*.TGZ|*.tbz*|*.TBZ*)
-				tar ft ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) 1>/dev/null 2>/dev/null || \
-					argh "L'archive '$(basename ${wgeturl}) 'semble incorrecte."
-			;;
-			*.zip|*.ZIP)
-				unzip -tq ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) 1>/dev/null 2>/dev/null || \
-					argh "L'archive '$(basename ${wgeturl}) 'semble incorrecte."
-			;;
-			*)
-				echo "Format d'archive source non pris en charge. Vérification ignorée."
-			;;
-		esac
+		# On vérifie l'archive téléchargée (pour les dépôts git, on a créé l'archive) :
+		if [ ! "$(echo ${wgeturl} | grep -E '^git')" = "" ]; then
+			tar ft ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}.tar.xz 1>/dev/null 2>/dev/null || \
+				argh "L'archive '$(basename ${wgeturl}) 'semble incorrecte."
+		else
+			case $(basename ${wgeturl}) in
+				*.tar.*|*.TAR.*|*.tgz|*.TGZ|*.tbz*|*.TBZ*)
+					tar ft ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) 1>/dev/null 2>/dev/null || \
+						argh "L'archive '$(basename ${wgeturl}) 'semble incorrecte."
+				;;
+				*.zip|*.ZIP)
+					unzip -tq ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) 1>/dev/null 2>/dev/null || \
+						argh "L'archive '$(basename ${wgeturl}) 'semble incorrecte."
+				;;
+				*)
+					echo "Format d'archive source non pris en charge. Vérification ignorée."
+				;;
+			esac
+		fi
 	done
 }
 
@@ -188,7 +229,12 @@ preparer_sources() {
 		
 		# Si $WGET est une simple variable, c'est beaucoup plus simple : :
 		else
-			CURRENTARCHIVE="$(basename ${WGET})"
+			# Si on a un dépôt git en URL, on connaît le nom de l'archive puisqu'on l'a créée :
+			if [ ! "$(echo ${WGET} | grep -E '^git')" = "" ]; then
+				CURRENTARCHIVE="${NAMESRC}-${VERSION}.tar.xz"
+			else
+				CURRENTARCHIVE="$(basename ${WGET})"
+			fi
 		fi
 	fi
 	

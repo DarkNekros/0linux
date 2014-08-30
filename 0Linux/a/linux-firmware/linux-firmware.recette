@@ -1,24 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=dec41bce44
+VERSION=13eb208681
 WGET=git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
 DESC="Firmwares et microcodes matériels spécifiques pour le noyau Linux"
 
-
-cflags # Pour définir LIBDIRSUFFIX
-
-# On clone le dépôt git :
-mkdir -p ${PKGSOURCES}/${NAMETGZ}
-cd ${PKGSOURCES}/${NAMETGZ}
-if [[ -e linux-firmware ]] ; then
-	rm -rf linux-firmware
-fi
-git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
-
-# On passe le dépôt à la version voulue :
-cd linux-firmware
-git checkout ${VERSION}
+telecharger_sources
+preparer_sources
+cflags # Pour définir $LIBDIRSUFFIX
 
 # On place tous les firmwares :
 mkdir -p  ${PKG}/usr/lib${LIBDIRSUFFIX}/firmware

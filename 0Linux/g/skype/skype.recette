@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.2.0.11
+VERSION=4.2.0.13
 WGET=http://download.skype.com/linux/$NAMESRC-$VERSION.tar.bz2
 DESC="Programme pair-à-pair de transmission voix/vidéo sur IP"
 
