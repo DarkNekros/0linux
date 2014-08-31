@@ -819,8 +819,8 @@ empaqueter() {
 			echo "${extradep}" >> ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp
 		done
 		
-		# On supprime les lignes vides, on copie dans le fichier original et on nettoie :
-		cat ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp | sed '/^$/d' > ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep
+		# On supprime les lignes vides, on trie, on copie dans le fichier original et on nettoie :
+		cat ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp | sed '/^$/d' | sort -u > ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep
 		rm -f ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep.tmp
 	fi
 	

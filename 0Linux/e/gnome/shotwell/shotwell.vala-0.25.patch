@@ -1,0 +1,64 @@
+From a4de602b14a90cf28b16734dec6a97889e7fc990 Mon Sep 17 00:00:00 2001
+From: Dominique Leuenberger <dimstar@opensuse.org>
+Date: Thu, 24 Jul 2014 20:11:09 +0200
+Subject: [PATCH] build: fix build with vala 0.25.1
+
+Since version 0.25.1, vala performs check on format strings when instantiating errors.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=733650
+---
+ Makefile                                            | 2 --
+ plugins/shotwell-publishing/FacebookPublishing.vala | 2 +-
+ plugins/shotwell-publishing/FlickrPublishing.vala   | 4 ++--
+ 3 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 18f1e02..9baa882 100644
+--- a/Makefile
++++ b/Makefile
+@@ -662,8 +662,6 @@ $(VALA_STAMP): $(EXPANDED_SRC_FILES) $(EXPANDED_VAPI_FILES) $(GPHOTO_VAPI_FILE)
+ 	$(VALAC) --ccode --directory=$(BUILD_DIR) --basedir=src \
+ 		$(foreach pkg,$(VALA_PKGS),--pkg=$(pkg)) \
+ 		$(foreach vapidir,$(VAPI_DIRS),--vapidir=$(vapidir)) \
+-		$(foreach def,$(DEFINES),-X -D$(def)) \
+-		$(foreach hdir,$(HEADER_DIRS),-X -I$(hdir)) \
+ 		$(VALAFLAGS) \
+ 		$(EXPANDED_SRC_FILES)
+ 	@touch $@
+diff --git a/plugins/shotwell-publishing/FacebookPublishing.vala b/plugins/shotwell-publishing/FacebookPublishing.vala
+index d3f5a0f..79b7a0a 100644
+--- a/plugins/shotwell-publishing/FacebookPublishing.vala
++++ b/plugins/shotwell-publishing/FacebookPublishing.vala
+@@ -1494,7 +1494,7 @@ internal class GraphSession {
+             
+             case EXPIRED_SESSION_STATUS_CODE:
+                 error = new Spit.Publishing.PublishingError.EXPIRED_SESSION(
+-                    "OAuth Access Token has Expired. Logout user.", real_message.get_uri(), msg.status_code);
++                    "OAuth Access Token has Expired. Logout user.");
+             break;
+             
+             case Soup.KnownStatusCode.CANT_RESOLVE:
+diff --git a/plugins/shotwell-publishing/FlickrPublishing.vala b/plugins/shotwell-publishing/FlickrPublishing.vala
+index dc483cc..dcf7971 100644
+--- a/plugins/shotwell-publishing/FlickrPublishing.vala
++++ b/plugins/shotwell-publishing/FlickrPublishing.vala
+@@ -397,7 +397,7 @@ public class FlickrPublisher : Spit.Publishing.Publisher, GLib.Object {
+             
+             if (split_pair.length != 2)
+                 host.post_error(new Spit.Publishing.PublishingError.MALFORMED_RESPONSE(
+-                    "'%s' isn't a valid response to an OAuth authentication request"));
++                    "'%s' isn't a valid response to an OAuth authentication request", response));
+ 
+             if (split_pair[0] == "oauth_token")
+                 oauth_token = split_pair[1];
+@@ -407,7 +407,7 @@ public class FlickrPublisher : Spit.Publishing.Publisher, GLib.Object {
+         
+         if (oauth_token == null || oauth_token_secret == null)
+             host.post_error(new Spit.Publishing.PublishingError.MALFORMED_RESPONSE(
+-                "'%s' isn't a valid response to an OAuth authentication request"));
++                "'%s' isn't a valid response to an OAuth authentication request", response));
+         
+         
+         on_authentication_token_available(oauth_token, oauth_token_secret);
+-- 
+2.0.0
