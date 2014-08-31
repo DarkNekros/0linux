@@ -12,8 +12,11 @@ cflags
 # On corrige une bétise :
 cat $CWD/gnu-efi.revert-makefile.patch | patch -p1 -R
 
-# Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+# Compilation en déplaçant LDFLAGS dans les CFLAGS, le système utilise mal ces variables :
+FLAGS="${FLAGS} ${LDFLAGS}"
+unset LDFLAGS
+
+CFLAGS="${FLAGS} ${LDFLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
