@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=8.14.8
+VERSION=8.14.9
 WGET=ftp://ftp.sendmail.org/pub/$NAMESRC/$NAMESRC.$VERSION.tar.gz
 DESC="Démons d'envoi de courrier électronique"
 
@@ -37,7 +37,7 @@ fakeroot make install DESTDIR=${PKG}
 fakeroot make -C mail.local force-install DESTDIR=${PKG}
 fakeroot make -C rmail force-install DESTDIR=${PKG}
 
-# Une partie de la configuration est installé manuellement :
+# Une partie de la configuration est à installer manuellement :
 cp -r cf $PKG/usr/share/sendmail-cf
 cp sendmail/aliases $PKG/etc/mail/aliases.0nouveau
 cp cf/cf/generic-linux.cf $PKG/etc/mail/sendmail.cf.0nouveau
@@ -48,12 +48,12 @@ mv $PKG/etc/mail/helpfile{,.0nouveau}
 mv $PKG/etc/mail/statistics{,.0nouveau}
 mv $PKG/etc/mail/submit.cf{,.0nouveau}
 
-# On fabrique la libmilter :
+# On construit la libmilter :
 cd libmilter
 make -j${JOBS} || make
 cd -
 
-# Installation de libmilter manuelle :
+# Installation manuelle de libmilter :
 mkdir -p $PKG/usr/include/libmilter
 cp -a include/libmilter/mf{api,def}.h $PKG/usr/include/libmilter
 cp -a obj.*/libmilter/libmilter.a $PKG/usr/lib${LIBDIRSUFFIX}

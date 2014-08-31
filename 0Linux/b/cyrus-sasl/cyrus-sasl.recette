@@ -10,16 +10,27 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On corrige le comportement de crypt() depuis la glibc 2.17 :
-cat $CWD/cyrus-sasl.CVE-2013-4122.patch | patch -p1
-
 # On ajoute une inclusion manquante :
-cat $CWD/cyrus-sasl.types.patch | patch -p1
-
 # On ajoute des dépencances manquantes pour l'éditeur de liens :
-cat $CWD/cyrus-sasl.ld-as-needed.patch | patch -p1
-
-# On force notre répertoire standard pour les bibliothèques :
-sed -i "/sasldir/s/lib/&${LIBDIRSUFFIX}/" plugins/Makefile.in
+# On force à charger les greffons avec les bibliothèques et non les archives libtool :
+# On active la détection SQL (les sources ne sentiraient-elles pas un peu le renfermé ?) :
+# On ajoute des entêtes manquants :
+# Fatigué de chercher ? On applique tous les correctifs de Gentoo :
+cat $CWD/cyrus-sasl-2.1.25-sasldb_al.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.25-saslauthd_libtool.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.25-avoid_pic_overwrite.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.25-autotools_fixes.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.25-as_needed.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.25-missing_header.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.25-fix_heimdal.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.25-auxprop.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.23-gss_c_nt_hostbased_service.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.25-service_keytabs.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.26-missing-size_t.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.26-CVE-2013-4122.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.26-send-imap-logout.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.26-canonuser-ldapdb-garbage-in-out-buffer.patch | patch -p1
+cat $CWD/cyrus-sasl-2.1.26-fix_dovecot_authentication.patch | patch -p1
 
 # On supprime la dépendances à 'kerberos' :
 sed -i '/AC_CHECK_LIB(krb5support,krb5int_getspecific,K5SUP=/d' cmulocal/sasl2.m4
@@ -27,9 +38,26 @@ sed -i '/AC_CHECK_LIB(krb5support,krb5int_getspecific,K5SUP=/d' cmulocal/sasl2.m
 # On corrige une macro :
 sed -i 's/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/' configure.in
 
-# Compilation :
+# On active le mode mainteneur pour s'éviter des problèmes avec les autotools :
+sed -i '/CMU_INIT_AUTOMAKE/a \
+AM_MAINTAINER_MODE' configure.in
+
+# On active libtool pour saslauthd :
+sed -i '/AC_PROG_INSTALL/a \
+AC_PROG_LIBTOOL' saslauthd/configure.in
+
+# On corrige ce foutoir sans nom :
+sed -i -e 's:AM_CONFIG_HEADER:AC_CONFIG_HEADERS:g' \
+	-e 's:AC_CONFIG_MACRO_DIR:AC_CONFIG_MACRO_DIRS:g' \
+	configure.in
+sed -i -e 's:AC_CONFIG_MACRO_DIR:AC_CONFIG_MACRO_DIRS:g' saslauthd/configure.in || die
+
+# On force à reconstruire les outils de construction d ecette vieillerie:
 autoreconf -vif
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+
+# Compilation :
+CFLAGS="${FLAGS} -fno-strict-aliasing" \
+CXXFLAGS="${FLAGS} -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -DLDAP_DEPRECATED" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -62,6 +90,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-saslauthd=/var/run/saslauthd \
 	--with-tcl=/usr/lib${LIBDIRSUFFIX} \
 	--build=${PKGARCH}-0linux-linux-gnu
+
+# On force notre répertoire standard pour les bibliothèques :
+sed -i "/sasldir/s/lib/&${LIBDIRSUFFIX}/g" plugins/Makefile.in
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
