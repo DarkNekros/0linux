@@ -11,10 +11,14 @@ WGET=(
 DESC="Outils et bibliothèques C++ de création d'interfaces graphiques"
 
 telecharger_sources
+cflags
 
 # On compile wxwidgets 2.x :
 preparer_sources ${NAMESRC}-2.8.12.$EXT
 cflags
+
+# On renomme certains fichiers en conflit avec 'wxwidgets' 3.x :
+cat $CWD/wxwidgets.collisions.patch | sed "s@LIBDIRSUFFIX@${LIBDIRSUFFIX}@g" | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -25,10 +29,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--enable-graphics_ctx \
 	--enable-mediactrl \
 	--enable-unicode \
+	--with-gtk=2 \
 	--with-libmspack \
+	--with-libpng=sys \
+	--with-libtiff=sys \
+	--with-libxpm=sys \
 	--with-opengl \
+	--with-regex=builtin \
 	--with-sdl \
 	--build=${PKGARCH}-0linux-linux-gnu
 
@@ -40,9 +50,6 @@ fakeroot make -C contrib/src install DESTDIR=${PKG}
 
 # On copie un en-tête utile à certains paquets :
 cp -a include/msvc/wx/setup.h ${PKG}/usr/include/wx-2.8/wx
-
-# On renomme 'wx-config' avec sa version :
-mv ${PKG}/usr/bin/wx-config{,-2.8}
 
 # On compile maintenant la version de la recette :
 preparer_sources
