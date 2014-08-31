@@ -41,6 +41,9 @@ fakeroot make -C contrib/src install DESTDIR=${PKG}
 # On copie un en-tête utile à certains paquets :
 cp -a include/msvc/wx/setup.h ${PKG}/usr/include/wx-2.8/wx
 
+# On renomme 'wx-config' avec sa version :
+mv ${PKG}/usr/bin/wx-config{,-2.8}
+
 # On compile maintenant la version de la recette :
 preparer_sources
 cflags
@@ -70,7 +73,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 make -j${JOBS} -C locale allmo || make -C locale allmo
-fakeroot make                install DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
