@@ -1,14 +1,25 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.8.5
-WGET=http://libarchive.googlecode.com/files/$NAMESRC-$VERSION.tar.gz
+VERSION=3.1.2
+WGET=(
+      http://libarchive.googlecode.com/files/$NAMESRC-2.8.5.tar.gz
+      http://www.libarchive.org/downloads/$NAMESRC-$VERSION.tar.gz
+     )
 DESC="Bibliothèques de lecture/écriture d'archives"
 
 telecharger_sources
-preparer_sources
+
+# On compile libarchive 2.x :
+preparer_sources $NAMESRC-2.8.5.tar.gz
 cflags
 configure_make_makeinstall
+
+# On compile la version de la recette :
+preparer_sources $NAMESRC-$VERSION.tar.gz
+cflags
+configure_make_makeinstall
+
 installer_doc
 creer_post_installation
 stripper

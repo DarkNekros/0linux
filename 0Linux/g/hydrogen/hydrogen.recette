@@ -1,32 +1,26 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.5.1
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+VERSION=0.9.6
+WGET=https://github.com/hydrogen-music/$NAMESRC/archive/${VERSION}.tar.gz
 DESC="Éditeur et boîte à rythmes"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On adapte aux 'scons' récents :
-cat $CWD/hydrogen.scons.patch | patch -p0
-
-# On corrige une idiotie :
-sed -i "s@env.ParseConfig('pkg-config --modversion jack', get_jack_api_flags)@env.ParseConfig('echo 1.9.9', get_jack_api_flags)@" Sconstruct
+# On ajoute une inclusion manquante pour raptor2 :
+cat $CWD/hydrogen.lrdf_raptor2.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-LDFLAGS+=" -I/usr/include/raptor2" \
-QTDIR=/usr \
-scons \
-	prefix=/usr \
-	lash=1 \
-	libarchive=1 \
-	portaudio=1 \
-	portmidi=1
+cmake \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DWANT_LRDF=ON \
+	.
 
-fakeroot scons install QTDIR=/usr DESTDIR=${PKG}
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
