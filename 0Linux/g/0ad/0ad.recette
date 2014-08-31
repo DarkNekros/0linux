@@ -9,7 +9,7 @@ WGET=(http://releases.wildfiregames.com/$NAMESRC-$VERSION-alpha-unix-build.$EXT
 DESC="0 A.D. : jeu de stratégie guerrière en temps réel"
 
 telecharger_sources
-preparer_sources $NAMESRC-$VERSION-alpha-unix-build.$EXTp
+preparer_sources $NAMESRC-$VERSION-alpha-unix-build.$EXT
 cflags
 
 # On déballe les données dans $TMP :
