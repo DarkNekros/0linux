@@ -18,12 +18,12 @@ sed -i "/EXECUTE_PROCESS/d" CMakeLists.txt
 sed -i "/SET(CMAKE_INSTALL_PREFIX/d" CMakeLists.txt
 
 # Compilation :
+LDFLAGS+="-lz" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D CMAKE_SKIP_RPATH=ON \
 	./
 
 make -j${JOBS} || make
