@@ -13,7 +13,7 @@ cflags
 cat $CWD/hydrogen.scons.patch | patch -p0
 
 # On corrige une idiotie :
-sed -i "s@env.ParseConfig('pkg-config --modversion jack', get_jack_api_flags)@env.ParseConfig('pkg-config --modversion jack | cut -d'.' -f1-2-3', get_jack_api_flags)@" Sconstruct
+sed -i "s@env.ParseConfig('pkg-config --modversion jack', get_jack_api_flags)@env.ParseConfig('echo 1.9.9', get_jack_api_flags)@" Sconstruct
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
