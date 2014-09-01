@@ -37,6 +37,7 @@ pygobject
 pygoocanvas
 pygtk
 pygtksourceview
+pyinotify
 pyopenssl
 pyqt
 pyxdg
