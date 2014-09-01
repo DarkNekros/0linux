@@ -2,154 +2,219 @@
 
 unset RUNLEVEL4 XDE XINITRC
 
-# Si l'on est root :
-if [ "$(whoami)" = "root" ]; then
+# Si un argument est passé, on automatise :
+if [ -n "$1" ]; then
+	case "$1" in
+		"--aide|--help|--liste|--list")
+			echo "Appelez '$(basename $0)' sans argument pour utiliser la version interactive."
+			echo "Liste des arguments disponibles" :
+			echo "	$(basename $0) e"
+			echo "	$(basename $0) enlightenment"
+			echo "	$(basename $0) fluxbox"
+			echo "	$(basename $0) gnome"
+			echo "	$(basename $0) kde"
+			echo "	$(basename $0) mate"
+			echo "	$(basename $0) openbox"
+			echo "	$(basename $0) openbox-session"
+			echo "	$(basename $0) razor"
+			echo "	$(basename $0) razor-qt"
+			echo "	$(basename $0) twm"
+			echo "	$(basename $0) xbmc"
+			echo "	$(basename $0) xfce"
+			exit 0
+		;;
+		"enlightenment|e")
+			XINITRC="xinitrc.e"
+		;;
+		"fluxbox")
+			XINITRC="xinitrc.fluxbox"
+		;;
+		"gnome")
+			XINITRC="xinitrc.gnome"
+		;;
+		"kde")
+			XINITRC="xinitrc.kde"
+		;;
+		"mate")
+			XINITRC="xinitrc.mate"
+		;;
+		"openbox")
+			XINITRC="xinitrc.openbox"
+		;;
+		"openbox-session")
+			XINITRC="xinitrc.openbox-session"
+		;;
+		"razor-qt|razor")
+			XINITRC="xinitrc.razor-qt"
+		;;
+		"twm")
+			XINITRC="xinitrc.twm"
+		;;
+		"xbmc")
+			XINITRC="xinitrc.xbmc"
+		;;
+		"xfce")
+			XINITRC="xinitrc.xfce"
+		;;
+		*)
+			echo "Veuillez entrer un argument valide. Visualisez la liste des arguments"
+			echo "disponibles avec :"
+			echo "	$(basename $0) --liste"
+			echo "	$(basename $0) --aide"
+			exit 1
+		esac
+	
+# Sans argument, on propose un bureau à activer par défaut pour 'xdm' ou 'startx' :
+else
+	
+	# Si l'on est root, on propose de modifier le niveau d'éxécution par défaut :
+	if [ "$(whoami)" = "root" ]; then
+		while [ 0 ]; do
+			if [ "${INSTALLDEBUG}" = "" ]; then
+				clear
+			fi
+			echo -e "\033[1;32mChoix du type de démarrage.\033[0;0m"
+			echo ""
+			echo "Souhaitez-vous que le système démarre automatiquement en mode graphique"
+			echo "(niveau d'exécution 4) ou voulez-vous limiter le démarrage au mode"
+			echo "console (niveau d'exécution 3) ? Entrez le numéro approprié parmi"
+			echo "la liste suivante (appuyez sur ENTRÉE pour ignorer cette étape et"
+			echo "accepter le choix CONSOLE par défaut) :"
+			echo ""
+			echo "1 : GRAPHIQUE - Chargement auto du Gestionnaire de connexion graphique"
+			echo "2 : CONSOLE   - Mode texte classique, démarrage graphique manuel"
+			echo ""
+			echo -n "Votre choix : "
+			read RUNLEVEL4;
+			if [ "$RUNLEVEL4" = "" ]; then
+				break
+			else
+				if [ "$RUNLEVEL4" = "2" ]; then
+					break
+				elif [ "$RUNLEVEL4" = "1" ]; then
+					# On modifie '/etc/inittab :
+					sed -i "s/id:3:initdefault/id:4:initdefault/" /etc/inittab
+					break
+				else
+					echo "Veuillez entrer un chiffre entre 1 et 2 uniquement."
+					unset RUNLEVEL4
+					sleep 2
+					continue
+				fi
+			fi
+		done
+	fi
+	
 	while [ 0 ]; do
 		if [ "${INSTALLDEBUG}" = "" ]; then
 			clear
 		fi
-		echo -e "\033[1;32mChoix du type de démarrage.\033[0;0m"
+		echo -e "\033[1;32mChoix de l'environnement graphique via 'xinit'.\033[0;0m"
 		echo ""
-		echo "Souhaitez-vous que le système démarre automatiquement en mode graphique"
-		echo "(niveau d'exécution 4) ou voulez-vous limiter le démarrage au mode"
-		echo "console (niveau d'exécution 3) ? Entrez le numéro approprié parmi"
-		echo "la liste suivante (appuyez sur ENTRÉE pour ignorer cette étape et"
-		echo "accepter le choix CONSOLE par défaut) :"
+		echo "Veuillez choisir l'environnement graphique que vous souhaitez"
+		echo "démarrer automatiquement, soit avec la commande 'startx' ou bien"
+		echo "à l'aide du gestionnaire de connexion XDM. Les autres gestionnaires"
+		echo "comme KDM, Slim et tous les autres ont leur propre mécanisme de"
+		echo "détection des environnements, ils ne sont pas concernés."
 		echo ""
-		echo "1 : GRAPHIQUE - Chargement auto du Gestionnaire de connexion graphique"
-		echo "2 : CONSOLE   - Mode texte classique, démarrage graphique manuel"
+		echo "Appuyez sur ENTRÉE pour ignorer cette étape."
+		echo ""
+		
+		# On teste la présence de fichiers de démarrage X pour chaque bureau :
+		if [ -x /etc/X11/xinit/xinitrc.e ]; then
+			echo "1 : Enlightenment - Environnement graphique léger original."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.fluxbox ]; then
+			echo "2 : Fluxbox         - Gestionnaire de fenêtres léger pour avertis."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.gnome ]; then
+			echo "3 : GNOME           - Environnement de bureau complet en GTK+."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.kde ]; then
+			echo "4 : KDE             - Environnement de bureau complet en Qt."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.mate ]; then
+			echo "5 : MATE            - Environnement de bureau similaire à GNOME 2."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.openbox ]; then
+			echo "6 : Openbox         - Gestionnaire de fenêtres léger, rapide, personnalisable."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.openbox-session ]; then
+			echo "7 : Openbox-session - Gestionnaire de fenêtres léger et rapide (avec session)."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.razor-qt ]; then
+			echo "8 : Razor-qt        - Environnement de bureau léger alternatif à KDE."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.twm ]; then
+			echo "9 : twm             - Gestionnaire de fenêtres basique."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.xbmc ]; then
+			echo "10 : XBMC            - Centre multimédia autonome (ou « Media Center »)."
+		fi
+		if [ -x /etc/X11/xinit/xinitrc.xfce ]; then
+			echo "11 : Xfce           - Environnement de bureau léger alternatif à GNOME."
+		fi
+		
 		echo ""
 		echo -n "Votre choix : "
-		read RUNLEVEL4;
-		if [ "$RUNLEVEL4" = "" ]; then
+		read XDE;
+		case "$XDE" in
+		"")
 			break
-		else
-			if [ "$RUNLEVEL4" = "2" ]; then
-				break
-			elif [ "$RUNLEVEL4" = "1" ]; then
-				# On modifie '/etc/inittab :
-				sed -i "s/id:3:initdefault/id:4:initdefault/" /etc/inittab
-				break
-			else
-				echo "Veuillez entrer un chiffre entre 1 et 2 uniquement."
-				unset RUNLEVEL4
-				sleep 2
-				continue
-			fi
-		fi
+		;;
+		"1")
+			XINITRC="xinitrc.e"
+			break
+		;;
+		"2")
+			XINITRC="xinitrc.fluxbox"
+			break
+		;;
+		"3")
+			XINITRC="xinitrc.gnome"
+			break
+		;;
+		"4")
+			XINITRC="xinitrc.kde"
+			break
+		;;
+		"5")
+			XINITRC="xinitrc.mate"
+			break
+		;;
+		"6")
+			XINITRC="xinitrc.openbox"
+			break
+		;;
+		"7")
+			XINITRC="xinitrc.openbox-session"
+			break
+		;;
+		"8")
+			XINITRC="xinitrc.razor-qt"
+			break
+		;;
+		"9")
+			XINITRC="xinitrc.twm"
+			break
+		;;
+		"10")
+			XINITRC="xinitrc.xbmc"
+			break
+		;;
+		"11")
+			XINITRC="xinitrc.xfce"
+			break
+		;;
+		*)
+			echo "Veuillez entrer un numéro valide (entre 1 et 11) ou appuyez"
+			echo "sur ENTRÉE."
+			sleep 2
+			unset XDE
+			continue
+		esac
 	done
 fi
-
-# On propose un bureau à activer par défaut pour 'xdm' ou 'startx' :
-while [ 0 ]; do
-	if [ "${INSTALLDEBUG}" = "" ]; then
-		clear
-	fi
-	echo -e "\033[1;32mChoix de l'environnement graphique via 'xinit'.\033[0;0m"
-	echo ""
-	echo "Veuillez choisir l'environnement graphique que vous souhaitez"
-	echo "démarrer automatiquement, soit avec la commande 'startx' ou bien"
-	echo "à l'aide du gestionnaire de connexion XDM. Les autres gestionnaires"
-	echo "comme KDM, Slim et tous les autres ont leur propre mécanisme de"
-	echo "détection des environnements, ils ne sont pas concernés."
-	echo ""
-	echo "Appuyez sur ENTRÉE pour ignorer cette étape."
-	echo ""
-	
-	# On teste la présence de fichiers de démarrage X pour chaque bureau :
-	if [ -x /etc/X11/xinit/xinitrc.e ]; then
-		echo "1 : Enlightenment - Environnement graphique léger original."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.fluxbox ]; then
-		echo "2 : Fluxbox         - Gestionnaire de fenêtres léger pour avertis."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.gnome ]; then
-		echo "3 : GNOME           - Environnement de bureau complet en GTK+."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.kde ]; then
-		echo "4 : KDE             - Environnement de bureau complet en Qt."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.mate ]; then
-		echo "5 : MATE            - Environnement de bureau similaire à GNOME 2."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.openbox ]; then
-		echo "6 : Openbox         - Gestionnaire de fenêtres léger, rapide, personnalisable."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.openbox-session ]; then
-		echo "7 : Openbox-session - Gestionnaire de fenêtres léger et rapide (avec session)."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.razor-qt ]; then
-		echo "8 : Razor-qt        - Environnement de bureau léger alternatif à KDE."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.twm ]; then
-		echo "9 : twm             - Gestionnaire de fenêtres basique."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.xbmc ]; then
-		echo "10 : XBMC            - Centre multimédia autonome (ou « Media Center »)."
-	fi
-	if [ -x /etc/X11/xinit/xinitrc.xfce ]; then
-		echo "11 : Xfce           - Environnement de bureau léger alternatif à GNOME."
-	fi
-	
-	echo ""
-	echo -n "Votre choix : "
-	read XDE;
-	case "$XDE" in
-	"")
-		break
-	;;
-	"1")
-		XINITRC="xinitrc.e"
-		break
-	;;
-	"2")
-		XINITRC="xinitrc.fluxbox"
-		break
-	;;
-	"3")
-		XINITRC="xinitrc.gnome"
-		break
-	;;
-	"4")
-		XINITRC="xinitrc.kde"
-		break
-	;;
-	"5")
-		XINITRC="xinitrc.mate"
-		break
-	;;
-	"6")
-		XINITRC="xinitrc.openbox"
-		break
-	;;
-	"7")
-		XINITRC="xinitrc.openbox-session"
-		break
-	;;
-	"8")
-		XINITRC="xinitrc.razor-qt"
-		break
-	;;
-	"9")
-		XINITRC="xinitrc.twm"
-		break
-	;;
-	"10")
-		XINITRC="xinitrc.xbmc"
-		break
-	;;
-	"11")
-		XINITRC="xinitrc.xfce"
-		break
-	;;
-	*)
-		echo "Veuillez entrer un numéro valide (entre 1 et 11) ou appuyez"
-		echo "sur ENTRÉE."
-		sleep 2
-		unset XDE
-		continue
-	esac
-done
 
 if [ ! "$(whoami)" = "root" ]; then
 	# Si l'on est un simple utilisateur :
