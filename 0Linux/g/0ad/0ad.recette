@@ -18,9 +18,6 @@ tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-$VERSION-alpha-unix-data.$EXT -C $TMP
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/{bin,lib${LIBDIRSUFFIX}/${NAMESRC},share/{applications,${NAMESRC},pixmaps}}
 
-# On ajoute la compatibilité avec UPnP :
-cat $CWD/0ad.upnp.patch | patch -p0
-
 # On compile avec 'wxwidgets' 2.8.x, le code n'est pas prêt pour la version 3 :
 export WX_CONFIG=/usr/bin/wx-config-2.8
 
@@ -31,7 +28,6 @@ build/workspaces/update-workspaces.sh \
 	--libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--datadir=/usr/share/${NAMESRC}/data \
 	--with-system-enet \
-	--with-system-miniupnpc \
 	-j${JOBS}
 
 make CONFIG=Release -j${JOBS} -C build/workspaces/gcc || make CONFIG=Release -C build/workspaces/gcc
