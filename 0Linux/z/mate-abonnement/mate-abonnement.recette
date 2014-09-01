@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1
+DESC="L'environnement de bureau graphique MATE"
+EXTRADEPS="mate-common \
+mate-desktop \
+libmatekbd \
+mate-icon-theme \
+mate-icon-theme-faenza \
+caja \
+caja-extensions \
+caja-actions \
+caja-dropbox \
+mate-polkit \
+mate-dialogs \
+marco \
+mate-settings-daemon \
+mate-session-manager \
+mate-menus \
+mate-panel \
+mate-backgrounds \
+mate-themes \
+mate-notification-daemon \
+mate-control-center \
+mate-screensaver \
+engrampa \
+mate-media \
+mate-power-manager \
+mate-system-monitor \
+atril \
+eom \
+mate-applets \
+mate-netspeed \
+mate-sensors-applet \
+mate-terminal \
+mate-utils \
+mozo \
+pluma \
+mate-system-tools \
+gnome-main-menu \
+pluma"
+
+cflags
+
+# On place la description de l'abonnement (en txt2tags) :
+cat > ${TMP}/${NAMETGZ}.t2t << EOF
+Description de l'abonnement $NAMETGZ
+appzer0 - appzer0@free.fr
+Août 2014
+
+= L'environnement de bureau graphique MATE =
+
+MATE (prononcez « maté ») est un environnement de bureau complet et facile à prendre en main qui respecte des standards d'ergonomie éprouvés, similaire au comportement de GNOME 2 dont il reprend le code de quelques projets en tant que « forks ». Il répond aux concept classique du bureau contenant une barre des tâches, une zone de notification, un menu central, des icônes et des bureaux virtuels.
+
+= L'abonnement $NAMETGZ pour 0linux =
+
+L'abonnement contient l'environnement MATE complet ainsi que des applets supplémentaires, un menu étendu et son éditeur, une visionneuse d'images, un gestionnaire d'archives et un éditeur de texte (entre autres).
+
+= Installation sous 0linux =
+
+``# 0g ${NAMETGZ}``
+
+= Liste des paquets inclus dans l'abonnement =
+
+EOF
+
+# On ajoute la liste des paquets en dépendances à la description :
+rm -f $TMP/xdeps.tmp
+for d in ${EXTRADEPS}; do
+	echo ${d} >> $TMP/xdeps.tmp
+done
+cat $TMP/xdeps.tmp | sort >> ${TMP}/${NAMETGZ}.t2t
+
+# On génère la description dans les différents formats :
+mkdir -p ${PKG}/var/log/0abonnements
+for format in html txt; do
+	txt2tags --encoding=UTF-8 -t ${format} -o ${PKG}/var/log/0abonnements/${NAMETGZ}.${format} ${TMP}/${NAMETGZ}.t2t
+done
+
+empaqueter
+
+# C'est fini.
