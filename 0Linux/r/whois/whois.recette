@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=5.1.5
+WGET=http://ftp.debian.org/debian/pool/main/w/$NAMESRC/${NAMESRC}_${VERSION}.tar.xz
+DESC="Client d'interrogation distante de la base « whois »"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} prefix=/usr \
+	CONFIG_FILE=/etc/whois.conf \
+	HAVE_LIBIDN=1 \
+	HAVE_ICONV=1 || \
+make prefix=/usr \
+	CONFIG_FILE=/etc/whois.conf \
+	HAVE_LIBIDN=1 \
+	HAVE_ICONV=1 || \
+
+fakeroot make install-whois prefix=/usr BASEDIR=${PKG}
+
+# on crée le fichier de configuration en prenant garde à ne rien écraser :
+mkdir -p ${PKG}/etc
+
+cat > ${PKG}/etc/whois.conf.0nouveau << "EOF"
+# Fichier de configuration de whois.
+#
+# Ce fichier contient la liste de serveurs whois à utiliser en alternative des
+# serveurs inclus par défaut au cas où ceux-ci ne conviendraient pas. 
+# Chaque entrée est une ligne de texte contenant un motif d'expression
+# régulière à satisfaire et le serveur whois à utiliser, séparés par un espace. 
+# Le domaines internationalisés IDN doivent utiliser la format ACE.
+#
+# Par ex., pour un domaine néo-zéolandais : 
+# \.nz$ nz.whois-servers.net
+#
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
