@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=0.9.0
+WGET=https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.tar.gz
+DESC="Outil de bannissement automatisé après plusieurs tentatives infructueuses d'authentification"
+EXTRADEPS="iptables pyinotify whois"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation et installation :
+fakeroot python setup.py install --prefix /usr --optimize=1 --root ${PKG}
+
+# On place le fichier de renouvellement des journaux ('logrotate'):
+install -Dm644 files/fail2ban-logrotate ${PKG}/etc/logrotate.d/fail2ban
+
+# On place le fichier de complètement pour 'bash' :
+install -Dm644 files/bash-completion ${PKG}/usr/share/bash-completion/completions/fail2ban
+
+# Non :
+rm -rf ${PKG}/var/run
+
+# On place les manuels :
+mkdir -p ${PKG}/usr/man/man{1,5}
+find . -type f -name "*.1" -exec cp {} ${PKG}/usr/man/man1/ \;
+find . -type f -name "*.5" -exec cp {} ${PKG}/usr/man/man5/ \;
+  
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
