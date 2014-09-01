@@ -457,7 +457,7 @@ ISONAME=${ISONAME:-0linux-${VERSION}-${LIVEVERSION}-$(echo ${1} | sed 's@--@@')-
 
 echo "Création de l'image finale ${ISONAME}..."
 
-# On génère l'image ISO :
+# On génère l'image ISO (l'ID de volume est limité à 32 caractères) :
 mkisofs -o ${ISODIR}/${ISONAME} \
 	-A "$(echo ${ISONAME} | tr '-' ' ' | sed 's/\.iso//')" \
 	-b boot/isolinux/isolinux.bin \
@@ -467,18 +467,18 @@ mkisofs -o ${ISODIR}/${ISONAME} \
 	-l \
 	-N \
 	-R \
-	-V "$(echo ${ISONAME} | tr '-' ' ' | sed 's/\.iso//')" \
+	-V "$(echo ${ISONAME} | tr '-' ' ' | sed -e 's/\.iso//' -e 's/mini//' -e 's/maxi//')" \
 	-boot-load-size 4 \
 	-boot-info-table \
 	-hide-rr-moved \
 	-no-emul-boot \
 	${MEDIAROOT}
 
-# On rend cette image amorçable même sur volume USB, grâce à 'isohybrid' :
+# On rend cette image amorçable même sur lecteur amovible, grâce à 'isohybrid' :
 isohybrid ${ISODIR}/${ISONAME}
 
 echo "L'image '${ISODIR}/${ISONAME}' a été créée."
-echo "Gravez-la sur un DVD ou copiez-la sur une clé/carte USB amorçable"
+echo "Gravez-la sur un DVD ou copiez-la sur une clé/carte USB/disque dur amorçable"
 echo "via 'dd'."
 echo ""
 echo "Exemple pour une clé USB reconnue sous '/dev/sdc' :"

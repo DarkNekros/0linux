@@ -41,7 +41,7 @@ root ALL=(ALL) ALL
 # Le groupe 'sudo peut invoquer 'sudo' SANS MOT DE PASSE. Réfléchissez bien
 # aux implications en terme de sécurité : si vous ajoutez un utilisateur au
 # groupe 'sudo', c'est comme si vous lui donniez le mot de passe root !!!
-#%sudo	ALL=(ALL) NOPASSWD: ALL
+sudo ALL=(ALL) NOPASSWD: ALL
 
 # On inclut tous les fichiers de configurations trouvés sous '/etc/sudoers.d'
 # (attention, le dièze « # » ici ne représente pas un commentaire !) :

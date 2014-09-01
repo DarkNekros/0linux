@@ -6,7 +6,7 @@ if [ ! "$UID" = "0" ]; then
 fi
 
 # On nettoie :
-unset USERNM USERID
+unset USERNM USERID READID
 
 # Cette fonction supprime les espaces superflus via 'echo' :
 crunch() {
@@ -47,21 +47,8 @@ while [ 0 ]; do
 	fi
 done
 
-# Choix de l'UID :
-if [ "${INSTALLDEBUG}" = "" ]; then
-	clear
-fi
-echo -e "\033[1;32mChoix d'un numéro d'identifiant utilisateur (UID).\033[0;0m"
-echo ""
-echo "Entrez ci-après le numéro d'identifiant utilisateur souhaité ou appuyez sur"
-echo "ENTRÉE pour le choix par défaut (1000 pour le premier utilisateur créé)."
-echo ""
-echo -n "Votre choix : "
-read USERID;
-# Si l'utilisateur choisit le paramètre par défaut :
-if [ "${USERID}" = "" ]; then
-	USERID=1000
-fi
+# On détecte le premier UID libre en commençant à 1000 :
+USERID=1000
 
 # On incrémente $USERID tant qu'on trouve un utilisateur avec le même UID :
 while [ 0 ]; do
@@ -73,6 +60,22 @@ while [ 0 ]; do
 	fi
 done
 
+# Choix de l'UID :
+if [ "${INSTALLDEBUG}" = "" ]; then
+	clear
+fi
+echo -e "\033[1;32mChoix d'un numéro d'identifiant utilisateur (UID).\033[0;0m"
+echo ""
+echo "Entrez ci-après le numéro d'identifiant utilisateur souhaité ou appuyez sur"
+echo "ENTRÉE pour le premier UID libre trouvé : ${USERID}."
+echo ""
+echo -n "Votre choix : "
+read READID;
+# Si l'utilisateur saisit quelque chose :
+if [ ! "${READID}" = "" ]; then
+	USERID="${READID}"
+fi
+
 # Si le répertoire utilisateur existe déjà :
 if [ -d /home/${USERNM} ]; then
 	chmod 711 /home/${USERNM}
@@ -82,9 +85,37 @@ else
 	chmod 711 /home/${USERNM}
 fi
 
+# Appartenance au 'sudo' ou pas ? Ce groupe a les privilèges root sans mot de passe.
+if [ "${INSTALLDEBUG}" = "" ]; then
+	clear
+fi
+echo -e "\033[1;32mAppartenance au groupe 'sudo'.\033[0;0m"
+echo ""
+echo "Voulez-vous que cet utilisateur appartienne au groupe 'sudo' ?"
+echo ""
+echo "Le groupe 'sudo' peut invoquer 'sudo' pour obtenir les privilèges"
+echo "normalement réservés à 'root', mais SANS MOT DE PASSE. Réfléchissez bien"
+echo "aux implications en terme de sécurité : si vous ajoutez un utilisateur au"
+echo "groupe 'sudo', c'est comme si vous lui donniez le mot de passe root !!!"
+echo ""
+echo "Voulez-vous donner les pleins pouvoirs à l'utilisateur '${USERNM}' ?"
+echo "Répondez par « oui » ou par « non » ou appuyez sur ENTRÉE (non par défaut)."
+echo ""
+echo -n "Votre choix (oui/non/ENTRÉE) : "
+read READSUDOGROUPS;
+
+# Si l'utilisateur veut prendre des risques :
+if [ "${READSUDOGROUPS}" = "oui" ]; then
+	USERGROUPS="audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,sudo,vboxusers,video,wheel"
+
+# Si l'utilisateur est raisonnable (oui, ça existe) :
+else
+	USERGROUPS="audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,vboxusers,video,wheel"
+fi
+
 # On crée maintenant l'utilisateur sans oublier les groupes supplémentaires :
 # NOTA : mettre '/usr/bin/bash' casse pas mal de programmes idiots qui lisent '/etc/shells' sans tester :
-useradd ${USERNM} -M -u ${USERID} -g users -G audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,vboxusers,video,wheel -s /bin/sh
+useradd ${USERNM} -M -u ${USERID} -g users -G ${USERGROUPS} -s /bin/sh
 
 # On peut maintenant modifier les permissions :
 chown ${USERNM}.users /home/${USERNM}
