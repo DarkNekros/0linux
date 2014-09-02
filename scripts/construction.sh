@@ -158,7 +158,11 @@ for param in $@; do
 			# On nettoie et on génère l'iso dans '/usr/local/temp' (par défaut, mais sait-on jamais) :
 			rm -rf /usr/local/temp/iso
 			sudo TMP=/usr/local/temp 0creation_live --${ISOTYPE} ${PKGREPO}/$(uname -m)/
-
+			
+			# On copie le noyau et l'initrd fraîchement générés :
+			mkdir -p $(pwd)/../../../pub/installateur/${VERSION}/$(uname -m)
+			cp /usr/local/temp/{noyau,initrd} $(pwd)/../../../pub/installateur/${VERSION}/$(uname -m)/
+			
 			# On déduit le nom de l'image ISO :
 			NOMISO=$(ls -1 /usr/local/temp/iso/)
 			
