@@ -4,7 +4,7 @@
 VERSION=4.13.3
 WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/kdelibs-$VERSION.tar.xz
 DESC="Bibliothèques communes de l'environnement et des applications KDE"
-EXTRADEPS="oxygen-icons media-player-info shared-desktop-ontologies upower ca-certificates polkit-qt hicolor-icon-theme docbook-xsl docbook-xml"
+EXTRADEPS="oxygen-icons media-player-info shared-desktop-ontologies upower ca-certificates polkit-qt docbook-xml"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -28,7 +28,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D KDE_DEFAULT_HOME=.kde4 \
 	-D KAUTH_BACKEND=PolkitQt-1 \
 	-D KDE_DISTRIBUTION_TEXT="0Linux" \
-	-D SITE="http://0.tuxfamily.org/" \
+	-D SITE="http://0linux.org" \
 	-D HTML_INSTALL_DIR=/usr/share/kde4/doc/html \
 	-D WITH_SOLID_UDISKS2=ON \
 	./ ../
@@ -40,7 +40,7 @@ cd ../
 # On déplace les fichiers DBus au bon endroit :
 mv ${PKG}/etc/{kde/,}dbus-1
 
-# On utilise les certificats d'OpenSSL plus complet que ceux fournis par KDE
+# On utilise les certificats d'OpenSSL plus complet que ceux fournis par KDE :
 rm -f ${PKG}/usr/share/apps/kssl/ca-bundle.crt
 ln -sf /etc/ssl/certs/ca-certificates.crt ${PKG}/usr/share/apps/kssl/ca-bundle.crt
 

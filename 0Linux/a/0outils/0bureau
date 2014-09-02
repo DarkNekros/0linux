@@ -6,9 +6,9 @@ unset RUNLEVEL4 XDE XINITRC
 if [ -n "$1" ]; then
 	case "$1" in
 		"--aide|--help|--liste|--list")
+			echo "'$(basename $0)' permet de définir une session graphique par défaut."
 			echo "Appelez '$(basename $0)' sans argument pour utiliser la version interactive."
 			echo "Liste des arguments disponibles" :
-			echo "	$(basename $0) e"
 			echo "	$(basename $0) enlightenment"
 			echo "	$(basename $0) fluxbox"
 			echo "	$(basename $0) gnome"
@@ -16,7 +16,6 @@ if [ -n "$1" ]; then
 			echo "	$(basename $0) mate"
 			echo "	$(basename $0) openbox"
 			echo "	$(basename $0) openbox-session"
-			echo "	$(basename $0) razor"
 			echo "	$(basename $0) razor-qt"
 			echo "	$(basename $0) twm"
 			echo "	$(basename $0) xbmc"
@@ -224,6 +223,13 @@ if [ ! "$(whoami)" = "root" ]; then
 else
 	# Si l'on est 'root' :
 	ln -sf ${XINITRC} /etc/X11/xinit/xinitrc
+fi
+
+# On met un avertissement sur le bit d'exécution manquant le cas échéant :
+if [ ! -x /etc/X11/xinit/${XINITRC} ]; then
+	echo "Attention : le fichier '/etc/X11/xinit/${XINITRC}' n'est pas exécutable !"
+	echo "Le bit d'exécution est indispensable, pensez à invoquer en root :"
+	echo "	chmod +x /etc/X11/xinit/${XINITRC}"
 fi
 
 # C'est fini.
