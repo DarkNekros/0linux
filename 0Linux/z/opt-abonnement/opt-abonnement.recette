@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=11
+VERSION=12
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-firmware            alsa-lib \
@@ -67,8 +67,8 @@ ilmbase                 imagemagick              imlib2 \
 inetutils               infozip-unzip            infozip-zip \
 initialisation-systeme  intltool                 iproute2 \
 iptables                isl                      iso-codes \
-itstool                 iwlwifi-ucode            jack \
-jasper                  jdk                      jfsutils \
+itstool                 jack \
+jasper                  jfsutils \
                         json-c                   json-glib \
 kbd                     kerberos                 kmod \
 ktsuss                  ladspa                   lame \
@@ -198,7 +198,7 @@ udisks                  upower                   usbutils \
 util-linux              v4l-utils                vcdimager \
 vde                     vim                      vte \
 wavpack                 webcore-fonts            webkit-gtk+ \
-wget                    which                    \
+wget                    which \
 wireless-tools          wpa_supplicant           wxwidgets \
 x264                    xdg-user-dirs            xdg-utils \
 xfsprogs                xmlto                    xscreensaver \
