@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.4.4
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+DESC="Synthétiseur virtuel avancé en temps réel et aux capacités étendues"
+EXTRADEPS="dssi jack lash"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On ajouter un entête manquant :
+sed -i '1,1i#include <unistd.h>' src/Nio/NulEngine.cpp
+
+# On compile dans un répertoire dédié :
+mkdir build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DDefaultInput=jack \
+	-DDefaultOutput=jack \
+	-DGuiModule=fltk \
+	..
+
+make -j${JOBS} || make
+
+# On compile les programmes externes :
+(
+	cd ../ExternalPrograms/Spliter
+	make -j${JOBS} || make
+)
+
+(
+	cd ../ExternalPrograms/Controller
+	sed -i "s|Box\.h|Box\.H|" ControllerUI.fl
+	make -j${JOBS} || make
+)
+
+fakeroot make install DESTDIR=${PKG}
+
+# On installe les programmes externes :
+cp ../ExternalPrograms/Spliter/spliter ${PKG}/usr/bin/
+cp ../ExternalPrograms/Controller/controller ${PKG}/usr/bin/
+chmod 755 ${PKG}/usr/bin/*
+
+# On installes les banques de données et exemples :
+mkdir -p ${PKG}/usr/share/${NAMESRC}
+cp -a ../instruments/banks ${PKG}/usr/share/${NAMESRC}/
+cp -a ../instruments/examples ${PKG}/usr/share/${NAMESRC}/
+
+installer_doc
+
+# on complète la documentation :
+cp ../ExternalPrograms/Spliter/readme.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/Spliter.txt
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
