@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=11
+VERSION=12
 DESC="Paquets maarqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
@@ -48,6 +48,7 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	lcms2 \
 	libqtgtl \
 	libssh2 \
+	libutemper \
 	mysql \
 	ndiswrapper \
 	opengtl \
@@ -121,6 +122,7 @@ kwallet: remplacé par 'kwalletmanager'
 lcms2: fusionné dans 'lcms'
 libqtgtl: lié à 'opengtl', projet mort
 libssh2: fusionné dans 'libssh'
+libutemper: corrigé en 'libutempter'
 mysql: remplacé par 'mariadb'
 ndiswrapper: supprimé, inutile
 opengtl: projet mort
