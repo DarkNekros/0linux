@@ -124,7 +124,8 @@ libwebp                 libwmf                   libwnck \
 libwpd                  libwpg                   libwps \
 libxklavier             libxml2                  libxslt \
 libzeitgeist            libzip                   lilv \
-linux                   linuxdoc-tools           live555 \
+linux                   linux-firmware \
+linuxdoc-tools          live555 \
 lm_sensors              log4cxx                  logrotate \
 loudmouth               lsof                     lucene++ \
 lv2                     lvm2                     lynx \
