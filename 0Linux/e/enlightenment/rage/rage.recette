@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=0.1.0
+WGET=http://download.enlightenment.org/rel/apps/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+DESC="Lecteur audio et vidéo basé sur les bibliothèques EFL"
+
+telecharger_sources
+preparer_sources
+cflags
+configure_make_makeinstall
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
