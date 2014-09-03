@@ -9,6 +9,93 @@ telecharger_sources
 preparer_sources
 cflags
 configure_make_makeinstall
+
+# On crée un fichier avec un mesage d'accueil par défaut :
+mkdir -p ${PKG}/etc
+cat > ${PKG}/etc/rsyncd.motd << EOF
+-- Bienvenue sur le service rsync de $(hostname), tournant sous 0Linux.
+
+EOF
+
+# On crée le fichier de configuration du serveur 'rsyncd' sans écraser de
+# config' existante :
+cat > ${PKG}/etc/rsyncd.conf.0nouveau << "EOF"
+#!/usr/bin/env bash
+# Fichier de configuration du serveur 'rsyncd', à adapter.
+# Cf. 'man 5 rsyncd.conf'
+
+# Lancer 'rsyncd' en tant qu'utilisateur/groupe restreints :
+uid = nobody
+gid = nobody
+
+# Le fichier contenant un message d'accueil :
+motd file = /etc/rsyncd.motd
+
+# Le fichier journal :
+log file = /var/log/rsyncd.log
+
+# Le fichier du processus :
+pid file = /var/run/rsyncd.pid
+
+# Le verrou du processus :
+lock file = /var/run/rsyncd.lock
+
+# Exemple de module. Le module sera accessible via 'rsync' à l'adresse
+# "rsync://votredomaine.com/nomdumodule" :
+[nomdumodule]
+
+# Le chemin du répertoire qui sera accessible :
+path = /home/ftp/pub
+
+# Lecture seule :
+read only = yes
+
+# Autoriser le listing des fichiers :
+list = yes
+
+EOF
+
+# On crée le fichier service, désactivé par défaut :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.rsyncd << "EOF"
+#!/usr/bin/env bash
+
+rsyncd_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du démon rsyncd.."
+	if [ -r /etc/rsyncd.conf ]; then
+		rsyncd --daemon
+	fi
+}
+
+rsyncd_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt du démon rsyncd..."
+	killall rsyncd
+}
+
+case "$1" in
+	'start')
+		rsyncd_start
+	;;
+	
+	'stop')
+		rsyncd_stop
+	;;
+	
+	'restart')
+		rsyncd_stop
+		sleep 1
+		rsyncd_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 {start|stop|restart}"
+		exit 1
+	;;
+
+esac
+
+EOF
+
 installer_doc
 creer_post_installation
 stripper
