@@ -103,3 +103,6 @@ which is the French equivalent to the American GPL license.
 Using parts ad/or the whole 0Linux system source code means that you accept the
 whole CeCILL license terms. If you disagree with this license, then don't use
 0Linux or its source code.
+
+Cf./See: http://0linux.org
+
