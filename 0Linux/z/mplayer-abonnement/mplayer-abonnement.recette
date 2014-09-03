@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1
+VERSION=2
 DESC="Le lecteur multimédia MPlayer, ses codecs et habillages"
-EXTRADEPS="mplayer mplayer-codecs mplayer-skins"
-
+EXTRADEPS="mplayer mplayer-skins"
 
 cflags
 
@@ -22,7 +21,7 @@ MPlayer dispose d'une large variété de pilotes de sortie supportés. Il foncti
 
 = L'abonnement $NAMETGZ pour 0linux =
 
-L'abonnement contient le logiciel MPlayer complet ainsi qu'un ensemble de codecs supplémentaires et un jeu d'habillages visuels pour l'interface graphique.
+L'abonnement contient le logiciel MPlayer complet ainsi qu'un jeu d'habillages visuels pour l'interface graphique.
 
 = Installation sous 0linux =
 
